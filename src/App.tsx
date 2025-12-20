@@ -1,9 +1,12 @@
+import TitleBar from "./components/TitleBar";
+
 function App() {
   return (
-    <div>
-      <h1 className="text-3xl font-bold underline">
-        Hello world!
-      </h1>
+    <div className="flex flex-col h-screen overflow-hidden">
+      <TitleBar />
+      <div className="flex-1 overflow-auto p-4">
+
+      </div>
     </div>
   );
 }
