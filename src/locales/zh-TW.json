@@ -1,0 +1,49 @@
+{
+  "common": {
+    "comingSoon": "即將推出",
+    "comingSoonDesc": "{{tool}} 工具目前正在開發中。敬請期待！"
+  },
+  "nav": {
+    "home": "首頁",
+    "encoder": "編碼 & 解碼",
+    "crypto": "雜湊 & 加密",
+    "formatters": "格式化工具",
+    "generators": "生成器",
+    "settings": "設定"
+  },
+  "home": {
+    "title": "儀表板",
+    "welcome": "歡迎使用 TroveKit",
+    "subtitle": "您的全能開發者工具箱。安全、離線、美觀。",
+    "cards": {
+      "crypto": {
+        "title": "雜湊 & 加密",
+        "desc": "生成 MD5, SHA 雜湊等。"
+      },
+      "encoder": {
+        "title": "編碼工具",
+        "desc": "Base64, URL, HTML 編碼轉換。"
+      },
+      "formatters": {
+        "title": "格式化工具",
+        "desc": "美化 JSON, XML 和 SQL。"
+      }
+    }
+  },
+  "tools": {
+    "hash": {
+      "title": "雜湊 & 加密",
+      "inputLabel": "輸入文字",
+      "inputPlaceholder": "輸入要雜湊的文字...",
+      "clear": "清空"
+    }
+  },
+  "settings": {
+    "title": "設定",
+    "language": "語言",
+    "selectLanguage": "選擇語言",
+    "theme": "主題",
+    "appearance": "外觀",
+    "about": "關於"
+  }
+}

@@ -11,6 +11,8 @@ export function LanguageSelector() {
   const languages = [
     { key: "en", label: "English", flag: "🇺🇸" },
     { key: "zh", label: "中文", flag: "🇨🇳" },
+    { key: "zh-TW", label: "繁體中文 (台灣)", flag: "🇹🇼" },
+    { key: "zh-HK", label: "繁體中文 (香港)", flag: "🇭🇰" },
   ]
 
   return (
