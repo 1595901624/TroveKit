@@ -177,18 +177,19 @@ export default function TitleBar() {
 
   // 默认 Windows
   return (
-    <div data-tauri-drag-region className="h-[32px] bg-white dark:bg-[#202020] flex items-stretch justify-between select-none text-sm z-50">
-      <div className="flex items-center px-3 pointer-events-none">
-        <span className="text-xs text-gray-600 dark:text-gray-300">TroveKit</span>
+    <div data-tauri-drag-region className="h-[32px] bg-background flex items-stretch justify-between select-none text-sm z-50 border-b border-divider">
+      <div className="flex items-center px-3 pointer-events-none gap-2">
+        {/* Optional: Add app icon here if needed */}
+        <span className="text-xs text-default-500 font-medium">TroveKit</span>
       </div>
       <div className="flex items-stretch">
-        <div onClick={minimize} className="w-[46px] flex items-center justify-center hover:bg-gray-200 dark:hover:bg-white/10 transition-colors cursor-default text-black dark:text-white">
+        <div onClick={minimize} className="w-[46px] flex items-center justify-center hover:bg-default-100 transition-colors cursor-default text-foreground">
           <Icons.Windows.Minimize />
         </div>
-        <div onClick={toggleMaximize} className="w-[46px] flex items-center justify-center hover:bg-gray-200 dark:hover:bg-white/10 transition-colors cursor-default text-black dark:text-white">
+        <div onClick={toggleMaximize} className="w-[46px] flex items-center justify-center hover:bg-default-100 transition-colors cursor-default text-foreground">
           {isMaximized ? <Icons.Windows.Restore /> : <Icons.Windows.Maximize />}
         </div>
-        <div onClick={close} className="w-[46px] flex items-center justify-center hover:bg-[#E81123] hover:text-white transition-colors cursor-default text-black dark:text-white">
+        <div onClick={close} className="w-[46px] flex items-center justify-center hover:bg-danger hover:text-danger-foreground transition-colors cursor-default text-foreground">
           <Icons.Windows.Close />
         </div>
       </div>
