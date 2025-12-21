@@ -9,6 +9,8 @@ import {
 import { Button } from "@heroui/react"
 import { cn } from "../lib/utils"
 import { useTranslation } from "react-i18next"
+import { useState, useEffect } from "react"
+import { getVersion } from "@tauri-apps/api/app"
 
 export type ToolId = "home" | "encoder" | "crypto" | "formatters" | "generators" | "settings"
 
@@ -19,6 +21,11 @@ interface SidebarProps {
 
 export function Sidebar({ activeTool, onToolChange }: SidebarProps) {
   const { t } = useTranslation()
+  const [version, setVersion] = useState("v0.1.0")
+
+  useEffect(() => {
+    getVersion().then(setVersion).catch(() => setVersion("v0.1.0"))
+  }, [])
   
   const menuItems = [
     { id: "home", label: t("nav.home"), icon: Home },
@@ -58,7 +65,7 @@ export function Sidebar({ activeTool, onToolChange }: SidebarProps) {
 
       <div className="p-4 border-t border-divider">
         <div className="text-xs text-default-400 text-center">
-          v0.1.0 • Tauri Beta
+          v{version}
         </div>
       </div>
     </div>
