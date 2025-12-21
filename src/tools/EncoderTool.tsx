@@ -8,6 +8,9 @@ export function EncoderTool() {
   const { t } = useTranslation()
   const { addLog } = useLog()
 
+  // Tab State
+  const [selectedKey, setSelectedKey] = useState<string>("url")
+
   // URL State
   const [urlInput, setUrlInput] = useState("")
   const [urlOutput, setUrlOutput] = useState("")
@@ -83,10 +86,23 @@ export function EncoderTool() {
   }
 
   return (
-    <div className="flex flex-col gap-6 h-full">
-      <Tabs aria-label="Encoder Options" color="primary" variant="underlined" classNames={{ panel: "flex-1" }}>
-        <Tab key="url" title="URL" className="flex flex-col h-full">
-          <div className="space-y-4 mt-4">
+    <div className="flex flex-col h-full overflow-hidden">
+      <div className="flex-none">
+        <Tabs
+          aria-label="Encoder Options"
+          color="primary"
+          variant="underlined"
+          selectedKey={selectedKey}
+          onSelectionChange={(key) => setSelectedKey(key as string)}
+        >
+          <Tab key="url" title="URL" />
+          <Tab key="base64" title="Base64" />
+        </Tabs>
+      </div>
+
+      <div className="flex-1 overflow-y-auto min-h-0 pt-4 pb-2">
+        {selectedKey === "url" && (
+          <div className="space-y-4">
             <Textarea
               label={t("tools.encoder.input")}
               placeholder={t("tools.encoder.urlPlaceholder")}
@@ -126,16 +142,16 @@ export function EncoderTool() {
                 }}
               />
               <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                 <Button isIconOnly size="sm" variant="flat" onPress={() => copyToClipboard(urlOutput)}>
-                    <Copy className="w-4 h-4" />
-                 </Button>
+                <Button isIconOnly size="sm" variant="flat" onPress={() => copyToClipboard(urlOutput)}>
+                  <Copy className="w-4 h-4" />
+                </Button>
               </div>
             </div>
           </div>
-        </Tab>
+        )}
 
-        <Tab key="base64" title="Base64" className="flex flex-col h-full">
-          <div className="space-y-4 mt-4">
+        {selectedKey === "base64" && (
+          <div className="space-y-4">
             <Textarea
               label={t("tools.encoder.input")}
               placeholder={t("tools.encoder.base64Placeholder")}
@@ -175,14 +191,14 @@ export function EncoderTool() {
                 }}
               />
               <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                 <Button isIconOnly size="sm" variant="flat" onPress={() => copyToClipboard(base64Output)}>
-                    <Copy className="w-4 h-4" />
-                 </Button>
+                <Button isIconOnly size="sm" variant="flat" onPress={() => copyToClipboard(base64Output)}>
+                  <Copy className="w-4 h-4" />
+                </Button>
               </div>
             </div>
           </div>
-        </Tab>
-      </Tabs>
+        )}
+      </div>
     </div>
   )
 }
