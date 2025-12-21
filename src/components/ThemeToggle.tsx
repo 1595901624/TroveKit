@@ -1,9 +1,11 @@
 import { Moon, Sun, Monitor } from "lucide-react"
 import { useTheme } from "./theme-provider"
 import { Button, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem } from "@heroui/react"
+import { useTranslation } from "react-i18next"
 
 export function ThemeToggle() {
   const { setTheme, theme } = useTheme()
+  const { t } = useTranslation()
 
   return (
     <Dropdown>
@@ -15,13 +17,13 @@ export function ThemeToggle() {
       </DropdownTrigger>
       <DropdownMenu aria-label="Theme selection" selectionMode="single" selectedKeys={new Set([theme])}>
         <DropdownItem key="light" startContent={<Sun className="w-4 h-4" />} onClick={() => setTheme("light")}>
-          Light
+          {t("settings.light")}
         </DropdownItem>
         <DropdownItem key="dark" startContent={<Moon className="w-4 h-4" />} onClick={() => setTheme("dark")}>
-          Dark
+          {t("settings.dark")}
         </DropdownItem>
         <DropdownItem key="system" startContent={<Monitor className="w-4 h-4" />} onClick={() => setTheme("system")}>
-          System
+          {t("settings.system")}
         </DropdownItem>
       </DropdownMenu>
     </Dropdown>

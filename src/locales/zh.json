@@ -55,6 +55,9 @@
     "appearanceDesc": "自定义 TroveKit 的外观和感觉。",
     "themeDesc": "切换明暗模式。",
     "languageDesc": "选择您的首选语言。",
+    "light": "浅色",
+    "dark": "深色",
+    "system": "系统",
     "about": "关于"
   },
   "log": {

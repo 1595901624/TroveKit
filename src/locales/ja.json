@@ -55,6 +55,9 @@
     "appearanceDesc": "TroveKit の外観と操作性をカスタマイズします。",
     "themeDesc": "ライトまたはダークモードを切り替えます。",
     "languageDesc": "希望する言語を選択してください。",
+    "light": "ライト",
+    "dark": "ダーク",
+    "system": "システム",
     "about": "TroveKit について"
   },
   "log": {

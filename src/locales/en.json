@@ -55,6 +55,9 @@
     "appearanceDesc": "Customize the look and feel of TroveKit.",
     "themeDesc": "Toggle light or dark mode.",
     "languageDesc": "Select your preferred language.",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System",
     "about": "About"
   },
   "log": {
