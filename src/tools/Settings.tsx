@@ -11,13 +11,13 @@ export function Settings() {
       <Card className="shadow-sm border border-default-200">
         <CardHeader className="flex flex-col items-start px-6 pt-6 pb-0">
           <h2 className="text-xl font-bold">{t("settings.appearance")}</h2>
-          <p className="text-default-500 text-small mt-1">Customize the look and feel of TroveKit.</p>
+          <p className="text-default-500 text-small mt-1">{t("settings.appearanceDesc")}</p>
         </CardHeader>
         <CardBody className="px-6 py-6 gap-6">
            <div className="flex items-center justify-between">
               <div className="flex flex-col">
                  <span className="text-medium font-medium">{t("settings.theme")}</span>
-                 <span className="text-tiny text-default-400">Toggle light or dark mode.</span>
+                 <span className="text-tiny text-default-400">{t("settings.themeDesc")}</span>
               </div>
               <ThemeToggle />
            </div>
@@ -27,7 +27,7 @@ export function Settings() {
       <Card className="shadow-sm border border-default-200">
         <CardHeader className="flex flex-col items-start px-6 pt-6 pb-0">
           <h2 className="text-xl font-bold">{t("settings.language")}</h2>
-          <p className="text-default-500 text-small mt-1">Select your preferred language.</p>
+          <p className="text-default-500 text-small mt-1">{t("settings.languageDesc")}</p>
         </CardHeader>
         <CardBody className="px-6 py-6">
           <LanguageSelector />
@@ -35,7 +35,7 @@ export function Settings() {
       </Card>
       
       <div className="text-center text-xs text-default-400 mt-8">
-        TroveKit v0.1.0 • Built with Tauri & React
+        TroveKit v0.1.0 • © 2025 Cloris
       </div>
     </div>
   )

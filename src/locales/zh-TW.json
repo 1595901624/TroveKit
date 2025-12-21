@@ -36,6 +36,14 @@
       "inputLabel": "輸入文字",
       "inputPlaceholder": "輸入要雜湊的文字...",
       "clear": "清空"
+    },
+    "encoder": {
+      "input": "輸入文本",
+      "output": "輸出文本",
+      "urlPlaceholder": "輸入要進行 URL 編碼/解碼的文字...",
+      "base64Placeholder": "輸入要進行 Base64 編碼/解碼的文字...",
+      "encode": "編碼",
+      "decode": "解碼"
     }
   },
   "settings": {
@@ -44,6 +52,15 @@
     "selectLanguage": "選擇語言",
     "theme": "主題",
     "appearance": "外觀",
+    "appearanceDesc": "自訂 TroveKit 的外觀和感覺。",
+    "themeDesc": "切換明暗模式。",
+    "languageDesc": "選擇您的首選語言。",
     "about": "關於"
+  },
+  "log": {
+    "title": "操作紀錄",
+    "clear": "清空紀錄",
+    "empty": "暫无紀錄",
+    "toggle": "切換紀錄視窗"
   }
 }

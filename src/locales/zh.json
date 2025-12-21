@@ -52,6 +52,9 @@
     "selectLanguage": "选择语言",
     "theme": "主题",
     "appearance": "外观",
+    "appearanceDesc": "自定义 TroveKit 的外观和感觉。",
+    "themeDesc": "切换明暗模式。",
+    "languageDesc": "选择您的首选语言。",
     "about": "关于"
   },
   "log": {

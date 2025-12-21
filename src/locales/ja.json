@@ -5,8 +5,8 @@
   },
   "nav": {
     "home": "ホーム",
-    "encoder": "エンコーダー & デコーダー",
-    "crypto": "ハッシュ & 暗号化",
+    "encoder": "エンコード/デコード",
+    "crypto": "ハッシュ/暗号化",
     "formatters": "フォーマッター",
     "generators": "ジェネレーター",
     "settings": "設定"
@@ -36,6 +36,14 @@
       "inputLabel": "入力テキスト",
       "inputPlaceholder": "ハッシュするテキストを入力...",
       "clear": "クリア"
+    },
+    "encoder": {
+      "input": "入力",
+      "output": "出力",
+      "urlPlaceholder": "URLエンコード/デコードするテキストを入力...",
+      "base64Placeholder": "Base64エンコード/デコードするテキストを入力...",
+      "encode": "エンコード",
+      "decode": "デコード"
     }
   },
   "settings": {
@@ -44,6 +52,15 @@
     "selectLanguage": "言語を選択",
     "theme": "テーマ",
     "appearance": "外観",
-    "about": "について"
+    "appearanceDesc": "TroveKit の外観と操作性をカスタマイズします。",
+    "themeDesc": "ライトまたはダークモードを切り替えます。",
+    "languageDesc": "希望する言語を選択してください。",
+    "about": "TroveKit について"
+  },
+  "log": {
+    "title": "操作ログ",
+    "clear": "ログをクリア",
+    "empty": "ログはありません",
+    "toggle": "ログパネルを切り替え"
   }
 }
