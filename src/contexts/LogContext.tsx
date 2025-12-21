@@ -53,9 +53,9 @@ export function LogProvider({ children }: { children: React.ReactNode }) {
       ...prev,
     ])
     // Auto open on error or success if needed, but maybe not forced.
-    if (type === 'error' || type === 'success') {
-      setIsOpen(true)
-    }
+    // if (type === 'error' || type === 'success') {
+    //   setIsOpen(true)
+    // }
   }, [])
 
   const clearLogs = useCallback(() => {

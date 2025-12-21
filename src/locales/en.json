@@ -38,7 +38,8 @@
       "clear": "Clear"
     },
     "encoder": {
-      "input": "Content",
+      "input": "Input",
+      "output": "Output",
       "urlPlaceholder": "Enter text to URL encode/decode...",
       "base64Placeholder": "Enter text to Base64 encode/decode...",
       "encode": "Encode",
