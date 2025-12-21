@@ -2,6 +2,7 @@ import { useState } from "react"
 import { Layout } from "./components/Layout"
 import { ThemeProvider } from "./components/theme-provider"
 import { HashTool } from "./tools/HashTool"
+import { EncoderTool } from "./tools/EncoderTool"
 import { Settings } from "./tools/Settings"
 import { ToolId } from "./components/Sidebar"
 import { Card, CardBody } from "@heroui/react"
@@ -16,6 +17,8 @@ function App() {
     switch (activeTool) {
       case "crypto":
         return <HashTool />
+      case "encoder":
+        return <EncoderTool />
       case "settings":
         return <Settings />
       case "home":

@@ -36,6 +36,13 @@
       "inputLabel": "Input Text",
       "inputPlaceholder": "Enter text to hash...",
       "clear": "Clear"
+    },
+    "encoder": {
+      "input": "Content",
+      "urlPlaceholder": "Enter text to URL encode/decode...",
+      "base64Placeholder": "Enter text to Base64 encode/decode...",
+      "encode": "Encode",
+      "decode": "Decode"
     }
   },
   "settings": {
