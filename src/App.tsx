@@ -2,17 +2,22 @@ import { useState } from "react"
 import { Layout } from "./components/Layout"
 import { ThemeProvider } from "./components/theme-provider"
 import { HashTool } from "./tools/HashTool"
+import { Settings } from "./tools/Settings"
 import { ToolId } from "./components/Sidebar"
 import { Card, CardBody } from "@heroui/react"
 import { ArrowRight, Sparkles } from "lucide-react"
+import { useTranslation } from "react-i18next"
 
 function App() {
   const [activeTool, setActiveTool] = useState<ToolId>("home")
+  const { t } = useTranslation()
 
   const renderContent = () => {
     switch (activeTool) {
       case "crypto":
         return <HashTool />
+      case "settings":
+        return <Settings />
       case "home":
         return <HomeView onNavigate={setActiveTool} />
       default:
@@ -22,9 +27,9 @@ function App() {
                 <Sparkles className="w-8 h-8 text-default-400" />
              </div>
              <div>
-               <h2 className="text-xl font-semibold">Coming Soon</h2>
+               <h2 className="text-xl font-semibold">{t("common.comingSoon")}</h2>
                <p className="text-default-500 max-w-xs mx-auto mt-2">
-                 The {activeTool} tool is currently under development. Stay tuned for updates!
+                 {t("common.comingSoonDesc", { tool: t(`nav.${activeTool}` as any) })}
                </p>
              </div>
           </div>
@@ -34,12 +39,12 @@ function App() {
 
   const getTitle = () => {
     switch (activeTool) {
-      case "home": return "Dashboard"
-      case "crypto": return "Hash & Cryptography"
-      case "encoder": return "Encoders & Decoders"
-      case "formatters": return "Formatters"
-      case "generators": return "Generators"
-      case "settings": return "Settings"
+      case "home": return t("home.title")
+      case "crypto": return t("nav.crypto")
+      case "encoder": return t("nav.encoder")
+      case "formatters": return t("nav.formatters")
+      case "generators": return t("nav.generators")
+      case "settings": return t("settings.title")
       default: return "TroveKit"
     }
   }
@@ -58,20 +63,22 @@ function App() {
 }
 
 function HomeView({ onNavigate }: { onNavigate: (id: ToolId) => void }) {
+  const { t } = useTranslation()
+
   return (
     <div className="space-y-8 py-4">
       <div className="space-y-2">
-        <h2 className="text-3xl font-bold tracking-tight">Welcome to TroveKit</h2>
+        <h2 className="text-3xl font-bold tracking-tight">{t("home.welcome")}</h2>
         <p className="text-default-500 text-lg">
-          Your all-in-one developer utility belt. Secure, offline, and beautiful.
+          {t("home.subtitle")}
         </p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {[
-          { id: "crypto", title: "Hash & Crypto", desc: "Generate MD5, SHA hashes and more.", icon: "🔒" },
-          { id: "encoder", title: "Encoders", desc: "Base64, URL, HTML encoding tools.", icon: "🔤" },
-          { id: "formatters", title: "Formatters", desc: "Prettify JSON, XML, and SQL.", icon: "📄" },
+          { id: "crypto", title: t("home.cards.crypto.title"), desc: t("home.cards.crypto.desc"), icon: "🔒" },
+          { id: "encoder", title: t("home.cards.encoder.title"), desc: t("home.cards.encoder.desc"), icon: "🔤" },
+          { id: "formatters", title: t("home.cards.formatters.title"), desc: t("home.cards.formatters.desc"), icon: "📄" },
         ].map((item) => (
           <Card 
             key={item.id} 

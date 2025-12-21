@@ -8,6 +8,7 @@ import {
 } from "lucide-react"
 import { Button } from "@heroui/react"
 import { cn } from "../lib/utils"
+import { useTranslation } from "react-i18next"
 
 export type ToolId = "home" | "encoder" | "crypto" | "formatters" | "generators" | "settings"
 
@@ -17,14 +18,15 @@ interface SidebarProps {
 }
 
 export function Sidebar({ activeTool, onToolChange }: SidebarProps) {
+  const { t } = useTranslation()
+  
   const menuItems = [
-    { id: "home", label: "Home", icon: Home },
-    { id: "encoder", label: "Encoders & Decoders", icon: Binary },
-    { id: "crypto", label: "Hash & Crypto", icon: Lock },
-    { id: "formatters", label: "Formatters", icon: FileJson },
-    { id: "generators", label: "Generators", icon: Wand2 },
-    // { id: "text", label: "Text Tools", icon: Type },
-    { id: "settings", label: "Settings", icon: Settings },
+    { id: "home", label: t("nav.home"), icon: Home },
+    { id: "encoder", label: t("nav.encoder"), icon: Binary },
+    { id: "crypto", label: t("nav.crypto"), icon: Lock },
+    { id: "formatters", label: t("nav.formatters"), icon: FileJson },
+    { id: "generators", label: t("nav.generators"), icon: Wand2 },
+    { id: "settings", label: t("nav.settings"), icon: Settings },
   ] as const
 
   return (

@@ -1,14 +1,17 @@
 import { Card, CardBody, Button, Textarea } from "@heroui/react"
 import { Copy, RefreshCw } from "lucide-react"
+import { useTranslation } from "react-i18next"
 
 export function HashTool() {
+  const { t } = useTranslation()
+  
   return (
     <div className="space-y-6">
       <Card className="shadow-sm border border-default-200">
         <CardBody className="p-6 gap-4">
           <Textarea 
-             label="Input Text" 
-             placeholder="Enter text to hash..." 
+             label={t("tools.hash.inputLabel")}
+             placeholder={t("tools.hash.inputPlaceholder")}
              minRows={3}
              variant="bordered"
              radius="sm"
@@ -17,7 +20,7 @@ export function HashTool() {
              }}
           />
           <div className="flex gap-2 justify-end">
-             <Button size="sm" variant="flat" startContent={<RefreshCw className="w-4 h-4" />}>Clear</Button>
+             <Button size="sm" variant="flat" startContent={<RefreshCw className="w-4 h-4" />}>{t("tools.hash.clear")}</Button>
           </div>
         </CardBody>
       </Card>

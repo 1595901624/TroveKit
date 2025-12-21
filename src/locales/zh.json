@@ -1,0 +1,49 @@
+{
+  "common": {
+    "comingSoon": "即将推出",
+    "comingSoonDesc": "{{tool}} 工具目前正在开发中。敬请期待！"
+  },
+  "nav": {
+    "home": "首页",
+    "encoder": "编码 & 解码",
+    "crypto": "哈希 & 加密",
+    "formatters": "格式化工具",
+    "generators": "生成器",
+    "settings": "设置"
+  },
+  "home": {
+    "title": "仪表盘",
+    "welcome": "欢迎使用 TroveKit",
+    "subtitle": "您的全能开发者工具箱。安全、离线、美观。",
+    "cards": {
+      "crypto": {
+        "title": "哈希 & 加密",
+        "desc": "生成 MD5, SHA 哈希等。"
+      },
+      "encoder": {
+        "title": "编码工具",
+        "desc": "Base64, URL, HTML 编码转换。"
+      },
+      "formatters": {
+        "title": "格式化工具",
+        "desc": "美化 JSON, XML 和 SQL。"
+      }
+    }
+  },
+  "tools": {
+    "hash": {
+      "title": "哈希 & 加密",
+      "inputLabel": "输入文本",
+      "inputPlaceholder": "输入要哈希的文本...",
+      "clear": "清空"
+    }
+  },
+  "settings": {
+    "title": "设置",
+    "language": "语言",
+    "selectLanguage": "选择语言",
+    "theme": "主题",
+    "appearance": "外观",
+    "about": "关于"
+  }
+}
