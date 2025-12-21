@@ -2,6 +2,11 @@ import React from "react"
 import { Sidebar, ToolId } from "./Sidebar"
 import TitleBar from "./TitleBar"
 import { ThemeToggle } from "./ThemeToggle"
+import { LogPanel } from "./LogPanel"
+import { useLog } from "../contexts/LogContext"
+import { Button, Tooltip } from "@heroui/react"
+import { Terminal } from "lucide-react"
+import { useTranslation } from "react-i18next"
 
 interface LayoutProps {
   children: React.ReactNode
@@ -11,6 +16,9 @@ interface LayoutProps {
 }
 
 export function Layout({ children, activeTool, onToolChange, title }: LayoutProps) {
+  const { togglePanel, isOpen } = useLog()
+  const { t } = useTranslation()
+
   return (
     <div className="h-screen w-screen flex flex-col bg-background text-foreground overflow-hidden">
       {/* Global TitleBar (Window Controls) */}
@@ -26,6 +34,11 @@ export function Layout({ children, activeTool, onToolChange, title }: LayoutProp
           <header className="h-14 border-b border-divider flex items-center justify-between px-6 shrink-0 bg-background/60 backdrop-blur-md">
             <h1 className="text-lg font-semibold tracking-tight">{title}</h1>
             <div className="flex gap-2 items-center">
+              <Tooltip content={t('log.toggle', 'Toggle Logs')}>
+                <Button isIconOnly variant={isOpen ? "flat" : "light"} radius="full" onPress={togglePanel}>
+                  <Terminal className="w-[1.2rem] h-[1.2rem] text-default-500" />
+                </Button>
+              </Tooltip>
               <ThemeToggle />
             </div>
           </header>
@@ -37,6 +50,8 @@ export function Layout({ children, activeTool, onToolChange, title }: LayoutProp
              </div>
           </div>
         </main>
+
+        <LogPanel />
       </div>
     </div>
   )

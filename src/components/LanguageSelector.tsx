@@ -5,6 +5,7 @@ import CN from 'country-flag-icons/react/3x2/CN'
 import TW from 'country-flag-icons/react/3x2/TW'
 import HK from 'country-flag-icons/react/3x2/HK'
 import JP from 'country-flag-icons/react/3x2/JP'
+import { useLog } from "../contexts/LogContext"
 
 export function LanguageSelector() {
   const { i18n, t } = useTranslation()

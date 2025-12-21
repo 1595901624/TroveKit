@@ -45,5 +45,11 @@
     "theme": "Theme",
     "appearance": "Appearance",
     "about": "About"
+  },
+  "log": {
+    "title": "Operation Log",
+    "clear": "Clear Logs",
+    "empty": "No logs yet",
+    "toggle": "Toggle Logs"
   }
 }

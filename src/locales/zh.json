@@ -45,5 +45,11 @@
     "theme": "主题",
     "appearance": "外观",
     "about": "关于"
+  },
+  "log": {
+    "title": "操作日志",
+    "clear": "清空日志",
+    "empty": "暂无日志",
+    "toggle": "切换日志窗口"
   }
 }
