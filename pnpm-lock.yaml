@@ -26,6 +26,9 @@ importers:
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
+      country-flag-icons:
+        specifier: ^1.6.4
+        version: 1.6.4
       framer-motion:
         specifier: ^12.23.24
         version: 12.23.26(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
@@ -1980,6 +1983,9 @@ packages:
 
   convert-source-map@2.0.0:
     resolution: {integrity: sha512-Kvp459HrV2FEJ1CAsi1Ku+MY3kasH19TFykTz2xWmMeq6bk2NU3XXvfJ+Q61m0xktWwt+1HSYf3JZsTms3aRJg==}
+
+  country-flag-icons@1.6.4:
+    resolution: {integrity: sha512-Z3Zi419FI889tlElMsVhCIS5eRkiLDWixr576J5DPiTe5RGxpbRi+enMpHdYVp5iK5WFjr8P/RgyIFAGhFsiFg==}
 
   cssesc@3.0.0:
     resolution: {integrity: sha512-/Tb/JcjK111nNScGob5MNtsntNM1aCNUDipB/TkwZFhyDrrE47SOx/18wF2bbjgc3ZzCSKW1T5nt5EbFoAz/Vg==}
@@ -5333,6 +5339,8 @@ snapshots:
   compute-scroll-into-view@3.1.1: {}
 
   convert-source-map@2.0.0: {}
+
+  country-flag-icons@1.6.4: {}
 
   cssesc@3.0.0: {}
 

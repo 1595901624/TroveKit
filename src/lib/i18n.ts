@@ -5,6 +5,7 @@ import en from "../locales/en.json"
 import zh from "../locales/zh.json"
 import zhTW from "../locales/zh-TW.json"
 import zhHK from "../locales/zh-HK.json"
+import ja from "../locales/ja.json"
 
 const resources = {
   en: {
@@ -18,6 +19,9 @@ const resources = {
   },
   "zh-HK": {
     translation: zhHK,
+  },
+  ja: {
+    translation: ja,
   },
 }
 

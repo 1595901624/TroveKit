@@ -16,6 +16,7 @@
     "@tauri-apps/plugin-opener": "^2",
     "autoprefixer": "^10.4.23",
     "clsx": "^2.1.1",
+    "country-flag-icons": "^1.6.4",
     "framer-motion": "^12.23.24",
     "i18next": "^25.7.3",
     "lucide-react": "^0.562.0",

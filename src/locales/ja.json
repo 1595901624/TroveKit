@@ -1,0 +1,49 @@
+{
+  "common": {
+    "comingSoon": "近日公開",
+    "comingSoonDesc": "{{tool}} ツールは現在開発中です。更新をお待ちください！"
+  },
+  "nav": {
+    "home": "ホーム",
+    "encoder": "エンコーダー & デコーダー",
+    "crypto": "ハッシュ & 暗号化",
+    "formatters": "フォーマッター",
+    "generators": "ジェネレーター",
+    "settings": "設定"
+  },
+  "home": {
+    "title": "ダッシュボード",
+    "welcome": "TroveKit へようこそ",
+    "subtitle": "あなたのオールインワン開発者ユーティリティベルト。安全、オフライン、美しい。",
+    "cards": {
+      "crypto": {
+        "title": "ハッシュ & 暗号化",
+        "desc": "MD5、SHA ハッシュなどを生成。"
+      },
+      "encoder": {
+        "title": "エンコーダー",
+        "desc": "Base64、URL、HTML エンコーディングツール。"
+      },
+      "formatters": {
+        "title": "フォーマッター",
+        "desc": "JSON、XML、SQL を整形。"
+      }
+    }
+  },
+  "tools": {
+    "hash": {
+      "title": "ハッシュ & 暗号化",
+      "inputLabel": "入力テキスト",
+      "inputPlaceholder": "ハッシュするテキストを入力...",
+      "clear": "クリア"
+    }
+  },
+  "settings": {
+    "title": "設定",
+    "language": "言語",
+    "selectLanguage": "言語を選択",
+    "theme": "テーマ",
+    "appearance": "外観",
+    "about": "について"
+  }
+}
