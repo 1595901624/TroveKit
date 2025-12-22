@@ -95,21 +95,21 @@ export function HashTool() {
   const copyToClipboard = (text: string) => {
     if (!text) return
     navigator.clipboard.writeText(text)
-    addLog("Copied to clipboard", "info")
+    addLog(t("tools.hash.copiedToClipboard"), "info")
   }
 
   return (
     <div className="flex flex-col h-full overflow-hidden">
       <div className="flex-none">
         <Tabs
-          aria-label="Hash Options"
+          aria-label={t("tools.hash.hashOptions")}
           color="primary"
           variant="underlined"
           selectedKey={selectedKey}
           onSelectionChange={(key) => setSelectedKey(key as string)}
         >
-          <Tab key="md5" title="MD5" />
-          <Tab key="sha" title="SHA" />
+          <Tab key="md5" title={t("tools.hash.md5")} />
+          <Tab key="sha" title={t("tools.hash.sha")} />
         </Tabs>
       </div>
 
@@ -134,31 +134,31 @@ export function HashTool() {
                     orientation="horizontal"
                     value={md5Bit}
                     onValueChange={setMd5Bit}
-                    label="Length"
+                    label={t("tools.hash.length")}
                     size="sm"
                     className="text-tiny"
                   >
-                    <Radio value="32">32-bit</Radio>
-                    <Radio value="16">16-bit</Radio>
+                    <Radio value="32">{t("tools.hash.bit32")}</Radio>
+                    <Radio value="16">{t("tools.hash.bit16")}</Radio>
                   </RadioGroup>
 
                   <RadioGroup
                     orientation="horizontal"
                     value={md5Case}
                     onValueChange={setMd5Case}
-                    label="Case"
+                    label={t("tools.hash.case")}
                     size="sm"
                   >
-                    <Radio value="lower">Lowercase</Radio>
-                    <Radio value="upper">Uppercase</Radio>
+                    <Radio value="lower">{t("tools.hash.lowercase")}</Radio>
+                    <Radio value="upper">{t("tools.hash.uppercase")}</Radio>
                   </RadioGroup>
                </div>
 
                <div className="flex items-center gap-2">
                   <Button color="primary" variant="flat" onPress={handleMd5Hash} startContent={<Hash className="w-4 h-4" />}>
-                    {t("tools.hash.generate", "Generate MD5")}
+                    {t("tools.hash.generate")}
                   </Button>
-                  <Button isIconOnly variant="light" color="danger" onPress={() => { setMd5Input(""); setMd5Output(""); }} title="Clear All">
+                  <Button isIconOnly variant="light" color="danger" onPress={() => { setMd5Input(""); setMd5Output(""); }} title={t("tools.hash.clearAll")}>
                     <Trash2 className="w-4 h-4" />
                   </Button>
                </div>
@@ -204,17 +204,17 @@ export function HashTool() {
                     orientation="horizontal"
                     value={shaType}
                     onValueChange={setShaType}
-                    label="Algorithm"
+                    label={t("tools.hash.algorithm")}
                     size="sm"
                     className="max-w-full"
                   >
                     <div className="flex flex-wrap gap-4">
-                      <Radio value="SHA1">SHA1</Radio>
-                      <Radio value="SHA224">SHA224</Radio>
-                      <Radio value="SHA256">SHA256</Radio>
-                      <Radio value="SHA384">SHA384</Radio>
-                      <Radio value="SHA512">SHA512</Radio>
-                      <Radio value="SHA3">SHA3</Radio>
+                      <Radio value="SHA1">{t("tools.hash.sha1")}</Radio>
+                      <Radio value="SHA224">{t("tools.hash.sha224")}</Radio>
+                      <Radio value="SHA256">{t("tools.hash.sha256")}</Radio>
+                      <Radio value="SHA384">{t("tools.hash.sha384")}</Radio>
+                      <Radio value="SHA512">{t("tools.hash.sha512")}</Radio>
+                      <Radio value="SHA3">{t("tools.hash.sha3")}</Radio>
                     </div>
                   </RadioGroup>
 
@@ -222,19 +222,19 @@ export function HashTool() {
                     orientation="horizontal"
                     value={shaCase}
                     onValueChange={setShaCase}
-                    label="Case"
+                    label={t("tools.hash.case")}
                     size="sm"
                   >
-                    <Radio value="lower">Lowercase</Radio>
-                    <Radio value="upper">Uppercase</Radio>
+                    <Radio value="lower">{t("tools.hash.lowercase")}</Radio>
+                    <Radio value="upper">{t("tools.hash.uppercase")}</Radio>
                   </RadioGroup>
                </div>
 
                <div className="flex items-center gap-2">
                   <Button color="primary" variant="flat" onPress={handleShaHash} startContent={<Hash className="w-4 h-4" />}>
-                    {t("tools.hash.generate", "Generate Hash")}
+                    {t("tools.hash.generate")}
                   </Button>
-                  <Button isIconOnly variant="light" color="danger" onPress={() => { setShaInput(""); setShaOutput(""); }} title="Clear All">
+                  <Button isIconOnly variant="light" color="danger" onPress={() => { setShaInput(""); setShaOutput(""); }} title={t("tools.hash.clearAll")}>
                     <Trash2 className="w-4 h-4" />
                   </Button>
                </div>
