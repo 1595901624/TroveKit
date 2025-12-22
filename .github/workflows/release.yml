@@ -16,7 +16,7 @@ jobs:
           - platform: 'macos-latest' # macOS ARM64 (Apple Silicon)
             args: '--target aarch64-apple-darwin'
             target: 'aarch64-apple-darwin'
-          - platform: 'macos-13' # macOS Intel
+          - platform: 'macos-15-intel' # macOS Intel
             args: '--target x86_64-apple-darwin'
             target: 'x86_64-apple-darwin'
           - platform: 'ubuntu-22.04' # Linux x64
