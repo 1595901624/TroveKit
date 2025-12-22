@@ -24,9 +24,10 @@ export function EncoderTool() {
     try {
       const result = encodeURIComponent(urlInput)
       setUrlOutput(result)
-      addLog(`${urlInput.substring(0, 20)}${urlInput.length > 20 ? '...' : ''} --URL Encode--> Success`, "success")
+      addLog({ method: "URL Encode", input: urlInput, output: result }, "success")
+
     } catch (e) {
-      addLog(`URL Encode failed: ${(e as Error).message}`, "error")
+      addLog({ method: "URL Encode", input: urlInput, output: (e as Error).message }, "error")
     }
   }
 
@@ -35,9 +36,9 @@ export function EncoderTool() {
     try {
       const result = decodeURIComponent(urlInput)
       setUrlOutput(result)
-      addLog(`${urlInput.substring(0, 20)}${urlInput.length > 20 ? '...' : ''} --URL Decode--> Success`, "success")
+      addLog({ method: "URL Decode", input: urlInput, output: result }, "success")
     } catch (e) {
-      addLog(`URL Decode failed: ${(e as Error).message}`, "error")
+      addLog({ method: "URL Decode", input: urlInput, output: (e as Error).message }, "error")
     }
   }
 
@@ -49,9 +50,9 @@ export function EncoderTool() {
       const binString = Array.from(data, (byte) => String.fromCodePoint(byte)).join("")
       const result = window.btoa(binString)
       setBase64Output(result)
-      addLog("Base64 Encode Success", "success")
+      addLog({ method: "Base64 Encode", input: base64Input, output: result }, "success")
     } catch (e) {
-      addLog(`Base64 Encode failed: ${(e as Error).message}`, "error")
+      addLog({ method: "Base64 Encode", input: base64Input, output: (e as Error).message }, "error")
     }
   }
 
@@ -63,9 +64,9 @@ export function EncoderTool() {
       const decoder = new TextDecoder()
       const result = decoder.decode(bytes)
       setBase64Output(result)
-      addLog("Base64 Decode Success", "success")
+      addLog({ method: "Base64 Decode", input: base64Input, output: result }, "success")
     } catch (e) {
-      addLog(`Base64 Decode failed: ${(e as Error).message}`, "error")
+      addLog({ method: "Base64 Decode", input: base64Input, output: (e as Error).message }, "error")
     }
   }
 

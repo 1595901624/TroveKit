@@ -58,19 +58,67 @@ export function LogPanel() {
                                          {getIcon(log.type)}
                                          <time>{new Date(log.timestamp).toLocaleTimeString()}</time>
                                     </div>
-                                    <Button 
-                                      isIconOnly 
-                                      size="sm" 
-                                      variant="light" 
-                                      className="h-5 w-5 min-w-5 opacity-0 group-hover:opacity-100 data-[hover=true]:bg-default/40"
-                                      onPress={() => navigator.clipboard.writeText(log.message)}
-                                    >
-                                       <Copy className="w-3 h-3 text-default-500" />
-                                    </Button>
+                                    {!log.method && (
+                                        <Button 
+                                            isIconOnly 
+                                            size="sm" 
+                                            variant="light" 
+                                            className="h-5 w-5 min-w-5 opacity-0 group-hover:opacity-100 data-[hover=true]:bg-default/40"
+                                            onPress={() => navigator.clipboard.writeText(log.message || '')}
+                                        >
+                                            <Copy className="w-3 h-3 text-default-500" />
+                                        </Button>
+                                    )}
                                 </div>
-                                <div className="text-small break-all font-mono leading-relaxed text-foreground/90">
-                                    {log.message}
-                                </div>
+                                
+                                {log.method ? (
+                                    <div className="flex flex-col gap-2 mt-1">
+                                        <div className="flex items-center gap-2">
+                                            <span className="text-primary font-bold font-mono text-small px-1.5 py-0.5 bg-primary/10 rounded">
+                                                {log.method}
+                                            </span>
+                                        </div>
+                                        
+                                        <div className="space-y-1.5">
+                                            <div className="group/input relative p-2 rounded bg-default-100/50 hover:bg-default-100 transition-colors">
+                                                <div className="text-tiny text-default-400 font-semibold mb-0.5 select-none">INPUT</div>
+                                                <div className="text-small font-mono text-default-600 break-all pr-6">
+                                                    {log.input}
+                                                </div>
+                                                <Button 
+                                                    isIconOnly 
+                                                    size="sm" 
+                                                    variant="light" 
+                                                    className="absolute top-1 right-1 h-5 w-5 min-w-5 opacity-0 group-hover/input:opacity-100"
+                                                    onPress={() => navigator.clipboard.writeText(log.input || '')}
+                                                >
+                                                    <Copy className="w-3 h-3 text-default-400" />
+                                                </Button>
+                                            </div>
+
+                                            <div className="group/output relative p-2 rounded bg-default-100/50 hover:bg-default-100 transition-colors">
+                                                <div className="text-tiny text-success/80 font-semibold mb-0.5 select-none">OUTPUT</div>
+                                                <div className="text-small font-mono text-foreground break-all pr-6">
+                                                    {log.output}
+                                                </div>
+                                                <Button 
+                                                    isIconOnly 
+                                                    size="sm" 
+                                                    variant="light" 
+                                                    className="absolute top-1 right-1 h-5 w-5 min-w-5 opacity-0 group-hover/output:opacity-100"
+                                                    onPress={() => navigator.clipboard.writeText(log.output || '')}
+                                                >
+                                                    <Copy className="w-3 h-3 text-default-400" />
+                                                </Button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <div className="text-small break-all font-mono leading-relaxed text-foreground/90">
+                                        {log.message}
+                                    </div>
+                                )}
+                                
                                 {log.details && (
                                     <div className="mt-1.5 pt-1.5 border-t border-divider/50 text-tiny text-default-400 break-all font-mono">
                                         {log.details}

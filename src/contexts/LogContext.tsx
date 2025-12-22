@@ -21,14 +21,23 @@ import React, { createContext, useContext, useState, useCallback } from "react"
 export interface LogEntry {
   id: string
   timestamp: number
-  message: string
+  message?: string
+  method?: string
+  input?: string
+  output?: string
   details?: string
   type: "info" | "success" | "error" | "warning"
 }
 
+export type LogContent = string | {
+    method: string
+    input: string
+    output: string
+}
+
 interface LogContextType {
   logs: LogEntry[]
-  addLog: (message: string, type?: LogEntry["type"], details?: string) => void
+  addLog: (content: LogContent, type?: LogEntry["type"], details?: string) => void
   clearLogs: () => void
   isOpen: boolean
   setIsOpen: (isOpen: boolean) => void
@@ -41,17 +50,27 @@ export function LogProvider({ children }: { children: React.ReactNode }) {
   const [logs, setLogs] = useState<LogEntry[]>([])
   const [isOpen, setIsOpen] = useState(false)
 
-  const addLog = useCallback((message: string, type: LogEntry["type"] = "info", details?: string) => {
-    setLogs((prev) => [
-      {
+  const addLog = useCallback((content: LogContent, type: LogEntry["type"] = "info", details?: string) => {
+    setLogs((prev) => {
+      const newLog: LogEntry = {
         id: Math.random().toString(36).substring(7),
         timestamp: Date.now(),
-        message,
-        details,
         type,
-      },
-      ...prev,
-    ])
+        details,
+      }
+
+      if (typeof content === 'string') {
+        newLog.message = content
+      } else {
+        newLog.method = content.method
+        newLog.input = content.input
+        newLog.output = content.output
+        // Generate a fallback message for compatibility or search
+        newLog.message = `${content.method}: ${content.input} -> ${content.output}`
+      }
+
+      return [newLog, ...prev]
+    })
     // Auto open on error or success if needed, but maybe not forced.
     // if (type === 'error' || type === 'success') {
     //   setIsOpen(true)
