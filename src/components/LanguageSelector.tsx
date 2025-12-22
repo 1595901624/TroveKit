@@ -10,7 +10,11 @@ export function LanguageSelector() {
   const { i18n, t } = useTranslation()
 
   const handleSelectionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    i18n.changeLanguage(e.target.value)
+    const newLang = e.target.value
+    if (newLang) {
+      i18n.changeLanguage(newLang)
+      localStorage.setItem("i18nextLng", newLang)
+    }
   }
 
   const languages = [
