@@ -57,11 +57,20 @@ export function HashTool() {
         case "SHA1":
           hash = CryptoJS.SHA1(shaInput).toString()
           break
+        case "SHA224":
+          hash = CryptoJS.SHA224(shaInput).toString()
+          break
         case "SHA256":
           hash = CryptoJS.SHA256(shaInput).toString()
           break
+        case "SHA384":
+          hash = CryptoJS.SHA384(shaInput).toString()
+          break
         case "SHA512":
           hash = CryptoJS.SHA512(shaInput).toString()
+          break
+        case "SHA3":
+          hash = CryptoJS.SHA3(shaInput).toString()
           break
         default:
           return
@@ -197,10 +206,16 @@ export function HashTool() {
                     onValueChange={setShaType}
                     label="Algorithm"
                     size="sm"
+                    className="max-w-full"
                   >
-                    <Radio value="SHA1">SHA1</Radio>
-                    <Radio value="SHA256">SHA256</Radio>
-                    <Radio value="SHA512">SHA512</Radio>
+                    <div className="flex flex-wrap gap-4">
+                      <Radio value="SHA1">SHA1</Radio>
+                      <Radio value="SHA224">SHA224</Radio>
+                      <Radio value="SHA256">SHA256</Radio>
+                      <Radio value="SHA384">SHA384</Radio>
+                      <Radio value="SHA512">SHA512</Radio>
+                      <Radio value="SHA3">SHA3</Radio>
+                    </div>
                   </RadioGroup>
 
                   <RadioGroup
