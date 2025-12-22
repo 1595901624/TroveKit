@@ -43,7 +43,14 @@
       "urlPlaceholder": "URLエンコード/デコードするテキストを入力...",
       "base64Placeholder": "Base64エンコード/デコードするテキストを入力...",
       "encode": "エンコード",
-      "decode": "デコード"
+      "decode": "デコード",
+      "url": "URL",
+      "base64": "Base64",
+      "swap": "入れ替え",
+      "clearAll": "すべてクリア",
+      "copy": "コピー",
+      "copiedToClipboard": "クリップボードにコピーされました",
+      "encoderOptions": "エンコーダーオプション"
     }
   },
   "settings": {

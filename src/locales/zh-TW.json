@@ -43,7 +43,14 @@
       "urlPlaceholder": "輸入要進行 URL 編碼/解碼的文字...",
       "base64Placeholder": "輸入要進行 Base64 編碼/解碼的文字...",
       "encode": "編碼",
-      "decode": "解碼"
+      "decode": "解碼",
+      "url": "URL",
+      "base64": "Base64",
+      "swap": "交換",
+      "clearAll": "清空全部",
+      "copy": "複製",
+      "copiedToClipboard": "已複製到剪貼簿",
+      "encoderOptions": "編碼選項"
     }
   },
   "settings": {

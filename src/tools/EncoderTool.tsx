@@ -83,21 +83,21 @@ export function EncoderTool() {
   const copyToClipboard = (text: string) => {
     if (!text) return
     navigator.clipboard.writeText(text)
-    addLog("Copied to clipboard", "info")
+    addLog(t("tools.encoder.copiedToClipboard"), "info")
   }
 
   return (
     <div className="flex flex-col h-full overflow-hidden">
       <div className="flex-none">
         <Tabs
-          aria-label="Encoder Options"
+          aria-label={t("tools.encoder.encoderOptions")}
           color="primary"
           variant="underlined"
           selectedKey={selectedKey}
           onSelectionChange={(key) => setSelectedKey(key as string)}
         >
-          <Tab key="url" title="URL" />
-          <Tab key="base64" title="Base64" />
+          <Tab key="url" title={t("tools.encoder.url")} />
+          <Tab key="base64" title={t("tools.encoder.base64")} />
         </Tabs>
       </div>
 
@@ -123,10 +123,10 @@ export function EncoderTool() {
               <Button color="secondary" variant="flat" onPress={handleUrlDecode} startContent={<ChevronDown className="w-4 h-4" />}>
                 {t("tools.encoder.decode")}
               </Button>
-              <Button isIconOnly variant="light" onPress={swapUrl} title="Swap">
+              <Button isIconOnly variant="light" onPress={swapUrl} title={t("tools.encoder.swap")}>
                 <ArrowDownUp className="w-4 h-4" />
               </Button>
-              <Button isIconOnly variant="light" color="danger" onPress={() => { setUrlInput(""); setUrlOutput(""); }} title="Clear All">
+              <Button isIconOnly variant="light" color="danger" onPress={() => { setUrlInput(""); setUrlOutput(""); }} title={t("tools.encoder.clearAll")}>
                 <Trash2 className="w-4 h-4" />
               </Button>
             </div>
@@ -143,7 +143,7 @@ export function EncoderTool() {
                 }}
               />
               <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                <Button isIconOnly size="sm" variant="flat" onPress={() => copyToClipboard(urlOutput)}>
+                <Button isIconOnly size="sm" variant="flat" onPress={() => copyToClipboard(urlOutput)} title={t("tools.encoder.copy")}>
                   <Copy className="w-4 h-4" />
                 </Button>
               </div>
@@ -172,10 +172,10 @@ export function EncoderTool() {
               <Button color="secondary" variant="flat" onPress={handleBase64Decode} startContent={<ChevronDown className="w-4 h-4" />}>
                 {t("tools.encoder.decode")}
               </Button>
-              <Button isIconOnly variant="light" onPress={swapBase64} title="Swap">
+              <Button isIconOnly variant="light" onPress={swapBase64} title={t("tools.encoder.swap")}>
                 <ArrowDownUp className="w-4 h-4" />
               </Button>
-              <Button isIconOnly variant="light" color="danger" onPress={() => { setBase64Input(""); setBase64Output(""); }} title="Clear All">
+              <Button isIconOnly variant="light" color="danger" onPress={() => { setBase64Input(""); setBase64Output(""); }} title={t("tools.encoder.clearAll")}>
                 <Trash2 className="w-4 h-4" />
               </Button>
             </div>
@@ -192,7 +192,7 @@ export function EncoderTool() {
                 }}
               />
               <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                <Button isIconOnly size="sm" variant="flat" onPress={() => copyToClipboard(base64Output)}>
+                <Button isIconOnly size="sm" variant="flat" onPress={() => copyToClipboard(base64Output)} title={t("tools.encoder.copy")}>
                   <Copy className="w-4 h-4" />
                 </Button>
               </div>

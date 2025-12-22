@@ -43,7 +43,14 @@
       "urlPlaceholder": "Enter text to URL encode/decode...",
       "base64Placeholder": "Enter text to Base64 encode/decode...",
       "encode": "Encode",
-      "decode": "Decode"
+      "decode": "Decode",
+      "url": "URL",
+      "base64": "Base64",
+      "swap": "Swap",
+      "clearAll": "Clear All",
+      "copy": "Copy",
+      "copiedToClipboard": "Copied to clipboard",
+      "encoderOptions": "Encoder Options"
     }
   },
   "settings": {
