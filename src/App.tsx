@@ -13,43 +13,6 @@ function App() {
   const [activeTool, setActiveTool] = useState<ToolId>("home")
   const { t } = useTranslation()
 
-  const renderContent = () => {
-    switch (activeTool) {
-      case "crypto":
-        return <HashTool />
-      case "encoder":
-        return <EncoderTool />
-      case "settings":
-        return <Settings />
-      case "home":
-        return <HomeView onNavigate={setActiveTool} />
-      default:
-        return (
-          <div className="flex flex-col items-center justify-center h-[70vh] text-center px-4 animate-in fade-in slide-in-from-bottom-4 duration-700">
-             <div className="relative mb-8">
-                <div className="absolute inset-0 blur-3xl bg-primary/20 rounded-full animate-pulse" />
-                <div className="relative w-20 h-20 rounded-3xl bg-default-100/50 backdrop-blur-xl border border-default-200 flex items-center justify-center shadow-2xl">
-                   <Sparkles className="w-10 h-10 text-primary" />
-                </div>
-             </div>
-             <div className="space-y-3">
-               <h2 className="text-3xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-b from-foreground to-foreground/70">
-                 {t("common.comingSoon")}
-               </h2>
-               <p className="text-default-500 max-w-sm mx-auto text-lg leading-relaxed">
-                 {t("common.comingSoonDesc", { tool: t(`nav.${activeTool}` as any) })}
-               </p>
-               <div className="pt-4">
-                 <Button variant="flat" color="primary" radius="full" onPress={() => setActiveTool("home")}>
-                   {t("nav.home")}
-                 </Button>
-               </div>
-             </div>
-          </div>
-        )
-    }
-  }
-
   const getTitle = () => {
     switch (activeTool) {
       case "home": return t("home.title")
@@ -70,10 +33,53 @@ function App() {
         title={getTitle()}
       >
         <div className="max-w-7xl mx-auto h-full">
-          {renderContent()}
+          <div className={activeTool === "home" ? "block h-full" : "hidden"}>
+            <HomeView onNavigate={setActiveTool} />
+          </div>
+          <div className={activeTool === "crypto" ? "block h-full" : "hidden"}>
+            <HashTool />
+          </div>
+          <div className={activeTool === "encoder" ? "block h-full" : "hidden"}>
+            <EncoderTool />
+          </div>
+          <div className={activeTool === "settings" ? "block h-full" : "hidden"}>
+            <Settings />
+          </div>
+          
+          {["formatters", "generators"].includes(activeTool) && (
+            <ComingSoon activeTool={activeTool} onNavigate={setActiveTool} />
+          )}
         </div>
       </Layout>
     </ThemeProvider>
+  )
+}
+
+function ComingSoon({ activeTool, onNavigate }: { activeTool: ToolId, onNavigate: (id: ToolId) => void }) {
+  const { t } = useTranslation()
+  
+  return (
+    <div className="flex flex-col items-center justify-center h-[70vh] text-center px-4 animate-in fade-in slide-in-from-bottom-4 duration-700">
+       <div className="relative mb-8">
+          <div className="absolute inset-0 blur-3xl bg-primary/20 rounded-full animate-pulse" />
+          <div className="relative w-20 h-20 rounded-3xl bg-default-100/50 backdrop-blur-xl border border-default-200 flex items-center justify-center shadow-2xl">
+             <Sparkles className="w-10 h-10 text-primary" />
+          </div>
+       </div>
+       <div className="space-y-3">
+         <h2 className="text-3xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-b from-foreground to-foreground/70">
+           {t("common.comingSoon")}
+         </h2>
+         <p className="text-default-500 max-w-sm mx-auto text-lg leading-relaxed">
+           {t("common.comingSoonDesc", { tool: t(`nav.${activeTool}` as any) })}
+         </p>
+         <div className="pt-4">
+           <Button variant="flat" color="primary" radius="full" onPress={() => onNavigate("home")}>
+             {t("nav.home")}
+           </Button>
+         </div>
+       </div>
+    </div>
   )
 }
 
