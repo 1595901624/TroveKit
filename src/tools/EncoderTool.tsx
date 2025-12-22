@@ -130,7 +130,7 @@ export function EncoderTool() {
         >
           <Tab key="url" title={t("tools.encoder.url")} />
           <Tab key="base64" title={t("tools.encoder.base64")} />
-          <Tab key="base32" title="Base32" />
+          <Tab key="base32" title={t("tools.encoder.base32")} />
         </Tabs>
       </div>
 
@@ -237,7 +237,7 @@ export function EncoderTool() {
           <div className="space-y-4">
             <Textarea
               label={t("tools.encoder.input")}
-              placeholder="Enter text to encode/decode..."
+              placeholder={t("tools.encoder.base32Placeholder")}
               minRows={6}
               variant="bordered"
               value={base32Input}
