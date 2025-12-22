@@ -12,6 +12,14 @@
     "core:window:allow-minimize",
     "core:window:allow-maximize",
     "core:window:allow-close",
-    "core:window:allow-toggle-maximize"
+    "core:window:allow-toggle-maximize",
+    {
+      "identifier": "opener:allow-open-url",
+      "allow": [
+        {
+          "url": "https://github.com/1595901624/trovekit"
+        }
+      ]
+    }
   ]
 }
