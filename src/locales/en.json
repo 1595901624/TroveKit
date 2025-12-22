@@ -71,6 +71,8 @@
     "title": "Operation Log",
     "clear": "Clear Logs",
     "empty": "No logs yet",
-    "toggle": "Toggle Logs"
+    "toggle": "Toggle Logs",
+    "input": "Input",
+    "output": "Output"
   }
 }

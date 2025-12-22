@@ -81,7 +81,7 @@ export function LogPanel() {
                                         
                                         <div className="space-y-1.5">
                                             <div className="group/input relative p-2 rounded bg-default-100/50 hover:bg-default-100 transition-colors">
-                                                <div className="text-tiny text-default-400 font-semibold mb-0.5 select-none">INPUT</div>
+                                                <div className="text-tiny text-default-400 font-semibold mb-0.5 select-none">{t('log.input', 'Input')}</div>
                                                 <div className="text-small font-mono text-default-600 break-all pr-6">
                                                     {log.input}
                                                 </div>
@@ -97,7 +97,7 @@ export function LogPanel() {
                                             </div>
 
                                             <div className="group/output relative p-2 rounded bg-default-100/50 hover:bg-default-100 transition-colors">
-                                                <div className="text-tiny text-success/80 font-semibold mb-0.5 select-none">OUTPUT</div>
+                                                <div className="text-tiny text-success/80 font-semibold mb-0.5 select-none">{t('log.output', 'Output')}</div>
                                                 <div className="text-small font-mono text-foreground break-all pr-6">
                                                     {log.output}
                                                 </div>
