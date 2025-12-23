@@ -169,7 +169,7 @@ export function EncoderTool() {
     { key: "base58", label: t("tools.encoder.base58") },
     { key: "base62", label: t("tools.encoder.base62") },
     { key: "base64", label: "Base64" },
-    { key: "base85", label: t("tools.encoder.base85") },
+    // { key: "base85", label: t("tools.encoder.base85") },
     { key: "base91", label: t("tools.encoder.base91") },
   ]
 
