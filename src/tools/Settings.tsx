@@ -4,15 +4,22 @@ import { useTranslation } from "react-i18next"
 import { ThemeToggle } from "../components/ThemeToggle"
 import { Github } from "lucide-react"
 import { openUrl } from "@tauri-apps/plugin-opener"
+import { useLog } from "../contexts/LogContext"
 
 export function Settings() {
   const { t } = useTranslation()
+  const { addLog } = useLog()
 
   const handleGithubClick = async () => {
     try {
       await openUrl("https://github.com/1595901624/trovekit")
     } catch (error) {
       console.error("Failed to open URL:", error)
+      addLog({ 
+        method: "Open URL", 
+        input: "https://github.com/1595901624/trovekit", 
+        output: String(error) 
+      }, "error")
     }
   }
 

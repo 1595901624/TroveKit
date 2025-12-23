@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useCallback } from "react"
+import { useToast } from "./ToastContext"
 
 // This context provides logging functionality throughout the app.
 // example：
@@ -49,6 +50,7 @@ const LogContext = createContext<LogContextType | undefined>(undefined)
 export function LogProvider({ children }: { children: React.ReactNode }) {
   const [logs, setLogs] = useState<LogEntry[]>([])
   const [isOpen, setIsOpen] = useState(false)
+  const { addToast } = useToast()
 
   const addLog = useCallback((content: LogContent, type: LogEntry["type"] = "info", details?: string) => {
     setLogs((prev) => {
@@ -71,11 +73,13 @@ export function LogProvider({ children }: { children: React.ReactNode }) {
 
       return [newLog, ...prev]
     })
-    // Auto open on error or success if needed, but maybe not forced.
-    // if (type === 'error' || type === 'success') {
-    //   setIsOpen(true)
-    // }
-  }, [])
+    
+    // Show toast for errors
+    if (type === 'error') {
+      const message = typeof content === 'string' ? content : `${content.method} failed`;
+      addToast(message, 'error');
+    }
+  }, [addToast])
 
   const clearLogs = useCallback(() => {
     setLogs([])
