@@ -63,6 +63,7 @@
       "urlPlaceholder": "输入要进行 URL 编码/解码的文本...",
       "base64Placeholder": "输入要进行 Base64 编码/解码的文本...",
       "base32Placeholder": "输入要进行 Base32 编码/解码的文本...",
+      "baseXPlaceholder": "输入要进行 BaseX 编码/解码的文本...",
       "encode": "编码",
       "decode": "解码",
       "url": "URL",

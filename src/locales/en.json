@@ -63,6 +63,7 @@
       "urlPlaceholder": "Enter text to URL encode/decode...",
       "base64Placeholder": "Enter text to Base64 encode/decode...",
       "base32Placeholder": "Enter text to Base32 encode/decode...",
+      "baseXPlaceholder": "Enter text to BaseX encode/decode...",
       "encode": "Encode",
       "decode": "Decode",
       "url": "URL",

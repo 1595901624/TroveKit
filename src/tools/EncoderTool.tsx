@@ -168,7 +168,7 @@ export function EncoderTool() {
     { key: "base32", label: t("tools.encoder.base32") },
     { key: "base58", label: t("tools.encoder.base58") },
     { key: "base62", label: t("tools.encoder.base62") },
-    { key: "base64", label: "Base64" },
+    { key: "base64", label: t("tools.encoder.base64") },
     // { key: "base85", label: t("tools.encoder.base85") },
     { key: "base91", label: t("tools.encoder.base91") },
   ]
@@ -376,7 +376,7 @@ export function EncoderTool() {
 
             <Textarea
               label={t("tools.encoder.input")}
-              placeholder="Enter text..."
+              placeholder={t("tools.encoder.baseXPlaceholder")}
               minRows={6}
               variant="bordered"
               value={baseXInput}
