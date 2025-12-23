@@ -75,7 +75,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tagName: ${{ github.ref_name }}
+          tagName: v${{ env.APP_VERSION }}
           releaseName: 'v${{ env.APP_VERSION }}'
           releaseBody: 'See the assets to download this version and install.'
           releaseDraft: false
