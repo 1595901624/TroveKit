@@ -103,8 +103,14 @@
     "title": "操作日志",
     "clear": "清空日志",
     "empty": "暂无日志",
+    "emptyFilter": "没有匹配的日志",
     "toggle": "切换日志窗口",
     "input": "输入",
-    "output": "输出"
+    "output": "输出",
+    "filterAll": "全部",
+    "filterError": "错误",
+    "filterSuccess": "成功",
+    "filterInfo": "信息",
+    "filterWarning": "警告"
   }
 }

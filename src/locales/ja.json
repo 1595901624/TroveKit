@@ -105,6 +105,11 @@
     "empty": "ログはありません",
     "toggle": "ログパネルを切り替え",
     "input": "入力",
-    "output": "出力"
+    "output": "出力",
+    "filterAll": "すべて",
+    "filterError": "エラー",
+    "filterSuccess": "成功",
+    "filterInfo": "情報",
+    "filterWarning": "警告"
   }
 }

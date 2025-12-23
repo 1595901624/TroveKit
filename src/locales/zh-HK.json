@@ -105,6 +105,11 @@
     "empty": "暫無日誌",
     "toggle": "切換日誌視窗",
     "input": "輸入",
-    "output": "輸出"
+    "output": "輸出",
+    "filterAll": "全部",
+    "filterError": "錯誤",
+    "filterSuccess": "成功",
+    "filterInfo": "信息",
+    "filterWarning": "警告"
   }
 }

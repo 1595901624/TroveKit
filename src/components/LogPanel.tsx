@@ -3,10 +3,19 @@ import { useLog, LogEntry } from "../contexts/LogContext"
 import { Trash2, X, Terminal, Info, CheckCircle, AlertTriangle, AlertCircle, Copy } from "lucide-react"
 import { Button, ScrollShadow, Tooltip } from "@heroui/react"
 import { useTranslation } from "react-i18next"
+import { useState, useMemo } from "react"
+
+type FilterType = LogEntry['type'] | 'all'
 
 export function LogPanel() {
   const { logs, isOpen, setIsOpen, clearLogs } = useLog()
   const { t } = useTranslation()
+  const [filter, setFilter] = useState<FilterType>('all')
+
+  const filteredLogs = useMemo(() => {
+    if (filter === 'all') return logs
+    return logs.filter(log => log.type === filter)
+  }, [logs, filter])
 
   const getIcon = (type: LogEntry['type']) => {
     switch (type) {
@@ -16,6 +25,14 @@ export function LogPanel() {
       default: return <Info className="w-3.5 h-3.5 text-primary" />
     }
   }
+
+  const filters: { key: FilterType; label: string; color: any }[] = [
+    { key: 'all', label: t('log.filterAll'), color: 'default' },
+    { key: 'error', label: t('log.filterError'), color: 'danger' },
+    { key: 'success', label: t('log.filterSuccess'), color: 'success' },
+    { key: 'info', label: t('log.filterInfo'), color: 'primary' },
+    { key: 'warning', label: t('log.filterWarning'), color: 'warning' },
+  ]
 
   return (
     <AnimatePresence>
@@ -43,15 +60,30 @@ export function LogPanel() {
                     </Button>
                 </div>
             </div>
+
+            <div className="px-3 py-2 border-b border-divider flex gap-1 overflow-x-auto scrollbar-hide shrink-0">
+                {filters.map((f) => (
+                    <Button
+                        key={f.key}
+                        size="sm"
+                        variant={filter === f.key ? "flat" : "light"}
+                        color={filter === f.key ? f.color : "default"}
+                        className="h-7 px-2 min-w-0 text-tiny font-medium"
+                        onPress={() => setFilter(f.key)}
+                    >
+                        {f.label}
+                    </Button>
+                ))}
+            </div>
             
             <ScrollShadow className="flex-1 p-3 overflow-y-auto">
                 <div className="space-y-3">
-                    {logs.length === 0 ? (
+                    {filteredLogs.length === 0 ? (
                          <div className="text-center text-default-400 py-8 text-small">
-                            {t('log.empty', 'No logs yet')}
+                            {filter === 'all' ? t('log.empty', 'No logs yet') : t('log.emptyFilter', 'No logs match this filter')}
                          </div>
                     ) : (
-                        logs.map((log) => (
+                        filteredLogs.map((log) => (
                             <div key={log.id} className="p-3 rounded-medium bg-content2/50 border border-transparent hover:border-divider transition-colors group">
                                 <div className="flex items-start justify-between gap-2 mb-1">
                                     <div className="flex items-center gap-1.5 text-tiny text-default-500">

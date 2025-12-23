@@ -103,8 +103,14 @@
     "title": "Operation Log",
     "clear": "Clear Logs",
     "empty": "No logs yet",
+    "emptyFilter": "No logs match this filter",
     "toggle": "Toggle Logs",
     "input": "Input",
-    "output": "Output"
+    "output": "Output",
+    "filterAll": "All",
+    "filterError": "Error",
+    "filterSuccess": "Success",
+    "filterInfo": "Info",
+    "filterWarning": "Warning"
   }
 }
