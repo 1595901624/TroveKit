@@ -1,9 +1,9 @@
-import { 
-  Home, 
-  Binary, 
-  Lock, 
-  FileJson, 
-  Wand2, 
+import {
+  Home,
+  Binary,
+  Lock,
+  FileJson,
+  Wand2,
   Settings,
 } from "lucide-react"
 import { Button } from "@heroui/react"
@@ -26,7 +26,7 @@ export function Sidebar({ activeTool, onToolChange }: SidebarProps) {
   useEffect(() => {
     getVersion().then(setVersion).catch(() => setVersion("v0.1.0"))
   }, [])
-  
+
   const menuItems = [
     { id: "home", label: t("nav.home"), icon: Home },
     { id: "encoder", label: t("nav.encoder"), icon: Binary },
@@ -39,9 +39,11 @@ export function Sidebar({ activeTool, onToolChange }: SidebarProps) {
   return (
     <div className="w-64 h-full flex flex-col border-r border-divider bg-background/50 backdrop-blur-md">
       <div className="p-6 flex items-center gap-2">
-        <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary font-bold text-xl">
+        {/* <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary font-bold text-xl">
           T
-        </div>
+        </div> */}
+        {/* 添加svg */}
+        <img src="/t_bgw.svg" alt="TroveKit Logo" className="w-8 h-8" />
         <span className="font-bold text-xl tracking-tight text-foreground">TroveKit</span>
       </div>
 
