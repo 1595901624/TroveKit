@@ -110,7 +110,17 @@
     },
     "formatter": {
       "formatterOptions": "Formatter Options",
-      "json": "JSON"
+      "json": "JSON",
+      "format": "Format",
+      "minify": "Minify",
+      "validate": "Validate",
+      "invalidJson": "Invalid JSON",
+      "validJson": "Valid JSON",
+      "jsonFormat": "JSON Format",
+      "formattedSuccessfully": "Formatted successfully",
+      "jsonMinify": "JSON Minify",
+      "minifiedSuccessfully": "Minified successfully",
+      "jsonValidate": "JSON Validate"
     }
   },
   "settings": {
