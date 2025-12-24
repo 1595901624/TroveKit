@@ -12,6 +12,7 @@
   "dependencies": {
     "@heroui/react": "^2.7.5",
     "@heroui/theme": "2.4.13",
+    "@monaco-editor/react": "^4.7.0",
     "@tauri-apps/api": "^2",
     "@tauri-apps/plugin-opener": "^2",
     "@types/crypto-js": "^4.2.2",
@@ -22,6 +23,7 @@
     "framer-motion": "^12.23.24",
     "i18next": "^25.7.3",
     "lucide-react": "^0.562.0",
+    "monaco-editor": "^0.55.1",
     "postcss": "^8.5.6",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
