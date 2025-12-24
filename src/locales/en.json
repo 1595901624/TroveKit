@@ -66,7 +66,20 @@
       "keySize": "Key Size",
       "text": "Text",
       "hex": "Hex",
-      "aesInputPlaceholder": "Enter text to encrypt/decrypt..."
+      "aesInputPlaceholder": "Enter text to encrypt/decrypt...",
+      "bit128": "128-bit",
+      "bit192": "192-bit",
+      "bit256": "256-bit",
+      "cbc": "CBC",
+      "ecb": "ECB",
+      "ctr": "CTR",
+      "ofb": "OFB",
+      "cfb": "CFB",
+      "pkcs7": "PKCS7",
+      "zeroPadding": "Zeros",
+      "ansiX923": "ANSI",
+      "iso10126": "ISO",
+      "noPadding": "None"
     },
     "encoder": {
       "input": "Input",

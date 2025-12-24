@@ -406,13 +406,13 @@ export function HashTool() {
                             selectedKeys={[aesKeySize]} 
                             onChange={(e) => setAesKeySize(e.target.value)}
                          >
-                            <SelectItem key="128">128-bit</SelectItem>
-                            <SelectItem key="192">192-bit</SelectItem>
-                            <SelectItem key="256">256-bit</SelectItem>
+                            <SelectItem key="128">{t("tools.hash.bit128")}</SelectItem>
+                            <SelectItem key="192">{t("tools.hash.bit192")}</SelectItem>
+                            <SelectItem key="256">{t("tools.hash.bit256")}</SelectItem>
                          </Select>
                          <Select 
                             size="sm" 
-                            label="Type" 
+                            label={t("tools.hash.text")}
                             className="w-24" 
                             selectedKeys={[aesKeyType]} 
                             onChange={(e) => setAesKeyType(e.target.value)}
@@ -434,7 +434,7 @@ export function HashTool() {
                          />
                          <Select 
                             size="sm" 
-                            label="Type" 
+                            label={t("tools.hash.text")}
                             className="w-24" 
                             selectedKeys={[aesIvType]} 
                             onChange={(e) => setAesIvType(e.target.value)}
@@ -455,12 +455,11 @@ export function HashTool() {
                         size="sm"
                         className="text-tiny"
                       >
-                        <Radio value="CBC">CBC</Radio>
-                        <Radio value="ECB">ECB</Radio>
-                        <Radio value="CTR">CTR</Radio>
-                        <Radio value="OFB">OFB</Radio>
-                        <Radio value="CFB">CFB</Radio>
-                        {/* <Radio value="CTS">CTS</Radio>/ */}
+                        <Radio value="CBC">{t("tools.hash.cbc")}</Radio>
+                        <Radio value="ECB">{t("tools.hash.ecb")}</Radio>
+                        <Radio value="CTR">{t("tools.hash.ctr")}</Radio>
+                        <Radio value="OFB">{t("tools.hash.ofb")}</Radio>
+                        <Radio value="CFB">{t("tools.hash.cfb")}</Radio>
                       </RadioGroup>
 
                       <RadioGroup
@@ -471,11 +470,11 @@ export function HashTool() {
                         size="sm"
                         className="text-tiny"
                       >
-                        <Radio value="Pkcs7">PKCS7</Radio>
-                        <Radio value="ZeroPadding">Zeros</Radio>
-                        <Radio value="AnsiX923">ANSI</Radio>
-                        <Radio value="Iso10126">ISO</Radio>
-                        <Radio value="NoPadding">None</Radio>
+                        <Radio value="Pkcs7">{t("tools.hash.pkcs7")}</Radio>
+                        <Radio value="ZeroPadding">{t("tools.hash.zeroPadding")}</Radio>
+                        <Radio value="AnsiX923">{t("tools.hash.ansiX923")}</Radio>
+                        <Radio value="Iso10126">{t("tools.hash.iso10126")}</Radio>
+                        <Radio value="NoPadding">{t("tools.hash.noPadding")}</Radio>
                       </RadioGroup>
                 </div>
             </div>
