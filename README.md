@@ -24,8 +24,7 @@
 
 - **🔢 Encoders & Decoders**
   - **Common**: Real-time URL and Base64 encoding/decoding.
-  - **Advanced**: Base32, Hex (Base16).
-  - *Coming Soon: Base58, Base62, Base85, Base91, and custom alphabets.*
+  - **Advanced**: Base32, Hex (Base16), Base58, Base62, Base91, and custom alphabets.
 
 - **📝 Formatters**
   - **JSON**: Format, compress, and validate JSON.
