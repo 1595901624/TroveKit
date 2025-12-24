@@ -107,6 +107,10 @@
       "copy": "复制",
       "copiedToClipboard": "已复制到剪贴板",
       "encoderOptions": "编码选项"
+    },
+    "formatter": {
+      "formatterOptions": "格式化选项",
+      "json": "JSON"
     }
   },
   "settings": {

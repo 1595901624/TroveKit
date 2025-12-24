@@ -107,6 +107,10 @@
       "copy": "Copy",
       "copiedToClipboard": "Copied to clipboard",
       "encoderOptions": "Encoder Options"
+    },
+    "formatter": {
+      "formatterOptions": "Formatter Options",
+      "json": "JSON"
     }
   },
   "settings": {
