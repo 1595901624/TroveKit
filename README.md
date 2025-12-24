@@ -1,9 +1,12 @@
-# <img src="app-icon.svg" align="center" width="48" height="48"> TroveKit
+<div align="center">
+<img src="app-icon.svg" width="48" height="48">
+<h1>TroveKit</h1>
+</div>
 
 ![Version](https://img.shields.io/badge/version-v0.1.3-blue)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
-![Tauri](https://img.shields.io/badge/Tauri-v2-orange)
-![React](https://img.shields.io/badge/React-19-blue)
+![Windows](https://img.shields.io/badge/Windows-Supported-blue) ![macOS](https://img.shields.io/badge/macOS-Supported-blue) ![Linux](https://img.shields.io/badge/Linux-Supported-blue)
+
 
 **TroveKit** is a modern, cross-platform developer toolbox built with [Tauri v2](https://v2.tauri.app/) and [React](https://react.dev/). It provides a suite of essential utilities wrapped in a beautiful, responsive user interface designed for efficiency, privacy, and offline use.
 
