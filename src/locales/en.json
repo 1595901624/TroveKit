@@ -55,7 +55,18 @@
       "sha256": "SHA256",
       "sha384": "SHA384",
       "sha512": "SHA512",
-      "sha3": "SHA3"
+      "sha3": "SHA3",
+      "aes": "AES",
+      "mode": "Mode",
+      "padding": "Padding",
+      "key": "Key",
+      "iv": "IV",
+      "encrypt": "Encrypt",
+      "decrypt": "Decrypt",
+      "keySize": "Key Size",
+      "text": "Text",
+      "hex": "Hex",
+      "aesInputPlaceholder": "Enter text to encrypt/decrypt..."
     },
     "encoder": {
       "input": "Input",
