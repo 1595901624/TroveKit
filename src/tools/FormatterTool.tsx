@@ -6,7 +6,7 @@ import { useTranslation } from "react-i18next"
 import { useLog } from "../contexts/LogContext"
 import { useTheme } from "../components/theme-provider"
 
-export function JsonTool() {
+export function FormatterTool() {
   const { t } = useTranslation()
   const { addLog } = useLog()
   const { theme } = useTheme()
@@ -35,11 +35,11 @@ export function JsonTool() {
       setCode(formatted)
       setIsValid(true)
       setErrorMsg("")
-      addLog({ method: "JSON Format", input: "JSON", output: "Formatted successfully" }, "success")
+      // addLog({ method: "JSON Format", input: "JSON", output: "Formatted successfully" }, "success")
     } catch (e) {
       setIsValid(false)
       setErrorMsg((e as Error).message)
-      addLog({ method: "JSON Format", input: "JSON", output: (e as Error).message }, "error")
+      // addLog({ method: "JSON Format", input: "JSON", output: (e as Error).message }, "error")
     }
   }
 
@@ -51,11 +51,11 @@ export function JsonTool() {
       setCode(minified)
       setIsValid(true)
       setErrorMsg("")
-      addLog({ method: "JSON Minify", input: "JSON", output: "Minified successfully" }, "success")
+      // addLog({ method: "JSON Minify", input: "JSON", output: "Minified successfully" }, "success")
     } catch (e) {
       setIsValid(false)
       setErrorMsg((e as Error).message)
-      addLog({ method: "JSON Minify", input: "JSON", output: (e as Error).message }, "error")
+      // addLog({ method: "JSON Minify", input: "JSON", output: (e as Error).message }, "error")
     }
   }
 
@@ -69,11 +69,11 @@ export function JsonTool() {
       JSON.parse(code)
       setIsValid(true)
       setErrorMsg("")
-      addLog({ method: "JSON Validate", input: "JSON", output: "Valid JSON" }, "success")
+      // addLog({ method: "JSON Validate", input: "JSON", output: "Valid JSON" }, "success")
     } catch (e) {
       setIsValid(false)
       setErrorMsg((e as Error).message)
-      addLog({ method: "JSON Validate", input: "JSON", output: (e as Error).message }, "error")
+      // addLog({ method: "JSON Validate", input: "JSON", output: (e as Error).message }, "error")
     }
   }
 

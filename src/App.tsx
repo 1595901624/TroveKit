@@ -4,7 +4,7 @@ import { ThemeProvider } from "./components/theme-provider"
 import { HashTool } from "./tools/HashTool"
 import { EncoderTool } from "./tools/EncoderTool"
 import { Settings } from "./tools/Settings"
-import { JsonTool } from "./tools/JsonTool"
+import { FormatterTool } from "./tools/FormatterTool"
 import { ToolId } from "./components/Sidebar"
 import { Card, CardBody, Button } from "@heroui/react"
 import { ArrowRight, Sparkles, Lock, Code2, FileCode2 } from "lucide-react"
@@ -44,7 +44,7 @@ function App() {
             <EncoderTool />
           </div>
           <div className={activeTool === "formatters" ? "block h-full" : "hidden"}>
-            <JsonTool />
+            <FormatterTool />
           </div>
           <div className={activeTool === "settings" ? "block h-full" : "hidden"}>
             <Settings />
