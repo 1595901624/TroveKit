@@ -1,6 +1,6 @@
 # <img src="app-icon.svg" align="center" width="48" height="48"> TroveKit
 
-![Version](https://img.shields.io/badge/version-v0.1.0-blue)
+![Version](https://img.shields.io/badge/version-v0.1.3-blue)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 ![Tauri](https://img.shields.io/badge/Tauri-v2-orange)
 ![React](https://img.shields.io/badge/React-19-blue)
