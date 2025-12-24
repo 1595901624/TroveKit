@@ -19,12 +19,16 @@
 - **🔒 Hash & Cryptography**
   - **MD5**: Support for 16-bit and 32-bit hashes with customizable case (Upper/Lower).
   - **SHA Family**: Support for SHA1, SHA224, SHA256, SHA384, SHA512, and SHA3.
+  - **AES**: Support for CBC, ECB, OFB, CFB, and CTR modes.
   - *More algorithms coming soon!*
 
 - **🔢 Encoders & Decoders**
   - **Common**: Real-time URL and Base64 encoding/decoding.
   - **Advanced**: Base32, Hex (Base16).
   - *Coming Soon: Base58, Base62, Base85, Base91, and custom alphabets.*
+
+- **📝 Formatters**
+  - **JSON**: Format, compress, and validate JSON.
 
 - **📝 Operation Logs**
   - Integrated side-panel to track history.
@@ -33,7 +37,7 @@
   - One-click copy functionality.
 
 ### 🚀 Coming Soon
-- **Formatters**: Prettify and validate JSON, XML, SQL, and YAML.
+- **Formatters**: Prettify and validate XML, SQL, and YAML.
 - **Generators**: UUIDs, Lorem Ipsum text, Random Passwords, and more.
 
 ### 🎨 Modern UI/UX
