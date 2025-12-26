@@ -120,7 +120,12 @@
       "formattedSuccessfully": "Formatted successfully",
       "jsonMinify": "JSON Minify",
       "minifiedSuccessfully": "Minified successfully",
-      "jsonValidate": "JSON Validate"
+      "jsonValidate": "JSON Validate",
+      "validateGraphStructure": "Validate Graph",
+      "text": "Text",
+      "graph": "Graph",
+      "expand": "Expand",
+      "collapse": "Collapse"
     }
   },
   "settings": {

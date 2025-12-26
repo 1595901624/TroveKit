@@ -120,7 +120,12 @@
       "formattedSuccessfully": "フォーマット成功",
       "jsonMinify": "JSON 圧縮",
       "minifiedSuccessfully": "圧縮成功",
-      "jsonValidate": "JSON 検証"
+      "jsonValidate": "JSON 検証",
+      "validateGraphStructure": "グラフ構造を検証",
+      "text": "テキスト",
+      "graph": "グラフ",
+      "expand": "展開",
+      "collapse": "折りたたむ"
     }
   },
   "settings": {

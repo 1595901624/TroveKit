@@ -3,7 +3,7 @@
 <h1>TroveKit</h1>
 </div>
 
-![Version](https://img.shields.io/badge/version-v0.1.3-blue)
+![Version](https://img.shields.io/badge/version-v0.1.4-blue)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 ![Windows](https://img.shields.io/badge/Windows-Supported-blue) ![macOS](https://img.shields.io/badge/macOS-Supported-blue) ![Linux](https://img.shields.io/badge/Linux-Supported-blue)
 
@@ -27,7 +27,7 @@
   - **Advanced**: Base32, Hex (Base16), Base58, Base62, Base91, and custom alphabets.
 
 - **📝 Formatters**
-  - **JSON**: Format, compress, and validate JSON.
+  - **JSON**: Format, compress, validate, and visualize JSON in tree structure.
 
 - **📝 Operation Logs**
   - Integrated side-panel to track history.

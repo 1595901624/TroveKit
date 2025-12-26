@@ -120,7 +120,12 @@
       "formattedSuccessfully": "格式化成功",
       "jsonMinify": "JSON 压缩",
       "minifiedSuccessfully": "压缩成功",
-      "jsonValidate": "JSON 验证"
+      "jsonValidate": "JSON 验证",
+      "validateGraphStructure": "验证图形结构",
+      "text": "文本",
+      "graph": "图形",
+      "expand": "展开",
+      "collapse": "折叠"
     }
   },
   "settings": {
