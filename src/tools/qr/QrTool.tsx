@@ -142,6 +142,14 @@ const escapeWifi = (str: string) => {
     return str.replace(/([\\;:,])/g, '\\$1');
 }
 
+// Encode string to UTF-8 bytes represented as Latin-1 string
+// This is needed because qr-code-styling uses ISO-8859-1 by default
+const utf8Encode = (str: string): string => {
+    const encoder = new TextEncoder();
+    const bytes = encoder.encode(str);
+    return Array.from(bytes).map(b => String.fromCharCode(b)).join('');
+}
+
 export function QrTool() {
   const { t } = useTranslation()
   const [selectedMode, setSelectedMode] = useState<QrMode>("text")
@@ -186,10 +194,12 @@ export function QrTool() {
 
   // Combined data for update
   const getQrData = () => {
-      if (selectedMode === "text") return text
-      if (selectedMode === "wifi") {
+      let data = "";
+      if (selectedMode === "text") {
+          data = text;
+      } else if (selectedMode === "wifi") {
           const { ssid, password, encryption, hidden } = wifi
-          let data = `WIFI:`
+          data = `WIFI:`
           
           if (encryption !== "nopass") {
               data += `T:${encryption};`
@@ -208,9 +218,9 @@ export function QrTool() {
           }
           
           data += `;;`
-          return data
       }
-      return ""
+      // Encode to UTF-8 for proper Chinese/Unicode support
+      return utf8Encode(data);
   }
 
   const updateQr = (overrideOptions?: Partial<Options>) => {
