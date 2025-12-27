@@ -1,11 +1,11 @@
 import { useState, useEffect, useRef } from "react"
-import { Button, Input, Switch, Select, SelectItem, Popover, PopoverTrigger, PopoverContent, Breadcrumbs, BreadcrumbItem } from "@heroui/react"
+import { Button, Input, Switch, Select, SelectItem, Popover, PopoverTrigger, PopoverContent, ButtonGroup } from "@heroui/react"
 import { useTranslation } from "react-i18next"
 import { useToast } from "../../contexts/ToastContext"
 import { TextTab } from "./TextTab"
 import { WifiTab, WifiState } from "./WifiTab"
 import QRCodeStyling, { Options } from "qr-code-styling"
-import { Download, Upload, X, Zap, RotateCcw } from "lucide-react"
+import { Download, Upload, X, Zap, RotateCcw, Type, Wifi } from "lucide-react"
 import { HexAlphaColorPicker } from "react-colorful"
 import { open, save } from "@tauri-apps/plugin-dialog"
 import { readFile, writeFile } from "@tauri-apps/plugin-fs"
@@ -404,31 +404,24 @@ export function QrTool() {
       {/* Left Panel: Controls */}
       <div className="flex-1 flex flex-col min-w-0 overflow-y-auto pr-2 space-y-4 scrollbar-hide">
         
-        {/* Breadcrumb / Mode Selection */}
-        <div className="pt-2">
-            <Breadcrumbs 
-                size="lg" 
-                variant="solid" 
-                radius="full"
-                classNames={{
-                    list: "bg-default-100/50 backdrop-blur-sm px-4 py-2 border border-default-200"
-                }}
-            >
-                <BreadcrumbItem 
+        {/* Mode Selection */}
+        <div className="flex items-center">
+            <ButtonGroup variant="flat">
+                <Button
                     onPress={() => setSelectedMode("text")}
-                    isCurrent={selectedMode === "text"}
-                    className={selectedMode === "text" ? "font-bold text-primary" : "text-default-500"}
+                    color={selectedMode === "text" ? "primary" : "default"}
+                    startContent={<Type className="w-4 h-4" />}
                 >
                     {t("tools.qr.text")}
-                </BreadcrumbItem>
-                <BreadcrumbItem 
+                </Button>
+                <Button
                     onPress={() => setSelectedMode("wifi")}
-                    isCurrent={selectedMode === "wifi"}
-                    className={selectedMode === "wifi" ? "font-bold text-primary" : "text-default-500"}
+                    color={selectedMode === "wifi" ? "primary" : "default"}
+                    startContent={<Wifi className="w-4 h-4" />}
                 >
                     {t("tools.qr.wifi")}
-                </BreadcrumbItem>
-            </Breadcrumbs>
+                </Button>
+            </ButtonGroup>
         </div>
         
         {/* Content Section */}
