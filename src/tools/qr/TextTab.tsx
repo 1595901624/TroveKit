@@ -8,6 +8,7 @@ interface TextTabProps {
 
 export function TextTab({ value, onChange }: TextTabProps) {
   const { t } = useTranslation()
+  const byteCount = new TextEncoder().encode(value).length
 
   return (
     <div className="space-y-4">
@@ -21,6 +22,7 @@ export function TextTab({ value, onChange }: TextTabProps) {
         classNames={{
           inputWrapper: "bg-default-100/50 hover:bg-default-100 focus-within:bg-background"
         }}
+        description={`${byteCount} / 2000 bytes`}
       />
     </div>
   )

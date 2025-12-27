@@ -159,7 +159,12 @@
       "high": "高 (30%)",
       "none": "无",
       "wep": "WEP",
-      "wpa": "WPA/WPA2/WPA3"
+      "wpa": "WPA/WPA2/WPA3",
+      "error": {
+        "tooLarge": "尺寸不能超过 5000px",
+        "tooSmall": "尺寸不能小于 50px",
+        "inputTooLong": "输入内容不能超过 2000 字节"
+      }
     },
     "formatter": {
       "formatterOptions": "格式化选项",

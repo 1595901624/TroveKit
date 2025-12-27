@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react"
 import { Button, Input, Switch, Select, SelectItem, Popover, PopoverTrigger, PopoverContent, Breadcrumbs, BreadcrumbItem } from "@heroui/react"
 import { useTranslation } from "react-i18next"
+import { useToast } from "../../contexts/ToastContext"
 import { TextTab } from "./TextTab"
 import { WifiTab, WifiState } from "./WifiTab"
 import QRCodeStyling, { Options } from "qr-code-styling"
@@ -10,6 +11,10 @@ import { open, save } from "@tauri-apps/plugin-dialog"
 import { readFile, writeFile } from "@tauri-apps/plugin-fs"
 
 type QrMode = "text" | "wifi"
+
+const MAX_QR_SIZE = 5000
+const MIN_QR_SIZE = 50
+const MAX_INPUT_BYTES = 2000
 
 // Color Utils
 const hexToRgba = (hex: string) => {
@@ -152,6 +157,7 @@ const utf8Encode = (str: string): string => {
 
 export function QrTool() {
   const { t } = useTranslation()
+  const { addToast } = useToast()
   const [selectedMode, setSelectedMode] = useState<QrMode>("text")
   const ref = useRef<HTMLDivElement>(null)
   const qrCode = useRef<QRCodeStyling>(null)
@@ -192,6 +198,17 @@ export function QrTool() {
     }
     updateQr()
   }, [])
+
+  // Input Validation Helper
+  const handleTextChange = (newText: string) => {
+    const encoder = new TextEncoder()
+    const bytes = encoder.encode(newText).length
+    if (bytes > MAX_INPUT_BYTES) {
+        addToast(t("tools.qr.error.inputTooLong"), "error")
+        return
+    }
+    setText(newText)
+  }
 
   // Combined data for update
   const getQrData = () => {
@@ -283,6 +300,15 @@ export function QrTool() {
   }
 
   const handleDownload = async () => {
+    if (width > MAX_QR_SIZE) {
+        addToast(t("tools.qr.error.tooLarge"), "error")
+        return
+    }
+    if (width < MIN_QR_SIZE) {
+        addToast(t("tools.qr.error.tooSmall"), "error")
+        return
+    }
+
     try {
         const options = getQrOptions({ 
             width: width, 
@@ -401,7 +427,7 @@ export function QrTool() {
         
         {/* Content Section */}
         <div className="p-1">
-             {selectedMode === "text" && <TextTab value={text} onChange={setText} />}
+             {selectedMode === "text" && <TextTab value={text} onChange={handleTextChange} />}
              {selectedMode === "wifi" && <WifiTab value={wifi} onChange={setWifi} />}
         </div>
 
