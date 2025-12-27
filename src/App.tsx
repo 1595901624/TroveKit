@@ -4,6 +4,7 @@ import { ThemeProvider } from "./components/theme-provider"
 import { HashTool } from "./tools/HashTool"
 import { EncoderTool } from "./tools/EncoderTool"
 import { ClassicalTool } from "./tools/ClassicalTool"
+import { QrTool } from "./tools/qr/QrTool"
 import { Settings } from "./tools/Settings"
 import { FormatterTool } from "./tools/FormatterTool"
 import { ToolId } from "./components/Sidebar"
@@ -21,6 +22,7 @@ function App() {
       case "crypto": return t("nav.crypto")
       case "encoder": return t("nav.encoder")
       case "classical": return t("nav.classical")
+      case "qr": return t("nav.qr")
       case "formatters": return t("nav.formatters")
       case "generators": return t("nav.generators")
       case "settings": return t("settings.title")
@@ -47,6 +49,9 @@ function App() {
           </div>
           <div className={activeTool === "classical" ? "block h-full" : "hidden"}>
             <ClassicalTool />
+          </div>
+          <div className={activeTool === "qr" ? "block h-full" : "hidden"}>
+            <QrTool />
           </div>
           <div className={activeTool === "formatters" ? "block h-full" : "hidden"}>
             <FormatterTool />

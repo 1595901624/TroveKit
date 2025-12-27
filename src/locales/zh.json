@@ -8,6 +8,7 @@
     "encoder": "编码 & 解码",
     "crypto": "哈希 & 加密",
     "classical": "古典密码",
+    "qr": "二维码生成",
     "formatters": "格式化工具",
     "generators": "生成器",
     "settings": "设置"
@@ -24,6 +25,10 @@
       "classical": {
         "title": "古典密码",
         "desc": "体验凯撒密码等历史悠久的加密方法。"
+      },
+      "qr": {
+        "title": "二维码生成器",
+        "desc": "生成支持自定义样式和Logo的文本或WiFi二维码。"
       },
       "encoder": {
         "title": "编码工具",
@@ -125,6 +130,36 @@
       "encode": "编码",
       "decode": "解码",
       "symbolTooltip": "符号处理:\n忽略: 删除非字母字符。\n加密: 如果可能，对非字母字符进行偏移。\n保留: 保持非字母字符不变。"
+    },
+    "qr": {
+      "title": "二维码生成器",
+      "text": "文本",
+      "wifi": "WiFi",
+      "content": "内容",
+      "ssid": "网络名称 (SSID)",
+      "password": "密码",
+      "encryption": "加密方式",
+      "hidden": "隐藏网络",
+      "correction": "容错率",
+      "style": "样式 & 颜色",
+      "dots": "定位点 (Dots)",
+      "corners": "角标 (Corners)",
+      "background": "背景",
+      "logo": "Logo",
+      "uploadLogo": "选择 Logo",
+      "removeLogo": "移除",
+      "download": "下载",
+      "reset": "恢复默认",
+      "realtime": "实时生成",
+      "generate": "生成",
+      "width": "尺寸 (px)",
+      "low": "低 (7%)",
+      "medium": "中 (15%)",
+      "quartile": "较高 (25%)",
+      "high": "高 (30%)",
+      "none": "无",
+      "wep": "WEP",
+      "wpa": "WPA/WPA2/WPA3"
     },
     "formatter": {
       "formatterOptions": "格式化选项",

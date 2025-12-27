@@ -8,6 +8,7 @@
     "encoder": "編碼 & 解碼",
     "crypto": "雜湊 & 加密",
     "classical": "古典密碼",
+    "qr": "QR 碼生成",
     "formatters": "格式化工具",
     "generators": "生成器",
     "settings": "設定"
@@ -24,6 +25,10 @@
       "classical": {
         "title": "古典密碼",
         "desc": "體驗凱撒密碼等歷史悠久的加密方法。"
+      },
+      "qr": {
+        "title": "QR 碼生成器",
+        "desc": "生成支援自訂樣式和 Logo 的文字或 WiFi QR 碼。"
       },
       "encoder": {
         "title": "編碼工具",
@@ -125,6 +130,36 @@
       "encode": "編碼",
       "decode": "解碼",
       "symbolTooltip": "符號處理:\n忽略: 刪除非字母字元。\n加密: 如果可能，對非字母字元進行偏移。\n保留: 保持非字母字元不變。"
+    },
+    "qr": {
+      "title": "QR 碼生成器",
+      "text": "文字",
+      "wifi": "WiFi",
+      "content": "內容",
+      "ssid": "網路名稱 (SSID)",
+      "password": "密碼",
+      "encryption": "加密方式",
+      "hidden": "隱藏網路",
+      "correction": "容錯率",
+      "style": "樣式 & 顏色",
+      "dots": "定位點 (Dots)",
+      "corners": "角標 (Corners)",
+      "background": "背景",
+      "logo": "Logo",
+      "uploadLogo": "選擇 Logo",
+      "removeLogo": "移除",
+      "download": "下載",
+      "reset": "恢復預設",
+      "realtime": "即時生成",
+      "generate": "生成",
+      "width": "尺寸 (px)",
+      "low": "低 (7%)",
+      "medium": "中 (15%)",
+      "quartile": "較高 (25%)",
+      "high": "高 (30%)",
+      "none": "無",
+      "wep": "WEP",
+      "wpa": "WPA/WPA2/WPA3"
     },
     "formatter": {
       "formatterOptions": "格式化選項",

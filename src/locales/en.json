@@ -8,6 +8,7 @@
     "encoder": "Encoders & Decoders",
     "crypto": "Hash & Crypto",
     "classical": "Classical Cipher",
+    "qr": "QR Generator",
     "formatters": "Formatters",
     "generators": "Generators",
     "settings": "Settings"
@@ -24,6 +25,10 @@
       "classical": {
         "title": "Classical Ciphers",
         "desc": "Caesar cipher and other historical methods."
+      },
+      "qr": {
+        "title": "QR Generator",
+        "desc": "Create WiFi and text QR codes with custom styles."
       },
       "encoder": {
         "title": "Encoders",
@@ -125,6 +130,36 @@
       "encode": "Encode",
       "decode": "Decode",
       "symbolTooltip": "Symbol Handling: Ignore: Removes non-alphabetic characters. Encrypt: Shifts non-alphabetic characters if possible. Keep: Retains non-alphabetic characters as is."
+    },
+    "qr": {
+      "title": "QR Code Generator",
+      "text": "Text",
+      "wifi": "WiFi",
+      "content": "Content",
+      "ssid": "Network Name (SSID)",
+      "password": "Password",
+      "encryption": "Encryption",
+      "hidden": "Hidden Network",
+      "correction": "Error Correction",
+      "style": "Style & Colors",
+      "dots": "Dots",
+      "corners": "Corners",
+      "background": "Background",
+      "logo": "Logo",
+      "uploadLogo": "Select Logo",
+      "removeLogo": "Remove",
+      "download": "Download",
+      "reset": "Reset Defaults",
+      "realtime": "Real-time Generation",
+      "generate": "Generate",
+      "width": "Size (px)",
+      "low": "Low (7%)",
+      "medium": "Medium (15%)",
+      "quartile": "Quartile (25%)",
+      "high": "High (30%)",
+      "none": "None",
+      "wep": "WEP",
+      "wpa": "WPA/WPA2/WPA3"
     },
     "formatter": {
       "formatterOptions": "Formatter Options",

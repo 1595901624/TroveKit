@@ -8,6 +8,7 @@
     "encoder": "エンコード/デコード",
     "crypto": "ハッシュ/暗号化",
     "classical": "古典暗号",
+    "qr": "QRジェネレーター",
     "formatters": "フォーマッター",
     "generators": "ジェネレーター",
     "settings": "設定"
@@ -24,6 +25,10 @@
       "classical": {
         "title": "古典暗号",
         "desc": "シーザー暗号などの歴史的な暗号化手法。"
+      },
+      "qr": {
+        "title": "QRコードジェネレーター",
+        "desc": "WiFiやテキストのQRコードを生成。スタイルのカスタマイズも可能。"
       },
       "encoder": {
         "title": "エンコーダー",
@@ -125,6 +130,36 @@
       "encode": "エンコード",
       "decode": "デコード",
       "symbolTooltip": "記号の処理:\n無視: アルファベット以外の文字を削除します。\n暗号化: 可能であればアルファベット以外の文字もシフトします。\n保持: アルファベット以外の文字をそのまま保持します。"
+    },
+    "qr": {
+      "title": "QRコードジェネレーター",
+      "text": "テキスト",
+      "wifi": "WiFi",
+      "content": "内容",
+      "ssid": "ネットワーク名 (SSID)",
+      "password": "パスワード",
+      "encryption": "暗号化方式",
+      "hidden": "隠しネットワーク",
+      "correction": "誤り訂正レベル",
+      "style": "スタイル & 色",
+      "dots": "ドット",
+      "corners": "コーナー",
+      "background": "背景",
+      "logo": "ロゴ",
+      "uploadLogo": "ロゴを選択",
+      "removeLogo": "削除",
+      "download": "ダウンロード",
+      "reset": "デフォルトに戻す",
+      "realtime": "リアルタイム生成",
+      "generate": "生成",
+      "width": "サイズ (px)",
+      "low": "低 (7%)",
+      "medium": "中 (15%)",
+      "quartile": "やや高 (25%)",
+      "high": "高 (30%)",
+      "none": "なし",
+      "wep": "WEP",
+      "wpa": "WPA/WPA2/WPA3"
     },
     "formatter": {
       "formatterOptions": "フォーマッターオプション",

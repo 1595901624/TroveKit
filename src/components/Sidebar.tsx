@@ -6,6 +6,7 @@ import {
   Wand2,
   Settings,
   Shield,
+  QrCode,
 } from "lucide-react"
 import { Button } from "@heroui/react"
 import { cn } from "../lib/utils"
@@ -13,7 +14,7 @@ import { useTranslation } from "react-i18next"
 import { useState, useEffect } from "react"
 import { getVersion } from "@tauri-apps/api/app"
 
-export type ToolId = "home" | "encoder" | "crypto" | "classical" | "formatters" | "generators" | "settings"
+export type ToolId = "home" | "encoder" | "crypto" | "classical" | "qr" | "formatters" | "generators" | "settings"
 
 interface SidebarProps {
   activeTool: ToolId
@@ -33,6 +34,7 @@ export function Sidebar({ activeTool, onToolChange }: SidebarProps) {
     { id: "encoder", label: t("nav.encoder"), icon: Binary },
     { id: "crypto", label: t("nav.crypto"), icon: Lock },
     { id: "classical", label: t("nav.classical"), icon: Shield },
+    { id: "qr", label: t("nav.qr"), icon: QrCode },
     { id: "formatters", label: t("nav.formatters"), icon: FileJson },
     { id: "generators", label: t("nav.generators"), icon: Wand2 },
     { id: "settings", label: t("nav.settings"), icon: Settings },
