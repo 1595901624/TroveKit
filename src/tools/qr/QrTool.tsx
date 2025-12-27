@@ -54,9 +54,10 @@ interface ColorPickerProps {
     label: string
     color: string
     onChange: (color: string) => void
+    t: (key: string) => string
 }
 
-function ColorPicker({ label, color, onChange }: ColorPickerProps) {
+function ColorPicker({ label, color, onChange, t }: ColorPickerProps) {
     const [rgba, setRgba] = useState(hexToRgba(color));
     const [hexInput, setHexInput] = useState(color);
 
@@ -90,7 +91,7 @@ function ColorPicker({ label, color, onChange }: ColorPickerProps) {
                         <button 
                             className="w-6 h-6 rounded-full border border-default-300 shadow-sm transition-transform hover:scale-110 active:scale-95"
                             style={{ backgroundColor: color }} 
-                            aria-label="Pick color"
+                            aria-label={t("tools.qr.pickColor")}
                         />
                     </PopoverTrigger>
                     <PopoverContent className="p-0 border-none shadow-xl">
@@ -102,17 +103,22 @@ function ColorPicker({ label, color, onChange }: ColorPickerProps) {
             <div className="space-y-1.5">
                 <Input 
                     size="sm" 
-                    label="HEXA" 
+                    label={t("tools.qr.hexa")} 
                     value={hexInput} 
                     onValueChange={handleHexChange} 
                     classNames={{ input: "font-mono text-xs", label: "text-xs" }}
                 />
                 <div className="grid grid-cols-4 gap-1">
-                    {['r', 'g', 'b', 'a'].map((key) => (
+                    {[
+                        { key: 'r', label: t("tools.qr.red") },
+                        { key: 'g', label: t("tools.qr.green") },
+                        { key: 'b', label: t("tools.qr.blue") },
+                        { key: 'a', label: t("tools.qr.alpha") }
+                    ].map(({ key, label }) => (
                          <Input 
                             key={key}
                             size="sm" 
-                            label={key.toUpperCase()} 
+                            label={label} 
                             type="number" 
                             step={key === 'a' ? 0.1 : 1}
                             max={key === 'a' ? 1 : 255} 
@@ -329,9 +335,9 @@ export function QrTool() {
         if (!blob) throw new Error("Failed to generate QR data")
             
         const filePath = await save({
-            defaultPath: 'qr-code.png',
+            defaultPath: t("tools.qr.defaultFilename"),
             filters: [{
-                name: 'PNG Image',
+                name: t("tools.qr.pngImage"),
                 extensions: ['png']
             }]
         })
@@ -355,7 +361,7 @@ export function QrTool() {
           const file = await open({
               multiple: false,
               filters: [{
-                  name: 'Images',
+                  name: t("tools.qr.images"),
                   extensions: ['png', 'jpg', 'jpeg', 'svg', 'webp']
               }]
           })
@@ -436,10 +442,10 @@ export function QrTool() {
             <h3 className="text-xs font-semibold text-default-400 uppercase tracking-wider">{t("tools.qr.style")}</h3>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                <ColorPicker label={t("tools.qr.dots")} color={qrColor} onChange={setQrColor} />
-                <ColorPicker label={t("tools.qr.background")} color={bgColor} onChange={setBgColor} />
-                <ColorPicker label={t("tools.qr.corners")} color={cornersColor} onChange={setCornersColor} />
-                <ColorPicker label={t("tools.qr.dots")} color={dotsColor} onChange={setDotsColor} />
+                <ColorPicker label={t("tools.qr.dots")} color={qrColor} onChange={setQrColor} t={t} />
+                <ColorPicker label={t("tools.qr.background")} color={bgColor} onChange={setBgColor} t={t} />
+                <ColorPicker label={t("tools.qr.corners")} color={cornersColor} onChange={setCornersColor} t={t} />
+                <ColorPicker label={t("tools.qr.cornerDots")} color={dotsColor} onChange={setDotsColor} t={t} />
             </div>
 
             <div className="grid grid-cols-2 gap-3">
@@ -459,7 +465,7 @@ export function QrTool() {
                  <div className="flex items-center gap-2 border border-default-200 rounded-xl px-3 bg-default-50/50 h-10">
                     {logo ? (
                         <div className="flex items-center gap-2 w-full justify-between">
-                            <img src={logo} alt="logo" className="w-6 h-6 object-contain" />
+                            <img src={logo} alt={t("tools.qr.logoAlt")} className="w-6 h-6 object-contain" />
                             <Button isIconOnly size="sm" variant="light" color="danger" onPress={() => setLogo("")}>
                                 <X className="w-3 h-3" />
                             </Button>
@@ -531,7 +537,7 @@ export function QrTool() {
           <div className="bg-white p-4 rounded-xl shadow-lg border border-default-100 relative z-10 transition-all duration-300 hover:shadow-xl" ref={ref} />
           
           <div className="mt-4 text-center text-default-400 text-xs font-mono break-all px-4">
-             {selectedMode === "wifi" ? `WIFI: ${wifi.ssid}` : "QR Code Preview"}
+             {selectedMode === "wifi" ? t("tools.qr.wifiPreview", { ssid: wifi.ssid }) : t("tools.qr.preview")}
           </div>
       </div>
 

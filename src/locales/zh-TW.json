@@ -144,6 +144,7 @@
       "style": "樣式 & 顏色",
       "dots": "定位點 (Dots)",
       "corners": "角標 (Corners)",
+      "cornerDots": "角標中心",
       "background": "背景",
       "logo": "Logo",
       "uploadLogo": "選擇 Logo",
@@ -159,7 +160,24 @@
       "high": "高 (30%)",
       "none": "無",
       "wep": "WEP",
-      "wpa": "WPA/WPA2/WPA3"
+      "wpa": "WPA/WPA2/WPA3",
+      "preview": "QR 碼預覽",
+      "hexa": "十六進位",
+      "pickColor": "選擇顏色",
+      "pngImage": "PNG 圖像",
+      "images": "圖像",
+      "defaultFilename": "qr-code.png",
+      "logoAlt": "logo",
+      "wifiPreview": "WIFI: {{ssid}}",
+      "red": "R",
+      "green": "G",
+      "blue": "B",
+      "alpha": "A",
+      "error": {
+        "tooLarge": "尺寸不能超過 5000px",
+        "tooSmall": "尺寸不能小於 50px",
+        "inputTooLong": "輸入內容不能超過 2000 位元組"
+      }
     },
     "formatter": {
       "formatterOptions": "格式化選項",

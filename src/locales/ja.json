@@ -144,6 +144,7 @@
       "style": "スタイル & 色",
       "dots": "ドット",
       "corners": "コーナー",
+      "cornerDots": "コーナードット",
       "background": "背景",
       "logo": "ロゴ",
       "uploadLogo": "ロゴを選択",
@@ -159,7 +160,24 @@
       "high": "高 (30%)",
       "none": "なし",
       "wep": "WEP",
-      "wpa": "WPA/WPA2/WPA3"
+      "wpa": "WPA/WPA2/WPA3",
+      "preview": "QRコードプレビュー",
+      "hexa": "16進数",
+      "pickColor": "色を選択",
+      "pngImage": "PNG画像",
+      "images": "画像",
+      "defaultFilename": "qr-code.png",
+      "logoAlt": "ロゴ",
+      "wifiPreview": "WIFI: {{ssid}}",
+      "red": "R",
+      "green": "G",
+      "blue": "B",
+      "alpha": "A",
+      "error": {
+        "tooLarge": "サイズが5000pxを超えることはできません",
+        "tooSmall": "サイズは50px未満にすることはできません",
+        "inputTooLong": "入力内容は2000バイトを超えることはできません"
+      }
     },
     "formatter": {
       "formatterOptions": "フォーマッターオプション",

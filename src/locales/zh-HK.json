@@ -7,6 +7,8 @@
     "home": "首頁",
     "encoder": "編碼 & 解碼",
     "crypto": "雜湊 & 加密",
+    "classical": "古典密碼",
+    "qr": "QR生成器",
     "formatters": "格式化工具",
     "generators": "生成器",
     "settings": "設定"
@@ -19,6 +21,14 @@
       "crypto": {
         "title": "雜湊 & 加密",
         "desc": "生成 MD5, SHA 雜湊等。"
+      },
+      "classical": {
+        "title": "古典密碼",
+        "desc": "體驗凱撒密碼等歷史悠久的加密方法。"
+      },
+      "qr": {
+        "title": "QR生成器",
+        "desc": "生成支援自訂樣式和Logo的文字或WiFi QR碼。"
       },
       "encoder": {
         "title": "編碼工具",
@@ -107,6 +117,67 @@
       "copy": "複製",
       "copiedToClipboard": "已複製到剪貼簿",
       "encoderOptions": "編碼選項"
+    },
+    "classical": {
+      "title": "古典密碼",
+      "caesar": "凱撒密碼",
+      "shift": "偏移量",
+      "nonLetter": "非字母字元",
+      "ignore": "忽略 (刪除)",
+      "encrypt": "加密 (偏移)",
+      "keep": "保留 (原樣)",
+      "inputPlaceholder": "輸入文字...",
+      "encode": "編碼",
+      "decode": "解碼",
+      "symbolTooltip": "符號處理: 忽略: 刪除非字母字元。加密: 如果可能，對非字母字元進行偏移。保留: 保留非字母字元原樣。"
+    },
+    "qr": {
+      "title": "QR碼生成器",
+      "text": "文字",
+      "wifi": "WiFi",
+      "content": "內容",
+      "ssid": "網路名稱 (SSID)",
+      "password": "密碼",
+      "encryption": "加密方式",
+      "hidden": "隱藏網路",
+      "correction": "容錯率",
+      "style": "樣式 & 顏色",
+      "dots": "數據點",
+      "corners": "角標外框",
+      "cornerDots": "角標中心",
+      "background": "背景",
+      "logo": "Logo",
+      "uploadLogo": "選擇 Logo",
+      "removeLogo": "移除",
+      "download": "下載",
+      "reset": "恢復預設",
+      "realtime": "即時生成",
+      "generate": "生成",
+      "width": "尺寸 (px)",
+      "low": "低 (7%)",
+      "medium": "中 (15%)",
+      "quartile": "較高 (25%)",
+      "high": "高 (30%)",
+      "none": "無",
+      "wep": "WEP",
+      "wpa": "WPA/WPA2/WPA3",
+      "preview": "QR碼預覽",
+      "hexa": "十六進制",
+      "pickColor": "選擇顏色",
+      "pngImage": "PNG 圖像",
+      "images": "圖像",
+      "defaultFilename": "qr-code.png",
+      "logoAlt": "logo",
+      "wifiPreview": "WIFI: {{ssid}}",
+      "red": "R",
+      "green": "G",
+      "blue": "B",
+      "alpha": "A",
+      "error": {
+        "tooLarge": "尺寸不能超過 5000px",
+        "tooSmall": "尺寸不能小於 50px",
+        "inputTooLong": "輸入內容不能超過 2000 位元組"
+      }
     },
     "formatter": {
       "formatterOptions": "格式化選項",
