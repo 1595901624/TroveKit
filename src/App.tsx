@@ -3,6 +3,7 @@ import { Layout } from "./components/Layout"
 import { ThemeProvider } from "./components/theme-provider"
 import { HashTool } from "./tools/HashTool"
 import { EncoderTool } from "./tools/EncoderTool"
+import { ClassicalTool } from "./tools/ClassicalTool"
 import { Settings } from "./tools/Settings"
 import { FormatterTool } from "./tools/FormatterTool"
 import { ToolId } from "./components/Sidebar"
@@ -19,6 +20,7 @@ function App() {
       case "home": return t("home.title")
       case "crypto": return t("nav.crypto")
       case "encoder": return t("nav.encoder")
+      case "classical": return t("nav.classical")
       case "formatters": return t("nav.formatters")
       case "generators": return t("nav.generators")
       case "settings": return t("settings.title")
@@ -42,6 +44,9 @@ function App() {
           </div>
           <div className={activeTool === "encoder" ? "block h-full" : "hidden"}>
             <EncoderTool />
+          </div>
+          <div className={activeTool === "classical" ? "block h-full" : "hidden"}>
+            <ClassicalTool />
           </div>
           <div className={activeTool === "formatters" ? "block h-full" : "hidden"}>
             <FormatterTool />

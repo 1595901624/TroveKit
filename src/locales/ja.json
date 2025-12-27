@@ -7,6 +7,7 @@
     "home": "ホーム",
     "encoder": "エンコード/デコード",
     "crypto": "ハッシュ/暗号化",
+    "classical": "古典暗号",
     "formatters": "フォーマッター",
     "generators": "ジェネレーター",
     "settings": "設定"
@@ -107,6 +108,19 @@
       "copy": "コピー",
       "copiedToClipboard": "クリップボードにコピーされました",
       "encoderOptions": "エンコーダーオプション"
+    },
+    "classical": {
+      "title": "古典暗号",
+      "caesar": "シーザー暗号",
+      "shift": "シフト (オフセット)",
+      "nonLetter": "非アルファベット文字",
+      "ignore": "無視 (削除)",
+      "encrypt": "暗号化 (シフト)",
+      "keep": "保持 (そのまま)",
+      "inputPlaceholder": "テキストを入力...",
+      "encode": "エンコード",
+      "decode": "デコード",
+      "symbolTooltip": "記号の処理:\n無視: アルファベット以外の文字を削除します。\n暗号化: 可能であればアルファベット以外の文字もシフトします。\n保持: アルファベット以外の文字をそのまま保持します。"
     },
     "formatter": {
       "formatterOptions": "フォーマッターオプション",

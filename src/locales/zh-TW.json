@@ -7,6 +7,7 @@
     "home": "首頁",
     "encoder": "編碼 & 解碼",
     "crypto": "雜湊 & 加密",
+    "classical": "古典密碼",
     "formatters": "格式化工具",
     "generators": "生成器",
     "settings": "設定"
@@ -107,6 +108,19 @@
       "copy": "複製",
       "copiedToClipboard": "已複製到剪貼簿",
       "encoderOptions": "編碼選項"
+    },
+    "classical": {
+      "title": "古典密碼",
+      "caesar": "凱撒密碼",
+      "shift": "偏移量",
+      "nonLetter": "非字母字元",
+      "ignore": "忽略 (刪除)",
+      "encrypt": "加密 (偏移)",
+      "keep": "保留 (原樣)",
+      "inputPlaceholder": "輸入文字...",
+      "encode": "編碼",
+      "decode": "解碼",
+      "symbolTooltip": "符號處理:\n忽略: 刪除非字母字元。\n加密: 如果可能，對非字母字元進行偏移。\n保留: 保持非字母字元不變。"
     },
     "formatter": {
       "formatterOptions": "格式化選項",

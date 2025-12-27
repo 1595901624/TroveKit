@@ -7,6 +7,7 @@
     "home": "Home",
     "encoder": "Encoders & Decoders",
     "crypto": "Hash & Crypto",
+    "classical": "Classical Cipher",
     "formatters": "Formatters",
     "generators": "Generators",
     "settings": "Settings"
@@ -107,6 +108,19 @@
       "copy": "Copy",
       "copiedToClipboard": "Copied to clipboard",
       "encoderOptions": "Encoder Options"
+    },
+    "classical": {
+      "title": "Classical Ciphers",
+      "caesar": "Caesar Cipher",
+      "shift": "Shift (Offset)",
+      "nonLetter": "Non-letter Characters",
+      "ignore": "Ignore (Remove)",
+      "encrypt": "Encrypt (Shift)",
+      "keep": "Keep (As is)",
+      "inputPlaceholder": "Enter text...",
+      "encode": "Encode",
+      "decode": "Decode",
+      "symbolTooltip": "Symbol Handling: Ignore: Removes non-alphabetic characters. Encrypt: Shifts non-alphabetic characters if possible. Keep: Retains non-alphabetic characters as is."
     },
     "formatter": {
       "formatterOptions": "Formatter Options",
