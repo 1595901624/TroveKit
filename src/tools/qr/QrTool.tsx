@@ -155,6 +155,7 @@ export function QrTool() {
   const [selectedMode, setSelectedMode] = useState<QrMode>("text")
   const ref = useRef<HTMLDivElement>(null)
   const qrCode = useRef<QRCodeStyling>(null)
+  const downloadRef = useRef<HTMLDivElement>(null)
 
   // Content State
   const [text, setText] = useState("https://example.com")
@@ -223,12 +224,9 @@ export function QrTool() {
       return utf8Encode(data);
   }
 
-  const updateQr = (overrideOptions?: Partial<Options>) => {
-    if (!qrCode.current) return
+  const getQrOptions = (overrideOptions?: Partial<Options>): Options => {
     const data = getQrData()
-    
-    // Default options
-    const options: Options = {
+    return {
         width: 250, // Preview size
         height: 250,
         data: data,
@@ -261,8 +259,11 @@ export function QrTool() {
         image: logo || undefined,
         ...overrideOptions
     }
-    
-    return qrCode.current.update(options)
+  }
+
+  const updateQr = (overrideOptions?: Partial<Options>) => {
+    if (!qrCode.current) return
+    return qrCode.current.update(getQrOptions(overrideOptions))
   }
 
   // Effect for Real-time
@@ -282,17 +283,23 @@ export function QrTool() {
   }
 
   const handleDownload = async () => {
-    if (!qrCode.current) return
     try {
-        await updateQr({ 
+        const options = getQrOptions({ 
             width: width, 
             height: width,
             type: "canvas"
         })
+
+        const tempQr = new QRCodeStyling(options)
+        
+        if (downloadRef.current) {
+            downloadRef.current.innerHTML = ""
+            tempQr.append(downloadRef.current)
+        }
         
         await new Promise(resolve => setTimeout(resolve, 50))
         
-        const blob = await qrCode.current.getRawData("png")
+        const blob = await tempQr.getRawData("png")
         if (!blob) throw new Error("Failed to generate QR data")
             
         const filePath = await save({
@@ -311,11 +318,9 @@ export function QrTool() {
     } catch (e) {
         console.error("QR Download Error:", e)
     } finally {
-        updateQr({ 
-            width: 250, 
-            height: 250,
-            type: "svg"
-        })
+        if (downloadRef.current) {
+            downloadRef.current.innerHTML = ""
+        }
     }
   }
 
@@ -503,6 +508,9 @@ export function QrTool() {
              {selectedMode === "wifi" ? `WIFI: ${wifi.ssid}` : "QR Code Preview"}
           </div>
       </div>
+
+      {/* Hidden container for download generation */}
+      <div ref={downloadRef} className="hidden" />
     </div>
   )
 }
