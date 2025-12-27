@@ -15,6 +15,7 @@
     "@monaco-editor/react": "^4.7.0",
     "@tauri-apps/api": "^2",
     "@tauri-apps/plugin-dialog": "^2.4.2",
+    "@tauri-apps/plugin-fs": "^2.4.4",
     "@tauri-apps/plugin-opener": "^2",
     "@types/crypto-js": "^4.2.2",
     "autoprefixer": "^10.4.23",

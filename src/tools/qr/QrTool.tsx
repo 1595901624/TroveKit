@@ -6,9 +6,9 @@ import { WifiTab, WifiState } from "./WifiTab"
 import QRCodeStyling, { Options } from "qr-code-styling"
 import { Download, Upload, X, Zap, RotateCcw } from "lucide-react"
 import { HexColorPicker } from "react-colorful"
-import { open } from "@tauri-apps/plugin-dialog"
-import { convertFileSrc } from "@tauri-apps/api/core"
-// import { useLog } from "../../contexts/LogContext"
+import { open, save } from "@tauri-apps/plugin-dialog"
+import { readFile, writeFile } from "@tauri-apps/plugin-fs"
+import { useLog } from "../../contexts/LogContext"
 
 type QrMode = "text" | "wifi"
 
@@ -53,7 +53,7 @@ const DEFAULT_OPTIONS = {
 
 export function QrTool() {
   const { t } = useTranslation()
-//   const { addLog } = useLog()
+  const { addLog } = useLog()
   const [selectedMode, setSelectedMode] = useState<QrMode>("text")
   const ref = useRef<HTMLDivElement>(null)
   const qrCode = useRef<QRCodeStyling>(null)
@@ -175,20 +175,35 @@ export function QrTool() {
   const handleDownload = async () => {
     if (!qrCode.current) return
     try {
-        // We need to update with the *download* size right before downloading, then revert? 
-        // Or just passing options to download? 
-        // qr-code-styling `download` method takes downloadOptions, but it doesn't seem to override width/height of the instance easily without update.
-        // So we update, download, then update back.
-        
+        // Update to download size
         await qrCode.current.update({ width: width, height: width })
-        await qrCode.current.download({ name: "qr-code", extension: "png" })
+        
+        // Get raw data (Blob)
+        const blob = await qrCode.current.getRawData("png")
+        if (!blob) throw new Error("Failed to generate QR data")
+            
+        // Ask user where to save
+        const filePath = await save({
+            defaultPath: 'qr-code.png',
+            filters: [{
+                name: 'PNG Image',
+                extensions: ['png']
+            }]
+        })
+
+        if (filePath) {
+            const buffer = await blob.arrayBuffer()
+            await writeFile(filePath, new Uint8Array(buffer))
+            addLog({ method: "QR Download", input: `${width}x${width}`, output: "Saved to " + filePath }, "success")
+        }
         
         // Revert to preview size
         await qrCode.current.update({ width: 300, height: 300 })
         
-        // addLog({ method: "QR Download", input: `${width}x${width}`, output: "Downloaded" }, "success")
     } catch (e) {
-        // addLog({ method: "QR Download", input: "Error", output: (e as Error).message }, "error")
+        addLog({ method: "QR Download", input: "Error", output: (e as Error).message }, "error")
+        // Try to revert size even on error
+        qrCode.current?.update({ width: 300, height: 300 })
     }
   }
 
@@ -203,13 +218,26 @@ export function QrTool() {
           })
           
           if (file) {
-             const assetUrl = convertFileSrc(file as string)
-             setLogo(assetUrl)
-            //  if (realTime) addLog("Logo selected", "info")
+             const contents = await readFile(file as string);
+             const len = contents.byteLength;
+             let binary = '';
+             for (let i = 0; i < len; i++) {
+                 binary += String.fromCharCode(contents[i]);
+             }
+             const base64 = window.btoa(binary);
+             
+             const ext = (file as string).split('.').pop()?.toLowerCase();
+             let mime = 'image/png';
+             if (ext === 'svg') mime = 'image/svg+xml';
+             else if (ext === 'jpg' || ext === 'jpeg') mime = 'image/jpeg';
+             else if (ext === 'webp') mime = 'image/webp';
+             
+             setLogo(`data:${mime};base64,${base64}`)
+             if (realTime) addLog("Logo selected", "info")
           }
       } catch (e) {
           console.error(e)
-        //   addLog("Failed to select logo", "error")
+          addLog("Failed to select logo", "error")
       }
   }
 
