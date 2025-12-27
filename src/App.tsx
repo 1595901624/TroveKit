@@ -4,12 +4,12 @@ import { ThemeProvider } from "./components/theme-provider"
 import { HashTool } from "./tools/HashTool"
 import { EncoderTool } from "./tools/EncoderTool"
 import { ClassicalTool } from "./tools/ClassicalTool"
-import { QrTool } from "./tools/qr/QrTool"
+import { GeneratorTool } from "./tools/GeneratorTool"
 import { Settings } from "./tools/Settings"
 import { FormatterTool } from "./tools/FormatterTool"
 import { ToolId } from "./components/Sidebar"
-import { Card, CardBody, Button } from "@heroui/react"
-import { ArrowRight, Sparkles, Lock, Code2, FileCode2, Shield } from "lucide-react"
+import { Card, CardBody } from "@heroui/react"
+import { ArrowRight, Lock, Code2, FileCode2, Shield, Wand2 } from "lucide-react"
 import { useTranslation } from "react-i18next"
 
 function App() {
@@ -22,7 +22,6 @@ function App() {
       case "crypto": return t("nav.crypto")
       case "encoder": return t("nav.encoder")
       case "classical": return t("nav.classical")
-      case "qr": return t("nav.qr")
       case "formatters": return t("nav.formatters")
       case "generators": return t("nav.generators")
       case "settings": return t("settings.title")
@@ -50,50 +49,22 @@ function App() {
           <div className={activeTool === "classical" ? "block h-full" : "hidden"}>
             <ClassicalTool />
           </div>
-          <div className={activeTool === "qr" ? "block h-full" : "hidden"}>
-            <QrTool />
-          </div>
           <div className={activeTool === "formatters" ? "block h-full" : "hidden"}>
             <FormatterTool />
+          </div>
+          <div className={activeTool === "generators" ? "block h-full" : "hidden"}>
+            <GeneratorTool />
           </div>
           <div className={activeTool === "settings" ? "block h-full" : "hidden"}>
             <Settings />
           </div>
           
-          {["generators"].includes(activeTool) && (
+          {/* {["generators"].includes(activeTool) && (
             <ComingSoon activeTool={activeTool} onNavigate={setActiveTool} />
-          )}
+          )} */}
         </div>
       </Layout>
     </ThemeProvider>
-  )
-}
-
-function ComingSoon({ activeTool, onNavigate }: { activeTool: ToolId, onNavigate: (id: ToolId) => void }) {
-  const { t } = useTranslation()
-  
-  return (
-    <div className="flex flex-col items-center justify-center h-[70vh] text-center px-4 animate-in fade-in slide-in-from-bottom-4 duration-700">
-       <div className="relative mb-8">
-          <div className="absolute inset-0 blur-3xl bg-primary/20 rounded-full animate-pulse" />
-          <div className="relative w-20 h-20 rounded-3xl bg-default-100/50 backdrop-blur-xl border border-default-200 flex items-center justify-center shadow-2xl">
-             <Sparkles className="w-10 h-10 text-primary" />
-          </div>
-       </div>
-       <div className="space-y-3">
-         <h2 className="text-3xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-b from-foreground to-foreground/70">
-           {t("common.comingSoon")}
-         </h2>
-         <p className="text-default-500 max-w-sm mx-auto text-lg leading-relaxed">
-           {t("common.comingSoonDesc", { tool: t(`nav.${activeTool}` as any) })}
-         </p>
-         <div className="pt-4">
-           <Button variant="flat" color="primary" radius="full" onPress={() => onNavigate("home")}>
-             {t("nav.home")}
-           </Button>
-         </div>
-       </div>
-    </div>
   )
 }
 
@@ -116,6 +87,14 @@ function HomeView({ onNavigate }: { onNavigate: (id: ToolId) => void }) {
       icon: <Shield className="w-6 h-6" />,
       gradient: "from-orange-500/20 to-red-500/20",
       iconColor: "text-orange-600 dark:text-orange-400"
+    },
+    { 
+      id: "generators", 
+      title: t("nav.generators"), 
+      desc: t("home.cards.qr.desc"), 
+      icon: <Wand2 className="w-6 h-6" />,
+      gradient: "from-amber-500/20 to-yellow-500/20",
+      iconColor: "text-amber-600 dark:text-amber-400"
     },
     { 
       id: "encoder", 
