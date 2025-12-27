@@ -26,4 +26,5 @@ data-encoding = "2.6.0"
 base-x = "0.2.11"
 base91 = "0.1.0"
 base85 = "2.0.0"
+tauri-plugin-dialog = "2"
 

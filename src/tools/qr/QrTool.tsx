@@ -8,7 +8,7 @@ import { Download, Upload, X, Zap, RotateCcw } from "lucide-react"
 import { HexColorPicker } from "react-colorful"
 import { open } from "@tauri-apps/plugin-dialog"
 import { convertFileSrc } from "@tauri-apps/api/core"
-import { useLog } from "../../contexts/LogContext"
+// import { useLog } from "../../contexts/LogContext"
 
 type QrMode = "text" | "wifi"
 
@@ -53,7 +53,7 @@ const DEFAULT_OPTIONS = {
 
 export function QrTool() {
   const { t } = useTranslation()
-  const { addLog } = useLog()
+//   const { addLog } = useLog()
   const [selectedMode, setSelectedMode] = useState<QrMode>("text")
   const ref = useRef<HTMLDivElement>(null)
   const qrCode = useRef<QRCodeStyling>(null)
@@ -68,7 +68,7 @@ export function QrTool() {
 
   // Settings State
   const [width, setWidth] = useState(128)
-  const [realTime, setRealTime] = useState(false)
+  const [realTime, setRealTime] = useState(true)
   const [qrColor, setQrColor] = useState(DEFAULT_OPTIONS.qrColor)
   const [bgColor, setBgColor] = useState(DEFAULT_OPTIONS.bgColor)
   const [dotsColor, setDotsColor] = useState(DEFAULT_OPTIONS.qrColor)
@@ -169,7 +169,7 @@ export function QrTool() {
   // Explicit Generate
   const handleGenerate = () => {
       updateQr()
-      addLog({ method: "QR Generate", input: selectedMode, output: "Success" }, "success")
+    //   addLog({ method: "QR Generate", input: selectedMode, output: "Success" }, "success")
   }
 
   const handleDownload = async () => {
@@ -186,9 +186,9 @@ export function QrTool() {
         // Revert to preview size
         await qrCode.current.update({ width: 300, height: 300 })
         
-        addLog({ method: "QR Download", input: `${width}x${width}`, output: "Downloaded" }, "success")
+        // addLog({ method: "QR Download", input: `${width}x${width}`, output: "Downloaded" }, "success")
     } catch (e) {
-        addLog({ method: "QR Download", input: "Error", output: (e as Error).message }, "error")
+        // addLog({ method: "QR Download", input: "Error", output: (e as Error).message }, "error")
     }
   }
 
@@ -205,11 +205,11 @@ export function QrTool() {
           if (file) {
              const assetUrl = convertFileSrc(file as string)
              setLogo(assetUrl)
-             if (realTime) addLog("Logo selected", "info")
+            //  if (realTime) addLog("Logo selected", "info")
           }
       } catch (e) {
           console.error(e)
-          addLog("Failed to select logo", "error")
+        //   addLog("Failed to select logo", "error")
       }
   }
 
