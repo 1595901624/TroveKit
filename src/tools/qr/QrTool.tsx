@@ -5,12 +5,45 @@ import { TextTab } from "./TextTab"
 import { WifiTab, WifiState } from "./WifiTab"
 import QRCodeStyling, { Options } from "qr-code-styling"
 import { Download, Upload, X, Zap, RotateCcw } from "lucide-react"
-import { HexColorPicker } from "react-colorful"
+import { HexAlphaColorPicker } from "react-colorful"
 import { open, save } from "@tauri-apps/plugin-dialog"
 import { readFile, writeFile } from "@tauri-apps/plugin-fs"
-import { useLog } from "../../contexts/LogContext"
 
 type QrMode = "text" | "wifi"
+
+// Color Utils
+const hexToRgba = (hex: string) => {
+    let r = 0, g = 0, b = 0, a = 1;
+    if (hex.startsWith("#")) hex = hex.slice(1);
+    
+    if (hex.length === 3) {
+        r = parseInt(hex[0] + hex[0], 16);
+        g = parseInt(hex[1] + hex[1], 16);
+        b = parseInt(hex[2] + hex[2], 16);
+    } else if (hex.length === 6) {
+        r = parseInt(hex.slice(0, 2), 16);
+        g = parseInt(hex.slice(2, 4), 16);
+        b = parseInt(hex.slice(4, 6), 16);
+    } else if (hex.length === 8) {
+        r = parseInt(hex.slice(0, 2), 16);
+        g = parseInt(hex.slice(2, 4), 16);
+        b = parseInt(hex.slice(4, 6), 16);
+        a = parseInt(hex.slice(6, 8), 16) / 255;
+    }
+    return { r, g, b, a };
+}
+
+const rgbaToHex = (r: number, g: number, b: number, a: number) => {
+    const toHex = (n: number) => {
+        const hex = Math.max(0, Math.min(255, Math.round(n))).toString(16);
+        return hex.length === 1 ? "0" + hex : hex;
+    }
+    const alpha = Math.max(0, Math.min(255, Math.round(a * 255)));
+    if (alpha === 255) {
+        return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
+    }
+    return `#${toHex(r)}${toHex(g)}${toHex(b)}${toHex(alpha)}`;
+}
 
 interface ColorPickerProps {
     label: string
@@ -19,21 +52,86 @@ interface ColorPickerProps {
 }
 
 function ColorPicker({ label, color, onChange }: ColorPickerProps) {
+    const [rgba, setRgba] = useState(hexToRgba(color));
+    const [hexInput, setHexInput] = useState(color);
+
+    useEffect(() => {
+        setRgba(hexToRgba(color));
+        setHexInput(color);
+    }, [color]);
+
+    const handleRgbaChange = (key: keyof typeof rgba, val: string) => {
+        const num = parseFloat(val);
+        if (isNaN(num)) return;
+        
+        const newRgba = { ...rgba, [key]: num };
+        if (key === 'a') {
+             // Input is 0-100 for user friendliness? Or 0-1? Let's use 0-1 as standard but maybe display %?
+             // Prompt requested A, R, G, B inputs.
+             // Standard color pickers usually show 0-255 for RGB.
+             // Let's assume input 'a' is 0-1 range for simplicity in calculation, 
+             // but user might type 0.5.
+        }
+        setRgba(newRgba);
+        onChange(rgbaToHex(newRgba.r, newRgba.g, newRgba.b, newRgba.a));
+    };
+
+    const handleHexChange = (val: string) => {
+        setHexInput(val);
+        if (/^#[0-9A-Fa-f]{6}([0-9A-Fa-f]{2})?$/.test(val)) {
+             onChange(val);
+        }
+    };
+
     return (
-        <div className="flex items-center justify-between gap-2 p-2 border border-default-200 rounded-lg bg-default-50/50">
-            <span className="text-sm font-medium text-default-600">{label}</span>
-            <Popover placement="bottom" showArrow={true}>
-                <PopoverTrigger>
-                    <button 
-                        className="w-8 h-8 rounded-full border border-default-300 shadow-sm transition-transform hover:scale-110 active:scale-95"
-                        style={{ backgroundColor: color }} 
-                        aria-label="Pick color"
+        <div className="flex flex-col gap-2 p-3 border border-default-200 rounded-lg bg-default-50/50">
+            <div className="flex items-center justify-between">
+                <span className="text-sm font-medium text-default-600">{label}</span>
+                <Popover placement="bottom" showArrow={true}>
+                    <PopoverTrigger>
+                        <button 
+                            className="w-8 h-8 rounded-full border border-default-300 shadow-sm transition-transform hover:scale-110 active:scale-95"
+                            style={{ backgroundColor: color }} 
+                            aria-label="Pick color"
+                        />
+                    </PopoverTrigger>
+                    <PopoverContent className="p-0 border-none shadow-xl">
+                        <HexAlphaColorPicker color={color} onChange={onChange} />
+                    </PopoverContent>
+                </Popover>
+            </div>
+            
+            <div className="space-y-2">
+                <Input 
+                    size="sm" 
+                    label="Hex" 
+                    value={hexInput} 
+                    onValueChange={handleHexChange} 
+                    classNames={{ input: "font-mono" }}
+                />
+                <div className="grid grid-cols-4 gap-1">
+                    <Input 
+                        size="sm" label="R" type="number" 
+                        value={rgba.r.toString()} 
+                        onValueChange={(v) => handleRgbaChange('r', v)} 
                     />
-                </PopoverTrigger>
-                <PopoverContent className="p-0 border-none shadow-xl">
-                    <HexColorPicker color={color} onChange={onChange} />
-                </PopoverContent>
-            </Popover>
+                    <Input 
+                        size="sm" label="G" type="number" 
+                        value={rgba.g.toString()} 
+                        onValueChange={(v) => handleRgbaChange('g', v)} 
+                    />
+                    <Input 
+                        size="sm" label="B" type="number" 
+                        value={rgba.b.toString()} 
+                        onValueChange={(v) => handleRgbaChange('b', v)} 
+                    />
+                    <Input 
+                        size="sm" label="A" type="number" step={0.1} max={1} min={0}
+                        value={rgba.a.toFixed(2)} 
+                        onValueChange={(v) => handleRgbaChange('a', v)} 
+                    />
+                </div>
+            </div>
         </div>
     )
 }
@@ -51,9 +149,14 @@ const DEFAULT_OPTIONS = {
     logo: "",
 }
 
+// Escape special characters for WiFi string
+const escapeWifi = (str: string) => {
+    if (!str) return "";
+    return str.replace(/([\\;:,])/g, '\\$1');
+}
+
 export function QrTool() {
   const { t } = useTranslation()
-  const { addLog } = useLog()
   const [selectedMode, setSelectedMode] = useState<QrMode>("text")
   const ref = useRef<HTMLDivElement>(null)
   const qrCode = useRef<QRCodeStyling>(null)
@@ -81,7 +184,7 @@ export function QrTool() {
     qrCode.current = new QRCodeStyling({
         width: 300,
         height: 300,
-        type: "svg", // SVG is better for sharp rendering
+        type: "svg", // SVG is better for sharp rendering in preview
         imageOptions: {
             crossOrigin: "anonymous",
             margin: 5
@@ -99,28 +202,40 @@ export function QrTool() {
       if (selectedMode === "text") return text
       if (selectedMode === "wifi") {
           const { ssid, password, encryption, hidden } = wifi
-          let data = `WIFI:S:${ssid};`
+          // Format: WIFI:T:WPA;S:mynetwork;P:mypass;;
+          // Order doesn't strictly matter but convention helps.
+          // Special chars in SSID and Password must be escaped.
+          let data = `WIFI:`
+          
           if (encryption !== "nopass") {
               data += `T:${encryption};`
+          } else {
+              data += `T:nopass;`
           }
-          if (password) {
-              data += `P:${password};`
+          
+          data += `S:${escapeWifi(ssid)};`
+          
+          if (password && encryption !== "nopass") {
+              data += `P:${escapeWifi(password)};`
           }
+          
           if (hidden) {
               data += `H:true;`
           }
+          
           data += `;;`
           return data
       }
       return ""
   }
 
-  const updateQr = () => {
+  const updateQr = (overrideOptions?: Partial<Options>) => {
     if (!qrCode.current) return
     const data = getQrData()
     
+    // Default options
     const options: Options = {
-        width: 300, // Display size fixed for preview
+        width: 300, // Preview always 300
         height: 300,
         data: data,
         margin: 10,
@@ -149,10 +264,11 @@ export function QrTool() {
             color: dotsColor,
             type: "dot"
         },
-        image: logo || undefined
+        image: logo || undefined,
+        ...overrideOptions
     }
     
-    qrCode.current.update(options)
+    return qrCode.current.update(options)
   }
 
   // Effect for Real-time
@@ -169,14 +285,21 @@ export function QrTool() {
   // Explicit Generate
   const handleGenerate = () => {
       updateQr()
-    //   addLog({ method: "QR Generate", input: selectedMode, output: "Success" }, "success")
   }
 
   const handleDownload = async () => {
     if (!qrCode.current) return
     try {
-        // Update to download size
-        await qrCode.current.update({ width: width, height: width })
+        // Switch to canvas for reliable PNG export
+        // And set user defined dimensions
+        await updateQr({ 
+            width: width, 
+            height: width,
+            type: "canvas" // Important for getRawData to work reliably in some contexts
+        })
+        
+        // Short delay to ensure render
+        await new Promise(resolve => setTimeout(resolve, 50))
         
         // Get raw data (Blob)
         const blob = await qrCode.current.getRawData("png")
@@ -194,16 +317,18 @@ export function QrTool() {
         if (filePath) {
             const buffer = await blob.arrayBuffer()
             await writeFile(filePath, new Uint8Array(buffer))
-            addLog({ method: "QR Download", input: `${width}x${width}`, output: "Saved to " + filePath }, "success")
         }
         
-        // Revert to preview size
-        await qrCode.current.update({ width: 300, height: 300 })
-        
     } catch (e) {
-        addLog({ method: "QR Download", input: "Error", output: (e as Error).message }, "error")
-        // Try to revert size even on error
-        qrCode.current?.update({ width: 300, height: 300 })
+        console.error("QR Download Error:", e)
+    } finally {
+        // Always revert to preview settings
+        // Revert type to svg for sharp preview
+        updateQr({ 
+            width: 300, 
+            height: 300,
+            type: "svg"
+        })
     }
   }
 
@@ -233,11 +358,9 @@ export function QrTool() {
              else if (ext === 'webp') mime = 'image/webp';
              
              setLogo(`data:${mime};base64,${base64}`)
-             if (realTime) addLog("Logo selected", "info")
           }
       } catch (e) {
           console.error(e)
-          addLog("Failed to select logo", "error")
       }
   }
 
@@ -249,7 +372,7 @@ export function QrTool() {
       setCorrection(DEFAULT_OPTIONS.correction)
       setLogo("")
       setWidth(128)
-      if (realTime) setTimeout(updateQr, 50)
+      if (realTime) setTimeout(() => updateQr(), 50)
   }
 
   return (
@@ -280,7 +403,7 @@ export function QrTool() {
         <div className="space-y-4 border-t border-divider pt-4">
             <h3 className="text-sm font-semibold text-default-500 uppercase tracking-wider">{t("tools.qr.style")}</h3>
             
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <ColorPicker label={t("tools.qr.dots")} color={qrColor} onChange={setQrColor} />
                 <ColorPicker label={t("tools.qr.background")} color={bgColor} onChange={setBgColor} />
                 <ColorPicker label={t("tools.qr.corners")} color={cornersColor} onChange={setCornersColor} />
