@@ -102,7 +102,7 @@ function ColorPicker({ label, color, onChange }: ColorPickerProps) {
             <div className="space-y-1.5">
                 <Input 
                     size="sm" 
-                    label="Hex" 
+                    label="HEXA" 
                     value={hexInput} 
                     onValueChange={handleHexChange} 
                     classNames={{ input: "font-mono text-xs", label: "text-xs" }}
