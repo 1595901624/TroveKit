@@ -83,49 +83,53 @@ function ColorPicker({ label, color, onChange, t }: ColorPickerProps) {
     };
 
     return (
-        <div className="flex items-center justify-between p-2 border border-default-200 rounded-lg bg-default-50/50 gap-3 group hover:border-default-300 transition-colors">
-            <div className="flex flex-col gap-0.5 min-w-0 flex-1">
-                <span className="text-[10px] uppercase tracking-wider font-semibold text-default-500 truncate">{label}</span>
-                 <Input 
+        <div className="flex flex-col gap-2 p-2 border border-default-200 rounded-lg bg-default-50/50">
+            <div className="flex items-center justify-between">
+                <span className="text-xs font-medium text-default-600">{label}</span>
+                <Popover placement="bottom" showArrow={true}>
+                    <PopoverTrigger>
+                        <button 
+                            className="w-6 h-6 rounded-full border border-default-300 shadow-sm transition-transform hover:scale-110 active:scale-95"
+                            style={{ backgroundColor: color }} 
+                            aria-label={t("tools.qr.pickColor")}
+                        />
+                    </PopoverTrigger>
+                    <PopoverContent className="p-0 border-none shadow-xl">
+                        <HexAlphaColorPicker color={color} onChange={onChange} />
+                    </PopoverContent>
+                </Popover>
+            </div>
+            
+            <div className="space-y-1.5">
+                <Input 
                     size="sm" 
-                    variant="flat"
+                    label={t("tools.qr.hexa")} 
                     value={hexInput} 
                     onValueChange={handleHexChange} 
-                    classNames={{ 
-                        input: "font-mono text-xs", 
-                        inputWrapper: "h-6 min-h-6 bg-transparent px-0 shadow-none data-[hover=true]:bg-transparent group-hover:text-primary transition-colors" 
-                    }}
-                    startContent={<span className="text-default-400 text-xs">#</span>}
+                    classNames={{ input: "font-mono text-xs", label: "text-xs" }}
                 />
+                <div className="grid grid-cols-4 gap-1">
+                    {[
+                        { key: 'r', label: t("tools.qr.red") },
+                        { key: 'g', label: t("tools.qr.green") },
+                        { key: 'b', label: t("tools.qr.blue") },
+                        { key: 'a', label: t("tools.qr.alpha") }
+                    ].map(({ key, label }) => (
+                         <Input 
+                            key={key}
+                            size="sm" 
+                            label={label} 
+                            type="number" 
+                            step={key === 'a' ? 0.1 : 1}
+                            max={key === 'a' ? 1 : 255} 
+                            min={0}
+                            value={key === 'a' ? rgba.a.toFixed(2) : rgba[key as keyof typeof rgba].toString()} 
+                            onValueChange={(v) => handleRgbaChange(key as keyof typeof rgba, v)}
+                            classNames={{ input: "text-xs", label: "text-xs" }}
+                        />
+                    ))}
+                </div>
             </div>
-
-            <Popover placement="bottom" showArrow={true} offset={10}>
-                <PopoverTrigger>
-                    <button 
-                        className="w-8 h-8 rounded-full border-2 border-white dark:border-default-100 shadow-sm ring-1 ring-default-200 transition-transform hover:scale-105 active:scale-95 flex-none"
-                        style={{ backgroundColor: color }} 
-                        aria-label={t("tools.qr.pickColor")}
-                    />
-                </PopoverTrigger>
-                <PopoverContent className="p-3 w-[240px]">
-                    <HexAlphaColorPicker color={color} onChange={onChange} className="!w-full !h-[200px]" />
-                    <div className="grid grid-cols-4 gap-2 mt-3">
-                         {['r', 'g', 'b', 'a'].map((key) => (
-                             <Input 
-                                key={key}
-                                size="sm" 
-                                label={key.toUpperCase()} 
-                                type="number" 
-                                labelPlacement="outside"
-                                placeholder="0"
-                                value={key === 'a' ? rgba.a.toFixed(2) : rgba[key as keyof typeof rgba].toString()} 
-                                onValueChange={(v) => handleRgbaChange(key as keyof typeof rgba, v)}
-                                classNames={{ input: "text-xs px-1 text-center", label: "text-[10px] text-default-500" }}
-                            />
-                        ))}
-                    </div>
-                </PopoverContent>
-            </Popover>
         </div>
     )
 }
@@ -396,69 +400,54 @@ export function QrTool() {
   }
 
   return (
-    <div className="flex flex-col lg:flex-row h-full gap-4 overflow-hidden p-2">
-      {/* Left Panel: Configuration */}
-      <div className="flex-1 flex flex-col min-w-0 overflow-y-auto space-y-4 scrollbar-hide pb-20 lg:pb-0">
+    <div className="flex flex-col lg:flex-row h-full gap-4 overflow-hidden">
+      {/* Left Panel: Controls */}
+      <div className="flex-1 flex flex-col min-w-0 overflow-y-auto pr-2 space-y-4 scrollbar-hide">
         
-        {/* Card 1: Content Input */}
-        <div className="flex flex-col gap-4 p-4 bg-content1 rounded-2xl border border-default-200 shadow-sm">
-            <div className="flex items-center justify-between">
-                <h3 className="text-sm font-semibold text-default-700 flex items-center gap-2">
-                    <Type className="w-4 h-4 text-primary" />
-                    {t("tools.qr.content")}
-                </h3>
-                <ButtonGroup variant="flat" size="sm">
-                    <Button
-                        onPress={() => setSelectedMode("text")}
-                        color={selectedMode === "text" ? "primary" : "default"}
-                        startContent={<Type className="w-4 h-4" />}
-                        isIconOnly={false}
-                    >
-                        {t("tools.qr.text")}
-                    </Button>
-                    <Button
-                        onPress={() => setSelectedMode("wifi")}
-                        color={selectedMode === "wifi" ? "primary" : "default"}
-                        startContent={<Wifi className="w-4 h-4" />}
-                        isIconOnly={false}
-                    >
-                        {t("tools.qr.wifi")}
-                    </Button>
-                </ButtonGroup>
-            </div>
-            
+        {/* Mode Selection */}
+        <div className="flex items-center">
+            <ButtonGroup variant="flat">
+                <Button
+                    onPress={() => setSelectedMode("text")}
+                    color={selectedMode === "text" ? "primary" : "default"}
+                    startContent={<Type className="w-4 h-4" />}
+                >
+                    {t("tools.qr.text")}
+                </Button>
+                <Button
+                    onPress={() => setSelectedMode("wifi")}
+                    color={selectedMode === "wifi" ? "primary" : "default"}
+                    startContent={<Wifi className="w-4 h-4" />}
+                >
+                    {t("tools.qr.wifi")}
+                </Button>
+            </ButtonGroup>
+        </div>
+        
+        {/* Content Section */}
+        <div className="p-1">
              {selectedMode === "text" && <TextTab value={text} onChange={handleTextChange} />}
              {selectedMode === "wifi" && <WifiTab value={wifi} onChange={setWifi} />}
         </div>
 
-        {/* Card 2: Appearance */}
-        <div className="flex flex-col gap-4 p-4 bg-content1 rounded-2xl border border-default-200 shadow-sm">
-             <div className="flex items-center justify-between">
-                <h3 className="text-sm font-semibold text-default-700 flex items-center gap-2">
-                    <Zap className="w-4 h-4 text-warning" />
-                    {t("tools.qr.style")}
-                </h3>
-             </div>
-             
-             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        {/* Style Section */}
+        <div className="space-y-3 border-t border-divider pt-3">
+            <h3 className="text-xs font-semibold text-default-400 uppercase tracking-wider">{t("tools.qr.style")}</h3>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <ColorPicker label={t("tools.qr.dots")} color={qrColor} onChange={setQrColor} t={t} />
                 <ColorPicker label={t("tools.qr.background")} color={bgColor} onChange={setBgColor} t={t} />
                 <ColorPicker label={t("tools.qr.corners")} color={cornersColor} onChange={setCornersColor} t={t} />
                 <ColorPicker label={t("tools.qr.cornerDots")} color={dotsColor} onChange={setDotsColor} t={t} />
             </div>
-        </div>
 
-         {/* Card 3: Advanced Settings */}
-        <div className="flex flex-col gap-4 p-4 bg-content1 rounded-2xl border border-default-200 shadow-sm">
-             <h3 className="text-sm font-semibold text-default-700">{t("tools.qr.settings")}</h3>
-             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-3">
                  <Select 
                     label={t("tools.qr.correction")} 
                     size="sm" 
                     variant="bordered"
                     selectedKeys={[correction]}
                     onChange={(e) => setCorrection(e.target.value as any)}
-                    labelPlacement="outside"
                  >
                     <SelectItem key="L">{t("tools.qr.low")}</SelectItem>
                     <SelectItem key="M">{t("tools.qr.medium")}</SelectItem>
@@ -466,102 +455,83 @@ export function QrTool() {
                     <SelectItem key="H">{t("tools.qr.high")}</SelectItem>
                  </Select>
 
-                 <div className="flex flex-col gap-2">
-                    <span className="text-small text-default-500">{t("tools.qr.logo")}</span>
-                    <div className="flex items-center gap-2 border border-default-200 rounded-xl px-3 bg-default-50/50 h-10 hover:border-default-300 transition-colors">
-                        {logo ? (
-                            <div className="flex items-center gap-2 w-full justify-between">
-                                <div className="flex items-center gap-2">
-                                    <img src={logo} alt={t("tools.qr.logoAlt")} className="w-6 h-6 object-contain" />
-                                    <span className="text-xs text-default-500 truncate max-w-[100px]">Logo Set</span>
-                                </div>
-                                <Button isIconOnly size="sm" variant="light" color="danger" onPress={() => setLogo("")}>
-                                    <X className="w-3 h-3" />
-                                </Button>
-                            </div>
-                        ) : (
-                            <Button 
-                                variant="light" 
-                                size="sm"
-                                className="w-full justify-start text-default-500 px-0 data-[hover=true]:bg-transparent" 
-                                startContent={<Upload className="w-3 h-3" />}
-                                onPress={handleLogoSelect}
-                            >
-                                {t("tools.qr.uploadLogo")}
+                 <div className="flex items-center gap-2 border border-default-200 rounded-xl px-3 bg-default-50/50 h-10">
+                    {logo ? (
+                        <div className="flex items-center gap-2 w-full justify-between">
+                            <img src={logo} alt={t("tools.qr.logoAlt")} className="w-6 h-6 object-contain" />
+                            <Button isIconOnly size="sm" variant="light" color="danger" onPress={() => setLogo("")}>
+                                <X className="w-3 h-3" />
                             </Button>
-                        )}
-                    </div>
+                        </div>
+                    ) : (
+                        <Button 
+                            variant="light" 
+                            size="sm"
+                            className="w-full justify-start text-default-500 px-0" 
+                            startContent={<Upload className="w-3 h-3" />}
+                            onPress={handleLogoSelect}
+                        >
+                            {t("tools.qr.uploadLogo")}
+                        </Button>
+                    )}
                  </div>
-             </div>
+            </div>
+        </div>
+
+        {/* Actions Section */}
+        <div className="space-y-3 border-t border-divider pt-3 pb-8">
+            <div className="flex items-center justify-between">
+                 <div className="flex items-center gap-2">
+                    <Switch size="sm" isSelected={realTime} onValueChange={setRealTime}>
+                        <span className="text-small text-default-600">{t("tools.qr.realtime")}</span>
+                    </Switch>
+                 </div>
+                 <Button size="sm" variant="flat" color="warning" onPress={handleReset} startContent={<RotateCcw className="w-3 h-3" />}>
+                     {t("tools.qr.reset")}
+                 </Button>
+            </div>
+
+            <div className="flex items-end gap-3">
+                <Input 
+                    label={t("tools.qr.width")}
+                    type="number" 
+                    variant="bordered"
+                    size="sm"
+                    value={width.toString()} 
+                    onValueChange={(v) => setWidth(Number(v))}
+                    className="w-24"
+                    classNames={{ label: "text-xs" }}
+                />
+                <Button 
+                    className="flex-1" 
+                    color="primary" 
+                    onPress={handleGenerate}
+                    isDisabled={realTime}
+                    startContent={<Zap className="w-4 h-4" />}
+                >
+                    {t("tools.qr.generate")}
+                </Button>
+                <Button 
+                    className="flex-1" 
+                    color="secondary" 
+                    onPress={handleDownload}
+                    startContent={<Download className="w-4 h-4" />}
+                >
+                    {t("tools.qr.download")}
+                </Button>
+            </div>
         </div>
       </div>
 
-      {/* Right Panel: Preview & Actions */}
-      <div className="flex-none w-full lg:w-[360px] flex flex-col gap-4 h-full min-h-[500px]">
-           {/* Preview Card */}
-          <div className="flex-1 bg-default-50/50 rounded-2xl border border-default-200 flex flex-col items-center justify-center p-6 relative overflow-hidden shadow-inner group">
-              <div className="absolute inset-0 bg-grid-slate-200/50 [mask-image:linear-gradient(0deg,white,rgba(255,255,255,0.6))] pointer-events-none" />
-              
-              <div className="bg-white p-4 rounded-xl shadow-lg border border-default-100 relative z-10 transition-all duration-300 group-hover:shadow-xl group-hover:scale-[1.02]" ref={ref} />
-              
-              <div className="mt-6 text-center text-default-400 text-xs font-mono break-all px-4 py-2 bg-white/50 backdrop-blur-md rounded-lg border border-default-100 max-w-full">
-                 {selectedMode === "wifi" ? t("tools.qr.wifiPreview", { ssid: wifi.ssid }) : t("tools.qr.preview")}
-              </div>
+      {/* Right Panel: Preview */}
+      <div className="flex-none w-full lg:w-[350px] bg-default-50/50 rounded-2xl border border-default-200 flex flex-col items-center justify-center p-6 relative">
+          <div className="absolute inset-0 bg-grid-slate-200/50 [mask-image:linear-gradient(0deg,white,rgba(255,255,255,0.6))] pointer-events-none" />
+          
+          <div className="bg-white p-4 rounded-xl shadow-lg border border-default-100 relative z-10 transition-all duration-300 hover:shadow-xl" ref={ref} />
+          
+          <div className="mt-4 text-center text-default-400 text-xs font-mono break-all px-4">
+             {selectedMode === "wifi" ? t("tools.qr.wifiPreview", { ssid: wifi.ssid }) : t("tools.qr.preview")}
           </div>
-           
-           {/* Actions Card */}
-           <div className="bg-content1 rounded-2xl border border-default-200 p-5 shadow-sm space-y-4 shrink-0">
-                <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium text-default-700">{t("tools.qr.realtime")}</span>
-                    <Switch size="sm" isSelected={realTime} onValueChange={setRealTime} />
-                </div>
-                
-                <div className="flex items-center justify-between gap-3">
-                    <span className="text-sm font-medium text-default-700 whitespace-nowrap">{t("tools.qr.width")}</span>
-                    <Input 
-                        type="number" 
-                        variant="bordered"
-                        size="sm"
-                        value={width.toString()} 
-                        onValueChange={(v) => setWidth(Number(v))}
-                        className="w-28"
-                        endContent={<span className="text-default-400 text-xs">px</span>}
-                    />
-                </div>
-
-                <div className="pt-2 flex flex-col gap-2">
-                     <div className="flex gap-2">
-                        <Button 
-                            className="flex-1" 
-                            color="primary" 
-                            onPress={handleGenerate}
-                            isDisabled={realTime}
-                            startContent={<Zap className="w-4 h-4" />}
-                            variant={realTime ? "flat" : "solid"}
-                        >
-                            {t("tools.qr.generate")}
-                        </Button>
-                        <Button 
-                            isIconOnly
-                            variant="flat" 
-                            color="warning" 
-                            onPress={handleReset} 
-                            title={t("tools.qr.reset")}
-                        >
-                             <RotateCcw className="w-4 h-4" />
-                        </Button>
-                     </div>
-                    <Button 
-                        className="w-full" 
-                        color="secondary" 
-                        onPress={handleDownload}
-                        startContent={<Download className="w-4 h-4" />}
-                        variant="shadow"
-                    >
-                        {t("tools.qr.download")}
-                    </Button>
-                </div>
-           </div>
       </div>
 
       {/* Hidden container for download generation */}
