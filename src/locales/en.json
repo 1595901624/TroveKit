@@ -21,6 +21,10 @@
         "title": "Hash & Crypto",
         "desc": "Generate MD5, SHA hashes and more."
       },
+      "classical": {
+        "title": "Classical Ciphers",
+        "desc": "Caesar cipher and other historical methods."
+      },
       "encoder": {
         "title": "Encoders",
         "desc": "Base64, URL, HTML encoding tools."

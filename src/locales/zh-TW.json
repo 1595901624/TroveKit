@@ -21,6 +21,10 @@
         "title": "雜湊 & 加密",
         "desc": "生成 MD5, SHA 雜湊等。"
       },
+      "classical": {
+        "title": "古典密碼",
+        "desc": "體驗凱撒密碼等歷史悠久的加密方法。"
+      },
       "encoder": {
         "title": "編碼工具",
         "desc": "Base64, URL, HTML 編碼轉換。"

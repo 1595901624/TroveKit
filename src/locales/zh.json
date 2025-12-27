@@ -21,6 +21,10 @@
         "title": "哈希 & 加密",
         "desc": "生成 MD5, SHA 哈希等。"
       },
+      "classical": {
+        "title": "古典密码",
+        "desc": "体验凯撒密码等历史悠久的加密方法。"
+      },
       "encoder": {
         "title": "编码工具",
         "desc": "Base64, URL, HTML 编码转换。"

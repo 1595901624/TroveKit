@@ -21,6 +21,10 @@
         "title": "ハッシュ & 暗号化",
         "desc": "MD5、SHA ハッシュなどを生成。"
       },
+      "classical": {
+        "title": "古典暗号",
+        "desc": "シーザー暗号などの歴史的な暗号化手法。"
+      },
       "encoder": {
         "title": "エンコーダー",
         "desc": "Base64、URL、HTML エンコーディングツール。"

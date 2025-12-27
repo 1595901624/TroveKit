@@ -8,7 +8,7 @@ import { Settings } from "./tools/Settings"
 import { FormatterTool } from "./tools/FormatterTool"
 import { ToolId } from "./components/Sidebar"
 import { Card, CardBody, Button } from "@heroui/react"
-import { ArrowRight, Sparkles, Lock, Code2, FileCode2 } from "lucide-react"
+import { ArrowRight, Sparkles, Lock, Code2, FileCode2, Shield } from "lucide-react"
 import { useTranslation } from "react-i18next"
 
 function App() {
@@ -103,6 +103,14 @@ function HomeView({ onNavigate }: { onNavigate: (id: ToolId) => void }) {
       icon: <Lock className="w-6 h-6" />,
       gradient: "from-blue-500/20 to-indigo-500/20",
       iconColor: "text-blue-600 dark:text-blue-400"
+    },
+    { 
+      id: "classical", 
+      title: t("home.cards.classical.title"), 
+      desc: t("home.cards.classical.desc"), 
+      icon: <Shield className="w-6 h-6" />,
+      gradient: "from-orange-500/20 to-red-500/20",
+      iconColor: "text-orange-600 dark:text-orange-400"
     },
     { 
       id: "encoder", 
