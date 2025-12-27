@@ -22,6 +22,7 @@
       ]
     },
     "dialog:default",
-    "fs:default"
+    "fs:default",
+    "fs:write-all"
   ]
 }

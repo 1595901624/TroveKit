@@ -166,7 +166,7 @@ export function QrTool() {
   })
 
   // Settings State
-  const [width, setWidth] = useState(128)
+  const [width, setWidth] = useState(512)
   const [realTime, setRealTime] = useState(true)
   const [qrColor, setQrColor] = useState(DEFAULT_OPTIONS.qrColor)
   const [bgColor, setBgColor] = useState(DEFAULT_OPTIONS.bgColor)
@@ -363,7 +363,7 @@ export function QrTool() {
       setCornersColor(DEFAULT_OPTIONS.qrColor)
       setCorrection(DEFAULT_OPTIONS.correction)
       setLogo("")
-      setWidth(128)
+      setWidth(512)
       if (realTime) setTimeout(() => updateQr(), 50)
   }
 
