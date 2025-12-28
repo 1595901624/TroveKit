@@ -2,7 +2,7 @@
 <img src="app-icon.svg" width="48" height="48">
 <h1>TroveKit</h1>
 
-一个轻量、离线优先的跨平台开发者工具箱。
+一个轻量、纯离线的跨平台开发者工具箱。
 
 [English](README.md) | 简体中文
 </div>
@@ -22,12 +22,12 @@
 你可能经常需要这些“小工具”：哈希、加解密、编码、JSON 格式化、二维码、简单古典密码……
 TroveKit 把它们集中到一个桌面应用里，尽量做到：
 
-- **离线优先**：能本地算的就本地算
+- **纯离线**：所有数据处理都在本地
 - **操作快**：输入即见结果（支持实时更新）
 - **可追溯**：带操作日志与一键复制
 - **跨平台**：Windows / macOS / Linux
 
-TroveKit 基于 [Tauri v2](https://v2.tauri.app/) + [React](https://react.dev/) 构建，主打本地优先与高效体验。
+TroveKit 基于 [Tauri v2](https://v2.tauri.app/) + [React](https://react.dev/) 构建，主打纯离线与高效体验。
 
 ## ✨ 主要功能
 
@@ -137,8 +137,8 @@ pnpm tauri build
 
 ## 🔒 隐私说明（Privacy）
 
-- TroveKit 的定位是 **本地工具箱**：绝大多数功能可离线使用。
-- 输入内容主要在本地处理；若未来新增需要联网的能力，建议在 README/界面中明确提示。
+- TroveKit 的定位是 **纯离线工具箱**：所有功能均可离线使用。
+- 输入内容在本地处理；不会向外部服务器发送任何数据。
 
 ## 📂 Project Structure
 

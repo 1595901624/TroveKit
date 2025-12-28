@@ -2,7 +2,7 @@
 <img src="app-icon.svg" width="48" height="48">
 <h1>TroveKit</h1>
 
-A lightweight, offline-first, cross-platform developer toolbox.
+A lightweight, pure offline, cross-platform developer toolbox.
 
 English | [简体中文](README.zh-CN.md)
 </div>
@@ -22,12 +22,12 @@ English | [简体中文](README.zh-CN.md)
 You probably use these “small utilities” all the time—hashing, encryption/decryption, encoding/decoding, JSON formatting, QR codes, and simple classical ciphers.
 TroveKit bundles them into a fast desktop app, aiming for:
 
-- **Offline-first**: process data locally whenever possible
+- **Pure offline**: all data processing is local
 - **Fast workflow**: instant results (real-time updates supported)
 - **Traceable**: operation logs + one-click copy
 - **Cross-platform**: Windows / macOS / Linux
 
-Built with [Tauri v2](https://v2.tauri.app/) + [React](https://react.dev/), TroveKit focuses on a local-first workflow.
+Built with [Tauri v2](https://v2.tauri.app/) + [React](https://react.dev/), TroveKit focuses on a pure offline workflow.
 
 ## ✨ Highlights
 
@@ -138,8 +138,8 @@ pnpm tauri build
 
 ## 🔒 Privacy
 
-- TroveKit is designed as a **local toolbox**: most utilities work offline.
-- Inputs are primarily processed locally; if network features are added in the future, they should be clearly disclosed in the UI/README.
+- TroveKit is designed as a **pure offline toolbox**: all utilities work offline.
+- Inputs are processed locally; no data is sent to external servers.
 
 ## 📂 Project Structure
 
