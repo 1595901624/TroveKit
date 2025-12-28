@@ -1,64 +1,86 @@
 <div align="center">
 <img src="app-icon.svg" width="48" height="48">
 <h1>TroveKit</h1>
+
+A lightweight, offline-first, cross-platform developer toolbox.
+
+English | [简体中文](README.zh-CN.md)
 </div>
 
 ![Version](https://img.shields.io/badge/version-v0.1.5-blue)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 ![Windows](https://img.shields.io/badge/Windows-Supported-blue) ![macOS](https://img.shields.io/badge/macOS-Supported-blue) ![Linux](https://img.shields.io/badge/Linux-Supported-blue)
 
-
-**TroveKit** 是一个现代、跨平台的开发者工具箱（离线优先），基于 [Tauri v2](https://v2.tauri.app/) + [React](https://react.dev/) 构建。
-它把常用的小工具集中到一个轻量桌面应用里：**界面清爽、响应迅速、数据尽量只在本地处理**。
-
-**TroveKit** is a modern, cross-platform, offline-first developer toolbox built with [Tauri v2](https://v2.tauri.app/) and [React](https://react.dev/).
-It bundles everyday utilities into one fast desktop app with a clean UI and local-first workflows.
-
 ![Home Dashboard](demo/home.png)
 
-## ✨ Features
+## Why TroveKit
 
-### 🧰 Current Utilities
+You probably use these “small utilities” all the time—hashing, encryption/decryption, encoding/decoding, JSON formatting, QR codes, and simple classical ciphers.
+TroveKit bundles them into a fast desktop app, aiming for:
 
-- **📷 QR Code Generator**
-  - Generate QR codes from **Text / URL**.
-  - Generate **Wi‑Fi QR codes** (SSID / password / encryption / hidden).
-  - Customize **colors**, **error correction level**, and add an optional **logo**.
-  - Export as **PNG** (supports Unicode such as Chinese via UTF‑8 encoding).
+- **Offline-first**: process data locally whenever possible
+- **Fast workflow**: instant results (real-time updates supported)
+- **Traceable**: operation logs + one-click copy
+- **Cross-platform**: Windows / macOS / Linux
 
-- **🔐 Classical Ciphers**
-  - **Caesar Cipher** encode/decode with configurable shift.
-  - Flexible handling for non-letter characters (keep / ignore / shift ASCII).
+Built with [Tauri v2](https://v2.tauri.app/) + [React](https://react.dev/), TroveKit focuses on a local-first workflow.
 
-- **🔒 Hash & Cryptography**
-  - **MD5**: Support for 16-bit and 32-bit hashes with customizable case (Upper/Lower).
-  - **SHA Family**: Support for SHA1, SHA224, SHA256, SHA384, SHA512, and SHA3.
-  - **AES**: Support for CBC, ECB, OFB, CFB, and CTR modes.
-  - *More algorithms coming soon!*
+## ✨ Highlights
 
-- **🔢 Encoders & Decoders**
-  - **Common**: Real-time URL and Base64 encoding/decoding.
-  - **Advanced**: Base32, Hex (Base16), Base58, Base62, Base91, and custom alphabets.
+- All-in-one utilities: Hash / AES / Encoders-Decoders / JSON / QR / Caesar cipher
+- Modern UI: light/dark theme, responsive layout, smooth animations
+- i18n: English / 简体中文 / 繁體中文（HK/TW）/ 日本語
+- Logs & toasts: history, error feedback, copy buttons
 
-- **📝 Formatters**
-  - **JSON**: Format, compress, validate, and visualize JSON in tree structure.
+## 🧰 Utilities
 
-- **🧾 Operation Logs & Toasts**
-  - Built-in side panel to track operation history.
-  - Structured view for methods, inputs, and outputs.
-  - Toast notifications for errors/success, plus one-click copy.
+### 📷 QR Code Generator
 
-### 🚀 Coming Soon
-- **Formatters**: Prettify and validate XML, SQL, and YAML.
-- **Generators**: UUIDs, Lorem Ipsum text, Random Passwords, and more.
+- Generate QR codes from **Text / URL**
+- Generate **Wi‑Fi QR codes** (SSID / password / encryption / hidden)
+- Customize style: colors, error correction level, optional logo
+- Export **PNG** (Unicode supported)
 
-### 🎨 Modern UI/UX
-- **Theme**: Dark/Light mode support with system sync.
-- **Visuals**: Clean interface built with **HeroUI** and **TailwindCSS**.
-- **Animations**: Smooth transitions powered by **Framer Motion**.
+### 🔐 Classical Ciphers
 
-### 🌍 Internationalization
-- **Languages**: English, Simplified Chinese (简体中文), Traditional Chinese (繁體中文 - HK/TW), and Japanese (日本語).
+- **Caesar Cipher**: encode/decode with configurable shift
+- Non-letter handling: keep / ignore / shift ASCII (experimental; may produce non-printable characters)
+
+### 🔒 Hash & Cryptography
+
+- **MD5**: 16 / 32 chars, upper/lower case
+- **SHA family**: SHA1 / SHA224 / SHA256 / SHA384 / SHA512 / SHA3
+- **AES**: CBC / ECB / OFB / CFB / CTR
+
+### 🔢 Encoders & Decoders
+
+- Real-time URL / Base64 encode & decode
+- Base32 / Hex(Base16) / Base58 / Base62 / Base91 / custom alphabets
+
+### 📝 Formatters
+
+- **JSON**: format, minify, validate, and tree view
+
+### 🧾 Logs & Toasts
+
+- Side panel for operation history
+- Structured method/input/output view
+- Error/success toasts + one-click copy
+
+## 🗺️ Roadmap
+
+- Formatters: XML / SQL / YAML
+- Generators: UUID / Lorem Ipsum / random passwords, etc.
+
+## 🎨 UI / UX
+
+- **Theme**: Dark/Light mode with system sync
+- **Visuals**: built with **HeroUI** and **TailwindCSS**
+- **Animations**: powered by **Framer Motion**
+
+## 🌍 Internationalization
+
+- **Languages**: English, Simplified Chinese (简体中文), Traditional Chinese (繁體中文 - HK/TW), and Japanese (日本語)
 
 ## 📸 Screenshots
 
@@ -70,7 +92,7 @@ It bundles everyday utilities into one fast desktop app with a clean UI and loca
 |:---:|:---:|
 | ![Log Panel](demo/log-panel.png) | ![Settings](demo/settings.png) |
 
-> Note: QR / Caesar screenshots will be added as the demo gallery expands.
+> Note: QR / Caesar screenshots will be added to the demo gallery later.
 
 ## 🚀 Tech Stack
 
@@ -85,32 +107,35 @@ It bundles everyday utilities into one fast desktop app with a clean UI and loca
 
 ### Prerequisites
 
-- [Node.js](https://nodejs.org/) (v18+)
-- [Rust](https://www.rust-lang.org/tools/install) (Latest Stable)
-- [pnpm](https://pnpm.io/)
+- Node.js 18+
+- pnpm
+- Rust (stable)
+- Tauri v2 system dependencies (vary by OS; see Tauri docs if your first build fails)
 
-### Installation
+### Install
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/your-username/trovekit.git
-   cd trovekit
-   ```
+```bash
+git clone <repo-url>
+cd trovekit
+pnpm install
+```
 
-2. **Install dependencies**
-   ```bash
-   pnpm install
-   ```
+### Development
 
-3. **Run in development mode**
-   ```bash
-   pnpm tauri dev
-   ```
+```bash
+pnpm tauri dev
+```
 
-4. **Build for production**
-   ```bash
-   pnpm tauri build
-   ```
+### Build
+
+```bash
+pnpm tauri build
+```
+
+## 🔒 Privacy
+
+- TroveKit is designed as a **local toolbox**: most utilities work offline.
+- Inputs are primarily processed locally; if network features are added in the future, they should be clearly disclosed in the UI/README.
 
 ## 📂 Project Structure
 
@@ -126,6 +151,14 @@ TroveKit/
 │   └── styles/      # Global CSS
 └── public/          # Static assets
 ```
+
+## 🤝 Contributing
+
+Issues and PRs are welcome:
+
+- New utility ideas (more formatters/generators)
+- Bug fixes and UI/UX improvements
+- Copy & translation improvements (`src/locales/`)
 
 ## 📄 License
 
