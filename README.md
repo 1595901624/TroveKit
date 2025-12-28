@@ -3,18 +3,32 @@
 <h1>TroveKit</h1>
 </div>
 
-![Version](https://img.shields.io/badge/version-v0.1.4-blue)
+![Version](https://img.shields.io/badge/version-v0.1.5-blue)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 ![Windows](https://img.shields.io/badge/Windows-Supported-blue) ![macOS](https://img.shields.io/badge/macOS-Supported-blue) ![Linux](https://img.shields.io/badge/Linux-Supported-blue)
 
 
-**TroveKit** is a modern, cross-platform developer toolbox built with [Tauri v2](https://v2.tauri.app/) and [React](https://react.dev/). It provides a suite of essential utilities wrapped in a beautiful, responsive user interface designed for efficiency, privacy, and offline use.
+**TroveKit** 是一个现代、跨平台的开发者工具箱（离线优先），基于 [Tauri v2](https://v2.tauri.app/) + [React](https://react.dev/) 构建。
+它把常用的小工具集中到一个轻量桌面应用里：**界面清爽、响应迅速、数据尽量只在本地处理**。
+
+**TroveKit** is a modern, cross-platform, offline-first developer toolbox built with [Tauri v2](https://v2.tauri.app/) and [React](https://react.dev/).
+It bundles everyday utilities into one fast desktop app with a clean UI and local-first workflows.
 
 ![Home Dashboard](demo/home.png)
 
 ## ✨ Features
 
-### 🛠️ Current Utilities
+### 🧰 Current Utilities
+
+- **📷 QR Code Generator**
+  - Generate QR codes from **Text / URL**.
+  - Generate **Wi‑Fi QR codes** (SSID / password / encryption / hidden).
+  - Customize **colors**, **error correction level**, and add an optional **logo**.
+  - Export as **PNG** (supports Unicode such as Chinese via UTF‑8 encoding).
+
+- **🔐 Classical Ciphers**
+  - **Caesar Cipher** encode/decode with configurable shift.
+  - Flexible handling for non-letter characters (keep / ignore / shift ASCII).
 
 - **🔒 Hash & Cryptography**
   - **MD5**: Support for 16-bit and 32-bit hashes with customizable case (Upper/Lower).
@@ -29,11 +43,10 @@
 - **📝 Formatters**
   - **JSON**: Format, compress, validate, and visualize JSON in tree structure.
 
-- **📝 Operation Logs**
-  - Integrated side-panel to track history.
+- **🧾 Operation Logs & Toasts**
+  - Built-in side panel to track operation history.
   - Structured view for methods, inputs, and outputs.
-  - **Error Toast Notifications**: Immediate visual feedback for failed operations.
-  - One-click copy functionality.
+  - Toast notifications for errors/success, plus one-click copy.
 
 ### 🚀 Coming Soon
 - **Formatters**: Prettify and validate XML, SQL, and YAML.
@@ -57,6 +70,8 @@
 |:---:|:---:|
 | ![Log Panel](demo/log-panel.png) | ![Settings](demo/settings.png) |
 
+> Note: QR / Caesar screenshots will be added as the demo gallery expands.
+
 ## 🚀 Tech Stack
 
 - **Core**: [Rust](https://www.rust-lang.org/) & [Tauri v2](https://tauri.app/)
@@ -64,6 +79,7 @@
 - **Build Tool**: [Vite](https://vitejs.dev/)
 - **UI Framework**: [HeroUI](https://www.heroui.com/) & [Tailwind CSS](https://tailwindcss.com/)
 - **State & Logic**: [Framer Motion](https://www.framer.com/motion/), [i18next](https://www.i18next.com/), [crypto-js](https://cryptojs.gitbook.io/)
+- **QR Rendering**: [qr-code-styling](https://www.npmjs.com/package/qr-code-styling)
 
 ## 🛠️ Getting Started
 
@@ -104,7 +120,7 @@ TroveKit/
 ├── src/             # React frontend source code
 │   ├── components/  # UI Components (Sidebar, LogPanel, Toast, etc.)
 │   ├── contexts/    # Context Providers (LogContext, ToastContext)
-│   ├── tools/       # Tool Views (HashTool, EncoderTool, Settings)
+│   ├── tools/       # Tool Views (Hash, Encoder, Formatter, QR, Classical, Settings)
 │   ├── locales/     # i18n JSON files
 │   ├── lib/         # Utilities (Base32, etc.)
 │   └── styles/      # Global CSS
