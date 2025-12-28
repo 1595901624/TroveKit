@@ -7,9 +7,13 @@ A lightweight, offline-first, cross-platform developer toolbox.
 English | [简体中文](README.zh-CN.md)
 </div>
 
-![Version](https://img.shields.io/badge/version-v0.1.5-blue)
-[![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
-![Windows](https://img.shields.io/badge/Windows-Supported-blue) ![macOS](https://img.shields.io/badge/macOS-Supported-blue) ![Linux](https://img.shields.io/badge/Linux-Supported-blue)
+<div align="center">
+<img src="https://img.shields.io/badge/version-v0.1.5-blue" alt="Version">
+<a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-green" alt="License"></a>
+<img src="https://img.shields.io/badge/Windows-Supported-blue" alt="Windows">
+<img src="https://img.shields.io/badge/macOS-Supported-blue" alt="macOS">
+<img src="https://img.shields.io/badge/Linux-Supported-blue" alt="Linux">
+</div>
 
 ![Home Dashboard](demo/home.png)
 
