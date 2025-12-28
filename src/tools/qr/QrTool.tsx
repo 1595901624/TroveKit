@@ -90,7 +90,7 @@ function ColorPicker({ label, color, onChange, t }: ColorPickerProps) {
                     <PopoverTrigger>
                         <button 
                             className="w-6 h-6 rounded-full border border-default-300 shadow-sm transition-transform hover:scale-110 active:scale-95"
-                            style={{ backgroundColor: color }} 
+                            style={{ backgroundColor: color }}
                             aria-label={t("tools.qr.pickColor")}
                         />
                     </PopoverTrigger>
@@ -108,7 +108,7 @@ function ColorPicker({ label, color, onChange, t }: ColorPickerProps) {
                     onValueChange={handleHexChange} 
                     classNames={{ input: "font-mono text-xs", label: "text-xs" }}
                 />
-                <div className="grid grid-cols-4 gap-1">
+                <div className="grid grid-cols-2 gap-1">
                     {[
                         { key: 'r', label: t("tools.qr.red") },
                         { key: 'g', label: t("tools.qr.green") },
@@ -316,7 +316,7 @@ export function QrTool() {
     }
 
     try {
-        const options = getQrOptions({ 
+        const options = getQrOptions({
             width: width, 
             height: width,
             type: "canvas"
@@ -404,8 +404,8 @@ export function QrTool() {
       {/* Left Panel: Controls */}
       <div className="flex-1 flex flex-col min-w-0 overflow-y-auto pr-2 space-y-4 scrollbar-hide">
         
-        {/* Mode Selection */}
-        <div className="flex items-center">
+        {/* Mode Selection & Reset */}
+        <div className="flex items-center justify-between">
             <ButtonGroup variant="flat">
                 <Button
                     onPress={() => setSelectedMode("text")}
@@ -422,6 +422,9 @@ export function QrTool() {
                     {t("tools.qr.wifi")}
                 </Button>
             </ButtonGroup>
+            <Button size="sm" variant="light" color="warning" onPress={handleReset} startContent={<RotateCcw className="w-3 h-3" />}>
+                 {t("tools.qr.reset")}
+            </Button>
         </div>
         
         {/* Content Section */}
@@ -430,18 +433,10 @@ export function QrTool() {
              {selectedMode === "wifi" && <WifiTab value={wifi} onChange={setWifi} />}
         </div>
 
-        {/* Style Section */}
+        {/* Configuration Section */}
         <div className="space-y-3 border-t border-divider pt-3">
-            <h3 className="text-xs font-semibold text-default-400 uppercase tracking-wider">{t("tools.qr.style")}</h3>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                <ColorPicker label={t("tools.qr.dots")} color={qrColor} onChange={setQrColor} t={t} />
-                <ColorPicker label={t("tools.qr.background")} color={bgColor} onChange={setBgColor} t={t} />
-                <ColorPicker label={t("tools.qr.corners")} color={cornersColor} onChange={setCornersColor} t={t} />
-                <ColorPicker label={t("tools.qr.cornerDots")} color={dotsColor} onChange={setDotsColor} t={t} />
-            </div>
-
-            <div className="grid grid-cols-2 gap-3">
+             <h3 className="text-xs font-semibold text-default-400 uppercase tracking-wider">{t("settings.title")}</h3>
+             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                  <Select 
                     label={t("tools.qr.correction")} 
                     size="sm" 
@@ -478,32 +473,46 @@ export function QrTool() {
             </div>
         </div>
 
-        {/* Actions Section */}
+        {/* Style Section */}
         <div className="space-y-3 border-t border-divider pt-3 pb-8">
-            <div className="flex items-center justify-between">
-                 <div className="flex items-center gap-2">
-                    <Switch size="sm" isSelected={realTime} onValueChange={setRealTime}>
-                        <span className="text-small text-default-600">{t("tools.qr.realtime")}</span>
-                    </Switch>
-                 </div>
-                 <Button size="sm" variant="flat" color="warning" onPress={handleReset} startContent={<RotateCcw className="w-3 h-3" />}>
-                     {t("tools.qr.reset")}
-                 </Button>
+            <h3 className="text-xs font-semibold text-default-400 uppercase tracking-wider">{t("tools.qr.style")}</h3>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <ColorPicker label={t("tools.qr.dots")} color={qrColor} onChange={setQrColor} t={t} />
+                <ColorPicker label={t("tools.qr.background")} color={bgColor} onChange={setBgColor} t={t} />
+                <ColorPicker label={t("tools.qr.corners")} color={cornersColor} onChange={setCornersColor} t={t} />
+                <ColorPicker label={t("tools.qr.cornerDots")} color={dotsColor} onChange={setDotsColor} t={t} />
             </div>
+        </div>
+      </div>
 
-            <div className="flex items-end gap-3">
-                <Input 
-                    label={t("tools.qr.width")}
-                    type="number" 
-                    variant="bordered"
-                    size="sm"
-                    value={width.toString()} 
-                    onValueChange={(v) => setWidth(Number(v))}
-                    className="w-24"
-                    classNames={{ label: "text-xs" }}
-                />
-                <Button 
-                    className="flex-1" 
+      {/* Right Panel: Preview & Actions */}
+      <div className="flex-none w-full lg:w-[350px] flex flex-col gap-4">
+          {/* Actions Bar (Moved from Left) */}
+          <div className="bg-default-50/50 p-4 rounded-xl border border-default-200 space-y-4">
+             {/* Row 1: Size & Realtime */}
+             <div className="flex items-center justify-between">
+                 <div className="flex items-center gap-2">
+                    <span className="text-small text-default-600">{t("tools.qr.width")}</span>
+                    <Input 
+                        type="number" 
+                        size="sm" 
+                        variant="bordered"
+                        value={width.toString()} 
+                        onValueChange={(v) => setWidth(Number(v))}
+                        className="w-20"
+                        classNames={{ input: "text-right" }}
+                    />
+                 </div>
+                 <Switch size="sm" isSelected={realTime} onValueChange={setRealTime}>
+                    <span className="text-small text-default-600">{t("tools.qr.realtime")}</span>
+                 </Switch>
+             </div>
+
+             {/* Row 2: Actions */}
+             <div className="grid grid-cols-2 gap-2">
+                 <Button 
+                    className="w-full" 
                     color="primary" 
                     onPress={handleGenerate}
                     isDisabled={realTime}
@@ -512,25 +521,25 @@ export function QrTool() {
                     {t("tools.qr.generate")}
                 </Button>
                 <Button 
-                    className="flex-1" 
+                    className="w-full" 
                     color="secondary" 
                     onPress={handleDownload}
                     startContent={<Download className="w-4 h-4" />}
                 >
                     {t("tools.qr.download")}
                 </Button>
-            </div>
-        </div>
-      </div>
+             </div>
+          </div>
 
-      {/* Right Panel: Preview */}
-      <div className="flex-none w-full lg:w-[350px] bg-default-50/50 rounded-2xl border border-default-200 flex flex-col items-center justify-center p-6 relative">
-          <div className="absolute inset-0 bg-grid-slate-200/50 [mask-image:linear-gradient(0deg,white,rgba(255,255,255,0.6))] pointer-events-none" />
-          
-          <div className="bg-white p-4 rounded-xl shadow-lg border border-default-100 relative z-10 transition-all duration-300 hover:shadow-xl" ref={ref} />
-          
-          <div className="mt-4 text-center text-default-400 text-xs font-mono break-all px-4">
-             {selectedMode === "wifi" ? t("tools.qr.wifiPreview", { ssid: wifi.ssid }) : t("tools.qr.preview")}
+          {/* Preview Box */}
+          <div className="flex-1 bg-default-50/50 rounded-2xl border border-default-200 flex flex-col items-center justify-center p-6 relative min-h-[300px]">
+              <div className="absolute inset-0 bg-grid-slate-200/50 [mask-image:linear-gradient(0deg,white,rgba(255,255,255,0.6))] pointer-events-none" />
+              
+              <div className="bg-white p-4 rounded-xl shadow-lg border border-default-100 relative z-10 transition-all duration-300 hover:shadow-xl" ref={ref} />
+              
+              <div className="mt-4 text-center text-default-400 text-xs font-mono break-all px-4">
+                 {selectedMode === "wifi" ? t("tools.qr.wifiPreview", { ssid: wifi.ssid }) : t("tools.qr.preview")}
+              </div>
           </div>
       </div>
 
