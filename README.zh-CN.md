@@ -4,7 +4,7 @@
 
 一个轻量、纯离线的跨平台开发者工具箱。
 
-[English](README.md) | 简体中文
+[English](README.md) | 简体中文 | [繁體中文（香港）](README.zh-HK.md) | [繁體中文（台灣）](README.zh-TW.md) | [日本語](README.ja.md)
 </div>
 
 <div align="center">

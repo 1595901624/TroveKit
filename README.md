@@ -4,7 +4,7 @@
 
 A lightweight, pure offline, cross-platform developer toolbox.
 
-English | [简体中文](README.zh-CN.md)
+English | [简体中文](README.zh-CN.md) | [繁體中文（香港）](README.zh-HK.md) | [繁體中文（台灣）](README.zh-TW.md) | [日本語](README.ja.md)
 </div>
 
 <div align="center">

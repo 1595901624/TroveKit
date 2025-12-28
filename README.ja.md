@@ -1,0 +1,159 @@
+<div align="center">
+<img src="app-icon.svg" width="48" height="48">
+<h1>TroveKit</h1>
+
+軽量で純粋にオフラインのクロスプラットフォーム開発者ツールボックス。
+
+[English](README.md) | [簡體中文](README.zh-CN.md) | [繁體中文（香港）](README.zh-HK.md) | [繁體中文（台灣）](README.zh-TW.md) | 日本語
+</div>
+
+<div align="center">
+<img src="https://img.shields.io/badge/version-v0.1.5-blue" alt="Version">
+<a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-green" alt="License"></a>
+<img src="https://img.shields.io/badge/Windows-Supported-blue" alt="Windows">
+<img src="https://img.shields.io/badge/macOS-Supported-blue" alt="macOS">
+<img src="https://img.shields.io/badge/Linux-Supported-blue" alt="Linux">
+</div>
+
+![Home Dashboard](demo/home.png)
+
+## TroveKit とは
+
+あなたはおそらくこれらの「小さなユーティリティ」をいつも使っているでしょう—ハッシュ、暗号化/復号化、エンコード/デコード、JSON フォーマット、QR コード、シンプルな古典暗号……
+TroveKit はそれらを高速なデスクトップアプリにまとめ、以下を目指します：
+
+- **純粋にオフライン**：すべてのデータ処理はローカルで行われます
+- **高速ワークフロー**：即時結果（リアルタイム更新対応）
+- **追跡可能**：操作ログ + ワンクリックコピー
+- **クロスプラットフォーム**：Windows / macOS / Linux
+
+[Tauri v2](https://v2.tauri.app/) + [React](https://react.dev/) で構築され、TroveKit は純粋にオフラインのワークフローに焦点を当てています。
+
+## ✨ 主な機能
+
+- オールインワンユーティリティ：Hash / AES / エンコーダー-デコーダー / JSON / QR / シーザー暗号
+- モダン UI：ライト/ダークテーマ、レスポンシブレイアウト、スムーズなアニメーション
+- i18n：English / 簡體中文 / 繁體中文（HK/TW）/ 日本語
+- ログとトースト：履歴、エラーフィードバック、コピーボタン
+
+## 🧰 ユーティリティ
+
+### 📷 QR Code Generator
+
+- **テキスト / URL** からの QR コード生成
+- **Wi‑Fi QR コード** の生成（SSID / パスワード / 暗号化 / 非表示）
+- スタイルのカスタマイズ：色、誤り訂正レベル、オプションのロゴ
+- **PNG** へのエクスポート（Unicode 対応）
+
+### 🔐 Classical Ciphers
+
+- **Caesar Cipher**：エンコード/デコード、設定可能なシフト
+- 非文字処理：保持 / 無視 / ASCII シフト（実験的；印刷不可能な文字を生成する可能性）
+
+### 🔒 Hash & Cryptography
+
+- **MD5**：16 / 32 文字、大文字/小文字選択
+- **SHA ファミリー**：SHA1 / SHA224 / SHA256 / SHA384 / SHA512 / SHA3
+- **AES**：CBC / ECB / OFB / CFB / CTR
+
+### 🔢 Encoders & Decoders
+
+- リアルタイム URL / Base64 エンコード & デコード
+- Base32 / Hex(Base16) / Base58 / Base62 / Base91 / カスタムアルファベット
+
+### 📝 Formatters
+
+- **JSON**：フォーマット、ミニファイ、検証、ツリービュー
+
+### 🧾 Logs & Toasts
+
+- サイドパネルでの操作履歴
+- 構造化されたメソッド/入力/出力ビュー
+- エラー/成功トースト + ワンクリックコピー
+
+## 🗺️ Roadmap
+
+- Formatters：XML / SQL / YAML
+- Generators：UUID / Lorem Ipsum / ランダムパスワードなど
+
+## 📸 Screenshots
+
+| Hash Tool | Encoder Tool |
+|:---:|:---:|
+| ![Hash Tool](demo/hash.png) | ![Encoder Tool](demo/encoder-decoder.png) |
+
+| Operation Logs | Settings |
+|:---:|:---:|
+| ![Log Panel](demo/log-panel.png) | ![Settings](demo/settings.png) |
+
+> 注意：QR / Caesar のスクリーンショットは後でデモギャラリーに追加されます。
+
+## 🚀 Tech Stack
+
+- **Core**: [Rust](https://www.rust-lang.org/) & [Tauri v2](https://tauri.app/)
+- **Frontend**: [React 19](https://react.dev/) & [TypeScript](https://www.typescriptlang.org/)
+- **Build Tool**: [Vite](https://vitejs.dev/)
+- **UI Framework**: [HeroUI](https://www.heroui.com/) & [Tailwind CSS](https://tailwindcss.com/)
+- **State & Logic**: [Framer Motion](https://www.framer.com/motion/), [i18next](https://www.i18next.com/), [crypto-js](https://cryptojs.gitbook.io/)
+- **QR Rendering**: [qr-code-styling](https://www.npmjs.com/package/qr-code-styling)
+
+## 🛠️ はじめに
+
+### 前提条件
+
+- Node.js 18+
+- pnpm
+- Rust (stable)
+- Tauri v2 システム依存関係（OS によって異なります；最初のビルドが失敗したら Tauri ドキュメントを参照）
+
+### インストール
+
+```bash
+git clone <repo-url>
+cd trovekit
+pnpm install
+```
+
+### 開発
+
+```bash
+pnpm tauri dev
+```
+
+### ビルド
+
+```bash
+pnpm tauri build
+```
+
+## 🔒 プライバシー
+
+- TroveKit は **純粋にオフラインのツールボックス** として設計されています：すべてのユーティリティがオフラインで動作します。
+- 入力はローカルで処理されます；外部サーバーにデータは送信されません。
+
+## 📂 Project Structure
+
+```
+TroveKit/
+├── src-tauri/       # Rust backend and Tauri configuration
+├── src/             # React frontend source code
+│   ├── components/  # UI Components (Sidebar, LogPanel, Toast, etc.)
+│   ├── contexts/    # Context Providers (LogContext, ToastContext)
+│   ├── tools/       # Tool Views (Hash, Encoder, Formatter, QR, Classical, Settings)
+│   ├── locales/     # i18n JSON files
+│   ├── lib/         # Utilities (Base32, etc.)
+│   └── styles/      # Global CSS
+└── public/          # Static assets
+```
+
+## 🤝 Contributing
+
+Issues と PR を歓迎します：
+
+- 新しいユーティリティのアイデア（より多くのフォーマッター/ジェネレーター）
+- バグ修正と UI/UX の改善
+- コピーと翻訳の改善（`src/locales/`）
+
+## 📄 License
+
+[MIT](LICENSE)
