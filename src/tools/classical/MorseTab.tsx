@@ -38,7 +38,7 @@ export function MorseTab() {
   const [customSeparator, setCustomSeparator] = useState(" ")
   const [shortCode, setShortCode] = useState(".")
   const [longCode, setLongCode] = useState("-")
-  const [caseMode, setCaseMode] = useState("upper")
+  const [caseMode, setCaseMode] = useState("none")
 
   const separator = useMemo(() => {
     if (separatorType === "space") return " "
