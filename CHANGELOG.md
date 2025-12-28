@@ -1,0 +1,37 @@
+# Changelog
+
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [0.1.5] - 2025-12-28
+
+### Added
+- **QR Code Generator**: Generate QR codes from text/URL, Wi-Fi QR codes, customizable styles, PNG export with Unicode support
+- **Caesar Cipher Tool**: Encode/decode with configurable shift, flexible non-letter character handling
+- **Multi-language README support**: Added Simplified Chinese, Traditional Chinese (HK/TW), and Japanese README files
+- Language switcher in all README files
+
+### Changed
+- Restructured README for better readability and mainstream project style
+- Emphasized pure offline mode (no network dependencies)
+- Centered badges and converted to HTML img tags
+- Improved tool descriptions and feature highlights
+
+### Fixed
+
+### Removed
+
+## [0.1.4] - 2025-12-26
+
+### Added
+- Initial release with Hash, AES, Encoders-Decoders, JSON Formatter, Logs & Toasts
+- Basic UI with light/dark theme support
+- i18n support for English, Simplified Chinese, Traditional Chinese, Japanese
+
+### Changed
+
+### Fixed
+
+### Removed
