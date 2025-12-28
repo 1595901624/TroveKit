@@ -127,9 +127,22 @@
       "encrypt": "Encrypt (Shift)",
       "keep": "Keep (As is)",
       "inputPlaceholder": "Enter text...",
+      "outputPlaceholder": "Output will appear here...",
       "encode": "Encode",
       "decode": "Decode",
-      "symbolTooltip": "Symbol Handling: Ignore: Removes non-alphabetic characters. Encrypt: Shifts non-alphabetic characters if possible. Keep: Retains non-alphabetic characters as is."
+      "symbolTooltip": "Symbol Handling: Ignore: Removes non-alphabetic characters. Encrypt: Shifts non-alphabetic characters if possible. Keep: Retains non-alphabetic characters as is.",
+      "morse": {
+        "title": "Morse Code",
+        "separator": "Separator",
+        "space": "Space",
+        "slash": "Slash (/)",
+        "custom": "Custom",
+        "codes": "Short/Long Codes",
+        "short": "Short",
+        "long": "Long",
+        "case": "Result Case",
+        "noCase": "No Change"
+      }
     },
     "qr": {
       "title": "QR Code Generator",

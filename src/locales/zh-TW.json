@@ -127,9 +127,22 @@
       "encrypt": "加密 (偏移)",
       "keep": "保留 (原樣)",
       "inputPlaceholder": "輸入文字...",
+      "outputPlaceholder": "輸出將顯示在此處...",
       "encode": "編碼",
       "decode": "解碼",
-      "symbolTooltip": "符號處理:\n忽略: 刪除非字母字元。\n加密: 如果可能，對非字母字元進行偏移。\n保留: 保持非字母字元不變。"
+      "symbolTooltip": "符號處理:\n忽略: 刪除非字母字元。\n加密: 如果可能，對非字母字元進行偏移。\n保留: 保持非字母字元不變。",
+      "morse": {
+        "title": "摩斯電碼",
+        "separator": "分隔符",
+        "space": "空格",
+        "slash": "斜槓 (/)",
+        "custom": "自訂",
+        "codes": "短/長碼",
+        "short": "短",
+        "long": "長",
+        "case": "結果大小寫",
+        "noCase": "無變化"
+      }
     },
     "qr": {
       "title": "QR 碼生成器",

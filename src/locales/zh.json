@@ -127,9 +127,22 @@
       "encrypt": "加密 (偏移)",
       "keep": "保留 (原样)",
       "inputPlaceholder": "输入文本...",
+      "outputPlaceholder": "输出将显示在此处...",
       "encode": "编码",
       "decode": "解码",
-      "symbolTooltip": "符号处理:\n忽略: 删除非字母字符。\n加密: 如果可能，对非字母字符进行偏移。\n保留: 保持非字母字符不变。"
+      "symbolTooltip": "符号处理:\n忽略: 删除非字母字符。\n加密: 如果可能，对非字母字符进行偏移。\n保留: 保持非字母字符不变。",
+      "morse": {
+        "title": "摩尔斯电码",
+        "separator": "分隔符",
+        "space": "空格",
+        "slash": "斜杠 (/)",
+        "custom": "自定义",
+        "codes": "短/长码",
+        "short": "短",
+        "long": "长",
+        "case": "结果大小写",
+        "noCase": "无变化"
+      }
     },
     "qr": {
       "title": "二维码生成器",
