@@ -4,27 +4,8 @@ import { useTranslation } from "react-i18next"
 import { useToast } from "../../contexts/ToastContext"
 import { useLog } from "../../contexts/LogContext"
 import { ArrowRightLeft, Copy, Trash2, Replace } from "lucide-react"
-
-// 标准国际摩斯电码 + 扩展字符
-const MORSE_MAP: Record<string, string> = {
-  "A": ".-", "B": "-...", "C": "-.-.", "D": "-..", "E": ".", "F": "..-.",
-  "G": "--.", "H": "....", "I": "..", "J": ".---", "K": "-.-", "L": ".-..",
-  "M": "--", "N": "-.", "O": "---", "P": ".--.", "Q": "--.-", "R": ".-.",
-  "S": "...", "T": "-", "U": "..-", "V": "...-", "W": ".--", "X": "-..-",
-  "Y": "-.--", "Z": "--..",
-  "0": "-----", "1": ".----", "2": "..---", "3": "...--", "4": "....-",
-  "5": ".....", "6": "-....", "7": "--...", "8": "---..", "9": "----.",
-  ".": ".-.-.-", ",": "--..--", "?": "..--..", "'": ".----.", "!": "-.-.--",
-  "/": "-..-.", "(": "-.--.", ")": "-.--.-", "&": ".-...", ":": "---...",
-  ";": "-.-.-.", "=": "-...-", "+": ".-.-.", "-": "-....-", "_": "..--.-",
-  "\"": ".-..-.", "$": "...-..-", "@": ".--.-.",
-  " ": "/"
-}
-
-const REVERSE_MORSE_MAP: Record<string, string> = Object.entries(MORSE_MAP).reduce((acc, [key, value]) => {
-  acc[value] = key
-  return acc
-}, {} as Record<string, string>)
+// @ts-ignore
+import { encode as morseEncode, decode as morseDecode } from "xmorse"
 
 export function MorseTab() {
   const { t } = useTranslation()
@@ -46,50 +27,43 @@ export function MorseTab() {
     return customSeparator
   }, [separatorType, customSeparator])
 
+  const morseOptions = useMemo(() => ({
+    space: separator,
+    short: shortCode,
+    long: longCode
+  }), [separator, shortCode, longCode])
+
   const handleEncode = () => {
     if (!input) return setOutput("")
-    const upperInput = input.toUpperCase()
-    const encoded = upperInput.split("").map(char => {
-      if (char === " ") return "/"
-      const standardCode = MORSE_MAP[char]
-      if (!standardCode) return char
-      return standardCode.replace(/\./g, shortCode).replace(/-/g, longCode)
-    }).join(separator)
 
-    setOutput(encoded)
-    addToast(t("log.filterSuccess"), "success")
-    addLog({ method: "Morse Encode", input, output: encoded }, "success")
+    try {
+      const encoded = morseEncode(input, morseOptions)
+      setOutput(encoded)
+      addToast(t("log.filterSuccess"), "success")
+      addLog({ method: "Morse Encode (xmorse)", input, output: encoded }, "success")
+    } catch (e) {
+      console.error(e)
+      addToast(t("log.filterError"), "error")
+    }
   }
 
   const handleDecode = () => {
     if (!input) return setOutput("")
-    const words = input.split(separator)
-    const decoded = words.map(code => {
-      if (code === "" || code === "/") return " "
-      let tempCode = code
-      let stdCode = ""
-      while (tempCode.length > 0) {
-        if (tempCode.startsWith(longCode)) {
-          stdCode += "-"
-          tempCode = tempCode.substring(longCode.length)
-        } else if (tempCode.startsWith(shortCode)) {
-          stdCode += "."
-          tempCode = tempCode.substring(shortCode.length)
-        } else {
-          stdCode += tempCode[0]
-          tempCode = tempCode.substring(1)
-        }
-      }
-      return REVERSE_MORSE_MAP[stdCode] || stdCode
-    }).join("")
 
-    let finalOutput = decoded
-    if (caseMode === "lower") finalOutput = finalOutput.toLowerCase()
-    else if (caseMode === "upper") finalOutput = finalOutput.toUpperCase()
+    try {
+      const decoded = morseDecode(input, morseOptions)
 
-    setOutput(finalOutput)
-    addToast(t("log.filterSuccess"), "success")
-    addLog({ method: "Morse Decode", input, output: finalOutput }, "success")
+      let finalOutput = decoded
+      if (caseMode === "lower") finalOutput = finalOutput.toLowerCase()
+      else if (caseMode === "upper") finalOutput = finalOutput.toUpperCase()
+
+      setOutput(finalOutput)
+      addToast(t("log.filterSuccess"), "success")
+      addLog({ method: "Morse Decode (xmorse)", input, output: finalOutput }, "success")
+    } catch (e) {
+      console.error(e)
+      addToast(t("log.filterError"), "error")
+    }
   }
 
   const handleSwap = () => { setInput(output); setOutput(input); }
@@ -101,8 +75,7 @@ export function MorseTab() {
 
   return (
     <div className="flex flex-col gap-4 h-full p-2">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 p-4 bg-default-50 rounded-x
-       border border-default-200">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 p-4 bg-default-50 rounded-xl border border-default-200">
         <div className="flex flex-col gap-2">
           <span className="text-xs text-default-500 font-medium uppercase">{t(
             "tools.classical.morse.separator")}</span>
