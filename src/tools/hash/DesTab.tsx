@@ -178,12 +178,12 @@ export function DesTab() {
                     <Select 
                       size="sm" 
                       label={t("tools.hash.algorithm")}
-                      className="w-32" 
+                      className="w-40" 
                       selectedKeys={[desAlgorithm]} 
                       onChange={(e) => setDesAlgorithm(e.target.value)}
                     >
-                      <SelectItem key="DES">DES (64-bit)</SelectItem>
-                      <SelectItem key="TripleDES">3DES (192-bit)</SelectItem>
+                      <SelectItem key="DES">{t("tools.hash.des")} ({t("tools.hash.bit64")})</SelectItem>
+                      <SelectItem key="TripleDES">{t("tools.hash.tripleDes")} ({t("tools.hash.bit192")})</SelectItem>
                     </Select>
                     <Select 
                       size="sm" 
@@ -201,7 +201,7 @@ export function DesTab() {
                   <Input 
                       size="sm"
                       label={t("tools.hash.iv")}
-                      placeholder="IV (64-bit)"
+                      placeholder={`${t("tools.hash.iv")} (${t("tools.hash.bit64")})`}
                       value={desIv}
                       onValueChange={setDesIv}
                       isDisabled={desMode === "ECB"}
