@@ -18,6 +18,7 @@ export function AesTab() {
   const [aesIvType, setAesIvType] = useState("text") // "text" | "hex"
   const [aesMode, setAesMode] = useState("CBC") // CBC, ECB, OFB, CFB, CTR, CTS
   const [aesPadding, setAesPadding] = useState("Pkcs7") // Pkcs7, ZeroPadding, NoPadding, AnsiX923, Iso10126
+  const [aesFormat, setAesFormat] = useState("Base64") // "Base64" | "Hex"
 
   const parseKeyIv = (value: string, type: string, lengthBits?: number) => {
     let wordArr;
@@ -83,10 +84,16 @@ export function AesTab() {
         iv: iv
       });
 
-      const output = encrypted.toString();
+      let output = "";
+      if (aesFormat === "Hex") {
+        output = encrypted.ciphertext.toString(CryptoJS.enc.Hex);
+      } else {
+        output = encrypted.ciphertext.toString(CryptoJS.enc.Base64);
+      }
+
       setAesOutput(output);
       addLog({ 
-        method: `AES Encrypt (${aesMode}, ${aesKeySize}-bit)`, 
+        method: `AES Encrypt (${aesMode}, ${aesKeySize}-bit, ${aesFormat})`, 
         input: aesInput, 
         output: output 
       }, "success");
@@ -101,7 +108,14 @@ export function AesTab() {
       const key = parseKeyIv(aesKey, aesKeyType, parseInt(aesKeySize));
       const iv = aesMode === "ECB" ? undefined : parseKeyIv(aesIv, aesIvType, 128);
       
-      const decrypted = CryptoJS.AES.decrypt(aesInput, key, {
+      let cipherParams;
+      if (aesFormat === "Hex") {
+        cipherParams = { ciphertext: CryptoJS.enc.Hex.parse(aesInput) };
+      } else {
+        cipherParams = { ciphertext: CryptoJS.enc.Base64.parse(aesInput) };
+      }
+
+      const decrypted = CryptoJS.AES.decrypt(cipherParams as any, key, {
         mode: getMode(aesMode),
         padding: getPadding(aesPadding),
         iv: iv
@@ -112,7 +126,7 @@ export function AesTab() {
 
       setAesOutput(output);
       addLog({ 
-        method: `AES Decrypt (${aesMode}, ${aesKeySize}-bit)`, 
+        method: `AES Decrypt (${aesMode}, ${aesKeySize}-bit, ${aesFormat})`, 
         input: aesInput, 
         output: output 
       }, "success");
@@ -200,34 +214,51 @@ export function AesTab() {
           </div>
 
           <div className="space-y-2">
-                <RadioGroup
-                  orientation="horizontal"
-                  value={aesMode}
-                  onValueChange={setAesMode}
-                  label={t("tools.hash.mode")}
-                  size="sm"
-                  className="text-tiny"
-                >
-                  <Radio value="CBC">{t("tools.hash.cbc", "CBC")}</Radio>
-                  <Radio value="ECB">{t("tools.hash.ecb", "ECB")}</Radio>
-                  <Radio value="CTR">{t("tools.hash.ctr", "CTR")}</Radio>
-                  <Radio value="OFB">{t("tools.hash.ofb", "OFB")}</Radio>
-                  <Radio value="CFB">{t("tools.hash.cfb", "CFB")}</Radio>
-                </RadioGroup>
+                <div className="flex gap-4">
+                  <RadioGroup
+                    orientation="horizontal"
+                    value={aesMode}
+                    onValueChange={setAesMode}
+                    label={t("tools.hash.mode")}
+                    size="sm"
+                    className="text-tiny"
+                  >
+                    <Radio value="CBC">{t("tools.hash.cbc", "CBC")}</Radio>
+                    <Radio value="ECB">{t("tools.hash.ecb", "ECB")}</Radio>
+                    <Radio value="CTR">{t("tools.hash.ctr", "CTR")}</Radio>
+                    <Radio value="OFB">{t("tools.hash.ofb", "OFB")}</Radio>
+                    <Radio value="CFB">{t("tools.hash.cfb", "CFB")}</Radio>
+                  </RadioGroup>
+                </div>
+
+                <div className="flex gap-4">
+                  <RadioGroup
+                    orientation="horizontal"
+                    value={aesPadding}
+                    onValueChange={setAesPadding}
+                    label={t("tools.hash.padding")}
+                    size="sm"
+                    className="text-tiny"
+                  >
+                    <Radio value="Pkcs7">{t("tools.hash.pkcs7", "PKCS7")}</Radio>
+                    <Radio value="ZeroPadding">{t("tools.hash.zeroPadding", "Zeros")}</Radio>
+                    <Radio value="AnsiX923">{t("tools.hash.ansiX923", "ANSI")}</Radio>
+                    <Radio value="Iso10126">{t("tools.hash.iso10126", "ISO")}</Radio>
+                    <Radio value="NoPadding">{t("tools.hash.noPadding", "None")}</Radio>
+                  </RadioGroup>
+                </div>
 
                 <RadioGroup
                   orientation="horizontal"
-                  value={aesPadding}
-                  onValueChange={setAesPadding}
-                  label={t("tools.hash.padding")}
+                  value={aesFormat}
+                  onValueChange={setAesFormat}
+                  label={t("tools.hash.format", "Format")}
+                  description={t("tools.hash.formatNote", "Encrypt: Output Format / Decrypt: Input Format")}
                   size="sm"
                   className="text-tiny"
                 >
-                  <Radio value="Pkcs7">{t("tools.hash.pkcs7", "PKCS7")}</Radio>
-                  <Radio value="ZeroPadding">{t("tools.hash.zeroPadding", "Zeros")}</Radio>
-                  <Radio value="AnsiX923">{t("tools.hash.ansiX923", "ANSI")}</Radio>
-                  <Radio value="Iso10126">{t("tools.hash.iso10126", "ISO")}</Radio>
-                  <Radio value="NoPadding">{t("tools.hash.noPadding", "None")}</Radio>
+                  <Radio value="Base64">Base64</Radio>
+                  <Radio value="Hex">Hex</Radio>
                 </RadioGroup>
           </div>
       </div>

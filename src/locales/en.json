@@ -89,7 +89,9 @@
       "zeroPadding": "Zeros",
       "ansiX923": "ANSI",
       "iso10126": "ISO",
-      "noPadding": "None"
+      "noPadding": "None",
+      "format": "Format",
+      "formatNote": "Encrypt: Output Format / Decrypt: Input Format"
     },
     "encoder": {
       "input": "Input",

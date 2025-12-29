@@ -89,7 +89,9 @@
       "zeroPadding": "ZeroPadding",
       "ansiX923": "ANSI",
       "iso10126": "ISO",
-      "noPadding": "None"
+      "noPadding": "None",
+      "format": "格式",
+      "formatNote": "加密时为输出格式，解密时为输入格式"
     },
     "encoder": {
       "input": "输入",
