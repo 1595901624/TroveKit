@@ -1,6 +1,6 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "trovekit",
+  "productName": "TroveKit",
   "version": "0.1.6",
   "identifier": "com.haoyu.cloris.trovekit",
   "build": {
