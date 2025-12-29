@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - **Morse Code Tool**: Encode/decode Morse code with customizable settings
 - **AES Tool**: Added support for Hex and Base64 input/output formats
+- **State Persistence**: Added ability to save AES and MD5 tool states
 
 ### Changed
 
