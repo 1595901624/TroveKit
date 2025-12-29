@@ -67,6 +67,7 @@
       "sha512": "SHA512",
       "sha3": "SHA3",
       "aes": "AES",
+      "des": "DES",
       "mode": "Mode",
       "padding": "Padding",
       "key": "Key",

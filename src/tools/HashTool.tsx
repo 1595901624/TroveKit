@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next"
 import { Md5Tab } from "./hash/Md5Tab"
 import { ShaTab } from "./hash/ShaTab"
 import { AesTab } from "./hash/AesTab"
+import { DesTab } from "./hash/DesTab"
 
 export function HashTool() {
   const { t } = useTranslation()
@@ -22,6 +23,7 @@ export function HashTool() {
           <Tab key="md5" title={t("tools.hash.md5")} />
           <Tab key="sha" title={t("tools.hash.sha")} />
           <Tab key="aes" title={t("tools.hash.aes")} />
+          <Tab key="des" title={t("tools.hash.des", "DES")} />
         </Tabs>
       </div>
 
@@ -34,6 +36,9 @@ export function HashTool() {
         </div>
         <div className={selectedKey === "aes" ? "" : "hidden"}>
           <AesTab />
+        </div>
+        <div className={selectedKey === "des" ? "" : "hidden"}>
+          <DesTab />
         </div>
       </div>
     </div>
