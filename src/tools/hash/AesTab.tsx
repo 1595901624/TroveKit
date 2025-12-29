@@ -1,24 +1,56 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Textarea, Button, RadioGroup, Radio, Input, Select, SelectItem } from "@heroui/react"
 import { Copy, Trash2, Lock, Unlock } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { useLog } from "../../contexts/LogContext"
 import CryptoJS from "crypto-js"
 
+const STORAGE_KEY = "aes-tool-state"
+
+const loadStateFromStorage = () => {
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY)
+    return stored ? JSON.parse(stored) : {}
+  } catch {
+    return {}
+  }
+}
+
+const saveStateToStorage = (state: Record<string, any>) => {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
+}
+
 export function AesTab() {
   const { t } = useTranslation()
   const { addLog } = useLog()
 
-  const [aesInput, setAesInput] = useState("")
-  const [aesOutput, setAesOutput] = useState("")
-  const [aesKey, setAesKey] = useState("")
-  const [aesKeyType, setAesKeyType] = useState("text") // "text" | "hex"
-  const [aesKeySize, setAesKeySize] = useState("128") // "128" | "192" | "256"
-  const [aesIv, setAesIv] = useState("")
-  const [aesIvType, setAesIvType] = useState("text") // "text" | "hex"
-  const [aesMode, setAesMode] = useState("CBC") // CBC, ECB, OFB, CFB, CTR, CTS
-  const [aesPadding, setAesPadding] = useState("Pkcs7") // Pkcs7, ZeroPadding, NoPadding, AnsiX923, Iso10126
-  const [aesFormat, setAesFormat] = useState("Base64") // "Base64" | "Hex"
+  const savedState = loadStateFromStorage()
+
+  const [aesInput, setAesInput] = useState(savedState.aesInput || "")
+  const [aesOutput, setAesOutput] = useState(savedState.aesOutput || "")
+  const [aesKey, setAesKey] = useState(savedState.aesKey || "")
+  const [aesKeyType, setAesKeyType] = useState(savedState.aesKeyType || "text") 
+  const [aesKeySize, setAesKeySize] = useState(savedState.aesKeySize || "128") 
+  const [aesIv, setAesIv] = useState(savedState.aesIv || "")
+  const [aesIvType, setAesIvType] = useState(savedState.aesIvType || "text") 
+  const [aesMode, setAesMode] = useState(savedState.aesMode || "CBC") 
+  const [aesPadding, setAesPadding] = useState(savedState.aesPadding || "Pkcs7") 
+  const [aesFormat, setAesFormat] = useState(savedState.aesFormat || "Base64") 
+
+  useEffect(() => {
+    saveStateToStorage({
+      aesInput,
+      aesOutput,
+      aesKey,
+      aesKeyType,
+      aesKeySize,
+      aesIv,
+      aesIvType,
+      aesMode,
+      aesPadding,
+      aesFormat
+    })
+  }, [aesInput, aesOutput, aesKey, aesKeyType, aesKeySize, aesIv, aesIvType, aesMode, aesPadding, aesFormat])
 
   const parseKeyIv = (value: string, type: string, lengthBits?: number) => {
     let wordArr;
@@ -273,7 +305,7 @@ export function AesTab() {
           <Button color="secondary" variant="flat" onPress={handleAesDecrypt} startContent={<Unlock className="w-4 h-4" />}>
           {t("tools.hash.decrypt")}
           </Button>
-          <Button isIconOnly variant="light" color="danger" onPress={() => { setAesInput(""); setAesOutput(""); setAesKey(""); setAesIv(""); }} title={t("tools.hash.clearAll")}>
+          <Button isIconOnly variant="light" color="danger" onPress={() => { setAesInput(""); setAesOutput(""); setAesKey(""); setAesIv(""); localStorage.removeItem(STORAGE_KEY); }} title={t("tools.hash.clearAll")}>
           <Trash2 className="w-4 h-4" />
           </Button>
       </div>

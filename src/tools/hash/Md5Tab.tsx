@@ -1,25 +1,59 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Textarea, Button, RadioGroup, Radio } from "@heroui/react"
 import { Copy, Trash2, Hash } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { useLog } from "../../contexts/LogContext"
 import CryptoJS from "crypto-js"
 
+// 定义 MD5 状态接口
+interface Md5State {
+  input: string
+  output: string
+  bit: string
+  case: string
+}
+
+// 定义 STORAGE_KEY 常量
+const MD5_STORAGE_KEY = "md5_state"
+
 export function Md5Tab() {
   const { t } = useTranslation()
   const { addLog } = useLog()
 
-  const [md5Input, setMd5Input] = useState("")
-  const [md5Output, setMd5Output] = useState("")
-  const [md5Bit, setMd5Bit] = useState("32") // "16" | "32"
-  const [md5Case, setMd5Case] = useState("lower") // "lower" | "upper"
+  // 初始化状态，从 localStorage 恢复或使用默认值
+  const [state, setState] = useState<Md5State>(() => {
+    const saved = localStorage.getItem(MD5_STORAGE_KEY)
+    if (saved) {
+      try {
+        return JSON.parse(saved)
+      } catch {
+        // 如果解析失败，返回默认状态
+      }
+    }
+    
+    // 默认状态
+    return {
+      input: "",
+      output: "",
+      bit: "32",
+      case: "lower"
+    }
+  })
+
+  // 解构状态以便于使用
+  const { input, output, bit, case: md5Case } = state
+
+  // 当状态改变时，保存到 localStorage
+  useEffect(() => {
+    localStorage.setItem(MD5_STORAGE_KEY, JSON.stringify(state))
+  }, [state])
 
   const handleMd5Hash = () => {
-    if (!md5Input) return
+    if (!input) return
     try {
-      let hash = CryptoJS.MD5(md5Input).toString()
+      let hash = CryptoJS.MD5(input).toString()
       
-      if (md5Bit === "16") {
+      if (bit === "16") {
         // 16-bit MD5 is usually the middle 16 characters (8 to 24) of the 32-character hex string
         hash = hash.substring(8, 24)
       }
@@ -28,15 +62,20 @@ export function Md5Tab() {
         hash = hash.toUpperCase()
       }
 
-      setMd5Output(hash)
+      // 更新状态包含输出结果
+      setState(prev => ({
+        ...prev,
+        output: hash
+      }))
+
       addLog({ 
-        method: `MD5 (${md5Bit}-bit, ${md5Case})`, 
-        input: md5Input, 
+        method: `MD5 (${bit}-bit, ${md5Case})`, 
+        input, 
         output: hash 
       }, "success")
 
     } catch (e) {
-      addLog({ method: "MD5", input: md5Input, output: (e as Error).message }, "error")
+      addLog({ method: "MD5", input, output: (e as Error).message }, "error")
     }
   }
 
@@ -53,8 +92,8 @@ export function Md5Tab() {
         placeholder={t("tools.hash.inputPlaceholder", "Enter text to hash...")}
         minRows={6}
         variant="bordered"
-        value={md5Input}
-        onValueChange={setMd5Input}
+        value={input}
+        onValueChange={(value) => setState(prev => ({ ...prev, input: value }))}
         classNames={{
           inputWrapper: "bg-default-100/50 hover:bg-default-100 focus-within:bg-background"
         }}
@@ -64,8 +103,8 @@ export function Md5Tab() {
           <div className="flex items-center gap-6">
             <RadioGroup
               orientation="horizontal"
-              value={md5Bit}
-              onValueChange={setMd5Bit}
+              value={bit}
+              onValueChange={(value) => setState(prev => ({ ...prev, bit: value }))}
               label={t("tools.hash.length")}
               size="sm"
               className="text-tiny"
@@ -77,7 +116,7 @@ export function Md5Tab() {
             <RadioGroup
               orientation="horizontal"
               value={md5Case}
-              onValueChange={setMd5Case}
+              onValueChange={(value) => setState(prev => ({ ...prev, case: value }))}
               label={t("tools.hash.case")}
               size="sm"
             >
@@ -90,7 +129,13 @@ export function Md5Tab() {
             <Button color="primary" variant="flat" onPress={handleMd5Hash} startContent={<Hash className="w-4 h-4" />}>
               {t("tools.hash.generate")}
             </Button>
-            <Button isIconOnly variant="light" color="danger" onPress={() => { setMd5Input(""); setMd5Output(""); }} title={t("tools.hash.clearAll")}>
+            <Button isIconOnly variant="light" color="danger" onPress={() => { 
+              setState(prev => ({ 
+                ...prev, 
+                input: "", 
+                output: "" 
+              }))
+            }} title={t("tools.hash.clearAll")}>
               <Trash2 className="w-4 h-4" />
             </Button>
           </div>
@@ -102,13 +147,13 @@ export function Md5Tab() {
           readOnly
           minRows={4}
           variant="bordered"
-          value={md5Output}
+          value={output}
           classNames={{
             inputWrapper: "bg-default-100/30 group-hover:bg-default-100/50 transition-colors font-mono text-small"
           }}
         />
         <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-          <Button isIconOnly size="sm" variant="flat" onPress={() => copyToClipboard(md5Output)}>
+          <Button isIconOnly size="sm" variant="flat" onPress={() => copyToClipboard(output)}>
             <Copy className="w-4 h-4" />
           </Button>
         </div>
