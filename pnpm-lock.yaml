@@ -50,6 +50,9 @@ importers:
       i18next:
         specifier: ^25.7.3
         version: 25.7.3(typescript@5.8.3)
+      js-md2:
+        specifier: ^0.2.2
+        version: 0.2.2
       lucide-react:
         specifier: ^0.562.0
         version: 0.562.0(react@19.2.3)
@@ -2221,6 +2224,9 @@ packages:
   jiti@1.21.7:
     resolution: {integrity: sha512-/imKNG4EbWNrVjoNC/1H5/9GFy+tqjGBHCaSsN+P2RnPqjsLmv6UD3Ej+Kj8nBWaRAwyk7kK5ZUc+OEatnTR3A==}
     hasBin: true
+
+  js-md2@0.2.2:
+    resolution: {integrity: sha512-GbnCVmIhUpPsda6x80PgB6G45M6Sj1mxDFKyaeSI3x6rS4BvK4tK8hZzU9n+wWTFmIjWw19ZrrOyOBSOT0Z5XQ==}
 
   js-tokens@4.0.0:
     resolution: {integrity: sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==}
@@ -5713,6 +5719,8 @@ snapshots:
   is-number@7.0.0: {}
 
   jiti@1.21.7: {}
+
+  js-md2@0.2.2: {}
 
   js-tokens@4.0.0: {}
 

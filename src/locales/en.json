@@ -20,7 +20,7 @@
     "cards": {
       "crypto": {
         "title": "Hash & Crypto",
-        "desc": "Generate MD5, SHA hashes and more."
+        "desc": "Generate MD2, MD5, SHA hashes and more."
       },
       "classical": {
         "title": "Classical Ciphers",
@@ -38,7 +38,7 @@
         "title": "Formatters",
         "desc": "Prettify JSON, XML, and SQL."
       }
-    }
+      }
   },
   "tools": {
     "hash": {
@@ -51,6 +51,7 @@
       "clearAll": "Clear All",
       "copiedToClipboard": "Copied to clipboard",
       "hashOptions": "Hash Options",
+      "md2": "MD2",
       "md5": "MD5",
       "sha": "SHA",
       "length": "Length",

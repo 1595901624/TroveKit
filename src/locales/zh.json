@@ -20,7 +20,7 @@
     "cards": {
       "crypto": {
         "title": "哈希 & 加密",
-        "desc": "生成 MD5, SHA 哈希等。"
+        "desc": "生成 MD2, MD5, SHA 哈希等。"
       },
       "classical": {
         "title": "古典密码",
@@ -51,6 +51,7 @@
       "clearAll": "清空全部",
       "copiedToClipboard": "已复制到剪贴板",
       "hashOptions": "哈希选项",
+      "md2": "MD2",
       "md5": "MD5",
       "sha": "SHA",
       "length": "长度",
