@@ -170,8 +170,9 @@ export function AesTab() {
                       size="sm" 
                       label={t("tools.hash.keySize")}
                       className="w-28" 
-                      selectedKeys={[aesKeySize]} 
-                      onChange={(e) => setAesKeySize(e.target.value)}
+                      selectedKeys={new Set([aesKeySize])}
+                      onSelectionChange={(keys) => setAesKeySize(Array.from(keys)[0] as string)}
+                      disallowEmptySelection
                     >
                       <SelectItem key="128">{t("tools.hash.bit128", "128-bit")}</SelectItem>
                       <SelectItem key="192">{t("tools.hash.bit192", "192-bit")}</SelectItem>
@@ -181,8 +182,9 @@ export function AesTab() {
                       size="sm" 
                       label={t("tools.hash.text")}
                       className="w-24" 
-                      selectedKeys={[aesKeyType]} 
-                      onChange={(e) => setAesKeyType(e.target.value)}
+                      selectedKeys={new Set([aesKeyType])}
+                      onSelectionChange={(keys) => setAesKeyType(Array.from(keys)[0] as string)}
+                      disallowEmptySelection
                     >
                       <SelectItem key="text">{t("tools.hash.text")}</SelectItem>
                       <SelectItem key="hex">{t("tools.hash.hex")}</SelectItem>
@@ -203,9 +205,10 @@ export function AesTab() {
                       size="sm" 
                       label={t("tools.hash.text")}
                       className="w-24" 
-                      selectedKeys={[aesIvType]} 
-                      onChange={(e) => setAesIvType(e.target.value)}
+                      selectedKeys={new Set([aesIvType])}
+                      onSelectionChange={(keys) => setAesIvType(Array.from(keys)[0] as string)}
                       isDisabled={aesMode === "ECB"}
+                      disallowEmptySelection
                     >
                       <SelectItem key="text">{t("tools.hash.text")}</SelectItem>
                       <SelectItem key="hex">{t("tools.hash.hex")}</SelectItem>

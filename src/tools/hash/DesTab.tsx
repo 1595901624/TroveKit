@@ -179,18 +179,22 @@ export function DesTab() {
                       size="sm" 
                       label={t("tools.hash.algorithm")}
                       className="w-40" 
-                      selectedKeys={[desAlgorithm]} 
-                      onChange={(e) => setDesAlgorithm(e.target.value)}
+                      selectedKeys={new Set([desAlgorithm])}
+                      onSelectionChange={(keys) => setDesAlgorithm(Array.from(keys)[0] as string)}
+                      disallowEmptySelection
                     >
-                      <SelectItem key="DES">{t("tools.hash.des")} ({t("tools.hash.bit64")})</SelectItem>
-                      <SelectItem key="TripleDES">{t("tools.hash.tripleDes")} ({t("tools.hash.bit192")})</SelectItem>
+                      <SelectItem key="DES">DES(64 Bit)</SelectItem>
+                      <SelectItem key="TripleDES">3DES(192 Bit)</SelectItem>
+                      {/* <SelectItem key="DES">{t("tools.hash.des")} ({t("tools.hash.bit64")})</SelectItem> */}
+                      {/* <SelectItem key="TripleDES">{t("tools.hash.tripleDes")} ({t("tools.hash.bit192")})</SelectItem> */}
                     </Select>
                     <Select 
                       size="sm" 
                       label={t("tools.hash.text")}
                       className="w-24" 
-                      selectedKeys={[desKeyType]} 
-                      onChange={(e) => setDesKeyType(e.target.value)}
+                      selectedKeys={new Set([desKeyType])}
+                      onSelectionChange={(keys) => setDesKeyType(Array.from(keys)[0] as string)}
+                      disallowEmptySelection
                     >
                       <SelectItem key="text">{t("tools.hash.text")}</SelectItem>
                       <SelectItem key="hex">{t("tools.hash.hex")}</SelectItem>
@@ -211,9 +215,10 @@ export function DesTab() {
                       size="sm" 
                       label={t("tools.hash.text")}
                       className="w-24" 
-                      selectedKeys={[desIvType]} 
-                      onChange={(e) => setDesIvType(e.target.value)}
+                      selectedKeys={new Set([desIvType])}
+                      onSelectionChange={(keys) => setDesIvType(Array.from(keys)[0] as string)}
                       isDisabled={desMode === "ECB"}
+                      disallowEmptySelection
                     >
                       <SelectItem key="text">{t("tools.hash.text")}</SelectItem>
                       <SelectItem key="hex">{t("tools.hash.hex")}</SelectItem>
