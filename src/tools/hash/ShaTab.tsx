@@ -1,18 +1,35 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Textarea, Button, RadioGroup, Radio } from "@heroui/react"
 import { Copy, Trash2, Hash } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { useLog } from "../../contexts/LogContext"
 import CryptoJS from "crypto-js"
 
+const STORAGE_KEY = "sha-tool-state"
+
+const loadStateFromStorage = () => {
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY)
+    return stored ? JSON.parse(stored) : {}
+  } catch {
+    return {}
+  }
+}
+
+const saveStateToStorage = (state: Record<string, any>) => {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
+}
+
 export function ShaTab() {
   const { t } = useTranslation()
   const { addLog } = useLog()
 
-  const [shaInput, setShaInput] = useState("")
-  const [shaOutput, setShaOutput] = useState("")
-  const [shaType, setShaType] = useState("SHA256") // "SHA1" | "SHA256" | "SHA512"
-  const [shaCase, setShaCase] = useState("lower") // "lower" | "upper"
+  const savedState = loadStateFromStorage()
+
+  const [shaInput, setShaInput] = useState(savedState.shaInput || "")
+  const [shaOutput, setShaOutput] = useState(savedState.shaOutput || "")
+  const [shaType, setShaType] = useState(savedState.shaType || "SHA256") // "SHA1" | "SHA256" | "SHA512"
+  const [shaCase, setShaCase] = useState(savedState.shaCase || "lower") // "lower" | "upper"
 
   const handleShaHash = () => {
     if (!shaInput) return
@@ -62,6 +79,15 @@ export function ShaTab() {
     navigator.clipboard.writeText(text)
     addLog(t("tools.hash.copiedToClipboard"), "info")
   }
+
+  useEffect(() => {
+    saveStateToStorage({
+      shaInput,
+      shaOutput,
+      shaType,
+      shaCase
+    })
+  }, [shaInput, shaOutput, shaType, shaCase])
 
   return (
     <div className="space-y-4">
@@ -113,7 +139,7 @@ export function ShaTab() {
             <Button color="primary" variant="flat" onPress={handleShaHash} startContent={<Hash className="w-4 h-4" />}>
               {t("tools.hash.generate")}
             </Button>
-            <Button isIconOnly variant="light" color="danger" onPress={() => { setShaInput(""); setShaOutput(""); }} title={t("tools.hash.clearAll")}>
+            <Button isIconOnly variant="light" color="danger" onPress={() => { setShaInput(""); setShaOutput(""); setShaType("SHA256"); setShaCase("lower"); localStorage.removeItem(STORAGE_KEY); }} title={t("tools.hash.clearAll")}>
               <Trash2 className="w-4 h-4" />
             </Button>
           </div>
