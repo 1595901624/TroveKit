@@ -12,6 +12,21 @@ import { readFile, writeFile } from "@tauri-apps/plugin-fs"
 
 type QrMode = "text" | "wifi"
 
+const STORAGE_KEY = "qr-tool-state"
+
+const loadStateFromStorage = () => {
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY)
+    return stored ? JSON.parse(stored) : {}
+  } catch {
+    return {}
+  }
+}
+
+const saveStateToStorage = (state: Record<string, any>) => {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
+}
+
 const MAX_QR_SIZE = 5000
 const MIN_QR_SIZE = 50
 const MAX_INPUT_BYTES = 2000
@@ -150,7 +165,7 @@ const DEFAULT_OPTIONS = {
 // Escape special characters for WiFi string
 const escapeWifi = (str: string) => {
     if (!str) return "";
-    return str.replace(/([\\;:,])/g, '\\$1');
+    return str.replace(/([\\;:,])/g, '\\');
 }
 
 // Encode string to UTF-8 bytes represented as Latin-1 string
@@ -164,28 +179,31 @@ const utf8Encode = (str: string): string => {
 export function QrTool() {
   const { t } = useTranslation()
   const { addToast } = useToast()
-  const [selectedMode, setSelectedMode] = useState<QrMode>("text")
+  
+  const savedState = loadStateFromStorage()
+
+  const [selectedMode, setSelectedMode] = useState<QrMode>(savedState.selectedMode || "text")
   const ref = useRef<HTMLDivElement>(null)
   const qrCode = useRef<QRCodeStyling>(null)
   const downloadRef = useRef<HTMLDivElement>(null)
 
   // Content State
-  const [text, setText] = useState("https://example.com")
-  const [wifi, setWifi] = useState<WifiState>({
+  const [text, setText] = useState(savedState.text || "https://example.com")
+  const [wifi, setWifi] = useState<WifiState>(savedState.wifi || {
       ssid: "",
       encryption: "WPA",
       hidden: false
   })
 
   // Settings State
-  const [width, setWidth] = useState(512)
-  const [realTime, setRealTime] = useState(true)
-  const [qrColor, setQrColor] = useState(DEFAULT_OPTIONS.qrColor)
-  const [bgColor, setBgColor] = useState(DEFAULT_OPTIONS.bgColor)
-  const [dotsColor, setDotsColor] = useState(DEFAULT_OPTIONS.qrColor)
-  const [cornersColor, setCornersColor] = useState(DEFAULT_OPTIONS.qrColor)
-  const [correction, setCorrection] = useState(DEFAULT_OPTIONS.correction)
-  const [logo, setLogo] = useState("")
+  const [width, setWidth] = useState(savedState.width || 512)
+  const [realTime, setRealTime] = useState(savedState.realTime !== undefined ? savedState.realTime : true)
+  const [qrColor, setQrColor] = useState(savedState.qrColor || DEFAULT_OPTIONS.qrColor)
+  const [bgColor, setBgColor] = useState(savedState.bgColor || DEFAULT_OPTIONS.bgColor)
+  const [dotsColor, setDotsColor] = useState(savedState.dotsColor || DEFAULT_OPTIONS.qrColor)
+  const [cornersColor, setCornersColor] = useState(savedState.cornersColor || DEFAULT_OPTIONS.qrColor)
+  const [correction, setCorrection] = useState(savedState.correction || DEFAULT_OPTIONS.correction)
+  const [logo, setLogo] = useState(savedState.logo || "")
 
   // Init QR Code instance
   useEffect(() => {
@@ -289,8 +307,23 @@ export function QrTool() {
     return qrCode.current.update(getQrOptions(overrideOptions))
   }
 
-  // Effect for Real-time
+  // Effect for Real-time and Saving
   useEffect(() => {
+    // Save state
+    saveStateToStorage({
+        selectedMode,
+        text,
+        wifi,
+        width,
+        realTime,
+        qrColor,
+        bgColor,
+        dotsColor,
+        cornersColor,
+        correction,
+        logo
+    })
+
     if (realTime) {
         // Debounce slightly to prevent flashing
         const timer = setTimeout(() => {
@@ -298,7 +331,7 @@ export function QrTool() {
         }, 100)
         return () => clearTimeout(timer)
     }
-  }, [text, wifi, qrColor, bgColor, dotsColor, cornersColor, correction, logo, selectedMode, realTime])
+  }, [text, wifi, qrColor, bgColor, dotsColor, cornersColor, correction, logo, selectedMode, realTime, width])
 
   // Explicit Generate
   const handleGenerate = () => {
@@ -396,6 +429,7 @@ export function QrTool() {
       setCorrection(DEFAULT_OPTIONS.correction)
       setLogo("")
       setWidth(512)
+      localStorage.removeItem(STORAGE_KEY)
       if (realTime) setTimeout(() => updateQr(), 50)
   }
 
