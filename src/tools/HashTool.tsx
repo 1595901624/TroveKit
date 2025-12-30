@@ -2,6 +2,7 @@ import { useState } from "react"
 import { Tabs, Tab } from "@heroui/react"
 import { useTranslation } from "react-i18next"
 import { Md2Tab } from "./hash/Md2Tab"
+import { Md4Tab } from "./hash/Md4Tab"
 import { Md5Tab } from "./hash/Md5Tab"
 import { ShaTab } from "./hash/ShaTab"
 import { AesTab } from "./hash/AesTab"
@@ -22,6 +23,7 @@ export function HashTool() {
           onSelectionChange={(key) => setSelectedKey(key as string)}
         >
           <Tab key="md2" title={t("tools.hash.md2")} />
+          <Tab key="md4" title={t("tools.hash.md4")} />
           <Tab key="md5" title={t("tools.hash.md5")} />
           <Tab key="sha" title={t("tools.hash.sha")} />
           <Tab key="aes" title={t("tools.hash.aes")} />
@@ -32,6 +34,9 @@ export function HashTool() {
       <div className="flex-1 overflow-y-auto min-h-0 pt-4 pb-2">
         <div className={selectedKey === "md2" ? "" : "hidden"}>
           <Md2Tab />
+        </div>
+        <div className={selectedKey === "md4" ? "" : "hidden"}>
+          <Md4Tab />
         </div>
         <div className={selectedKey === "md5" ? "" : "hidden"}>
           <Md5Tab />

@@ -52,6 +52,7 @@
       "copiedToClipboard": "Copied to clipboard",
       "hashOptions": "Hash Options",
       "md2": "MD2",
+      "md4": "MD4",
       "md5": "MD5",
       "sha": "SHA",
       "length": "Length",
