@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react"
+import { useState, useMemo, useEffect } from "react"
 import { Button, Textarea, Select, SelectItem, Input } from "@heroui/react"
 import { useTranslation } from "react-i18next"
 import { useToast } from "../../contexts/ToastContext"
@@ -7,19 +7,48 @@ import { ArrowRightLeft, Copy, Trash2, Replace } from "lucide-react"
 // @ts-ignore
 import { encode as morseEncode, decode as morseDecode } from "xmorse"
 
+const STORAGE_KEY = "morse-tool-state"
+
+const loadStateFromStorage = () => {
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY)
+    return stored ? JSON.parse(stored) : {}
+  } catch {
+    return {}
+  }
+}
+
+const saveStateToStorage = (state: Record<string, any>) => {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
+}
+
 export function MorseTab() {
   const { t } = useTranslation()
   const { addToast } = useToast()
   const { addLog } = useLog()
 
-  const [input, setInput] = useState("")
-  const [output, setOutput] = useState("")
+  const savedState = loadStateFromStorage()
 
-  const [separatorType, setSeparatorType] = useState("space")
-  const [customSeparator, setCustomSeparator] = useState(" ")
-  const [shortCode, setShortCode] = useState(".")
-  const [longCode, setLongCode] = useState("-")
-  const [caseMode, setCaseMode] = useState("none")
+  const [input, setInput] = useState(savedState.input || "")
+  const [output, setOutput] = useState(savedState.output || "")
+
+  const [separatorType, setSeparatorType] = useState(savedState.separatorType || "space")
+  const [customSeparator, setCustomSeparator] = useState(savedState.customSeparator || " ")
+  const [shortCode, setShortCode] = useState(savedState.shortCode || ".")
+  const [longCode, setLongCode] = useState(savedState.longCode || "-")
+  const [caseMode, setCaseMode] = useState(savedState.caseMode || "none")
+
+  useEffect(() => {
+    saveStateToStorage({
+      input,
+      output,
+      separatorType,
+      customSeparator,
+      shortCode,
+      longCode,
+      caseMode
+    })
+  }, [input, output, separatorType, customSeparator, shortCode, longCode, caseMode])
 
   const separator = useMemo(() => {
     if (separatorType === "space") return " "
@@ -67,7 +96,7 @@ export function MorseTab() {
   }
 
   const handleSwap = () => { setInput(output); setOutput(input); }
-  const handleClear = () => { setInput(""); setOutput(""); }
+  const handleClear = () => { setInput(""); setOutput(""); localStorage.removeItem(STORAGE_KEY); }
   const handleCopy = () => {
     navigator.clipboard.writeText(output)
     addToast(t("tools.encoder.copiedToClipboard"), "success")

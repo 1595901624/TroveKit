@@ -1,17 +1,38 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Textarea, Button, Input, RadioGroup, Radio, Tooltip } from "@heroui/react"
 import { Copy, Trash2, ArrowDownUp, Info, Shield, ShieldAlert } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { useLog } from "../../contexts/LogContext"
 
+const STORAGE_KEY = "caesar-tool-state"
+
+const loadStateFromStorage = () => {
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY)
+    return stored ? JSON.parse(stored) : {}
+  } catch {
+    return {}
+  }
+}
+
+const saveStateToStorage = (state: Record<string, any>) => {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
+}
+
 export function CaesarTab() {
   const { t } = useTranslation()
   const { addLog } = useLog()
 
-  const [input, setInput] = useState("")
-  const [output, setOutput] = useState("")
-  const [shift, setShift] = useState("3")
-  const [nonLetterMode, setNonLetterMode] = useState("keep") // ignore, encrypt, keep
+  const savedState = loadStateFromStorage()
+
+  const [input, setInput] = useState(savedState.input || "")
+  const [output, setOutput] = useState(savedState.output || "")
+  const [shift, setShift] = useState(savedState.shift || "3")
+  const [nonLetterMode, setNonLetterMode] = useState(savedState.nonLetterMode || "keep") // ignore, encrypt, keep
+
+  useEffect(() => {
+    saveStateToStorage({ input, output, shift, nonLetterMode })
+  }, [input, output, shift, nonLetterMode])
 
   const processCaesar = (isDecode: boolean) => {
     if (!input) return
@@ -127,7 +148,7 @@ export function CaesarTab() {
             <Button isIconOnly variant="light" onPress={swapText} title={t("tools.encoder.swap")}>
                 <ArrowDownUp className="w-4 h-4" />
             </Button>
-            <Button isIconOnly variant="light" color="danger" onPress={() => { setInput(""); setOutput(""); }} title={t("tools.encoder.clearAll")}>
+            <Button isIconOnly variant="light" color="danger" onPress={() => { setInput(""); setOutput(""); localStorage.removeItem(STORAGE_KEY); }} title={t("tools.encoder.clearAll")}>
                 <Trash2 className="w-4 h-4" />
             </Button>
           </div>
