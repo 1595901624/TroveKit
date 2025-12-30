@@ -8,7 +8,7 @@
 </div>
 
 <div align="center">
-<img src="https://img.shields.io/badge/version-v0.1.5-blue" alt="Version">
+<img src="https://img.shields.io/badge/version-v0.1.6-blue" alt="Version">
 <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-green" alt="License"></a>
 <img src="https://img.shields.io/badge/Windows-Supported-blue" alt="Windows">
 <img src="https://img.shields.io/badge/macOS-Supported-blue" alt="macOS">
@@ -35,6 +35,7 @@ TroveKit はそれらを高速なデスクトップアプリにまとめ、以�
 - モダン UI：ライト/ダークテーマ、レスポンシブレイアウト、スムーズなアニメーション
 - i18n：English / 簡體中文 / 繁體中文（HK/TW）/ 日本語
 - ログとトースト：履歴、エラーフィードバック、コピーボタン
+- **状態の永続化**：ツール状態の自動保存（入力の損失を防ぐ）
 
 ## 🧰 ユーティリティ
 
@@ -48,13 +49,14 @@ TroveKit はそれらを高速なデスクトップアプリにまとめ、以�
 ### 🔐 Classical Ciphers
 
 - **Caesar Cipher**：エンコード/デコード、設定可能なシフト
+- **Morse Code**：カスタマイズ可能な設定（区切り文字/長点・短点）
 - 非文字処理：保持 / 無視 / ASCII シフト（実験的；印刷不可能な文字を生成する可能性）
 
 ### 🔒 Hash & Cryptography
 
-- **MD5**：16 / 32 文字、大文字/小文字選択
+- **MD5 / MD4 / MD2**：16 / 32 文字、大文字/小文字選択
 - **SHA ファミリー**：SHA1 / SHA224 / SHA256 / SHA384 / SHA512 / SHA3
-- **AES**：CBC / ECB / OFB / CFB / CTR
+- **AES**：CBC / ECB / OFB / CFB / CTR（Hex/Base64 入出力をサポート）
 
 ### 🔢 Encoders & Decoders
 

@@ -8,7 +8,7 @@ English | [简体中文](README.zh-CN.md) | [繁體中文（香港）](README.zh
 </div>
 
 <div align="center">
-<img src="https://img.shields.io/badge/version-v0.1.5-blue" alt="Version">
+<img src="https://img.shields.io/badge/version-v0.1.6-blue" alt="Version">
 <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-green" alt="License"></a>
 <img src="https://img.shields.io/badge/Windows-Supported-blue" alt="Windows">
 <img src="https://img.shields.io/badge/macOS-Supported-blue" alt="macOS">
@@ -35,6 +35,7 @@ Built with [Tauri v2](https://v2.tauri.app/) + [React](https://react.dev/), Trov
 - Modern UI: light/dark theme, responsive layout, smooth animations
 - i18n: English / 简体中文 / 繁體中文（HK/TW）/ 日本語
 - Logs & toasts: history, error feedback, copy buttons
+- **State Persistence**: auto-save tool states (never lose your input)
 
 ## 🧰 Utilities
 
@@ -48,13 +49,14 @@ Built with [Tauri v2](https://v2.tauri.app/) + [React](https://react.dev/), Trov
 ### 🔐 Classical Ciphers
 
 - **Caesar Cipher**: encode/decode with configurable shift
+- **Morse Code**: encode/decode with customizable separator/dash/dot
 - Non-letter handling: keep / ignore / shift ASCII (experimental; may produce non-printable characters)
 
 ### 🔒 Hash & Cryptography
 
-- **MD5**: 16 / 32 chars, upper/lower case
+- **MD5 / MD4 / MD2**: 16 / 32 chars, upper/lower case
 - **SHA family**: SHA1 / SHA224 / SHA256 / SHA384 / SHA512 / SHA3
-- **AES**: CBC / ECB / OFB / CFB / CTR
+- **AES**: CBC / ECB / OFB / CFB / CTR (Hex/Base64 input/output)
 
 ### 🔢 Encoders & Decoders
 

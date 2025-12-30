@@ -8,7 +8,7 @@
 </div>
 
 <div align="center">
-<img src="https://img.shields.io/badge/version-v0.1.5-blue" alt="Version">
+<img src="https://img.shields.io/badge/version-v0.1.6-blue" alt="Version">
 <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-green" alt="License"></a>
 <img src="https://img.shields.io/badge/Windows-Supported-blue" alt="Windows">
 <img src="https://img.shields.io/badge/macOS-Supported-blue" alt="macOS">
@@ -35,6 +35,7 @@ TroveKit 基于 [Tauri v2](https://v2.tauri.app/) + [React](https://react.dev/) 
 - 现代 UI：深浅色主题、响应式布局、顺滑动画
 - 国际化：English / 简体中文 / 繁體中文（HK/TW）/ 日本語
 - 日志与提示：操作记录、错误提示、复制按钮
+- **状态持久化**：自动保存工具配置与内容（防止误触丢失）
 
 ## 🧰 内置工具
 
@@ -48,13 +49,14 @@ TroveKit 基于 [Tauri v2](https://v2.tauri.app/) + [React](https://react.dev/) 
 ### 🔐 Classical Ciphers（古典密码）
 
 - **Caesar Cipher（凯撒密码）**：支持编码 / 解码、可设置位移
+- **Morse Code（摩斯密码）**：自定义配置（分隔符/长短码）
 - 非字母字符处理：保留 / 忽略 / 按 ASCII 位移（适合做实验，但可能产生不可见字符）
 
 ### 🔒 Hash & Cryptography（哈希与加解密）
 
-- **MD5**：16 位 / 32 位，大小写可选
+- **MD5 / MD4 / MD2**：16 位 / 32 位，大小写可选
 - **SHA 家族**：SHA1 / SHA224 / SHA256 / SHA384 / SHA512 / SHA3
-- **AES**：CBC / ECB / OFB / CFB / CTR
+- **AES**：CBC / ECB / OFB / CFB / CTR（支持 Hex/Base64 格式）
 
 ### 🔢 Encoders & Decoders（编码与解码）
 
