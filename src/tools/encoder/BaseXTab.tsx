@@ -1,19 +1,40 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Textarea, Button, Select, SelectItem, Switch, Input } from "@heroui/react"
 import { Copy, Trash2, ArrowDownUp, ChevronDown } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { useLog } from "../../contexts/LogContext"
 import { invoke } from "@tauri-apps/api/core"
 
+const STORAGE_KEY = "basex-tool-state"
+
+const loadStateFromStorage = () => {
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY)
+    return stored ? JSON.parse(stored) : {}
+  } catch {
+    return {}
+  }
+}
+
+const saveStateToStorage = (state: Record<string, any>) => {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
+}
+
 export function BaseXTab() {
   const { t } = useTranslation()
   const { addLog } = useLog()
 
-  const [baseXInput, setBaseXInput] = useState("")
-  const [baseXOutput, setBaseXOutput] = useState("")
-  const [selectedBase, setSelectedBase] = useState("base16")
-  const [isCustomAlphabet, setIsCustomAlphabet] = useState(false)
-  const [customAlphabet, setCustomAlphabet] = useState("")
+  const savedState = loadStateFromStorage()
+
+  const [baseXInput, setBaseXInput] = useState(savedState.baseXInput || "")
+  const [baseXOutput, setBaseXOutput] = useState(savedState.baseXOutput || "")
+  const [selectedBase, setSelectedBase] = useState(savedState.selectedBase || "base16")
+  const [isCustomAlphabet, setIsCustomAlphabet] = useState(savedState.isCustomAlphabet || false)
+  const [customAlphabet, setCustomAlphabet] = useState(savedState.customAlphabet || "")
+
+  useEffect(() => {
+    saveStateToStorage({ baseXInput, baseXOutput, selectedBase, isCustomAlphabet, customAlphabet })
+  }, [baseXInput, baseXOutput, selectedBase, isCustomAlphabet, customAlphabet])
 
   const baseOptions = [
     { key: "base16", label: t("tools.encoder.base16") },
@@ -126,7 +147,7 @@ export function BaseXTab() {
         <Button isIconOnly variant="light" onPress={swapBaseX} title={t("tools.encoder.swap")}>
           <ArrowDownUp className="w-4 h-4" />
         </Button>
-        <Button isIconOnly variant="light" color="danger" onPress={() => { setBaseXInput(""); setBaseXOutput(""); }} title={t("tools.encoder.clearAll")}>
+        <Button isIconOnly variant="light" color="danger" onPress={() => { setBaseXInput(""); setBaseXOutput(""); localStorage.removeItem(STORAGE_KEY); }} title={t("tools.encoder.clearAll")}>
           <Trash2 className="w-4 h-4" />
         </Button>
       </div>

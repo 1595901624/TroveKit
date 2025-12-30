@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **MD2 Hash Tool**: Added new MD2 hash algorithm support with case selection (upper/lower)
 - **Morse Code Tool**: Encode/decode Morse code with customizable settings
 - **AES Tool**: Added support for Hex and Base64 input/output formats
-- **State Persistence**: Added ability to save AES, MD5, SHA and DES tool states
+- **State Persistence**: Added ability to save AES, MD5, SHA, DES, Base32, Base64, BaseX, and URL tool states
 
 ### Changed
 

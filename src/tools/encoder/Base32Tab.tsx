@@ -1,16 +1,37 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Textarea, Button } from "@heroui/react"
 import { Copy, Trash2, ArrowDownUp, ChevronDown } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { useLog } from "../../contexts/LogContext"
 import { base32Encode, base32Decode } from "../../lib/base32"
 
+const STORAGE_KEY = "base32-tool-state"
+
+const loadStateFromStorage = () => {
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY)
+    return stored ? JSON.parse(stored) : {}
+  } catch {
+    return {}
+  }
+}
+
+const saveStateToStorage = (state: Record<string, any>) => {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
+}
+
 export function Base32Tab() {
   const { t } = useTranslation()
   const { addLog } = useLog()
 
-  const [base32Input, setBase32Input] = useState("")
-  const [base32Output, setBase32Output] = useState("")
+  const savedState = loadStateFromStorage()
+
+  const [base32Input, setBase32Input] = useState(savedState.base32Input || "")
+  const [base32Output, setBase32Output] = useState(savedState.base32Output || "")
+
+  useEffect(() => {
+    saveStateToStorage({ base32Input, base32Output })
+  }, [base32Input, base32Output])
 
   const handleBase32Encode = () => {
     if (!base32Input) return
@@ -69,7 +90,7 @@ export function Base32Tab() {
         <Button isIconOnly variant="light" onPress={swapBase32} title={t("tools.encoder.swap")}>
           <ArrowDownUp className="w-4 h-4" />
         </Button>
-        <Button isIconOnly variant="light" color="danger" onPress={() => { setBase32Input(""); setBase32Output(""); }} title={t("tools.encoder.clearAll")}>
+        <Button isIconOnly variant="light" color="danger" onPress={() => { setBase32Input(""); setBase32Output(""); localStorage.removeItem(STORAGE_KEY); }} title={t("tools.encoder.clearAll")}>
           <Trash2 className="w-4 h-4" />
         </Button>
       </div>

@@ -1,15 +1,36 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Textarea, Button } from "@heroui/react"
 import { Copy, Trash2, ArrowDownUp, ChevronDown } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { useLog } from "../../contexts/LogContext"
 
+const STORAGE_KEY = "base64-tool-state"
+
+const loadStateFromStorage = () => {
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY)
+    return stored ? JSON.parse(stored) : {}
+  } catch {
+    return {}
+  }
+}
+
+const saveStateToStorage = (state: Record<string, any>) => {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
+}
+
 export function Base64Tab() {
   const { t } = useTranslation()
   const { addLog } = useLog()
 
-  const [base64Input, setBase64Input] = useState("")
-  const [base64Output, setBase64Output] = useState("")
+  const savedState = loadStateFromStorage()
+
+  const [base64Input, setBase64Input] = useState(savedState.base64Input || "")
+  const [base64Output, setBase64Output] = useState(savedState.base64Output || "")
+
+  useEffect(() => {
+    saveStateToStorage({ base64Input, base64Output })
+  }, [base64Input, base64Output])
 
   const handleBase64Encode = () => {
     if (!base64Input) return
@@ -74,7 +95,7 @@ export function Base64Tab() {
         <Button isIconOnly variant="light" onPress={swapBase64} title={t("tools.encoder.swap")}>
           <ArrowDownUp className="w-4 h-4" />
         </Button>
-        <Button isIconOnly variant="light" color="danger" onPress={() => { setBase64Input(""); setBase64Output(""); }} title={t("tools.encoder.clearAll")}>
+        <Button isIconOnly variant="light" color="danger" onPress={() => { setBase64Input(""); setBase64Output(""); localStorage.removeItem(STORAGE_KEY); }} title={t("tools.encoder.clearAll")}>
           <Trash2 className="w-4 h-4" />
         </Button>
       </div>
