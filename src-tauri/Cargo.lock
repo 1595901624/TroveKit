@@ -4236,7 +4236,7 @@ dependencies = [
 
 [[package]]
 name = "trovekit"
-version = "0.1.0"
+version = "0.1.7"
 dependencies = [
  "base-x",
  "base85",

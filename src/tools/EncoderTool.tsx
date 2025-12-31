@@ -16,7 +16,6 @@ export function EncoderTool() {
         <Tabs
           aria-label={t("tools.encoder.encoderOptions")}
           color="primary"
-          variant="underlined"
           selectedKey={selectedKey}
           onSelectionChange={(key) => setSelectedKey(key as string)}
         >

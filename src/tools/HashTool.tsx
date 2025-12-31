@@ -7,6 +7,7 @@ import { Md5Tab } from "./hash/Md5Tab"
 import { ShaTab } from "./hash/ShaTab"
 import { AesTab } from "./hash/AesTab"
 import { DesTab } from "./hash/DesTab"
+import { Rc4Tab } from "./hash/Rc4Tab"
 
 export function HashTool() {
   const { t } = useTranslation()
@@ -18,7 +19,6 @@ export function HashTool() {
         <Tabs
           aria-label={t("tools.hash.hashOptions")}
           color="primary"
-          variant="underlined"
           selectedKey={selectedKey}
           onSelectionChange={(key) => setSelectedKey(key as string)}
         >
@@ -28,6 +28,7 @@ export function HashTool() {
           <Tab key="sha" title={t("tools.hash.sha")} />
           <Tab key="aes" title={t("tools.hash.aes")} />
           <Tab key="des" title={t("tools.hash.des", "DES")} />
+          <Tab key="rc4" title={t("tools.hash.rc4", "RC4")} />
         </Tabs>
       </div>
 
@@ -49,6 +50,9 @@ export function HashTool() {
         </div>
         <div className={selectedKey === "des" ? "" : "hidden"}>
           <DesTab />
+        </div>
+        <div className={selectedKey === "rc4" ? "" : "hidden"}>
+          <Rc4Tab />
         </div>
       </div>
     </div>

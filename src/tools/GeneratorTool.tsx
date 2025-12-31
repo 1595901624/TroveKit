@@ -13,7 +13,6 @@ export function GeneratorTool() {
         <Tabs
           aria-label={t("nav.generators")}
           color="primary"
-          variant="underlined"
           selectedKey={selectedKey}
           onSelectionChange={(key) => setSelectedKey(key as string)}
         >

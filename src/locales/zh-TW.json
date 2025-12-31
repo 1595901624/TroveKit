@@ -70,6 +70,7 @@
       "sha3": "SHA3",
       "aes": "AES",
       "des": "DES",
+      "rc4": "RC4",
       "tripleDes": "3DES",
       "mode": "模式",
       "padding": "填充",

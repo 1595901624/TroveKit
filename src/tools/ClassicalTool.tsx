@@ -14,7 +14,6 @@ export function ClassicalTool() {
         <Tabs
           aria-label={t("tools.classical.title")}
           color="primary"
-          variant="underlined"
           selectedKey={selectedKey}
           onSelectionChange={(key) => setSelectedKey(key as string)}
         >

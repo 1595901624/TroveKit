@@ -13,7 +13,6 @@ export function FormatterTool() {
         <Tabs
           aria-label={t("tools.formatter.formatterOptions")}
           color="primary"
-          variant="underlined"
           selectedKey={selectedKey}
           onSelectionChange={(key) => setSelectedKey(key as string)}
         >
