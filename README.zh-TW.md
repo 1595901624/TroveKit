@@ -31,7 +31,7 @@ TroveKit 基於 [Tauri v2](https://v2.tauri.app/) + [React](https://react.dev/) 
 
 ## ✨ 主要功能
 
-- 多工具集合：Hash / AES / 編碼解碼 / JSON / 二維碼 / 凱撒密碼
+- 多工具集合：Hash / AES / DES / RC4 / 編碼解碼 / JSON / 二維碼 / 凱撒密碼
 - 現代 UI：深淺色主題、響應式佈局、順滑動畫
 - 國際化：English / 簡體中文 / 繁體中文（HK/TW）/ 日本語
 - 日誌與提示：操作記錄、錯誤提示、複製按鈕
@@ -56,7 +56,7 @@ TroveKit 基於 [Tauri v2](https://v2.tauri.app/) + [React](https://react.dev/) 
 
 - **MD5 / MD4 / MD2**：16 位元 / 32 位元，大小寫可選
 - **SHA 家族**：SHA1 / SHA224 / SHA256 / SHA384 / SHA512 / SHA3
-- **AES**：CBC / ECB / OFB / CFB / CTR（支援 Hex/Base64 格式）
+- **AES / DES / RC4**：支持多種模式與填充（支援 Hex/Base64 格式）
 
 ### 🔢 Encoders & Decoders（編碼與解碼）
 

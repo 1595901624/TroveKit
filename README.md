@@ -31,7 +31,7 @@ Built with [Tauri v2](https://v2.tauri.app/) + [React](https://react.dev/), Trov
 
 ## ✨ Highlights
 
-- All-in-one utilities: Hash / AES / Encoders-Decoders / JSON / QR / Caesar cipher
+- All-in-one utilities: Hash / AES / DES / RC4 / Encoders-Decoders / JSON / QR / Caesar cipher
 - Modern UI: light/dark theme, responsive layout, smooth animations
 - i18n: English / 简体中文 / 繁體中文（HK/TW）/ 日本語
 - Logs & toasts: history, error feedback, copy buttons
@@ -56,7 +56,7 @@ Built with [Tauri v2](https://v2.tauri.app/) + [React](https://react.dev/), Trov
 
 - **MD5 / MD4 / MD2**: 16 / 32 chars, upper/lower case
 - **SHA family**: SHA1 / SHA224 / SHA256 / SHA384 / SHA512 / SHA3
-- **AES**: CBC / ECB / OFB / CFB / CTR (Hex/Base64 input/output)
+- **AES / DES / RC4**: Multiple modes and paddings supported (Hex/Base64 input/output)
 
 ### 🔢 Encoders & Decoders
 
