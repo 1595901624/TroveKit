@@ -86,6 +86,9 @@ importers:
       tailwindcss:
         specifier: ^3.4.19
         version: 3.4.19
+      xml-formatter:
+        specifier: ^3.6.7
+        version: 3.6.7
       xmorse:
         specifier: ^1.0.0
         version: 1.0.0
@@ -2657,6 +2660,14 @@ packages:
 
   whatwg-url@5.0.0:
     resolution: {integrity: sha512-saE57nupxk6v3HY35+jzBwYa0rKSy0XR8JSxZPwgLr7ys0IBzhGviA1/TUGJLmSVqs8pb9AnvICXEuOHLprYTw==}
+
+  xml-formatter@3.6.7:
+    resolution: {integrity: sha512-IsfFYJQuoDqtUlKhm4EzeoBOb+fQwzQVeyxxAQ0sThn/nFnQmyLPTplqq4yRhaOENH/tAyujD2TBfIYzUKB6hg==}
+    engines: {node: '>= 16'}
+
+  xml-parser-xo@4.1.5:
+    resolution: {integrity: sha512-TxyRxk9sTOUg3glxSIY6f0nfuqRll2OEF8TspLgh5mZkLuBgheCn3zClcDSGJ58TvNmiwyCCuat4UajPud/5Og==}
+    engines: {node: '>= 16'}
 
   xmorse@1.0.0:
     resolution: {integrity: sha512-J+H7u9jrWLtrslHYRyybYX8SgnXCYU5qUxA79aVBu4jM8xtMnLSPwURb36I8vbVvWLmTcZp6dV/yDt3MW6bmgA==}
@@ -6101,6 +6112,12 @@ snapshots:
     dependencies:
       tr46: 0.0.3
       webidl-conversions: 3.0.1
+
+  xml-formatter@3.6.7:
+    dependencies:
+      xml-parser-xo: 4.1.5
+
+  xml-parser-xo@4.1.5: {}
 
   xmorse@1.0.0: {}
 

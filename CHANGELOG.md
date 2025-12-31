@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - **RC4 Tool**: Added new RC4 encryption/decryption tool with support for Text/Hex keys and Base64/Hex I/O formats.
+- **XML Formatter**: Added XML formatting and minification tool.
 
 ## [0.1.6] - 2025-12-30
 
