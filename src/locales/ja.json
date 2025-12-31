@@ -221,6 +221,15 @@
       "graph": "グラフ",
       "expand": "展開",
       "collapse": "折りたたむ"
+    },
+    "generator": {
+      "uuid": "UUID",
+      "count": "数量",
+      "generate": "生成",
+      "uppercase": "大文字",
+      "hyphens": "ハイフン",
+      "type": "結果タイプ",
+      "outputPlaceholder": "生成された UUID がここに表示されます..."
     }
   },
   "settings": {

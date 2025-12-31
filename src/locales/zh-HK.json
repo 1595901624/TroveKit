@@ -221,6 +221,15 @@
       "graph": "圖形",
       "expand": "展開",
       "collapse": "摺疊"
+    },
+    "generator": {
+      "uuid": "UUID",
+      "count": "數量",
+      "generate": "生成",
+      "uppercase": "大寫",
+      "hyphens": "短橫線",
+      "type": "結果類型",
+      "outputPlaceholder": "生成的 UUID 將顯示在此處..."
     }
   },
   "settings": {

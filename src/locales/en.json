@@ -221,6 +221,15 @@
       "graph": "Graph",
       "expand": "Expand",
       "collapse": "Collapse"
+    },
+    "generator": {
+      "uuid": "UUID",
+      "count": "Quantity",
+      "generate": "Generate",
+      "uppercase": "Uppercase",
+      "hyphens": "Hyphens",
+      "type": "Result Type",
+      "outputPlaceholder": "Generated UUIDs will appear here..."
     }
   },
   "settings": {

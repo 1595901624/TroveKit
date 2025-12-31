@@ -2,10 +2,11 @@ import { useState } from "react"
 import { Tabs, Tab } from "@heroui/react"
 import { useTranslation } from "react-i18next"
 import { QrTool } from "./qr/QrTool"
+import { UuidTab } from "./generator/UuidTab"
 
 export function GeneratorTool() {
   const { t } = useTranslation()
-  const [selectedKey, setSelectedKey] = useState<string>("qr")
+  const [selectedKey, setSelectedKey] = useState<string>("uuid")
 
   return (
     <div className="flex flex-col h-full overflow-hidden">
@@ -16,13 +17,16 @@ export function GeneratorTool() {
           selectedKey={selectedKey}
           onSelectionChange={(key) => setSelectedKey(key as string)}
         >
+          <Tab key="uuid" title={t("tools.generator.uuid")} />
           <Tab key="qr" title={t("nav.qr")} />
-          {/* Future generators can be added here */}
         </Tabs>
       </div>
 
       <div className="flex-1 overflow-y-auto min-h-0 pt-4 pb-2">
-        <div className={selectedKey === "qr" ? "h-full" : "hidden"}>
+        <div className={selectedKey === "uuid" ? "h-full" : "hidden h-full"}>
+          <UuidTab />
+        </div>
+        <div className={selectedKey === "qr" ? "h-full" : "hidden h-full"}>
           <QrTool />
         </div>
       </div>
