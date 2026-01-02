@@ -99,7 +99,7 @@ export function LogProvider({ children }: { children: React.ReactNode }) {
   const createNewLog = useCallback(() => {
     setLogs([]);
     invoke("start_new_log").then(() => {
-      addToast("New log session started", "success");
+      // addToast("New log session started", "success");
     }).catch(err => console.error("Failed to start new log:", err));
   }, [addToast]);
 
