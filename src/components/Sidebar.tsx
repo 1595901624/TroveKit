@@ -66,20 +66,18 @@ export function Sidebar({ activeTool, onToolChange }: SidebarProps) {
         ))}
       </nav>
 
-      <div className="p-4 border-t border-divider flex flex-col gap-2">
+      <div className="p-4 border-t border-divider flex items-center justify-center relative px-6">
         <Button
+          isIconOnly
+          size="sm"
           variant={activeTool === "settings" ? "flat" : "light"}
           color={activeTool === "settings" ? "primary" : "default"}
-          className={cn(
-            "w-full justify-start h-12 text-md font-medium",
-            activeTool === "settings" ? "bg-primary/10 text-primary" : "text-default-500 hover:text-foreground"
-          )}
-          startContent={<Settings className={cn("w-5 h-5", activeTool === "settings" ? "text-primary" : "text-default-400")} />}
+          className="w-8 h-8 min-w-8 absolute left-4"
           onPress={() => onToolChange("settings")}
         >
-          {t("nav.settings")}
+          <Settings className={cn("w-4 h-4", activeTool === "settings" ? "text-primary" : "text-default-400")} />
         </Button>
-        <div className="text-xs text-default-400 text-center">
+        <div className="text-xs text-default-400">
           v{version}
         </div>
       </div>
