@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Operation Logs(Experimental feature)**: Added session-based operation logging. Supports creating new log files (sessions) with automatic real-time persistence to local disk (`.jsonl` format).
 - **RC4 Tool**: Added new RC4 encryption/decryption tool with support for Text/Hex keys and Base64/Hex I/O formats.
 - **XML Formatter**: Added XML formatting and minification tool.
+- **CSS Formatter**: Added CSS formatting and minification tool.
 - **UUID Generator**: Added UUID v4 generator with batch support (up to 5000), real-time case/hyphen toggle, and multiple output formats (String, Hex, Binary, Base64).
 
 ### Changed

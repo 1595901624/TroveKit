@@ -66,6 +66,8 @@ Built with [Tauri v2](https://v2.tauri.app/) + [React](https://react.dev/), Trov
 ### 📝 Formatters
 
 - **JSON**: format, minify, validate, and tree view
+- **XML**: format and minify
+- **CSS**: format and minify
 
 ### 🧾 Logs & Toasts
 
