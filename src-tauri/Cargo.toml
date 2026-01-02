@@ -28,4 +28,6 @@ base91 = "0.1.0"
 base85 = "2.0.0"
 tauri-plugin-dialog = "2"
 tauri-plugin-fs = "2"
+chrono = { version = "0.4.42", features = ["serde"] }
+uuid = { version = "1.19.0", features = ["v4", "serde"] }
 

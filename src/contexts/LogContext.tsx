@@ -1,5 +1,6 @@
-import React, { createContext, useContext, useState, useCallback } from "react"
+import React, { createContext, useContext, useState, useCallback, useEffect } from "react"
 import { useToast } from "./ToastContext"
+import { invoke } from "@tauri-apps/api/core"
 
 // This context provides logging functionality throughout the app.
 // example：
@@ -40,6 +41,7 @@ interface LogContextType {
   logs: LogEntry[]
   addLog: (content: LogContent, type?: LogEntry["type"], details?: string) => void
   clearLogs: () => void
+  createNewLog: () => void
   isOpen: boolean
   setIsOpen: (isOpen: boolean) => void
   togglePanel: () => void
@@ -52,27 +54,35 @@ export function LogProvider({ children }: { children: React.ReactNode }) {
   const [isOpen, setIsOpen] = useState(false)
   const { addToast } = useToast()
 
+  // Load logs from backend on mount
+  useEffect(() => {
+    invoke<LogEntry[]>("load_logs")
+      .then(setLogs)
+      .catch(err => console.error("Failed to load logs:", err));
+  }, []);
+
   const addLog = useCallback((content: LogContent, type: LogEntry["type"] = "info", details?: string) => {
-    setLogs((prev) => {
-      const newLog: LogEntry = {
-        id: Math.random().toString(36).substring(7),
-        timestamp: Date.now(),
-        type,
-        details,
-      }
+    const newLog: LogEntry = {
+      id: Math.random().toString(36).substring(7),
+      timestamp: Date.now(),
+      type,
+      details,
+    }
 
-      if (typeof content === 'string') {
-        newLog.message = content
-      } else {
-        newLog.method = content.method
-        newLog.input = content.input
-        newLog.output = content.output
-        // Generate a fallback message for compatibility or search
-        newLog.message = `${content.method}: ${content.input} -> ${content.output}`
-      }
+    if (typeof content === 'string') {
+      newLog.message = content
+    } else {
+      newLog.method = content.method
+      newLog.input = content.input
+      newLog.output = content.output
+      // Generate a fallback message for compatibility or search
+      newLog.message = `${content.method}: ${content.input} -> ${content.output}`
+    }
 
-      return [newLog, ...prev]
-    })
+    setLogs((prev) => [newLog, ...prev])
+    
+    // Persist to backend
+    invoke("append_log", { entry: newLog }).catch(err => console.error("Failed to save log:", err));
     
     // Show toast for errors
     if (type === 'error') {
@@ -83,14 +93,22 @@ export function LogProvider({ children }: { children: React.ReactNode }) {
 
   const clearLogs = useCallback(() => {
     setLogs([])
+    invoke("clear_logs_file").catch(err => console.error("Failed to clear logs file:", err));
   }, [])
+
+  const createNewLog = useCallback(() => {
+    setLogs([]);
+    invoke("start_new_log").then(() => {
+      addToast("New log session started", "success");
+    }).catch(err => console.error("Failed to start new log:", err));
+  }, [addToast]);
 
   const togglePanel = useCallback(() => {
     setIsOpen((prev) => !prev)
   }, [])
 
   return (
-    <LogContext.Provider value={{ logs, addLog, clearLogs, isOpen, setIsOpen, togglePanel }}>
+    <LogContext.Provider value={{ logs, addLog, clearLogs, createNewLog, isOpen, setIsOpen, togglePanel }}>
       {children}
     </LogContext.Provider>
   )

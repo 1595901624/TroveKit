@@ -11,6 +11,7 @@
     "qr": "QR Generator",
     "formatters": "Formatters",
     "generators": "Generators",
+    "logs": "Operation Logs",
     "settings": "Settings"
   },
   "home": {
@@ -230,6 +231,21 @@
       "hyphens": "Hyphens",
       "type": "Result Type",
       "outputPlaceholder": "Generated UUIDs will appear here..."
+    },
+    "logManager": {
+      "title": "Log Management",
+      "newLog": "New Log",
+      "createLog": "Create Log",
+      "logTitle": "Title",
+      "logContent": "Content",
+      "cancel": "Cancel",
+      "save": "Save",
+      "delete": "Delete",
+      "noLogs": "No logs found",
+      "createdAt": "Created At",
+      "actions": "Actions",
+      "view": "View",
+      "confirmDelete": "Are you sure you want to delete this log?"
     }
   },
   "settings": {

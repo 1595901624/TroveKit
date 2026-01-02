@@ -1,6 +1,6 @@
 import { motion, AnimatePresence } from "framer-motion"
 import { useLog, LogEntry } from "../contexts/LogContext"
-import { Trash2, X, Terminal, Info, CheckCircle, AlertTriangle, AlertCircle, Copy } from "lucide-react"
+import { Trash2, X, Terminal, Info, CheckCircle, AlertTriangle, AlertCircle, Copy, Plus } from "lucide-react"
 import { Button, ScrollShadow, Tooltip } from "@heroui/react"
 import { useTranslation } from "react-i18next"
 import { useState, useMemo } from "react"
@@ -8,7 +8,7 @@ import { useState, useMemo } from "react"
 type FilterType = LogEntry['type'] | 'all'
 
 export function LogPanel() {
-  const { logs, isOpen, setIsOpen, clearLogs } = useLog()
+  const { logs, isOpen, setIsOpen, clearLogs, createNewLog } = useLog()
   const { t } = useTranslation()
   const [filter, setFilter] = useState<FilterType>('all')
 
@@ -50,6 +50,11 @@ export function LogPanel() {
                     {t('log.title', 'Operation Log')}
                 </div>
                 <div className="flex items-center gap-1">
+                    <Tooltip content={t('logManager.newLog', 'New Log')}>
+                        <Button isIconOnly size="sm" variant="light" onPress={createNewLog}>
+                            <Plus className="w-4 h-4 text-default-500" />
+                        </Button>
+                    </Tooltip>
                     <Tooltip content={t('log.clear', 'Clear logs')}>
                         <Button isIconOnly size="sm" variant="light" onPress={clearLogs}>
                             <Trash2 className="w-4 h-4 text-default-500" />
