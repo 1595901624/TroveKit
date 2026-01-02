@@ -69,7 +69,9 @@ Built with [Tauri v2](https://v2.tauri.app/) + [React](https://react.dev/), Trov
 
 ### 🧾 Logs & Toasts
 
-- Side panel for operation history
+- Side panel for operation history with **session-based persistence (Experimental)**
+- **Real-time auto-save**: all operations are saved to local `.jsonl` files automatically
+- Support for **manual log session creation** (New Log)
 - Structured method/input/output view
 - Error/success toasts + one-click copy
 

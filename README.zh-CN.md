@@ -69,7 +69,9 @@ TroveKit 基于 [Tauri v2](https://v2.tauri.app/) + [React](https://react.dev/) 
 
 ### 🧾 Logs & Toasts（操作日志与提示）
 
-- 侧边栏记录历史操作
+- 侧边栏记录历史操作，并支持 **Session 级持久化（实验性）**
+- **实时自动保存**：所有操作记录自动保存为本地 `.jsonl` 文件
+- 支持 **手动开启新日志记录**（New Log）
 - 方法、输入、输出结构化展示
 - 错误/成功提示 + 一键复制
 
