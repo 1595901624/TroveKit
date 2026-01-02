@@ -35,7 +35,6 @@ export function Sidebar({ activeTool, onToolChange }: SidebarProps) {
     { id: "classical", label: t("nav.classical"), icon: Shield },
     { id: "formatters", label: t("nav.formatters"), icon: FileJson },
     { id: "generators", label: t("nav.generators"), icon: Wand2 },
-    { id: "settings", label: t("nav.settings"), icon: Settings },
   ] as const
 
   return (
@@ -67,7 +66,19 @@ export function Sidebar({ activeTool, onToolChange }: SidebarProps) {
         ))}
       </nav>
 
-      <div className="p-4 border-t border-divider">
+      <div className="p-4 border-t border-divider flex flex-col gap-2">
+        <Button
+          variant={activeTool === "settings" ? "flat" : "light"}
+          color={activeTool === "settings" ? "primary" : "default"}
+          className={cn(
+            "w-full justify-start h-12 text-md font-medium",
+            activeTool === "settings" ? "bg-primary/10 text-primary" : "text-default-500 hover:text-foreground"
+          )}
+          startContent={<Settings className={cn("w-5 h-5", activeTool === "settings" ? "text-primary" : "text-default-400")} />}
+          onPress={() => onToolChange("settings")}
+        >
+          {t("nav.settings")}
+        </Button>
         <div className="text-xs text-default-400 text-center">
           v{version}
         </div>
