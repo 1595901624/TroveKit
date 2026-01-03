@@ -68,6 +68,7 @@ Built with [Tauri v2](https://v2.tauri.app/) + [React](https://react.dev/), Trov
 - **JSON**: format, minify, validate, and tree view
 - **XML**: format and minify
 - **CSS**: format and minify
+- **SQL**: format and minify with support for multiple SQL dialects (MySQL, PostgreSQL, SQLite, T-SQL, etc.)
 
 ### 🧾 Logs & Toasts
 
@@ -80,7 +81,7 @@ Built with [Tauri v2](https://v2.tauri.app/) + [React](https://react.dev/), Trov
 
 ## 🗺️ Roadmap
 
-- Formatters: SQL / YAML
+- Formatters: YAML
 - Generators: Lorem Ipsum / random passwords, etc.
 - Enhanced log management and export features
 

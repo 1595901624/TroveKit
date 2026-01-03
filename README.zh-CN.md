@@ -65,9 +65,10 @@ TroveKit 基于 [Tauri v2](https://v2.tauri.app/) + [React](https://react.dev/) 
 
 ### 📝 Formatters（格式化）
 
-- **JSON**：格式化 / 压缩 / 校验，并支持树形查看
+- **JSON**：格式化 / 压缩 / 树形查看
 - **XML**：格式化 / 压缩
 - **CSS**：格式化 / 压缩
+- **SQL**：格式化 / 压缩，支持多种 SQL 方言（MySQL、PostgreSQL、SQLite、T-SQL 等）
 
 ### 🧾 Logs & Toasts（操作日志与提示）
 
@@ -80,7 +81,7 @@ TroveKit 基于 [Tauri v2](https://v2.tauri.app/) + [React](https://react.dev/) 
 
 ## 🗺️ Roadmap
 
-- Formatters：SQL / YAML
+- Formatters：YAML
 - Generators：Lorem Ipsum / 随机密码等
 - 增强日志管理与导出功能
 

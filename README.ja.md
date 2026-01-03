@@ -65,7 +65,10 @@ TroveKit はそれらを高速なデスクトップアプリにまとめ、以�
 
 ### 📝 Formatters
 
-- **JSON**：フォーマット、ミニファイ、検証、ツリービュー
+- **JSON**：フォーマット、ミニファイ、ツリービュー
+- **XML**：フォーマット、ミニファイ
+- **CSS**：フォーマット、ミニファイ
+- **SQL**：フォーマット、ミニファイ、複数のSQL方言をサポート（MySQL、PostgreSQL、SQLite、T-SQLなど）
 
 ### 🧾 Logs & Toasts
 
@@ -78,7 +81,7 @@ TroveKit はそれらを高速なデスクトップアプリにまとめ、以�
 
 ## 🗺️ Roadmap
 
-- Formatters：SQL / YAML
+- Formatters：YAML
 - Generators：Lorem Ipsum / ランダムパスワードなど
 - 拡張ログ管理とエクスポート機能
 
