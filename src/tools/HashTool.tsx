@@ -21,6 +21,10 @@ export function HashTool() {
           color="primary"
           selectedKey={selectedKey}
           onSelectionChange={(key) => setSelectedKey(key as string)}
+          classNames={{
+            tabList: "text-sm",
+            tab: "text-xs"
+          }}
         >
           <Tab key="md2" title={t("tools.hash.md2")} />
           <Tab key="md4" title={t("tools.hash.md4")} />

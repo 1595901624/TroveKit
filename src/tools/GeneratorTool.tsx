@@ -16,6 +16,10 @@ export function GeneratorTool() {
           color="primary"
           selectedKey={selectedKey}
           onSelectionChange={(key) => setSelectedKey(key as string)}
+          classNames={{
+            tabList: "text-sm",
+            tab: "text-xs"
+          }}
         >
           <Tab key="uuid" title={t("tools.generator.uuid")} />
           <Tab key="qr" title={t("nav.qr")} />

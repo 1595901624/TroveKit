@@ -18,6 +18,10 @@ export function EncoderTool() {
           color="primary"
           selectedKey={selectedKey}
           onSelectionChange={(key) => setSelectedKey(key as string)}
+          classNames={{
+            tabList: "text-sm",
+            tab: "text-xs"
+          }}
         >
           <Tab key="url" title={t("tools.encoder.url")} />
           <Tab key="base64" title={t("tools.encoder.base64")} />

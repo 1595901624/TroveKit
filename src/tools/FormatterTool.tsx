@@ -17,6 +17,10 @@ export function FormatterTool() {
           color="primary"
           selectedKey={selectedKey}
           onSelectionChange={(key) => setSelectedKey(key as string)}
+          classNames={{
+            tabList: "text-sm",
+            tab: "text-xs"
+          }}
         >
           <Tab key="json" title={t("tools.formatter.json")} />
           <Tab key="xml" title={t("tools.formatter.xml")} />

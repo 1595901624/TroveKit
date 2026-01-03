@@ -16,6 +16,10 @@ export function ClassicalTool() {
           color="primary"
           selectedKey={selectedKey}
           onSelectionChange={(key) => setSelectedKey(key as string)}
+          classNames={{
+            tabList: "text-sm",
+            tab: "text-xs"
+          }}
         >
           <Tab key="caesar" title={t("tools.classical.caesar")} />
           <Tab key="morse" title={t("tools.classical.morse.title")} />
