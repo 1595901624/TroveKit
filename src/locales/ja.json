@@ -11,6 +11,7 @@
     "qr": "QRジェネレーター",
     "formatters": "フォーマッター",
     "generators": "ジェネレーター",
+    "logs": "操作ログ",
     "settings": "設定"
   },
   "home": {
@@ -233,6 +234,21 @@
       "hyphens": "ハイフン",
       "type": "結果タイプ",
       "outputPlaceholder": "生成された UUID がここに表示されます..."
+    },
+    "logManager": {
+      "title": "ログ管理",
+      "newLog": "新規ログ",
+      "createLog": "ログ作成",
+      "logTitle": "タイトル",
+      "logContent": "内容",
+      "cancel": "キャンセル",
+      "save": "保存",
+      "delete": "削除",
+      "noLogs": "ログはありません",
+      "createdAt": "作成日時",
+      "actions": "操作",
+      "view": "表示",
+      "confirmDelete": "このログを削除しますか？"
     }
   },
   "settings": {
@@ -253,6 +269,7 @@
     "title": "操作ログ",
     "clear": "ログをクリア",
     "empty": "ログはありません",
+    "emptyFilter": "このフィルターに一致するログはありません",
     "toggle": "ログパネルを切り替え",
     "input": "入力",
     "output": "出力",

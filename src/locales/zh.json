@@ -11,6 +11,7 @@
     "qr": "二维码生成",
     "formatters": "格式化工具",
     "generators": "生成器",
+    "logs": "操作日志",
     "settings": "设置"
   },
   "home": {
@@ -233,6 +234,21 @@
       "hyphens": "短横线",
       "type": "结果类型",
       "outputPlaceholder": "生成的 UUID 将显示在此处..."
+    },
+    "logManager": {
+      "title": "日志管理",
+      "newLog": "新建日志",
+      "createLog": "创建日志",
+      "logTitle": "标题",
+      "logContent": "内容",
+      "cancel": "取消",
+      "save": "保存",
+      "delete": "删除",
+      "noLogs": "暂无日志",
+      "createdAt": "创建时间",
+      "actions": "操作",
+      "view": "查看",
+      "confirmDelete": "确定要删除此日志吗？"
     }
   },
   "settings": {

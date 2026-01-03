@@ -11,6 +11,7 @@
     "qr": "QR 碼生成",
     "formatters": "格式化工具",
     "generators": "生成器",
+    "logs": "操作紀錄",
     "settings": "設定"
   },
   "home": {
@@ -233,6 +234,21 @@
       "hyphens": "短橫線",
       "type": "結果類型",
       "outputPlaceholder": "產生的 UUID 將顯示在此處..."
+    },
+    "logManager": {
+      "title": "日誌管理",
+      "newLog": "新建日誌",
+      "createLog": "創建日誌",
+      "logTitle": "標題",
+      "logContent": "內容",
+      "cancel": "取消",
+      "save": "保存",
+      "delete": "刪除",
+      "noLogs": "暫無日誌",
+      "createdAt": "創建時間",
+      "actions": "操作",
+      "view": "查看",
+      "confirmDelete": "確定要刪除此日誌嗎？"
     }
   },
   "settings": {
@@ -253,6 +269,7 @@
     "title": "操作紀錄",
     "clear": "清空紀錄",
     "empty": "暫无紀錄",
+    "emptyFilter": "沒有匹配的紀錄",
     "toggle": "切換紀錄視窗",
     "input": "輸入",
     "output": "輸出",
