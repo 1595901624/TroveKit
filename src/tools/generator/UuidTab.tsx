@@ -20,6 +20,44 @@ const saveStateToStorage = (state: Record<string, any>) => {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
 }
 
+// Helper function to format UUID
+const formatUuid = (uuid: string, type: string, isUppercase: boolean, showHyphens: boolean) => {
+  let result = uuid
+  
+  // Type processing
+  if (type === "hex") {
+    result = uuid.replace(/-/g, "")
+  } else if (type === "binary") {
+    // Hex to Binary
+    const hex = uuid.replace(/-/g, "")
+    let bin = ""
+    for (let i = 0; i < hex.length; i++) {
+      bin += parseInt(hex[i], 16).toString(2).padStart(4, '0')
+    }
+    result = bin
+  } else if (type === "base64") {
+    const hex = uuid.replace(/-/g, "")
+    const wordArr = CryptoJS.enc.Hex.parse(hex)
+    result = CryptoJS.enc.Base64.stringify(wordArr)
+  } else {
+    // String type - handle hyphens
+    if (!showHyphens) {
+      result = uuid.replace(/-/g, "")
+    }
+  }
+
+  // Case processing
+  if (type === "string" || type === "hex") {
+    if (isUppercase) {
+      result = result.toUpperCase()
+    } else {
+      result = result.toLowerCase()
+    }
+  }
+
+  return result
+}
+
 export function UuidTab() {
   const { t } = useTranslation()
   const { addLog } = useLog()
@@ -48,56 +86,28 @@ export function UuidTab() {
       newUuids.push(crypto.randomUUID())
     }
     setUuids(newUuids)
+
+    // Log the generated UUIDs (max 10)
+    const logLimit = 10
+    const logUuids = newUuids.slice(0, logLimit).map(uuid => 
+      formatUuid(uuid, type, isUppercase, showHyphens)
+    )
+    
+    let outputText = logUuids.join("\n")
+    if (limit > logLimit) {
+      outputText += `\n... (${t("tools.generator.maxLogLimit")})`
+    }
+
     addLog({
       method: "UUID Generate",
       input: `Count: ${limit}`,
-      output: `${limit} UUIDs generated`
+      output: outputText
     }, "success")
   }
 
   const formattedOutput = useMemo(() => {
     if (uuids.length === 0) return ""
-
-    return uuids.map(uuid => {
-      let result = uuid
-      
-      // Type processing
-      if (type === "hex") {
-        result = uuid.replace(/-/g, "")
-      } else if (type === "binary") {
-        // Hex to Binary
-        const hex = uuid.replace(/-/g, "")
-        let bin = ""
-        for (let i = 0; i < hex.length; i++) {
-          bin += parseInt(hex[i], 16).toString(2).padStart(4, '0')
-        }
-        result = bin
-      } else if (type === "base64") {
-        const hex = uuid.replace(/-/g, "")
-        const wordArr = CryptoJS.enc.Hex.parse(hex)
-        result = CryptoJS.enc.Base64.stringify(wordArr)
-      } else {
-        // String type - handle hyphens
-        if (!showHyphens) {
-          result = uuid.replace(/-/g, "")
-        }
-      }
-
-      // Case processing (not for Base64 usually, but user asked for "case switching")
-      // Base64 is case-sensitive, so changing case breaks it. 
-      // We should probably disable case switch for Base64, or just apply it if user really wants (which breaks value).
-      // Standard UUID tools only apply case to Hex/String.
-      // Let's apply to String and Hex. Binary is 0/1. Base64 is Case Sensitive.
-      if (type === "string" || type === "hex") {
-        if (isUppercase) {
-          result = result.toUpperCase()
-        } else {
-          result = result.toLowerCase()
-        }
-      }
-
-      return result
-    }).join("\n")
+    return uuids.map(uuid => formatUuid(uuid, type, isUppercase, showHyphens)).join("\n")
   }, [uuids, type, showHyphens, isUppercase])
 
   const copyToClipboard = () => {

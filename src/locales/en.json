@@ -245,7 +245,8 @@
       "uppercase": "Uppercase",
       "hyphens": "Hyphens",
       "type": "Result Type",
-      "outputPlaceholder": "Generated UUIDs will appear here..."
+      "outputPlaceholder": "Generated UUIDs will appear here...",
+      "maxLogLimit": "Max 10 items recorded"
     },
     "converter": {
       "title": "Converter",

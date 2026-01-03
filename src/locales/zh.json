@@ -245,7 +245,8 @@
       "uppercase": "大写",
       "hyphens": "短横线",
       "type": "结果类型",
-      "outputPlaceholder": "生成的 UUID 将显示在此处..."
+      "outputPlaceholder": "生成的 UUID 将显示在此处...",
+      "maxLogLimit": "最多记录10条"
     },
     "converter": {
       "title": "转换器",
