@@ -1,7 +1,13 @@
 {
   "common": {
     "comingSoon": "即將推出",
-    "comingSoonDesc": "{{tool}} 工具目前正在開發中。敬請期待！"
+    "comingSoonDesc": "{{tool}} 工具目前正在開發中。敬請期待！",
+    "refresh": "重新整理",
+    "loading": "載入中...",
+    "search": "搜尋",
+    "error": "錯誤",
+    "edit": "編輯",
+    "delete": "刪除"
   },
   "nav": {
     "home": "首頁",
@@ -11,6 +17,7 @@
     "qr": "QR生成器",
     "formatters": "格式化工具",
     "generators": "生成器",
+    "logManagement": "日誌管理",
     "logs": "操作日誌",
     "settings": "設定"
   },

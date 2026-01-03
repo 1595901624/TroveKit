@@ -7,6 +7,7 @@ import { ClassicalTool } from "./tools/ClassicalTool"
 import { GeneratorTool } from "./tools/GeneratorTool"
 import { Settings } from "./tools/Settings"
 import { FormatterTool } from "./tools/FormatterTool"
+import { LogManagementTool } from "./tools/LogManagementTool"
 import { ToolId } from "./components/Sidebar"
 import { Card, CardBody } from "@heroui/react"
 import { ArrowRight, Lock, Code2, FileCode2, Shield, Wand2 } from "lucide-react"
@@ -24,6 +25,7 @@ function App() {
       case "classical": return t("nav.classical")
       case "formatters": return t("nav.formatters")
       case "generators": return t("nav.generators")
+      case "logManagement": return t("nav.logManagement", "日志管理")
       case "settings": return t("settings.title")
       default: return "TroveKit"
     }
@@ -54,6 +56,9 @@ function App() {
           </div>
           <div className={activeTool === "generators" ? "block h-full" : "hidden"}>
             <GeneratorTool />
+          </div>
+          <div className={activeTool === "logManagement" ? "block h-full" : "hidden"}>
+            <LogManagementTool />
           </div>
           <div className={activeTool === "settings" ? "block h-full" : "hidden"}>
             <Settings />

@@ -1,7 +1,13 @@
 {
   "common": {
     "comingSoon": "即将推出",
-    "comingSoonDesc": "{{tool}} 工具目前正在开发中。敬请期待！"
+    "comingSoonDesc": "{{tool}} 工具目前正在开发中。敬请期待！",
+    "refresh": "刷新",
+    "loading": "加载中...",
+    "search": "搜索",
+    "error": "错误",
+    "edit": "编辑",
+    "delete": "删除"
   },
   "nav": {
     "home": "首页",
@@ -11,6 +17,7 @@
     "qr": "二维码生成",
     "formatters": "格式化工具",
     "generators": "生成器",
+    "logManagement": "日志管理",
     "logs": "操作日志",
     "settings": "设置"
   },

@@ -3,6 +3,7 @@ import {
   Binary,
   Lock,
   FileJson,
+  FileText,
   Wand2,
   Settings,
   Shield,
@@ -13,7 +14,7 @@ import { useTranslation } from "react-i18next"
 import { useState, useEffect } from "react"
 import { getVersion } from "@tauri-apps/api/app"
 
-export type ToolId = "home" | "encoder" | "crypto" | "classical" | "formatters" | "generators" | "settings"
+export type ToolId = "home" | "encoder" | "crypto" | "classical" | "formatters" | "generators" | "logManagement" | "settings"
 
 interface SidebarProps {
   activeTool: ToolId
@@ -35,6 +36,7 @@ export function Sidebar({ activeTool, onToolChange }: SidebarProps) {
     { id: "classical", label: t("nav.classical"), icon: Shield },
     { id: "formatters", label: t("nav.formatters"), icon: FileJson },
     { id: "generators", label: t("nav.generators"), icon: Wand2 },
+    { id: "logManagement", label: t("nav.logManagement", "日志管理"), icon: FileText },
   ] as const
 
   return (

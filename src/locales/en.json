@@ -1,7 +1,13 @@
 {
   "common": {
     "comingSoon": "Coming Soon",
-    "comingSoonDesc": "The {{tool}} tool is currently under development. Stay tuned for updates!"
+    "comingSoonDesc": "The {{tool}} tool is currently under development. Stay tuned for updates!",
+    "refresh": "Refresh",
+    "loading": "Loading...",
+    "search": "Search",
+    "error": "Error",
+    "edit": "Edit",
+    "delete": "Delete"
   },
   "nav": {
     "home": "Home",
@@ -11,6 +17,7 @@
     "qr": "QR Generator",
     "formatters": "Formatters",
     "generators": "Generators",
+    "logManagement": "Log Management",
     "logs": "Operation Logs",
     "settings": "Settings"
   },

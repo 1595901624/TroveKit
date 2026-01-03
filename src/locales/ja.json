@@ -1,7 +1,13 @@
 {
   "common": {
     "comingSoon": "近日公開",
-    "comingSoonDesc": "{{tool}} ツールは現在開発中です。更新をお待ちください！"
+    "comingSoonDesc": "{{tool}} ツールは現在開発中です。更新をお待ちください！",
+    "refresh": "更新",
+    "loading": "読み込み中...",
+    "search": "検索",
+    "error": "エラー",
+    "edit": "編集",
+    "delete": "削除"
   },
   "nav": {
     "home": "ホーム",
@@ -11,6 +17,7 @@
     "qr": "QRジェネレーター",
     "formatters": "フォーマッター",
     "generators": "ジェネレーター",
+    "logManagement": "ログ管理",
     "logs": "操作ログ",
     "settings": "設定"
   },

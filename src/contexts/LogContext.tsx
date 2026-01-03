@@ -30,6 +30,8 @@ export interface LogEntry {
   details?: string
   note?: string
   type: "info" | "success" | "error" | "warning"
+  // 可扩展加密参数（后续新增算法字段都放这里）
+  cryptoParams?: Record<string, any>
   // 加密相关字段
   algorithm?: string
   mode?: string
@@ -44,6 +46,7 @@ export type LogContent = string | {
     method: string
     input: string
     output: string
+  cryptoParams?: Record<string, any>
     algorithm?: string
     mode?: string
     key_size?: string
@@ -93,6 +96,7 @@ export function LogProvider({ children }: { children: React.ReactNode }) {
       newLog.method = content.method
       newLog.input = content.input
       newLog.output = content.output
+      if (content.cryptoParams) newLog.cryptoParams = content.cryptoParams
       // 加密相关字段
       if (content.algorithm) newLog.algorithm = content.algorithm
       if (content.mode) newLog.mode = content.mode
