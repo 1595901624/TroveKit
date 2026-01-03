@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.1.7] Unreleased
+## [0.1.7] - 2026-01-03
 
 ### Added
 - **Operation Logs(Experimental feature)**: Added session-based operation logging. Supports creating new log files (sessions) with automatic real-time persistence to local disk (`.jsonl` format).
