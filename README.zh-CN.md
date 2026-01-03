@@ -2,7 +2,7 @@
 <img src="app-icon.svg" width="48" height="48">
 <h1>TroveKit</h1>
 
-一个轻量、纯离线的跨平台开发者工具箱。
+一个开源、轻量、完全离线、跨平台的工具箱。
 
 [English](README.md) | 简体中文 | [繁體中文（香港）](README.zh-HK.md) | [繁體中文（台灣）](README.zh-TW.md) | [日本語](README.ja.md)
 </div>
@@ -135,18 +135,18 @@ TroveKit 基于 [Tauri v2](https://v2.tauri.app/) + [React](https://react.dev/) 
 
 1. Clone
 
-   - 如果你是从 GitHub 克隆：把下面的地址替换为你自己的仓库地址即可。
+    - 如果你是从 GitHub 克隆：把下面的地址替换为你自己的仓库地址即可。
 
-   ```bash
-   git clone <repo-url>
-   cd trovekit
-   ```
+    ```bash
+    git clone <repo-url>
+    cd trovekit
+    ```
 
 2. 安装依赖
 
-   ```bash
-   pnpm install
-   ```
+    ```bash
+    pnpm install
+    ```
 
 ### 本地开发运行
 

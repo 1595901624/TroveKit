@@ -2,7 +2,7 @@
 <img src="app-icon.svg" width="48" height="48">
 <h1>TroveKit</h1>
 
-軽量で純粋にオフラインのクロスプラットフォーム開発者ツールボックス。
+オープンソース、軽量、完全オフライン、クロスプラットフォームのツールボックス。
 
 [English](README.md) | [簡體中文](README.zh-CN.md) | [繁體中文（香港）](README.zh-HK.md) | [繁體中文（台灣）](README.zh-TW.md) | 日本語
 </div>

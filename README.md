@@ -2,7 +2,7 @@
 <img src="app-icon.svg" width="48" height="48">
 <h1>TroveKit</h1>
 
-A lightweight, pure offline, cross-platform developer toolbox.
+An open-source, lightweight, fully offline, cross-platform toolbox.
 
 English | [简体中文](README.zh-CN.md) | [繁體中文（香港）](README.zh-HK.md) | [繁體中文（台灣）](README.zh-TW.md) | [日本語](README.ja.md)
 </div>
