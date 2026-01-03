@@ -6,11 +6,13 @@ import { useTranslation } from "react-i18next"
 import { XMLParser, XMLBuilder } from "fast-xml-parser"
 import { useTheme } from "../../components/theme-provider"
 import { useToast } from "../../contexts/ToastContext"
+import { useLog } from "../../contexts/LogContext"
 
 export function JsonXmlTab() {
   const { t } = useTranslation()
   const { theme } = useTheme()
   const { addToast } = useToast()
+  const { addLog } = useLog()
 
   const [jsonCode, setJsonCode] = useState("")
   const [xmlCode, setXmlCode] = useState("")
@@ -26,6 +28,11 @@ export function JsonXmlTab() {
       const jsonObj = JSON.parse(jsonCode)
       const xml = builder.build(jsonObj)
       setXmlCode(xml)
+      addLog({
+        method: "JSON to XML",
+        input: jsonCode,
+        output: xml
+      }, "success")
       addToast(t("tools.converter.convertSuccessfully"), "success")
     } catch (e) {
       addToast(`${t("tools.converter.invalidJson")}: ${(e as Error).message}`, "error")
@@ -40,7 +47,13 @@ export function JsonXmlTab() {
         attributeNamePrefix: "@_"
       })
       const jsonObj = parser.parse(xmlCode)
-      setJsonCode(JSON.stringify(jsonObj, null, 2))
+      const json = JSON.stringify(jsonObj, null, 2)
+      setJsonCode(json)
+      addLog({
+        method: "XML to JSON",
+        input: xmlCode,
+        output: json
+      }, "success")
       addToast(t("tools.converter.convertSuccessfully"), "success")
     } catch (e) {
       addToast(`${t("tools.converter.invalidXml")}: ${(e as Error).message}`, "error")
@@ -91,7 +104,6 @@ export function JsonXmlTab() {
   const copyToClipboard = (text: string) => {
     if (!text) return
     navigator.clipboard.writeText(text)
-    addToast(t("tools.converter.copiedToClipboard"), "success")
   }
 
   return (
