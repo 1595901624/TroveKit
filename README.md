@@ -19,7 +19,7 @@ English | [简体中文](README.zh-CN.md) | [繁體中文（香港）](README.zh
 
 ## Why TroveKit
 
-You probably use these “small utilities” all the time—hashing, encryption/decryption, encoding/decoding, JSON formatting, QR codes, and simple classical ciphers.
+You probably use these "small utilities" all the time—hashing, encryption/decryption, encoding/decoding, JSON formatting, QR codes, and simple classical ciphers.
 TroveKit bundles them into a fast desktop app, aiming for:
 
 - **Pure offline**: all data processing is local
@@ -31,7 +31,7 @@ Built with [Tauri v2](https://v2.tauri.app/) + [React](https://react.dev/), Trov
 
 ## ✨ Highlights
 
-- All-in-one utilities: Hash / AES / DES / RC4 / Encoders-Decoders / JSON / QR / Caesar cipher / **Log Management**
+- All-in-one utilities: Hash / AES / DES / RC4 / Encoders-Decoders / JSON / XML / **Converters** / QR / Caesar cipher / **Log Management**
 - Modern UI: light/dark theme, responsive layout, smooth animations
 - **Enhanced i18n**: English / 简体中文 / 繁體中文（HK/TW）/ 日本語 with optimized text sizing and translation quality
 - Logs & toasts: history, error feedback, copy buttons with **note functionality**
@@ -69,6 +69,13 @@ Built with [Tauri v2](https://v2.tauri.app/) + [React](https://react.dev/), Trov
 - **XML**: format and minify
 - **CSS**: format and minify
 - **SQL**: format and minify with support for multiple SQL dialects (MySQL, PostgreSQL, SQLite, T-SQL, etc.)
+
+### 🔄 Converters
+
+- **JSON ↔ XML**: Bidirectional conversion with real-time processing
+- Syntax highlighting for both formats
+- Example data support for quick testing
+- Error validation and helpful feedback
 
 ### 🧾 Logs & Toasts
 
@@ -116,6 +123,7 @@ Built with [Tauri v2](https://v2.tauri.app/) + [React](https://react.dev/), Trov
 - **UI Framework**: [HeroUI](https://www.heroui.com/) & [Tailwind CSS](https://tailwindcss.com/)
 - **State & Logic**: [Framer Motion](https://www.framer.com/motion/), [i18next](https://www.i18next.com/), [crypto-js](https://cryptojs.gitbook.io/)
 - **QR Rendering**: [qr-code-styling](https://www.npmjs.com/package/qr-code-styling)
+- **XML Processing**: [fast-xml-parser](https://www.npmjs.com/package/fast-xml-parser)
 
 ## 🛠️ Getting Started
 
@@ -159,7 +167,9 @@ TroveKit/
 ├── src/             # React frontend source code
 │   ├── components/  # UI Components (Sidebar, LogPanel, Toast, etc.)
 │   ├── contexts/    # Context Providers (LogContext, ToastContext)
-│   ├── tools/       # Tool Views (Hash, Encoder, Formatter, QR, Classical, Settings)
+│   ├── tools/       # Tool Views (Hash, Encoder, Formatter, Converter, QR, Classical, Settings)
+│   │   ├── converter/  # JSON/XML converter
+│   │   └── ...     # Other tool directories
 │   ├── locales/     # i18n JSON files
 │   ├── lib/         # Utilities (Base32, etc.)
 │   └── styles/      # Global CSS
@@ -170,7 +180,7 @@ TroveKit/
 
 Issues and PRs are welcome:
 
-- New utility ideas (more formatters/generators)
+- New utility ideas (more formatters/generators/converters)
 - Bug fixes and UI/UX improvements
 - Copy & translation improvements (`src/locales/`)
 

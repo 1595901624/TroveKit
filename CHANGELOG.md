@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.1.8] - Unreleased
 
 ### Added
+- **JSON/XML Converter**: Added new converter tool for bidirectional conversion between JSON and XML formats with real-time processing, syntax highlighting, and example data support.
 - **Log Management Panel**: Added a dedicated log management tool in the sidebar for viewing, searching, and managing saved logs.
 - **Database Storage for Logs (Experimental)**: Migrated log storage from file-based (.jsonl) to SQLite database for better performance and extensibility. Includes session-based log grouping.
 

@@ -31,7 +31,7 @@ TroveKit はそれらを高速なデスクトップアプリにまとめ、以�
 
 ## ✨ 主な機能
 
-- オールインワンユーティリティ：Hash / AES / DES / RC4 / エンコーダー-デコーダー / JSON / QR / シーザー暗号 / **ログ管理**
+- オールインワンユーティリティ：Hash / AES / DES / RC4 / エンコーダー-デコーダー / JSON / XML / **コンバーター** / QR / シーザー暗号 / **ログ管理**
 - モダン UI：ライト/ダークテーマ、レスポンシブレイアウト、スムーズなアニメーション
 - **拡張国際化**：English / 簡體中文 / 繁體中文（HK/TW）/ 日本語、文字サイズと翻訳品質の最適化
 - ログとトースト：履歴、エラーフィードバック、コピーボタン、**メモ機能付き**
@@ -70,6 +70,13 @@ TroveKit はそれらを高速なデスクトップアプリにまとめ、以�
 - **CSS**：フォーマット、ミニファイ
 - **SQL**：フォーマット、ミニファイ、複数のSQL方言をサポート（MySQL、PostgreSQL、SQLite、T-SQLなど）
 
+### 🔄 Converters
+
+- **JSON ↔ XML**：双方向変換、リアルタイム処理
+- 両フォーマットの構文強調表示
+- クイックテストのためのサンプルデータサポート
+- エラー検証と親切なフィードバック
+
 ### 🧾 Logs & Toasts
 
 - サイドパネルでの操作履歴、**セッションベースの永続化（実験的）**
@@ -105,6 +112,7 @@ TroveKit はそれらを高速なデスクトップアプリにまとめ、以�
 - **UI Framework**: [HeroUI](https://www.heroui.com/) & [Tailwind CSS](https://tailwindcss.com/)
 - **State & Logic**: [Framer Motion](https://www.framer.com/motion/), [i18next](https://www.i18next.com/), [crypto-js](https://cryptojs.gitbook.io/)
 - **QR Rendering**: [qr-code-styling](https://www.npmjs.com/package/qr-code-styling)
+- **XML Processing**: [fast-xml-parser](https://www.npmjs.com/package/fast-xml-parser)
 
 ## 🎨 UI / UX
 
@@ -155,7 +163,9 @@ TroveKit/
 ├── src/             # React frontend source code
 │   ├── components/  # UI Components (Sidebar, LogPanel, Toast, etc.)
 │   ├── contexts/    # Context Providers (LogContext, ToastContext)
-│   ├── tools/       # Tool Views (Hash, Encoder, Formatter, QR, Classical, Settings)
+│   ├── tools/       # Tool Views (Hash, Encoder, Formatter, Converter, QR, Classical, Settings)
+│   │   ├── converter/  # JSON/XML converter
+│   │   └── ...     # Other tool directories
 │   ├── locales/     # i18n JSON files
 │   ├── lib/         # Utilities (Base32, etc.)
 │   └── styles/      # Global CSS
@@ -166,7 +176,7 @@ TroveKit/
 
 Issues と PR を歓迎します：
 
-- 新しいユーティリティのアイデア（より多くのフォーマッター/ジェネレーター）
+- 新しいユーティリティのアイデア（より多くのフォーマッター/ジェネレーター/コンバーター）
 - バグ修正と UI/UX の改善
 - コピーと翻訳の改善（`src/locales/`）
 

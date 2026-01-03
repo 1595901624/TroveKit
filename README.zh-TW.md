@@ -31,11 +31,11 @@ TroveKit 基於 [Tauri v2](https://v2.tauri.app/) + [React](https://react.dev/) 
 
 ## ✨ 主要功能
 
-- 多工具集合：Hash / AES / DES / RC4 / 編碼解碼 / JSON / 二維碼 / 凱撒密碼 / **日誌管理**
+- 多工具集合：Hash / AES / DES / RC4 / 編碼解碼 / JSON / XML / **轉換器** / 二維碼 / 凱撒密碼 / **日誌管理**
 - 現代 UI：深淺色主題、響應式佈局、順滑動畫
 - **增強國際化**：English / 簡體中文 / 繁體中文（HK/TW）/ 日本語，優化文字大小與翻譯質量
 - 日誌與提示：操作記錄、錯誤提示、複製按鈕，支援**備註功能**
-- **狀態持久化**：自動保存工具狀態（防止誤觸丟失）
+- **狀態持久化**：自動保存工具配置與內容（防止誤觸丟失）
 
 ## 🧰 內建工具
 
@@ -69,6 +69,13 @@ TroveKit 基於 [Tauri v2](https://v2.tauri.app/) + [React](https://react.dev/) 
 - **XML**：格式化 / 壓縮
 - **CSS**：格式化 / 壓縮
 - **SQL**：格式化 / 壓縮，支援多種 SQL 方言（MySQL、PostgreSQL、SQLite、T-SQL 等）
+
+### 🔄 Converters（轉換器）
+
+- **JSON ↔ XML**：雙向轉換，即時處理
+- 雙格式語法高亮
+- 範例資料支援，快速測試
+- 錯誤驗證與友善提示
 
 ### 🧾 Logs & Toasts（操作日誌與提示）
 
@@ -105,6 +112,7 @@ TroveKit 基於 [Tauri v2](https://v2.tauri.app/) + [React](https://react.dev/) 
 - **UI Framework**: [HeroUI](https://www.heroui.com/) & [Tailwind CSS](https://tailwindcss.com/)
 - **State & Logic**: [Framer Motion](https://www.framer.com/motion/), [i18next](https://www.i18next.com/), [crypto-js](https://cryptojs.gitbook.io/)
 - **QR Rendering**: [qr-code-styling](https://www.npmjs.com/package/qr-code-styling)
+- **XML Processing**: [fast-xml-parser](https://www.npmjs.com/package/fast-xml-parser)
 
 ## 🎨 UI / UX
 
@@ -164,7 +172,9 @@ TroveKit/
 ├── src/             # React frontend source code
 │   ├── components/  # UI Components (Sidebar, LogPanel, Toast, etc.)
 │   ├── contexts/    # Context Providers (LogContext, ToastContext)
-│   ├── tools/       # Tool Views (Hash, Encoder, Formatter, QR, Classical, Settings)
+│   ├── tools/       # Tool Views (Hash, Encoder, Formatter, Converter, QR, Classical, Settings)
+│   │   ├── converter/  # JSON/XML converter
+│   │   └── ...     # Other tool directories
 │   ├── locales/     # i18n JSON files
 │   ├── lib/         # Utilities (Base32, etc.)
 │   └── styles/      # Global CSS
@@ -175,7 +185,7 @@ TroveKit/
 
 歡迎提交 Issue / PR：
 
-- 新工具建議（例如更多格式化器/產生器）
+- 新工具建議（例如更多格式化器/生成器/轉換器）
 - Bug 修復、UI/UX 改進
 - 文案與翻譯優化（`src/locales/`）
 

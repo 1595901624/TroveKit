@@ -19,7 +19,7 @@
 
 ## 为什么是 TroveKit
 
-你可能经常需要这些“小工具”：哈希、加解密、编码、JSON 格式化、二维码、简单古典密码……
+你可能经常需要这些"小工具"：哈希、加解密、编码、JSON 格式化、二维码、简单古典密码……
 TroveKit 把它们集中到一个桌面应用里，尽量做到：
 
 - **纯离线**：所有数据处理都在本地
@@ -31,7 +31,7 @@ TroveKit 基于 [Tauri v2](https://v2.tauri.app/) + [React](https://react.dev/) 
 
 ## ✨ 主要功能
 
-- 多工具集合：Hash / AES / DES / RC4 / 编码解码 / JSON / 二维码 / 凯撒密码 / **日志管理**
+- 多工具集合：Hash / AES / DES / RC4 / 编码解码 / JSON / XML / **转换器** / 二维码 / 凯撒密码 / **日志管理**
 - 现代 UI：深浅色主题、响应式布局、顺滑动画
 - **增强国际化**：English / 简体中文 / 繁體中文（HK/TW）/ 日本語，优化文字大小与翻译质量
 - 日志与提示：操作记录、错误提示、复制按钮，支持**备注功能**
@@ -70,6 +70,13 @@ TroveKit 基于 [Tauri v2](https://v2.tauri.app/) + [React](https://react.dev/) 
 - **CSS**：格式化 / 压缩
 - **SQL**：格式化 / 压缩，支持多种 SQL 方言（MySQL、PostgreSQL、SQLite、T-SQL 等）
 
+### 🔄 Converters（转换器）
+
+- **JSON ↔ XML**：双向转换，实时处理
+- 双格式语法高亮
+- 示例数据支持，快速测试
+- 错误验证与友好提示
+
 ### 🧾 Logs & Toasts（操作日志与提示）
 
 - 侧边栏记录历史操作，并支持 **Session 级持久化（实验性）**
@@ -105,6 +112,7 @@ TroveKit 基于 [Tauri v2](https://v2.tauri.app/) + [React](https://react.dev/) 
 - **UI Framework**: [HeroUI](https://www.heroui.com/) & [Tailwind CSS](https://tailwindcss.com/)
 - **State & Logic**: [Framer Motion](https://www.framer.com/motion/), [i18next](https://www.i18next.com/), [crypto-js](https://cryptojs.gitbook.io/)
 - **QR Rendering**: [qr-code-styling](https://www.npmjs.com/package/qr-code-styling)
+- **XML Processing**: [fast-xml-parser](https://www.npmjs.com/package/fast-xml-parser)
 
 ## 🎨 UI / UX
 
@@ -164,7 +172,9 @@ TroveKit/
 ├── src/             # React frontend source code
 │   ├── components/  # UI Components (Sidebar, LogPanel, Toast, etc.)
 │   ├── contexts/    # Context Providers (LogContext, ToastContext)
-│   ├── tools/       # Tool Views (Hash, Encoder, Formatter, QR, Classical, Settings)
+│   ├── tools/       # Tool Views (Hash, Encoder, Formatter, Converter, QR, Classical, Settings)
+│   │   ├── converter/  # JSON/XML converter
+│   │   └── ...     # Other tool directories
 │   ├── locales/     # i18n JSON files
 │   ├── lib/         # Utilities (Base32, etc.)
 │   └── styles/      # Global CSS
@@ -175,7 +185,7 @@ TroveKit/
 
 欢迎提交 Issue / PR：
 
-- 新工具建议（例如更多格式化器/生成器）
+- 新工具建议（例如更多格式化器/生成器/转换器）
 - Bug 修复、UI/UX 改进
 - 文案与翻译优化（`src/locales/`）
 
