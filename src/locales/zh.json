@@ -17,6 +17,7 @@
     "qr": "二维码生成",
     "formatters": "格式化工具",
     "generators": "生成器",
+    "converter": "转换器",
     "logManagement": "日志管理",
     "logs": "操作日志",
     "settings": "设置"
@@ -245,6 +246,29 @@
       "hyphens": "短横线",
       "type": "结果类型",
       "outputPlaceholder": "生成的 UUID 将显示在此处..."
+    },
+    "converter": {
+      "title": "转换器",
+      "jsonXml": "JSON ↔ XML",
+      "input": "输入",
+      "output": "输出",
+      "convert": "转换",
+      "clear": "清空",
+      "clearAll": "清空全部",
+      "copy": "复制",
+      "copiedToClipboard": "已复制到剪贴板",
+      "swap": "交换",
+      "jsonToXml": "JSON 转 XML",
+      "xmlToJson": "XML 转 JSON",
+      "invalidJson": "无效的 JSON",
+      "invalidXml": "无效的 XML",
+      "convertSuccessfully": "转换成功",
+      "converterOptions": "转换选项",
+      "example": "示例",
+      "indent": "缩进",
+      "indentSpaces": "空格",
+      "indentTabs": "制表符",
+      "indentSize": "缩进大小"
     },
     "logManager": {
       "title": "日志管理",

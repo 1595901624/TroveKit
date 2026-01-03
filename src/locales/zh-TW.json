@@ -17,6 +17,7 @@
     "qr": "QR 碼生成",
     "formatters": "格式化工具",
     "generators": "生成器",
+    "converter": "轉換器",
     "logManagement": "日誌管理",
     "logs": "操作紀錄",
     "settings": "設定"
@@ -245,6 +246,29 @@
       "hyphens": "短橫線",
       "type": "結果類型",
       "outputPlaceholder": "產生的 UUID 將顯示在此處..."
+    },
+    "converter": {
+      "title": "轉換器",
+      "jsonXml": "JSON ↔ XML",
+      "input": "輸入",
+      "output": "輸出",
+      "convert": "轉換",
+      "clear": "清空",
+      "clearAll": "清空全部",
+      "copy": "複製",
+      "copiedToClipboard": "已複製到剪貼簿",
+      "swap": "交換",
+      "jsonToXml": "JSON 轉 XML",
+      "xmlToJson": "XML 轉 JSON",
+      "invalidJson": "無效的 JSON",
+      "invalidXml": "無效的 XML",
+      "convertSuccessfully": "轉換成功",
+      "converterOptions": "轉換選項",
+      "example": "示例",
+      "indent": "縮排",
+      "indentSpaces": "空格",
+      "indentTabs": "製表符",
+      "indentSize": "縮排大小"
     },
     "logManager": {
       "title": "日誌管理",

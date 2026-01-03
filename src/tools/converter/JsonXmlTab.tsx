@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { Button } from "@heroui/react"
 import Editor from "@monaco-editor/react"
-import { ArrowRight, ArrowLeft, Copy, Trash2 } from "lucide-react"
+import { ArrowRight, ArrowLeft, Copy, Trash2, BookOpen } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { XMLParser, XMLBuilder } from "fast-xml-parser"
 import { useTheme } from "../../components/theme-provider"
@@ -47,6 +47,47 @@ export function JsonXmlTab() {
     }
   }
 
+  const handleLoadExample = () => {
+    const example = {
+      library: {
+        store: {
+          name: "TroveKit Books",
+          location: "Internet"
+        },
+        books: [
+          {
+            id: "1",
+            title: "The Art of Code",
+            author: "Anonymous",
+            price: 29.99,
+            tags: ["programming", "tech"]
+          },
+          {
+            id: "2",
+            title: "Rust for Beginners",
+            author: "Ferris",
+            price: 35.50,
+            tags: ["rust", "system"]
+          }
+        ]
+      }
+    }
+    setJsonCode(JSON.stringify(example, null, 2))
+    
+    // Auto convert to XML for the example
+    try {
+      const builder = new XMLBuilder({
+        format: true,
+        ignoreAttributes: false,
+        suppressEmptyNode: true,
+      })
+      const xml = builder.build(example)
+      setXmlCode(xml)
+    } catch (e) {
+      console.error("Failed to generate XML example", e)
+    }
+  }
+
   const copyToClipboard = (text: string) => {
     if (!text) return
     navigator.clipboard.writeText(text)
@@ -56,22 +97,36 @@ export function JsonXmlTab() {
   return (
     <div className="flex flex-col h-full gap-4">
       {/* Controls */}
-      <div className="flex justify-center items-center gap-4 py-2">
-         <Button 
-            color="primary" 
-            endContent={<ArrowRight className="w-4 h-4" />}
-            onPress={handleJsonToXml}
-         >
-            {t("tools.converter.jsonToXml")}
-         </Button>
-         
-         <Button 
-            color="secondary"
-            startContent={<ArrowLeft className="w-4 h-4" />}
-            onPress={handleXmlToJson}
-         >
-            {t("tools.converter.xmlToJson")}
-         </Button>
+      <div className="flex justify-center items-center gap-4 py-2 relative">
+         <div className="flex gap-4">
+            <Button 
+                color="primary" 
+                endContent={<ArrowRight className="w-4 h-4" />}
+                onPress={handleJsonToXml}
+            >
+                {t("tools.converter.jsonToXml")}
+            </Button>
+            
+            <Button 
+                color="secondary"
+                startContent={<ArrowLeft className="w-4 h-4" />}
+                onPress={handleXmlToJson}
+            >
+                {t("tools.converter.xmlToJson")}
+            </Button>
+         </div>
+
+         <div className="absolute right-0 top-1/2 -translate-y-1/2">
+            <Button
+                variant="flat"
+                color="warning"
+                onPress={handleLoadExample}
+                startContent={<BookOpen className="w-4 h-4" />}
+                size="sm"
+            >
+                {t("tools.formatter.example")}
+            </Button>
+         </div>
       </div>
 
       {/* Editors Area */}

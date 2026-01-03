@@ -17,6 +17,7 @@
     "qr": "QR Generator",
     "formatters": "Formatters",
     "generators": "Generators",
+    "converter": "Converter",
     "logManagement": "Log Management",
     "logs": "Operation Logs",
     "settings": "Settings"
@@ -245,6 +246,29 @@
       "hyphens": "Hyphens",
       "type": "Result Type",
       "outputPlaceholder": "Generated UUIDs will appear here..."
+    },
+    "converter": {
+      "title": "Converter",
+      "jsonXml": "JSON ↔ XML",
+      "input": "Input",
+      "output": "Output",
+      "convert": "Convert",
+      "clear": "Clear",
+      "clearAll": "Clear All",
+      "copy": "Copy",
+      "copiedToClipboard": "Copied to clipboard",
+      "swap": "Swap",
+      "jsonToXml": "JSON to XML",
+      "xmlToJson": "XML to JSON",
+      "invalidJson": "Invalid JSON",
+      "invalidXml": "Invalid XML",
+      "convertSuccessfully": "Converted successfully",
+      "converterOptions": "Converter Options",
+      "example": "Example",
+      "indent": "Indent",
+      "indentSpaces": "Spaces",
+      "indentTabs": "Tabs",
+      "indentSize": "Indent Size"
     },
     "logManager": {
       "title": "Log Management",

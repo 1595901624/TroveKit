@@ -17,6 +17,7 @@
     "qr": "QRジェネレーター",
     "formatters": "フォーマッター",
     "generators": "ジェネレーター",
+    "converter": "コンバーター",
     "logManagement": "ログ管理",
     "logs": "操作ログ",
     "settings": "設定"
@@ -245,6 +246,29 @@
       "hyphens": "ハイフン",
       "type": "結果タイプ",
       "outputPlaceholder": "生成された UUID がここに表示されます..."
+    },
+    "converter": {
+      "title": "コンバーター",
+      "jsonXml": "JSON ↔ XML",
+      "input": "入力",
+      "output": "出力",
+      "convert": "変換",
+      "clear": "クリア",
+      "clearAll": "すべてクリア",
+      "copy": "コピー",
+      "copiedToClipboard": "クリップボードにコピーされました",
+      "swap": "入れ替え",
+      "jsonToXml": "JSON から XML",
+      "xmlToJson": "XML から JSON",
+      "invalidJson": "無効な JSON",
+      "invalidXml": "無効な XML",
+      "convertSuccessfully": "変換成功",
+      "converterOptions": "コンバーターオプション",
+      "example": "例",
+      "indent": "インデント",
+      "indentSpaces": "スペース",
+      "indentTabs": "タブ",
+      "indentSize": "インデントサイズ"
     },
     "logManager": {
       "title": "ログ管理",
