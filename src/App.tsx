@@ -7,10 +7,11 @@ import { ClassicalTool } from "./tools/ClassicalTool"
 import { GeneratorTool } from "./tools/GeneratorTool"
 import { Settings } from "./tools/Settings"
 import { FormatterTool } from "./tools/FormatterTool"
+import { ConverterTool } from "./tools/ConverterTool"
 import { LogManagementTool } from "./tools/LogManagementTool"
 import { ToolId } from "./components/Sidebar"
 import { Card, CardBody } from "@heroui/react"
-import { ArrowRight, Lock, Code2, FileCode2, Shield, Wand2 } from "lucide-react"
+import { ArrowRight, Lock, Code2, FileCode2, Shield, Wand2, ArrowRightLeft } from "lucide-react"
 import { useTranslation } from "react-i18next"
 
 function App() {
@@ -25,6 +26,7 @@ function App() {
       case "classical": return t("nav.classical")
       case "formatters": return t("nav.formatters")
       case "generators": return t("nav.generators")
+      case "converter": return t("nav.converter", "转换器")
       case "logManagement": return t("nav.logManagement", "日志管理")
       case "settings": return t("settings.title")
       default: return "TroveKit"
@@ -56,6 +58,9 @@ function App() {
           </div>
           <div className={activeTool === "generators" ? "block h-full" : "hidden"}>
             <GeneratorTool />
+          </div>
+          <div className={activeTool === "converter" ? "block h-full" : "hidden"}>
+            <ConverterTool />
           </div>
           <div className={activeTool === "logManagement" ? "block h-full" : "hidden"}>
             <LogManagementTool />
@@ -109,13 +114,21 @@ function HomeView({ onNavigate }: { onNavigate: (id: ToolId) => void }) {
       gradient: "from-purple-500/20 to-pink-500/20",
       iconColor: "text-purple-600 dark:text-purple-400"
     },
-    { 
-      id: "formatters", 
-      title: t("home.cards.formatters.title"), 
-      desc: t("home.cards.formatters.desc"), 
+    {
+      id: "formatters",
+      title: t("home.cards.formatters.title"),
+      desc: t("home.cards.formatters.desc"),
       icon: <FileCode2 className="w-6 h-6" />,
       gradient: "from-emerald-500/20 to-teal-500/20",
       iconColor: "text-emerald-600 dark:text-emerald-400"
+    },
+    {
+      id: "converter",
+      title: t("nav.converter", "转换器"),
+      desc: "JSON 与 XML 互转",
+      icon: <ArrowRightLeft className="w-6 h-6" />,
+      gradient: "from-cyan-500/20 to-blue-500/20",
+      iconColor: "text-cyan-600 dark:text-cyan-400"
     },
   ]
 
