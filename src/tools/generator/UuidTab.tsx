@@ -135,6 +135,7 @@ export function UuidTab() {
           color="primary" 
           onPress={handleGenerate}
           startContent={<RefreshCw className="w-4 h-4" />}
+          className="text-sm"
         >
           {t("tools.generator.generate")}
         </Button>
@@ -181,7 +182,7 @@ export function UuidTab() {
         <Textarea
             classNames={{
                 base: "h-full",
-                input: "h-full font-mono text-tiny resize-none",
+                input: "h-full font-mono resize-none",
                 inputWrapper: "h-full bg-default-100/50 hover:bg-default-100 focus-within:bg-background"
             }}
             value={formattedOutput}
