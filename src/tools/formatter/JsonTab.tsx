@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react"
 import { Button, Card, CardBody, ButtonGroup } from "@heroui/react"
 import Editor, { OnMount } from "@monaco-editor/react"
-import { Copy, Trash2, CheckCircle2, AlertCircle, Minimize2, Maximize2, AlignLeft, Network, ChevronsUpDown, ChevronsDownUp } from "lucide-react"
+import { Copy, Trash2, CheckCircle2, AlertCircle, Minimize2, Maximize2, AlignLeft, Network, ChevronsUpDown, ChevronsDownUp, BookOpen } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import ReactJson from 'react-json-view'
 import { useTheme } from "../../components/theme-provider"
@@ -158,6 +158,40 @@ export function JsonTab() {
       }
   }
 
+  // --- Example Operation ---
+  const handleLoadExample = () => {
+    const example = {
+      troveKit: {
+        version: "1.0.0",
+        features: ["Encoders", "Hash & Crypto", "Classical Ciphers", "QR Generator", "Formatters", "Generators"],
+        settings: {
+          theme: "dark",
+          language: "en",
+          offline: true
+        },
+        tools: {
+          formatter: {
+            supported: ["JSON", "XML", "CSS"],
+            example: true
+          },
+          encoder: {
+            supported: ["Base64", "Base32", "URL", "BaseX"],
+            customAlphabet: true
+          }
+        },
+        metadata: {
+          author: "TroveKit Team",
+          license: "MIT",
+          repository: "https://github.com/trovekit/trovekit"
+        }
+      }
+    }
+    const formatted = JSON.stringify(example, null, 2)
+    setCode(formatted)
+    setIsValid(true)
+    setErrorMsg("")
+  }
+
   return (
     <div className="flex flex-col h-full gap-4">
       <div className="flex flex-wrap items-center gap-2 justify-between">
@@ -208,6 +242,14 @@ export function JsonTab() {
                     startContent={<CheckCircle2 className="w-4 h-4" />}
                 >
                     {t("tools.formatter.validate")}
+                </Button>
+                <Button
+                    color="warning"
+                    variant="flat"
+                    onPress={handleLoadExample}
+                    startContent={<BookOpen className="w-4 h-4" />}
+                >
+                    {t("tools.formatter.example")}
                 </Button>
             </ButtonGroup>
 

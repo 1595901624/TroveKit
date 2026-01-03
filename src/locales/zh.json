@@ -209,6 +209,7 @@
       "format": "格式化",
       "minify": "压缩",
       "validate": "验证",
+      "example": "示例",
       "invalidJson": "无效的 JSON",
       "validJson": "有效的 JSON",
       "invalidXml": "无效的 XML",

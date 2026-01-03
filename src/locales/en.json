@@ -209,6 +209,7 @@
       "format": "Format",
       "minify": "Minify",
       "validate": "Validate",
+      "example": "Example",
       "invalidJson": "Invalid JSON",
       "validJson": "Valid JSON",
       "invalidXml": "Invalid XML",

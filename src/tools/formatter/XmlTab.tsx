@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react"
 import { Button, Card, CardBody, ButtonGroup } from "@heroui/react"
 import Editor, { OnMount } from "@monaco-editor/react"
-import { Copy, Trash2, CheckCircle2, AlertCircle, Minimize2, Maximize2 } from "lucide-react"
+import { Copy, Trash2, CheckCircle2, AlertCircle, Minimize2, Maximize2, BookOpen } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { useTheme } from "../../components/theme-provider"
 import format from 'xml-formatter'
@@ -81,6 +81,39 @@ export function XmlTab() {
     navigator.clipboard.writeText(code)
   }
 
+  // --- Example Operation ---
+  const handleLoadExample = () => {
+    const example = `<?xml version="1.0" encoding="UTF-8"?>
+<troveKit>
+  <version>1.0.0</version>
+  <features>
+    <feature>Encoders</feature>
+    <feature>Hash & Crypto</feature>
+    <feature>Classical Ciphers</feature>
+    <feature>QR Generator</feature>
+    <feature>Formatters</feature>
+    <feature>Generators</feature>
+    <feature>Log Manager</feature>
+    <feature>Settings</feature>
+    <feature>Language Support</feature>
+    <feature>Theme Toggle</feature>
+  </features>
+  <settings>
+    <theme>dark</theme>
+    <language>en</language>
+    <offline>true</offline>
+  </settings>
+  <metadata>
+    <author>TroveKit Team</author>
+    <license>MIT</license>
+    <repository>https://github.com/trovekit/trovekit</repository>
+  </metadata>
+</troveKit>`
+    setCode(example)
+    setIsValid(true)
+    setErrorMsg("")
+  }
+
   return (
     <div className="flex flex-col h-full gap-4">
       <div className="flex flex-wrap items-center gap-2 justify-between">
@@ -101,6 +134,14 @@ export function XmlTab() {
                     startContent={<Minimize2 className="w-4 h-4" />}
                 >
                     {t("tools.formatter.minify")}
+                </Button>
+                <Button
+                    color="warning"
+                    variant="flat"
+                    onPress={handleLoadExample}
+                    startContent={<BookOpen className="w-4 h-4" />}
+                >
+                    {t("tools.formatter.example")}
                 </Button>
             </ButtonGroup>
         </div>

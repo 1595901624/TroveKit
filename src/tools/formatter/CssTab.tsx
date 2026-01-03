@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react"
 import { Button, Card, CardBody, ButtonGroup } from "@heroui/react"
 import Editor, { OnMount } from "@monaco-editor/react"
-import { Copy, Trash2, CheckCircle2, AlertCircle, Minimize2, Maximize2 } from "lucide-react"
+import { Copy, Trash2, CheckCircle2, AlertCircle, Minimize2, Maximize2, BookOpen } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { useTheme } from "../../components/theme-provider"
 import { css as formatCss } from 'js-beautify'
@@ -86,6 +86,84 @@ export function CssTab() {
     navigator.clipboard.writeText(code)
   }
 
+  // --- Example Operation ---
+  const handleLoadExample = () => {
+    const example = `/* TroveKit CSS Example */
+.trove_kit {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #1a1a1a;
+  color: #ffffff;
+  padding: 20px;
+  border-radius: 8px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.header {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 16px;
+  color: #00d4ff;
+  text-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+}
+
+.body {
+  font-size: 16px;
+  line-height: 1.6;
+  max-width: 600px;
+  text-align: center;
+  color: #cccccc;
+}
+
+.footer {
+  margin-top: 20px;
+  font-size: 12px;
+  color: #888888;
+}
+
+.button {
+  background: linear-gradient(135deg, #00d4ff, #0099cc);
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  color: white;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.button:hover {
+  transform: scale(1.05);
+}
+
+.container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.item {
+  background: #2a2a2a;
+  padding: 10px;
+  border-radius: 4px;
+  text-align: center;
+}
+
+/* TroveKit Theme Variables */
+:root {
+  --trove-primary: #00d4ff;
+  --trove-secondary: #0099cc;
+  --trove-bg: #1a1a1a;
+  --trove-text: #ffffff;
+  --trove-border: #333333;
+}`
+    setCode(example)
+    setIsValid(true)
+    setErrorMsg("")
+  }
+
   return (
     <div className="flex flex-col h-full gap-4">
       <div className="flex flex-wrap items-center gap-2 justify-between">
@@ -106,6 +184,14 @@ export function CssTab() {
                     startContent={<Minimize2 className="w-4 h-4" />}
                 >
                     {t("tools.formatter.minify")}
+                </Button>
+                <Button
+                    color="warning"
+                    variant="flat"
+                    onPress={handleLoadExample}
+                    startContent={<BookOpen className="w-4 h-4" />}
+                >
+                    {t("tools.formatter.example")}
                 </Button>
             </ButtonGroup>
         </div>
