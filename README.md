@@ -8,7 +8,7 @@ English | [简体中文](README.zh-CN.md) | [繁體中文（香港）](README.zh
 </div>
 
 <div align="center">
-<img src="https://img.shields.io/badge/version-v0.1.6-blue" alt="Version">
+<img src="https://img.shields.io/badge/version-v0.1.7-blue" alt="Version">
 <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-green" alt="License"></a>
 <img src="https://img.shields.io/badge/Windows-Supported-blue" alt="Windows">
 <img src="https://img.shields.io/badge/macOS-Supported-blue" alt="macOS">
@@ -33,8 +33,8 @@ Built with [Tauri v2](https://v2.tauri.app/) + [React](https://react.dev/), Trov
 
 - All-in-one utilities: Hash / AES / DES / RC4 / Encoders-Decoders / JSON / QR / Caesar cipher
 - Modern UI: light/dark theme, responsive layout, smooth animations
-- i18n: English / 简体中文 / 繁體中文（HK/TW）/ 日本語
-- Logs & toasts: history, error feedback, copy buttons
+- **Enhanced i18n**: English / 简体中文 / 繁體中文（HK/TW）/ 日本語 with optimized text sizing and translation quality
+- Logs & toasts: history, error feedback, copy buttons with **note functionality**
 - **State Persistence**: auto-save tool states (never lose your input)
 
 ## 🧰 Utilities
@@ -74,19 +74,22 @@ Built with [Tauri v2](https://v2.tauri.app/) + [React](https://react.dev/), Trov
 - Side panel for operation history with **session-based persistence (Experimental)**
 - **Real-time auto-save**: all operations are saved to local `.jsonl` files automatically
 - Support for **manual log session creation** (New Log)
+- **Note functionality**: add comments/notes to log entries for better context and documentation
 - Structured method/input/output view
 - Error/success toasts + one-click copy
 
 ## 🗺️ Roadmap
 
-- Formatters: XML / SQL / YAML
-- Generators: UUID / Lorem Ipsum / random passwords, etc.
+- Formatters: SQL / YAML
+- Generators: Lorem Ipsum / random passwords, etc.
+- Enhanced log management and export features
 
 ## 🎨 UI / UX
 
 - **Theme**: Dark/Light mode with system sync
 - **Visuals**: built with **HeroUI** and **TailwindCSS**
 - **Animations**: powered by **Framer Motion**
+- **Optimized Text Sizing**: improved readability across all tools and languages
 
 ## 🌍 Internationalization
 

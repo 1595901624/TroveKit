@@ -13,9 +13,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **XML Formatter**: Added XML formatting and minification tool.
 - **CSS Formatter**: Added CSS formatting and minification tool.
 - **UUID Generator**: Added UUID v4 generator with batch support (up to 5000), real-time case/hyphen toggle, and multiple output formats (String, Hex, Binary, Base64).
+- **Log Panel Notes**: Added note functionality to log panel, allowing users to add comments to log entries for better context and documentation.
 
 ### Changed
 - **Sidebar Layout**: Optimized sidebar layout by moving the Settings button to the footer next to the version number for a cleaner navigation experience.
+- **Text Size & Translation Optimization**: Improved text sizing across the application and enhanced translation quality for all supported languages (English, Simplified Chinese, Traditional Chinese, Japanese).
 
 ## [0.1.6] - 2025-12-30
 

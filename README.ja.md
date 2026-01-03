@@ -8,7 +8,7 @@
 </div>
 
 <div align="center">
-<img src="https://img.shields.io/badge/version-v0.1.6-blue" alt="Version">
+<img src="https://img.shields.io/badge/version-v0.1.7-blue" alt="Version">
 <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-green" alt="License"></a>
 <img src="https://img.shields.io/badge/Windows-Supported-blue" alt="Windows">
 <img src="https://img.shields.io/badge/macOS-Supported-blue" alt="macOS">
@@ -33,8 +33,8 @@ TroveKit はそれらを高速なデスクトップアプリにまとめ、以�
 
 - オールインワンユーティリティ：Hash / AES / DES / RC4 / エンコーダー-デコーダー / JSON / QR / シーザー暗号
 - モダン UI：ライト/ダークテーマ、レスポンシブレイアウト、スムーズなアニメーション
-- i18n：English / 簡體中文 / 繁體中文（HK/TW）/ 日本語
-- ログとトースト：履歴、エラーフィードバック、コピーボタン
+- **拡張国際化**：English / 簡體中文 / 繁體中文（HK/TW）/ 日本語、文字サイズと翻訳品質の最適化
+- ログとトースト：履歴、エラーフィードバック、コピーボタン、**メモ機能付き**
 - **状態の永続化**：ツール状態の自動保存（入力の損失を防ぐ）
 
 ## 🧰 ユーティリティ
@@ -72,13 +72,15 @@ TroveKit はそれらを高速なデスクトップアプリにまとめ、以�
 - サイドパネルでの操作履歴、**セッションベースの永続化（実験的）**
 - **リアルタイム自動保存**：すべての操作が自動的にローカルの `.jsonl` ファイルに保存されます
 - **手動ログセッション作成**のサポート（新規ログ）
+- **メモ機能**：ログエントリにコメント/メモを追加可能、より良いコンテキストとドキュメントの記録に
 - 構造化されたメソッド/入力/出力ビュー
 - エラー/成功トースト + ワンクリックコピー
 
 ## 🗺️ Roadmap
 
-- Formatters：XML / SQL / YAML
-- Generators：UUID / Lorem Ipsum / ランダムパスワードなど
+- Formatters：SQL / YAML
+- Generators：Lorem Ipsum / ランダムパスワードなど
+- 拡張ログ管理とエクスポート機能
 
 ## 📸 Screenshots
 
@@ -100,6 +102,13 @@ TroveKit はそれらを高速なデスクトップアプリにまとめ、以�
 - **UI Framework**: [HeroUI](https://www.heroui.com/) & [Tailwind CSS](https://tailwindcss.com/)
 - **State & Logic**: [Framer Motion](https://www.framer.com/motion/), [i18next](https://www.i18next.com/), [crypto-js](https://cryptojs.gitbook.io/)
 - **QR Rendering**: [qr-code-styling](https://www.npmjs.com/package/qr-code-styling)
+
+## 🎨 UI / UX
+
+- **Theme**：ライト/ダークテーマ、システム同期対応
+- **Visuals**：**HeroUI** と **TailwindCSS** で構築
+- **Animations**：**Framer Motion** で駆動
+- **文字サイズ最適化**：全ツールと言語での可読性向上
 
 ## 🛠️ はじめに
 
