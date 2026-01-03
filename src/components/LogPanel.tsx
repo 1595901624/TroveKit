@@ -173,7 +173,55 @@ export function LogPanel() {
                                                 {log.method}
                                             </span>
                                         </div>
-                                        
+
+                                        {/* 加密参数信息：如果有加密相关字段则显示 */}
+                                        {(log.algorithm || log.mode || log.format || log.key_size || log.padding || log.iv) && (
+                                            <div className="grid grid-cols-2 gap-1.5 p-1.5 rounded bg-default-50/50 border border-divider/30">
+                                                {log.algorithm && (
+                                                    <div className="text-tiny">
+                                                        <span className="text-default-500 font-semibold">算法:</span>
+                                                        <span className="font-mono ml-1 text-default-700">{log.algorithm}</span>
+                                                    </div>
+                                                )}
+                                                {log.mode && (
+                                                    <div className="text-tiny">
+                                                        <span className="text-default-500 font-semibold">模式:</span>
+                                                        <span className="font-mono ml-1 text-default-700">{log.mode}</span>
+                                                    </div>
+                                                )}
+                                                {log.key_size && (
+                                                    <div className="text-tiny">
+                                                        <span className="text-default-500 font-semibold">密钥长度:</span>
+                                                        <span className="font-mono ml-1 text-default-700">{log.key_size}</span>
+                                                    </div>
+                                                )}
+                                                {log.format && (
+                                                    <div className="text-tiny">
+                                                        <span className="text-default-500 font-semibold">格式:</span>
+                                                        <span className="font-mono ml-1 text-default-700">{log.format}</span>
+                                                    </div>
+                                                )}
+                                                {log.padding && (
+                                                    <div className="text-tiny">
+                                                        <span className="text-default-500 font-semibold">填充:</span>
+                                                        <span className="font-mono ml-1 text-default-700">{log.padding}</span>
+                                                    </div>
+                                                )}
+                                                {log.key_type && (
+                                                    <div className="text-tiny">
+                                                        <span className="text-default-500 font-semibold">密钥类型:</span>
+                                                        <span className="font-mono ml-1 text-default-700">{log.key_type}</span>
+                                                    </div>
+                                                )}
+                                                {log.iv && (
+                                                    <div className="col-span-2 text-tiny">
+                                                        <span className="text-default-500 font-semibold">IV:</span>
+                                                        <span className="font-mono ml-1 text-default-700 break-all">{log.iv}</span>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        )}
+                                         
                                         {/* 输入和输出区域 */}
                                         <div className="space-y-1.5">
                                             {/* 输入部分 */}

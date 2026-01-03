@@ -130,10 +130,16 @@ export function DesTab() {
       }
 
       setDesOutput(output);
-      addLog({ 
-        method: `${desAlgorithm} Encrypt (${desMode}, ${desFormat})`, 
-        input: desInput, 
-        output: output 
+      addLog({
+        method: `${desAlgorithm} Encrypt (${desMode}, ${desFormat})`,
+        input: desInput,
+        output: output,
+        algorithm: desAlgorithm,
+        mode: desMode,
+        format: desFormat,
+        key_type: desKeyType,
+        iv: desIv,
+        padding: desPadding
       }, "success");
     } catch (e) {
       addLog({ method: `${desAlgorithm} Encrypt`, input: desInput, output: (e as Error).message }, "error");
@@ -166,10 +172,16 @@ export function DesTab() {
       // Note: Sometimes empty string is valid, but usually it means failure if input was not empty.
       
       setDesOutput(output);
-      addLog({ 
-        method: `${desAlgorithm} Decrypt (${desMode}, ${desFormat})`, 
-        input: desInput, 
-        output: output 
+      addLog({
+        method: `${desAlgorithm} Decrypt (${desMode}, ${desFormat})`,
+        input: desInput,
+        output: output,
+        algorithm: desAlgorithm,
+        mode: desMode,
+        format: desFormat,
+        key_type: desKeyType,
+        iv: desIv,
+        padding: desPadding
       }, "success");
     } catch (e) {
       addLog({ method: `${desAlgorithm} Decrypt`, input: desInput, output: (e as Error).message }, "error");

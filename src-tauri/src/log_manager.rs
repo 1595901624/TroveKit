@@ -15,8 +15,17 @@ pub struct LogEntry {
     pub input: Option<String>,
     pub output: Option<String>,
     pub details: Option<String>,
+    pub note: Option<String>,
     #[serde(rename = "type")]
     pub log_type: String, // "info" | "success" | "error" | "warning"
+    // 加密相关字段
+    pub algorithm: Option<String>,
+    pub mode: Option<String>,
+    pub key_size: Option<String>,
+    pub padding: Option<String>,
+    pub format: Option<String>,
+    pub iv: Option<String>,
+    pub key_type: Option<String>,
 }
 
 pub struct LogState {
@@ -125,5 +134,90 @@ pub fn clear_logs_file<R: Runtime>(app: AppHandle<R>, state: State<LogState>) ->
         // Instead of deleting, we truncate it since it's the current session file
         fs::File::create(file_path).map_err(|e| e.to_string())?;
     }
+    Ok(())
+}
+
+#[tauri::command]
+pub fn update_log_note<R: Runtime>(
+    app: AppHandle<R>,
+    state: State<LogState>,
+    log_id: String,
+    note: String,
+) -> Result<(), String> {
+    let file_path = get_current_log_path(&app, &state);
+    
+    if !file_path.exists() {
+        return Ok(());
+    }
+
+    // Read all logs
+    let file = fs::File::open(&file_path).map_err(|e| e.to_string())?;
+    let reader = BufReader::new(file);
+    let mut logs = Vec::new();
+
+    for line in reader.lines() {
+        let line = line.map_err(|e| e.to_string())?;
+        if let Ok(mut entry) = serde_json::from_str::<LogEntry>(&line) {
+            if entry.id == log_id {
+                entry.note = Some(note.clone());
+            }
+            logs.push(entry);
+        }
+    }
+
+    // Rewrite the file with updated logs
+    let mut file = OpenOptions::new()
+        .write(true)
+        .truncate(true)
+        .open(file_path)
+        .map_err(|e| e.to_string())?;
+
+    for entry in logs {
+        let json = serde_json::to_string(&entry).map_err(|e| e.to_string())?;
+        writeln!(file, "{}", json).map_err(|e| e.to_string())?;
+    }
+
+    Ok(())
+}
+
+#[tauri::command]
+pub fn remove_log_note<R: Runtime>(
+    app: AppHandle<R>,
+    state: State<LogState>,
+    log_id: String,
+) -> Result<(), String> {
+    let file_path = get_current_log_path(&app, &state);
+    
+    if !file_path.exists() {
+        return Ok(());
+    }
+
+    // Read all logs
+    let file = fs::File::open(&file_path).map_err(|e| e.to_string())?;
+    let reader = BufReader::new(file);
+    let mut logs = Vec::new();
+
+    for line in reader.lines() {
+        let line = line.map_err(|e| e.to_string())?;
+        if let Ok(mut entry) = serde_json::from_str::<LogEntry>(&line) {
+            if entry.id == log_id {
+                entry.note = None;
+            }
+            logs.push(entry);
+        }
+    }
+
+    // Rewrite the file with updated logs
+    let mut file = OpenOptions::new()
+        .write(true)
+        .truncate(true)
+        .open(file_path)
+        .map_err(|e| e.to_string())?;
+
+    for entry in logs {
+        let json = serde_json::to_string(&entry).map_err(|e| e.to_string())?;
+        writeln!(file, "{}", json).map_err(|e| e.to_string())?;
+    }
+
     Ok(())
 }

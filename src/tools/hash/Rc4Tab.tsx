@@ -65,10 +65,13 @@ export function Rc4Tab() {
       }
 
       setRc4Output(output);
-      addLog({ 
-        method: `RC4 Encrypt (${rc4Format})`, 
-        input: rc4Input, 
-        output: output 
+      addLog({
+        method: `RC4 Encrypt (${rc4Format})`,
+        input: rc4Input,
+        output: output,
+        algorithm: "RC4",
+        format: rc4Format,
+        key_type: rc4KeyType
       }, "success");
     } catch (e) {
       addLog({ method: "RC4 Encrypt", input: rc4Input, output: (e as Error).message }, "error");
@@ -98,10 +101,13 @@ export function Rc4Tab() {
       }
 
       setRc4Output(output);
-      addLog({ 
-        method: `RC4 Decrypt (${rc4Format})`, 
-        input: rc4Input, 
-        output: output 
+      addLog({
+        method: `RC4 Decrypt (${rc4Format})`,
+        input: rc4Input,
+        output: output,
+        algorithm: "RC4",
+        format: rc4Format,
+        key_type: rc4KeyType
       }, "success");
     } catch (e) {
       addLog({ method: "RC4 Decrypt", input: rc4Input, output: (e as Error).message }, "error");

@@ -30,12 +30,27 @@ export interface LogEntry {
   details?: string
   note?: string
   type: "info" | "success" | "error" | "warning"
+  // 加密相关字段
+  algorithm?: string
+  mode?: string
+  key_size?: string
+  padding?: string
+  format?: string
+  iv?: string
+  key_type?: string
 }
 
 export type LogContent = string | {
     method: string
     input: string
     output: string
+    algorithm?: string
+    mode?: string
+    key_size?: string
+    padding?: string
+    format?: string
+    iv?: string
+    key_type?: string
 }
 
 interface LogContextType {
@@ -78,6 +93,14 @@ export function LogProvider({ children }: { children: React.ReactNode }) {
       newLog.method = content.method
       newLog.input = content.input
       newLog.output = content.output
+      // 加密相关字段
+      if (content.algorithm) newLog.algorithm = content.algorithm
+      if (content.mode) newLog.mode = content.mode
+      if (content.key_size) newLog.key_size = content.key_size
+      if (content.padding) newLog.padding = content.padding
+      if (content.format) newLog.format = content.format
+      if (content.iv) newLog.iv = content.iv
+      if (content.key_type) newLog.key_type = content.key_type
       // Generate a fallback message for compatibility or search
       newLog.message = `${content.method}: ${content.input} -> ${content.output}`
     }

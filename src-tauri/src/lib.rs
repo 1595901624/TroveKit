@@ -21,7 +21,9 @@ pub fn run() {
             log_manager::append_log,
             log_manager::load_logs,
             log_manager::clear_logs_file,
-            log_manager::start_new_log
+            log_manager::start_new_log,
+            log_manager::update_log_note,
+            log_manager::remove_log_note
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

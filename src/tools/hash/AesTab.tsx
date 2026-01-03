@@ -124,10 +124,17 @@ export function AesTab() {
       }
 
       setAesOutput(output);
-      addLog({ 
-        method: `AES Encrypt (${aesMode}, ${aesKeySize}-bit, ${aesFormat})`, 
-        input: aesInput, 
-        output: output 
+      addLog({
+        method: `AES Encrypt (${aesMode}, ${aesKeySize}-bit, ${aesFormat})`,
+        input: aesInput,
+        output: output,
+        algorithm: "AES",
+        mode: aesMode,
+        key_size: `${aesKeySize}-bit`,
+        format: aesFormat,
+        key_type: aesKeyType,
+        iv: aesIv,
+        padding: aesPadding
       }, "success");
     } catch (e) {
       addLog({ method: "AES Encrypt", input: aesInput, output: (e as Error).message }, "error");
@@ -157,10 +164,17 @@ export function AesTab() {
       if (!output) throw new Error("Decryption failed or invalid key/iv/mode");
 
       setAesOutput(output);
-      addLog({ 
-        method: `AES Decrypt (${aesMode}, ${aesKeySize}-bit, ${aesFormat})`, 
-        input: aesInput, 
-        output: output 
+      addLog({
+        method: `AES Decrypt (${aesMode}, ${aesKeySize}-bit, ${aesFormat})`,
+        input: aesInput,
+        output: output,
+        algorithm: "AES",
+        mode: aesMode,
+        key_size: `${aesKeySize}-bit`,
+        format: aesFormat,
+        key_type: aesKeyType,
+        iv: aesIv,
+        padding: aesPadding
       }, "success");
     } catch (e) {
       addLog({ method: "AES Decrypt", input: aesInput, output: (e as Error).message }, "error");
