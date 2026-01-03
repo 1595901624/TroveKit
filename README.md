@@ -84,6 +84,7 @@ Built with [Tauri v2](https://v2.tauri.app/) + [React](https://react.dev/), Trov
 - Support for **manual log session creation** (New Log)
 - **Note functionality**: add comments/notes to log entries for better context and documentation
 - **Log Management Panel**: dedicated tool for viewing, searching, and managing all saved logs
+- **Enhanced UUID logging**: displays generated UUIDs with configurable format (String/Hex/Base64/Binary), case, and hyphens. Shows count and format details in logs. Maximum 10 UUIDs displayed in log entries with clear indication when limit is reached
 - Structured method/input/output view
 - Error/success toasts + one-click copy
 

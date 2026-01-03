@@ -56,7 +56,7 @@ TroveKit 基於 [Tauri v2](https://v2.tauri.app/) + [React](https://react.dev/) 
 
 - **MD5 / MD4 / MD2**：16 位元 / 32 位元，大小寫可選
 - **SHA 家族**：SHA1 / SHA224 / SHA256 / SHA384 / SHA512 / SHA3
-- **AES / DES / RC4**：支持多種模式與填充（支援 Hex/Base64 格式）
+- **AES / DES / RC4**：支援多種模式與填充（支援 Hex/Base64 格式）
 
 ### 🔢 Encoders & Decoders（編碼與解碼）
 
@@ -84,6 +84,7 @@ TroveKit 基於 [Tauri v2](https://v2.tauri.app/) + [React](https://react.dev/) 
 - 支援**手動建立日誌會話**（新建日誌）
 - **備註功能**：可為日誌條目添加註釋/備註，便於更好地記錄上下文和文檔
 - **日誌管理面板**：專用的工具，用於查看、搜尋和管理所有已儲存的日誌
+- **UUID 生成優化日誌**：顯示生成的 UUID 及其配置格式（String/Hex/Base64/Binary）、大小寫、短橫線設置。日誌中顯示數量和格式詳情，最多顯示 10 個 UUID，超出時有明確提示
 - 結構化的方法/輸入/輸出檢視
 - 錯誤/成功提示 + 一鍵複製
 
