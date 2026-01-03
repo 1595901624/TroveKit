@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next"
 import { JsonTab } from "./formatter/JsonTab"
 import { XmlTab } from "./formatter/XmlTab"
 import { CssTab } from "./formatter/CssTab"
+import { SqlTab } from "./formatter/SqlTab"
 
 export function FormatterTool() {
   const { t } = useTranslation()
@@ -25,6 +26,7 @@ export function FormatterTool() {
           <Tab key="json" title={t("tools.formatter.json")} />
           <Tab key="xml" title={t("tools.formatter.xml")} />
           <Tab key="css" title={t("tools.formatter.css")} />
+          <Tab key="sql" title={t("tools.formatter.sql")} />
         </Tabs>
       </div>
 
@@ -37,6 +39,9 @@ export function FormatterTool() {
         </div>
         <div className={selectedKey === "css" ? "h-full" : "hidden h-full"}>
           <CssTab />
+        </div>
+        <div className={selectedKey === "sql" ? "h-full" : "hidden h-full"}>
+          <SqlTab />
         </div>
       </div>
     </div>

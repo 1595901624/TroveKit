@@ -37,7 +37,7 @@
       },
       "formatters": {
         "title": "Formatters",
-        "desc": "Prettify JSON, XML, and SQL."
+        "desc": "Prettify JSON, XML, CSS, and SQL."
       }
       }
   },
@@ -206,6 +206,7 @@
       "json": "JSON",
       "xml": "XML",
       "css": "CSS",
+      "sql": "SQL",
       "format": "Format",
       "minify": "Minify",
       "validate": "Validate",
@@ -216,6 +217,8 @@
       "validXml": "Valid XML",
       "invalidCss": "Invalid CSS",
       "validCss": "Valid CSS",
+      "invalidSql": "Invalid SQL",
+      "validSql": "Valid SQL",
       "jsonFormat": "JSON Format",
       "formattedSuccessfully": "Formatted successfully",
       "jsonMinify": "JSON Minify",

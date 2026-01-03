@@ -37,7 +37,7 @@
       },
       "formatters": {
         "title": "フォーマッター",
-        "desc": "JSON、XML、SQL を整形。"
+        "desc": "JSON、XML、CSS、SQL を整形。"
       }
     }
   },
@@ -206,6 +206,7 @@
       "json": "JSON",
       "xml": "XML",
       "css": "CSS",
+      "sql": "SQL",
       "format": "フォーマット",
       "minify": "圧縮",
       "validate": "検証",
@@ -216,6 +217,8 @@
       "validXml": "有効な XML",
       "invalidCss": "無効な CSS",
       "validCss": "有効な CSS",
+      "invalidSql": "無効な SQL",
+      "validSql": "有効な SQL",
       "jsonFormat": "JSON フォーマット",
       "formattedSuccessfully": "フォーマット成功",
       "jsonMinify": "JSON 圧縮",
