@@ -260,6 +260,12 @@
     "filterError": "錯誤",
     "filterSuccess": "成功",
     "filterInfo": "信息",
-    "filterWarning": "警告"
+    "filterWarning": "警告",
+    "addNote": "添加備註",
+    "editNote": "編輯備註",
+    "removeNote": "刪除備註",
+    "notePlaceholder": "輸入備註...",
+    "saveNote": "保存備註",
+    "cancel": "取消"
   }
 }

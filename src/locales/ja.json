@@ -260,6 +260,12 @@
     "filterError": "エラー",
     "filterSuccess": "成功",
     "filterInfo": "情報",
-    "filterWarning": "警告"
+    "filterWarning": "警告",
+    "addNote": "メモを追加",
+    "editNote": "メモを編集",
+    "removeNote": "メモを削除",
+    "notePlaceholder": "メモを入力...",
+    "saveNote": "メモを保存",
+    "cancel": "キャンセル"
   }
 }

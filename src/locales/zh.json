@@ -261,6 +261,12 @@
     "filterError": "错误",
     "filterSuccess": "成功",
     "filterInfo": "信息",
-    "filterWarning": "警告"
+    "filterWarning": "警告",
+    "addNote": "添加备注",
+    "editNote": "编辑备注",
+    "removeNote": "删除备注",
+    "notePlaceholder": "输入备注信息...",
+    "saveNote": "保存备注",
+    "cancel": "取消"
   }
 }

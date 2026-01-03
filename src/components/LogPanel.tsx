@@ -1,7 +1,7 @@
 // 导入必要的依赖
 import { motion, AnimatePresence } from "framer-motion" // 用于动画效果
 import { useLog, LogEntry } from "../contexts/LogContext" // 日志上下文
-import { Trash2, X, Terminal, Info, CheckCircle, AlertTriangle, AlertCircle, Copy, Plus } from "lucide-react" // 图标
+import { Trash2, X, Terminal, Info, CheckCircle, AlertTriangle, AlertCircle, Copy, Plus, Edit } from "lucide-react" // 图标
 import { Button, ScrollShadow, Tooltip } from "@heroui/react" // UI 组件
 import { useTranslation } from "react-i18next" // 国际化
 import { useState, useMemo } from "react" // React hooks
@@ -12,17 +12,46 @@ type FilterType = LogEntry['type'] | 'all'
 // 日志面板组件
 export function LogPanel() {
   // 从日志上下文中获取数据和方法
-  const { logs, isOpen, setIsOpen, clearLogs, createNewLog } = useLog()
+  const { logs, isOpen, setIsOpen, clearLogs, createNewLog, addNote, removeNote } = useLog()
   // 国际化钩子
   const { t } = useTranslation()
   // 过滤器状态，默认显示全部
   const [filter, setFilter] = useState<FilterType>('all')
+  // 编辑备注的状态
+  const [editingNoteId, setEditingNoteId] = useState<string | null>(null)
+  const [noteInput, setNoteInput] = useState('')
 
   // 使用 useMemo 优化性能，根据过滤器筛选日志
   const filteredLogs = useMemo(() => {
     if (filter === 'all') return logs // 显示所有日志
     return logs.filter(log => log.type === filter) // 按类型过滤
   }, [logs, filter])
+
+  // 开始编辑备注
+  const handleStartEditNote = (logId: string, currentNote?: string) => {
+    setEditingNoteId(logId)
+    setNoteInput(currentNote || '')
+  }
+
+  // 取消编辑备注
+  const handleCancelEdit = () => {
+    setEditingNoteId(null)
+    setNoteInput('')
+  }
+
+  // 保存备注
+  const handleSaveNote = (logId: string) => {
+    if (noteInput.trim()) {
+      addNote(logId, noteInput.trim())
+      setEditingNoteId(null)
+      setNoteInput('')
+    }
+  }
+
+  // 删除备注
+  const handleRemoveNote = (logId: string) => {
+    removeNote(logId)
+  }
 
   // 根据日志类型返回对应图标
   const getIcon = (type: LogEntry['type']) => {
@@ -197,6 +226,89 @@ export function LogPanel() {
                                         {log.details}
                                     </div>
                                 )}
+
+                                {/* 备注区域 */}
+                                <div className="mt-2 pt-2 border-t border-divider/50">
+                                    {/* 如果有备注，显示备注内容 */}
+                                    {log.note && editingNoteId !== log.id && (
+                                        <div className="flex items-start justify-between gap-2">
+                                            <div className="flex-1 text-tiny text-foreground/80 font-mono bg-default-100/50 rounded px-2 py-1">
+                                                💡 {log.note}
+                                            </div>
+                                            <div className="flex gap-1">
+                                                <Tooltip content={t('log.editNote', 'Edit Note')}>
+                                                    <Button
+                                                        isIconOnly
+                                                        size="sm"
+                                                        variant="light"
+                                                        className="h-5 w-5 min-w-5"
+                                                        onPress={() => handleStartEditNote(log.id, log.note)}
+                                                    >
+                                                        <Edit className="w-3 h-3 text-default-500" />
+                                                    </Button>
+                                                </Tooltip>
+                                                <Tooltip content={t('log.removeNote', 'Remove Note')}>
+                                                    <Button
+                                                        isIconOnly
+                                                        size="sm"
+                                                        variant="light"
+                                                        className="h-5 w-5 min-w-5"
+                                                        onPress={() => handleRemoveNote(log.id)}
+                                                    >
+                                                        <X className="w-3 h-3 text-danger" />
+                                                    </Button>
+                                                </Tooltip>
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {/* 编辑备注输入框 */}
+                                    {editingNoteId === log.id && (
+                                        <div className="space-y-2">
+                                            <textarea
+                                                value={noteInput}
+                                                onChange={(e) => setNoteInput(e.target.value)}
+                                                placeholder={t('log.notePlaceholder', 'Enter note...')}
+                                                className="w-full text-small font-mono bg-default-100/50 rounded px-2 py-1 border border-divider focus:border-primary focus:outline-none resize-none"
+                                                rows={2}
+                                            />
+                                            <div className="flex gap-1 justify-end">
+                                                <Button
+                                                    size="sm"
+                                                    variant="light"
+                                                    className="h-7 px-2"
+                                                    onPress={handleCancelEdit}
+                                                >
+                                                    {t('log.cancel', 'Cancel')}
+                                                </Button>
+                                                <Button
+                                                    size="sm"
+                                                    color="primary"
+                                                    className="h-7 px-2"
+                                                    onPress={() => handleSaveNote(log.id)}
+                                                    isDisabled={!noteInput.trim()}
+                                                >
+                                                    {t('log.saveNote', 'Save Note')}
+                                                </Button>
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {/* 添加备注按钮（当没有备注且不在编辑状态时显示） */}
+                                    {!log.note && editingNoteId !== log.id && (
+                                        <Tooltip content={t('log.addNote', 'Add Note')}>
+                                            <Button
+                                                size="sm"
+                                                variant="light"
+                                                className="h-6 px-2 text-tiny opacity-0 group-hover:opacity-100 transition-opacity"
+                                                startContent={<Plus className="w-3 h-3" />}
+                                                onPress={() => handleStartEditNote(log.id)}
+                                            >
+                                                {t('log.addNote', 'Add Note')}
+                                            </Button>
+                                        </Tooltip>
+                                    )}
+                                </div>
                             </div>
                         ))
                     )}

@@ -277,6 +277,12 @@
     "filterError": "Error",
     "filterSuccess": "Success",
     "filterInfo": "Info",
-    "filterWarning": "Warning"
+    "filterWarning": "Warning",
+    "addNote": "Add Note",
+    "editNote": "Edit Note",
+    "removeNote": "Remove Note",
+    "notePlaceholder": "Enter note...",
+    "saveNote": "Save Note",
+    "cancel": "Cancel"
   }
 }

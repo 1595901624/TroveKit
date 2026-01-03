@@ -28,6 +28,7 @@ export interface LogEntry {
   input?: string
   output?: string
   details?: string
+  note?: string
   type: "info" | "success" | "error" | "warning"
 }
 
@@ -45,6 +46,8 @@ interface LogContextType {
   isOpen: boolean
   setIsOpen: (isOpen: boolean) => void
   togglePanel: () => void
+  addNote: (logId: string, note: string) => void
+  removeNote: (logId: string) => void
 }
 
 const LogContext = createContext<LogContextType | undefined>(undefined)
@@ -107,8 +110,30 @@ export function LogProvider({ children }: { children: React.ReactNode }) {
     setIsOpen((prev) => !prev)
   }, [])
 
+  const addNote = useCallback((logId: string, note: string) => {
+    setLogs((prev) =>
+      prev.map((log) =>
+        log.id === logId ? { ...log, note } : log
+      )
+    )
+    
+    // Persist to backend
+    invoke("update_log_note", { logId, note }).catch(err => console.error("Failed to save note:", err))
+  }, [])
+
+  const removeNote = useCallback((logId: string) => {
+    setLogs((prev) =>
+      prev.map((log) =>
+        log.id === logId ? { ...log, note: undefined } : log
+      )
+    )
+    
+    // Persist to backend
+    invoke("remove_log_note", { logId }).catch(err => console.error("Failed to remove note:", err))
+  }, [])
+
   return (
-    <LogContext.Provider value={{ logs, addLog, clearLogs, createNewLog, isOpen, setIsOpen, togglePanel }}>
+    <LogContext.Provider value={{ logs, addLog, clearLogs, createNewLog, isOpen, setIsOpen, togglePanel, addNote, removeNote }}>
       {children}
     </LogContext.Provider>
   )
