@@ -227,7 +227,7 @@ export function LogPanel() {
                                             {/* 输入部分 */}
                                             <div className="group/input relative p-2 rounded bg-default-100/50 hover:bg-default-100 transition-colors">
                                                 <div className="text-tiny text-default-400 font-semibold mb-0.5 select-none">{t('log.input', 'Input')}</div>
-                                                <div className="text-small font-mono text-default-600 break-all pr-6">
+                                                <div className="text-small font-mono text-default-600 break-all pr-6 whitespace-pre-wrap">
                                                     {log.input}
                                                 </div>
                                                 {/* 复制输入按钮 */}
@@ -245,7 +245,7 @@ export function LogPanel() {
                                             {/* 输出部分 */}
                                             <div className="group/output relative p-2 rounded bg-default-100/50 hover:bg-default-100 transition-colors">
                                                 <div className="text-tiny text-success/80 font-semibold mb-0.5 select-none">{t('log.output', 'Output')}</div>
-                                                <div className="text-small font-mono text-foreground break-all pr-6">
+                                                <div className="text-small font-mono text-foreground break-all pr-6 whitespace-pre-wrap">
                                                     {log.output}
                                                 </div>
                                                 {/* 复制输出按钮 */}
@@ -263,14 +263,14 @@ export function LogPanel() {
                                     </div>
                                 ) : (
                                     // 普通日志格式：直接显示消息
-                                    <div className="text-small break-all font-mono leading-relaxed text-foreground/90">
+                                    <div className="text-small break-all font-mono leading-relaxed text-foreground/90 whitespace-pre-wrap">
                                         {log.message}
                                     </div>
                                 )}
                                 
                                 {/* 详情信息：如果有则显示 */}
                                 {log.details && (
-                                    <div className="mt-1.5 pt-1.5 border-t border-divider/50 text-tiny text-default-400 break-all font-mono">
+                                    <div className="mt-1.5 pt-1.5 border-t border-divider/50 text-tiny text-default-400 break-all font-mono whitespace-pre-wrap">
                                         {log.details}
                                     </div>
                                 )}
