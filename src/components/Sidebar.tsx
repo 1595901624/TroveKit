@@ -38,27 +38,27 @@ export function Sidebar({ activeTool, onToolChange }: SidebarProps) {
   ] as const
 
   return (
-    <div className="w-64 h-full flex flex-col border-r border-divider bg-background/50 backdrop-blur-md">
-      <div className="p-6 flex items-center gap-2">
+    <div className="w-52 h-full flex flex-col border-r border-divider bg-background/50 backdrop-blur-md">
+      <div className="p-4 flex items-center gap-2">
         {/* <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary font-bold text-xl">
           T
         </div> */}
         {/* 添加svg */}
-        <img src="/t_bgw.svg" alt="TroveKit Logo" className="w-8 h-8" />
-        <span className="font-bold text-xl tracking-tight text-foreground">TroveKit</span>
+        <img src="/t_bgw.svg" alt="TroveKit Logo" className="w-7 h-7" />
+        <span className="font-bold text-lg tracking-tight text-foreground">TroveKit</span>
       </div>
 
-      <nav className="flex-1 px-4 py-2 space-y-1 overflow-y-auto">
+      <nav className="flex-1 px-3 py-2 space-y-1 overflow-y-auto">
         {menuItems.map((item) => (
           <Button
             key={item.id}
             variant={activeTool === item.id ? "flat" : "light"}
             color={activeTool === item.id ? "primary" : "default"}
             className={cn(
-              "w-full justify-start h-12 text-md font-medium",
+              "w-full justify-start h-10 text-sm font-medium",
               activeTool === item.id ? "bg-primary/10 text-primary" : "text-default-500 hover:text-foreground"
             )}
-            startContent={<item.icon className={cn("w-5 h-5", activeTool === item.id ? "text-primary" : "text-default-400")} />}
+            startContent={<item.icon className={cn("w-4 h-4", activeTool === item.id ? "text-primary" : "text-default-400")} />}
             onPress={() => onToolChange(item.id as ToolId)}
           >
             {item.label}
@@ -66,16 +66,16 @@ export function Sidebar({ activeTool, onToolChange }: SidebarProps) {
         ))}
       </nav>
 
-      <div className="p-4 border-t border-divider flex items-center justify-center relative px-6">
+      <div className="p-3 border-t border-divider flex items-center justify-center relative px-4">
         <Button
           isIconOnly
           size="sm"
           variant={activeTool === "settings" ? "flat" : "light"}
           color={activeTool === "settings" ? "primary" : "default"}
-          className="w-8 h-8 min-w-8 absolute left-4"
+          className="w-7 h-7 min-w-7 absolute left-3"
           onPress={() => onToolChange("settings")}
         >
-          <Settings className={cn("w-4 h-4", activeTool === "settings" ? "text-primary" : "text-default-400")} />
+          <Settings className={cn("w-3.5 h-3.5", activeTool === "settings" ? "text-primary" : "text-default-400")} />
         </Button>
         <div className="text-xs text-default-400">
           v{version}

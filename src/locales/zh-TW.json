@@ -5,7 +5,7 @@
   },
   "nav": {
     "home": "首頁",
-    "encoder": "編碼 & 解碼",
+    "encoder": "編碼工具",
     "crypto": "雜湊 & 加密",
     "classical": "古典密碼",
     "qr": "QR 碼生成",

@@ -5,7 +5,7 @@
   },
   "nav": {
     "home": "Home",
-    "encoder": "Encoders & Decoders",
+    "encoder": "Encoders",
     "crypto": "Hash & Crypto",
     "classical": "Classical Cipher",
     "qr": "QR Generator",
