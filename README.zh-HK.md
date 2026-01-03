@@ -84,6 +84,7 @@ TroveKit 基於 [Tauri v2](https://v2.tauri.app/) + [React](https://react.dev/) 
 - 支援**手動建立日誌會話**（新建日誌）
 - **備註功能**：可為日誌條目添加註釋/備註，便於更好地記錄上下文和文檔
 - **日誌管理面板**：專用的工具，用於查看、搜尋和管理所有已儲存的日誌
+- **增強 UUID 日誌**：顯示生成的 UUID，支援可配置格式（字串/Hex/Base64/二進位）、大小寫和連字元。在日誌中顯示數量和格式詳情。日誌條目中最多顯示 10 個 UUID，達到限制時會清楚標示
 - 結構化的方法/輸入/輸出檢視
 - 錯誤/成功提示 + 一鍵複製
 
@@ -120,6 +121,10 @@ TroveKit 基於 [Tauri v2](https://v2.tauri.app/) + [React](https://react.dev/) 
 - **Visuals**：基於 **HeroUI** 與 **TailwindCSS** 建構
 - **Animations**：由 **Framer Motion** 驅動
 - **優化文字大小**：提升所有工具與語言下的可讀性
+
+## 🌍 Internationalization
+
+- **Languages**: English, Simplified Chinese (简体中文), Traditional Chinese (繁體中文 - HK/TW), and Japanese (日本語)
 
 ## 🛠️ 快速開始（開發/運行）
 
