@@ -141,7 +141,7 @@ export function XmlTab() {
         <Card className="border-danger bg-danger-50 dark:bg-danger-900/20" shadow="sm">
           <CardBody className="flex flex-row items-center gap-3 py-2">
             <AlertCircle className="w-5 h-5 text-danger" />
-            <p className="text-danger font-medium text-sm">
+            <p className="text-danger font-medium text-xs">
               {t("tools.formatter.invalidXml")}: {errorMsg}
             </p>
           </CardBody>
@@ -152,7 +152,7 @@ export function XmlTab() {
         <Card className="border-success bg-success-50 dark:bg-success-900/20" shadow="sm">
           <CardBody className="flex flex-row items-center gap-3 py-2">
             <CheckCircle2 className="w-5 h-5 text-success" />
-            <p className="text-success font-medium text-sm">
+            <p className="text-success font-medium text-xs">
               {t("tools.formatter.validXml")}
             </p>
           </CardBody>

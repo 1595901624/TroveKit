@@ -117,12 +117,12 @@ function HomeView({ onNavigate }: { onNavigate: (id: ToolId) => void }) {
   return (
     <div className="space-y-12 py-8 animate-in fade-in duration-500">
       <div className="space-y-3 max-w-2xl">
-        <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight">
+        <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight">
           <span className="bg-clip-text text-transparent bg-gradient-to-r from-foreground via-foreground/90 to-foreground/70">
             {t("home.welcome")}
           </span>
         </h2>
-        <p className="text-default-500 text-xl leading-relaxed">
+        <p className="text-default-500 text-lg leading-relaxed">
           {t("home.subtitle")}
         </p>
       </div>
@@ -143,11 +143,11 @@ function HomeView({ onNavigate }: { onNavigate: (id: ToolId) => void }) {
                 </div>
               </div>
               <div className="space-y-2">
-                <h3 className="font-bold text-xl tracking-tight group-hover:text-primary transition-colors">{item.title}</h3>
-                <p className="text-default-500 text-base leading-relaxed line-clamp-2">{item.desc}</p>
+                <h3 className="font-bold text-lg tracking-tight group-hover:text-primary transition-colors">{item.title}</h3>
+                <p className="text-default-500 text-sm leading-relaxed line-clamp-2">{item.desc}</p>
               </div>
               <div className="pt-2 flex items-center gap-2 text-primary font-medium opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300">
-                <span className="text-sm">Get started</span>
+                <span className="text-xs">Get started</span>
                 <ArrowRight className="w-4 h-4" />
               </div>
             </CardBody>

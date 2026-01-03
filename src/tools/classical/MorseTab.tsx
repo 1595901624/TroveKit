@@ -147,13 +147,13 @@ export function MorseTab() {
       <div className="flex-1 flex flex-col md:flex-row gap-4 min-h-0">
         <div className="flex-1 flex flex-col gap-2">
           <div className="flex justify-between items-center px-1">
-            <span className="text-sm font-medium text-default-600">{t("log.input")}</span>
+            <span className="text-xs font-medium text-default-600">{t("log.input")}</span>
             <Button isIconOnly size="sm" variant="light" color="danger" onPress={handleClear}><Trash2
               className="w-4 h-4" /></Button>
           </div>
           <Textarea value={input} onValueChange={setInput} placeholder={t(
             "tools.classical.inputPlaceholder")} classNames={{
-              input: "font-mono text-sm", inputWrapper: "h-full bg-default-50/50"
+              input: "font-mono text-xs", inputWrapper: "h-full bg-default-50/50"
             }} className="flex-1 h-full min-h-[200px]" minRows={10} />
         </div>
         <div className="flex items-center justify-center">
@@ -161,13 +161,13 @@ export function MorseTab() {
         </div>
         <div className="flex-1 flex flex-col gap-2">
           <div className="flex justify-between items-center px-1">
-            <span className="text-sm font-medium text-default-600">{t("log.output")}</span>
+            <span className="text-xs font-medium text-default-600">{t("log.output")}</span>
             <Button isIconOnly size="sm" variant="light" color="primary" onPress={handleCopy}><Copy
               className="w-4 h-4" /></Button>
           </div>
           <Textarea value={output} isReadOnly placeholder={t("tools.classical.outputPlaceholder")}
-            classNames={{ input: "font-mono text-sm", inputWrapper: "h-full bg-default-50/50" }} className="flex-1  
-       h-full min-h-[200px]" minRows={10} />
+            classNames={{ input: "font-mono text-xs", inputWrapper: "h-full bg-default-50/50" }} className="flex-1
+         h-full min-h-[200px]" minRows={10} />
         </div>
       </div>
     </div>

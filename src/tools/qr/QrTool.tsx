@@ -100,7 +100,7 @@ function ColorPicker({ label, color, onChange, t }: ColorPickerProps) {
     return (
         <div className="flex flex-col gap-2 p-2 border border-default-200 rounded-lg bg-default-50/50">
             <div className="flex items-center justify-between">
-                <span className="text-xs font-medium text-default-600">{label}</span>
+                <span className="text-[10px] font-medium text-default-600">{label}</span>
                 <Popover placement="bottom" showArrow={true}>
                     <PopoverTrigger>
                         <button 
@@ -469,7 +469,7 @@ export function QrTool() {
 
         {/* Configuration Section */}
         <div className="space-y-3 border-t border-divider pt-3">
-             <h3 className="text-xs font-semibold text-default-400 uppercase tracking-wider">{t("settings.title")}</h3>
+             <h3 className="text-[10px] font-semibold text-default-400 uppercase tracking-wider">{t("settings.title")}</h3>
              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                  <Select 
                     label={t("tools.qr.correction")} 
@@ -509,7 +509,7 @@ export function QrTool() {
 
         {/* Style Section */}
         <div className="space-y-3 border-t border-divider pt-3 pb-8">
-            <h3 className="text-xs font-semibold text-default-400 uppercase tracking-wider">{t("tools.qr.style")}</h3>
+            <h3 className="text-[10px] font-semibold text-default-400 uppercase tracking-wider">{t("tools.qr.style")}</h3>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <ColorPicker label={t("tools.qr.dots")} color={qrColor} onChange={setQrColor} t={t} />
@@ -527,7 +527,7 @@ export function QrTool() {
              {/* Row 1: Size & Realtime */}
              <div className="flex items-center justify-between">
                  <div className="flex items-center gap-2">
-                    <span className="text-small text-default-600">{t("tools.qr.width")}</span>
+                    <span className="text-xs text-default-600">{t("tools.qr.width")}</span>
                     <Input 
                         type="number" 
                         size="sm" 
@@ -539,7 +539,7 @@ export function QrTool() {
                     />
                  </div>
                  <Switch size="sm" isSelected={realTime} onValueChange={setRealTime}>
-                    <span className="text-small text-default-600">{t("tools.qr.realtime")}</span>
+                    <span className="text-xs text-default-600">{t("tools.qr.realtime")}</span>
                  </Switch>
              </div>
 
@@ -571,7 +571,7 @@ export function QrTool() {
               
               <div className="bg-white p-4 rounded-xl shadow-lg border border-default-100 relative z-10 transition-all duration-300 hover:shadow-xl" ref={ref} />
               
-              <div className="mt-4 text-center text-default-400 text-xs font-mono break-all px-4">
+              <div className="mt-4 text-center text-default-400 text-[10px] font-mono break-all px-4">
                  {selectedMode === "wifi" ? t("tools.qr.wifiPreview", { ssid: wifi.ssid }) : t("tools.qr.preview")}
               </div>
           </div>

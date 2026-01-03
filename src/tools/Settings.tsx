@@ -27,7 +27,7 @@ export function Settings() {
     <div className="space-y-6 max-w-2xl mx-auto">
       <Card className="shadow-sm border border-default-200">
         <CardHeader className="flex flex-col items-start px-6 pt-6 pb-0">
-          <h2 className="text-xl font-bold">{t("settings.appearance")}</h2>
+          <h2 className="text-lg font-bold">{t("settings.appearance")}</h2>
           <p className="text-default-500 text-small mt-1">{t("settings.appearanceDesc")}</p>
         </CardHeader>
         <CardBody className="px-6 py-6 gap-6">
@@ -43,7 +43,7 @@ export function Settings() {
 
       <Card className="shadow-sm border border-default-200">
         <CardHeader className="flex flex-col items-start px-6 pt-6 pb-0">
-          <h2 className="text-xl font-bold">{t("settings.language")}</h2>
+          <h2 className="text-lg font-bold">{t("settings.language")}</h2>
           <p className="text-default-500 text-small mt-1">{t("settings.languageDesc")}</p>
         </CardHeader>
         <CardBody className="px-6 py-6">

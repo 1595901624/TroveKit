@@ -144,7 +144,7 @@ export default function TitleBar() {
             </svg>
           </div>
         </div>
-        <div className="flex-1 flex justify-center text-xs font-semibold text-gray-600 dark:text-gray-400 pointer-events-none">
+        <div className="flex-1 flex justify-center text-[10px] font-semibold text-gray-600 dark:text-gray-400 pointer-events-none">
           TroveKit
         </div>
         <div className="w-[60px]" />
@@ -157,7 +157,7 @@ export default function TitleBar() {
     return (
       // <div data-tauri-drag-region className="h-[36px] bg-[#f6f5f4] dark:bg-[#242424] flex items-center justify-between select-none px-2 border-b border-gray-300 dark:border-[#1e1e1e]">
       <div data-tauri-drag-region className="h-[36px] flex items-center justify-between select-none px-2">
-        <div className="flex-1 flex items-center text-sm font-bold text-[#2e3436] dark:text-[#d3d7cf] px-2 pointer-events-none">
+        <div className="flex-1 flex items-center text-xs font-bold text-[#2e3436] dark:text-[#d3d7cf] px-2 pointer-events-none">
           TroveKit
         </div>
         <div className="flex items-center gap-1">
@@ -180,7 +180,7 @@ export default function TitleBar() {
     <div data-tauri-drag-region className="h-[32px] bg-background flex items-stretch justify-between select-none text-sm z-50 border-b border-divider">
       <div className="flex items-center px-3 pointer-events-none gap-2">
         {/* Optional: Add app icon here if needed */}
-        <span className="text-xs text-default-500 font-medium">TroveKit</span>
+        <span className="text-[10px] text-default-500 font-medium">TroveKit</span>
       </div>
       <div className="flex items-stretch">
         <div onClick={minimize} className="w-[46px] flex items-center justify-center hover:bg-default-100 transition-colors cursor-default text-foreground">

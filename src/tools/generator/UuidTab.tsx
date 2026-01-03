@@ -181,7 +181,7 @@ export function UuidTab() {
         <Textarea
             classNames={{
                 base: "h-full",
-                input: "h-full font-mono text-small resize-none",
+                input: "h-full font-mono text-tiny resize-none",
                 inputWrapper: "h-full bg-default-100/50 hover:bg-default-100 focus-within:bg-background"
             }}
             value={formattedOutput}
