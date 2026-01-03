@@ -8,7 +8,7 @@
 </div>
 
 <div align="center">
-<img src="https://img.shields.io/badge/version-v0.1.7-blue" alt="Version">
+<img src="https://img.shields.io/badge/version-v0.1.8-blue" alt="Version">
 <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-green" alt="License"></a>
 <img src="https://img.shields.io/badge/Windows-Supported-blue" alt="Windows">
 <img src="https://img.shields.io/badge/macOS-Supported-blue" alt="macOS">
@@ -31,7 +31,7 @@ TroveKit はそれらを高速なデスクトップアプリにまとめ、以�
 
 ## ✨ 主な機能
 
-- オールインワンユーティリティ：Hash / AES / DES / RC4 / エンコーダー-デコーダー / JSON / QR / シーザー暗号
+- オールインワンユーティリティ：Hash / AES / DES / RC4 / エンコーダー-デコーダー / JSON / QR / シーザー暗号 / **ログ管理**
 - モダン UI：ライト/ダークテーマ、レスポンシブレイアウト、スムーズなアニメーション
 - **拡張国際化**：English / 簡體中文 / 繁體中文（HK/TW）/ 日本語、文字サイズと翻訳品質の最適化
 - ログとトースト：履歴、エラーフィードバック、コピーボタン、**メモ機能付き**
@@ -73,9 +73,10 @@ TroveKit はそれらを高速なデスクトップアプリにまとめ、以�
 ### 🧾 Logs & Toasts
 
 - サイドパネルでの操作履歴、**セッションベースの永続化（実験的）**
-- **リアルタイム自動保存**：すべての操作が自動的にローカルの `.jsonl` ファイルに保存されます
+- **リアルタイム自動保存**：すべての操作が自動的にローカルの **SQLite データベース** に保存されます
 - **手動ログセッション作成**のサポート（新規ログ）
 - **メモ機能**：ログエントリにコメント/メモを追加可能、より良いコンテキストとドキュメントの記録に
+- **ログ管理パネル**：保存されたすべてのログを表示、検索、管理するための専用ツール
 - 構造化されたメソッド/入力/出力ビュー
 - エラー/成功トースト + ワンクリックコピー
 
@@ -83,7 +84,6 @@ TroveKit はそれらを高速なデスクトップアプリにまとめ、以�
 
 - Formatters：YAML
 - Generators：Lorem Ipsum / ランダムパスワードなど
-- 拡張ログ管理とエクスポート機能
 
 ## 📸 Screenshots
 

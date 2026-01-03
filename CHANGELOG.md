@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.8] - Unreleased
+
+### Added
+- **Log Management Panel**: Added a dedicated log management tool in the sidebar for viewing, searching, and managing saved logs.
+- **Database Storage for Logs (Experimental)**: Migrated log storage from file-based (.jsonl) to SQLite database for better performance and extensibility. Includes session-based log grouping.
+
+### Changed
+- **Log Storage Format**: Logs are now stored in a SQLite database instead of JSONL files (experimental feature).
+
 ## [0.1.7] - 2026-01-03
 
 ### Added

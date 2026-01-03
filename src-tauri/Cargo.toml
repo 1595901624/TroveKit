@@ -1,6 +1,6 @@
 [package]
 name = "trovekit"
-version = "0.1.7"
+version = "0.1.8"
 description = "TroveKit, your tool treasure."
 authors = ["cloris", "haoyu"]
 edition = "2021"

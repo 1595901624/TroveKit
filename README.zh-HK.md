@@ -8,7 +8,7 @@
 </div>
 
 <div align="center">
-<img src="https://img.shields.io/badge/version-v0.1.7-blue" alt="Version">
+<img src="https://img.shields.io/badge/version-v0.1.8-blue" alt="Version">
 <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-green" alt="License"></a>
 <img src="https://img.shields.io/badge/Windows-Supported-blue" alt="Windows">
 <img src="https://img.shields.io/badge/macOS-Supported-blue" alt="macOS">
@@ -31,7 +31,7 @@ TroveKit 基於 [Tauri v2](https://v2.tauri.app/) + [React](https://react.dev/) 
 
 ## ✨ 主要功能
 
-- 多工具集合：Hash / AES / DES / RC4 / 編碼解碼 / JSON / 二維碼 / 凱撒密碼
+- 多工具集合：Hash / AES / DES / RC4 / 編碼解碼 / JSON / 二維碼 / 凱撒密碼 / **日誌管理**
 - 現代 UI：深淺色主題、響應式佈局、順滑動畫
 - **增強國際化**：English / 簡體中文 / 繁體中文（HK/TW）/ 日本語，優化文字大小與翻譯質量
 - 日誌與提示：操作記錄、錯誤提示、複製按鈕，支援**備註功能**
@@ -73,9 +73,10 @@ TroveKit 基於 [Tauri v2](https://v2.tauri.app/) + [React](https://react.dev/) 
 ### 🧾 Logs & Toasts（操作日誌與提示）
 
 - 側邊欄顯示操作歷史記錄，具有**基於會話的持久化（實驗性）**
-- **即時自動儲存**：所有操作自動儲存到本地的 `.jsonl` 檔案中
+- **即時自動儲存**：所有操作自動儲存到本地的 **SQLite 資料庫** 中
 - 支援**手動建立日誌會話**（新建日誌）
 - **備註功能**：可為日誌條目添加註釋/備註，便於更好地記錄上下文和文檔
+- **日誌管理面板**：專用的工具，用於查看、搜尋和管理所有已儲存的日誌
 - 結構化的方法/輸入/輸出檢視
 - 錯誤/成功提示 + 一鍵複製
 
@@ -83,7 +84,6 @@ TroveKit 基於 [Tauri v2](https://v2.tauri.app/) + [React](https://react.dev/) 
 
 - Formatters：YAML
 - Generators：Lorem Ipsum / 隨機密碼等
-- 增強日誌管理與導出功能
 
 ## 📸 Screenshots
 
