@@ -319,6 +319,17 @@
     "removeNote": "Remove Note",
     "notePlaceholder": "Enter note...",
     "saveNote": "Save Note",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "note": "Note"
+  },
+  "logManagement": {
+    "sessions": "Sessions",
+    "searchPlaceholder": "Search logs...",
+    "empty": "No logs found",
+    "noSessions": "No sessions found",
+    "deleteSessionTitle": "Delete Session",
+    "deleteLogTitle": "Delete Log",
+    "confirmDeleteSession": "Are you sure you want to delete this entire session?",
+    "confirmDeleteLog": "Are you sure you want to delete this log?"
   }
 }

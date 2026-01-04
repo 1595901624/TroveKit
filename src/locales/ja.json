@@ -245,7 +245,8 @@
       "uppercase": "大文字",
       "hyphens": "ハイフン",
       "type": "結果タイプ",
-      "outputPlaceholder": "生成された UUID がここに表示されます..."
+      "outputPlaceholder": "生成された UUID がここに表示されます...",
+      "maxLogLimit": "最大10項目記録"
     },
     "converter": {
       "title": "コンバーター",
@@ -318,6 +319,17 @@
     "removeNote": "メモを削除",
     "notePlaceholder": "メモを入力...",
     "saveNote": "メモを保存",
-    "cancel": "キャンセル"
+    "cancel": "キャンセル",
+    "note": "メモ"
+  },
+  "logManagement": {
+    "sessions": "セッション",
+    "searchPlaceholder": "ログを検索...",
+    "empty": "ログが見つかりません",
+    "noSessions": "セッションが見つかりません",
+    "deleteSessionTitle": "セッションを削除",
+    "deleteLogTitle": "ログを削除",
+    "confirmDeleteSession": "このセッション全体を削除しますか？",
+    "confirmDeleteLog": "このログを削除しますか？"
   }
 }

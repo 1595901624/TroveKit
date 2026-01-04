@@ -245,7 +245,8 @@
       "uppercase": "大寫",
       "hyphens": "短橫線",
       "type": "結果類型",
-      "outputPlaceholder": "產生的 UUID 將顯示在此處..."
+      "outputPlaceholder": "產生的 UUID 將顯示在此處...",
+      "maxLogLimit": "最多記錄10條"
     },
     "converter": {
       "title": "轉換器",
@@ -318,6 +319,17 @@
     "removeNote": "刪除備註",
     "notePlaceholder": "輸入備註...",
     "saveNote": "保存備註",
-    "cancel": "取消"
+    "cancel": "取消",
+    "note": "備註"
+  },
+  "logManagement": {
+    "sessions": "會話",
+    "searchPlaceholder": "搜尋紀錄...",
+    "empty": "未找到紀錄",
+    "noSessions": "未找到會話",
+    "deleteSessionTitle": "刪除會話",
+    "deleteLogTitle": "刪除紀錄",
+    "confirmDeleteSession": "確定要刪除整個會話嗎？",
+    "confirmDeleteLog": "確定要刪除此紀錄嗎？"
   }
 }

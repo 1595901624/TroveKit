@@ -319,6 +319,17 @@
     "removeNote": "删除备注",
     "notePlaceholder": "输入备注信息...",
     "saveNote": "保存备注",
-    "cancel": "取消"
+    "cancel": "取消",
+    "note": "备注"
+  },
+  "logManagement": {
+    "sessions": "会话",
+    "searchPlaceholder": "搜索日志...",
+    "empty": "未找到日志",
+    "noSessions": "未找到会话",
+    "deleteSessionTitle": "删除会话",
+    "deleteLogTitle": "删除日志",
+    "confirmDeleteSession": "确定要删除整个会话吗？",
+    "confirmDeleteLog": "确定要删除此日志吗？"
   }
 }
