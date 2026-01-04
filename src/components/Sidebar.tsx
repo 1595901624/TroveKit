@@ -27,11 +27,18 @@ interface SidebarProps {
 export function Sidebar({ activeTool, onToolChange }: SidebarProps) {
   const { t } = useTranslation()
   const [version, setVersion] = useState("v0.1.0")
-  const [isCollapsed, setIsCollapsed] = useState(false)
+  const [isCollapsed, setIsCollapsed] = useState(() => {
+    const saved = localStorage.getItem("sidebar-collapsed")
+    return saved === "true"
+  })
 
   useEffect(() => {
     getVersion().then(setVersion).catch(() => setVersion("v0.1.0"))
   }, [])
+
+  useEffect(() => {
+    localStorage.setItem("sidebar-collapsed", String(isCollapsed))
+  }, [isCollapsed])
 
   const menuItems = [
     { id: "home", label: t("nav.home"), icon: Home },
