@@ -48,6 +48,7 @@ Built with [Tauri v2](https://v2.tauri.app/) + [React](https://react.dev/), Trov
 
 ### 🔐 Classical Ciphers
 
+- **Bacon Cipher**: encode/decode with Standard (26 letters) or Traditional (24 letters) alphabets and multiple symbol modes (A/B, 0/1, etc.)
 - **Caesar Cipher**: encode/decode with configurable shift
 - **Morse Code**: encode/decode with customizable separator/dash/dot
 - Non-letter handling: keep / ignore / shift ASCII (experimental; may produce non-printable characters)
@@ -83,7 +84,7 @@ Built with [Tauri v2](https://v2.tauri.app/) + [React](https://react.dev/), Trov
 - **Real-time auto-save**: all operations are saved to local **SQLite database** automatically
 - Support for **manual log session creation** (New Log)
 - **Note functionality**: add comments/notes to log entries for better context and documentation
-- **Log Management Panel**: dedicated tool for viewing, searching, and managing all saved logs
+- **Redesigned Log Management Tool**: dedicated interface with a **master-detail layout** for viewing, searching, and managing all saved logs. Supports **deleting individual entries and entire sessions**
 - **Enhanced UUID logging**: displays generated UUIDs with configurable format (String/Hex/Base64/Binary), case, and hyphens. Shows count and format details in logs. Maximum 10 UUIDs displayed in log entries with clear indication when limit is reached
 - Structured method/input/output view
 - Error/success toasts + one-click copy

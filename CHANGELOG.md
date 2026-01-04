@@ -8,12 +8,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.1.8] - Unreleased
 
 ### Added
+- **Bacon Cipher**: Added new Bacon cipher tool with support for Standard (26 letters) and Traditional (24 letters) alphabets, multiple symbol modes (A/B, a/b, 0/1, custom), and automatic space recognition during decoding.
 - **JSON/XML Converter**: Added new converter tool for bidirectional conversion between JSON and XML formats with real-time processing, syntax highlighting, and example data support.
-- **Log Management Panel**: Added a dedicated log management tool in the sidebar for viewing, searching, and managing saved logs.
-- **Database Storage for Logs (Experimental)**: Migrated log storage from file-based (.jsonl) to SQLite database for better performance and extensibility. Includes session-based log grouping.
+- **Log Management Tool**: Added a dedicated log management tool in the sidebar for viewing, searching, and managing saved logs.
 
 ### Changed
+- **Log Management Tool Redesign**: Completely refactored the log management interface with a modern master-detail layout. Replaced native confirmation dialogs with HeroUI Modals and added support for deleting individual log entries and entire sessions.
 - **Log Storage Format**: Logs are now stored in a SQLite database instead of JSONL files (experimental feature).
+- **Sidebar Navigation**: Added QR Generator to the sidebar for easier access.
 
 ## [0.1.7] - 2026-01-03
 
