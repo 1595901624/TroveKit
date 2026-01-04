@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react"
 import { invoke } from "@tauri-apps/api/core"
-import { Button, Card, Input, Spinner, Chip, ScrollShadow } from "@heroui/react"
+import { Button, Card, Input, Spinner, Chip, ScrollShadow, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure } from "@heroui/react"
 import { Trash2, RefreshCw, Search, Archive, Clock, AlertCircle, CheckCircle2, Info, AlertTriangle } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import type { LogEntry } from "../contexts/LogContext"
@@ -99,10 +99,22 @@ export function LogManagementTool() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeSessionId])
 
-  const handleDeleteLog = async (id: string, e: React.MouseEvent) => {
-    e.stopPropagation()
-    if (!confirm(t("logManagement.confirmDeleteLog", "Are you sure you want to delete this log?"))) return
+  const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure()
+  const [deleteTarget, setDeleteTarget] = useState<{ type: 'log' | 'session', id: string } | null>(null)
+
+  const confirmDelete = async () => {
+    if (!deleteTarget) return
     
+    if (deleteTarget.type === 'log') {
+      await executeDeleteLog(deleteTarget.id)
+    } else {
+      await executeDeleteSession(deleteTarget.id)
+    }
+    onClose()
+    setDeleteTarget(null)
+  }
+
+  const executeDeleteLog = async (id: string) => {
     try {
       await invoke("delete_log", { id })
       // Optimistic update
@@ -114,16 +126,25 @@ export function LogManagementTool() {
     }
   }
 
-  const handleDeleteSession = async (sessionId: string, e: React.MouseEvent) => {
-    e.stopPropagation()
-    if (!confirm(t("logManagement.confirmDeleteSession", "Are you sure you want to delete this entire session?"))) return
-
+  const executeDeleteSession = async (sessionId: string) => {
     try {
       await invoke("delete_log_session", { sessionId })
       await reloadSessions()
     } catch (e: any) {
       setError(typeof e === "string" ? e : (e?.toString?.() ?? "Unknown error"))
     }
+  }
+
+  const handleDeleteLog = (id: string, e: React.MouseEvent) => {
+    e.stopPropagation()
+    setDeleteTarget({ type: 'log', id })
+    onOpen()
+  }
+
+  const handleDeleteSession = (sessionId: string, e: React.MouseEvent) => {
+    e.stopPropagation()
+    setDeleteTarget({ type: 'session', id: sessionId })
+    onOpen()
   }
 
   const getLogIcon = (type: string) => {
@@ -291,6 +312,35 @@ export function LogManagementTool() {
            )}
         </ScrollShadow>
       </Card>
+
+      <Modal isOpen={isOpen} onOpenChange={onOpenChange} backdrop="blur">
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader className="flex flex-col gap-1">
+                {deleteTarget?.type === 'session' 
+                  ? t("logManagement.deleteSessionTitle", "Delete Session") 
+                  : t("logManagement.deleteLogTitle", "Delete Log")}
+              </ModalHeader>
+              <ModalBody>
+                <p>
+                  {deleteTarget?.type === 'session'
+                    ? t("logManagement.confirmDeleteSession", "Are you sure you want to delete this entire session?")
+                    : t("logManagement.confirmDeleteLog", "Are you sure you want to delete this log?")}
+                </p>
+              </ModalBody>
+              <ModalFooter>
+                <Button color="default" variant="light" onPress={onClose}>
+                  {t("common.cancel", "Cancel")}
+                </Button>
+                <Button color="danger" onPress={confirmDelete}>
+                  {t("common.delete", "Delete")}
+                </Button>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
     </div>
   )
 }
