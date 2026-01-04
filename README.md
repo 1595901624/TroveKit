@@ -31,8 +31,9 @@ Built with [Tauri v2](https://v2.tauri.app/) + [React](https://react.dev/), Trov
 
 ## ✨ Highlights
 
-- All-in-one utilities: Hash / AES / DES / RC4 / Encoders-Decoders / JSON / XML / **Converters** / QR / Caesar cipher / **Log Management**
+- All-in-one utilities: Hash / AES / DES / RC4 / Encoders-Decoders / JSON / XML / YAML / **Converters** / QR / Caesar cipher / **Log Management**
 - Modern UI: light/dark theme, responsive layout, smooth animations
+- **Collapsible Sidebar**: Toggle sidebar to maximize workspace with state persistence.
 - **Enhanced i18n**: English / 简体中文 / 繁體中文（HK/TW）/ 日本語 with optimized text sizing and translation quality
 - Logs & toasts: history, error feedback, copy buttons with **note functionality**
 - **State Persistence**: auto-save tool states (never lose your input)
@@ -74,7 +75,8 @@ Built with [Tauri v2](https://v2.tauri.app/) + [React](https://react.dev/), Trov
 ### 🔄 Converters
 
 - **JSON ↔ XML**: Bidirectional conversion with real-time processing
-- Syntax highlighting for both formats
+- **JSON ↔ YAML**: Bidirectional conversion with real-time processing
+- Syntax highlighting for all formats
 - Example data support for quick testing
 - Error validation and helpful feedback
 

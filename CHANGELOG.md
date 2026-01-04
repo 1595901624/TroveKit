@@ -8,9 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.1.8] - Unreleased
 
 ### Added
+- **JSON/YAML Converter**: Added new converter tool for bidirectional conversion between JSON and YAML formats with real-time processing, syntax highlighting, and example data support.
 - **Bacon Cipher**: Added new Bacon cipher tool with support for Standard (26 letters) and Traditional (24 letters) alphabets, multiple symbol modes (A/B, a/b, 0/1, custom), and automatic space recognition during decoding.
 - **JSON/XML Converter**: Added new converter tool for bidirectional conversion between JSON and XML formats with real-time processing, syntax highlighting, and example data support.
 - **Log Management Tool**: Added a dedicated log management tool in the sidebar for viewing, searching, and managing saved logs.
+- **Collapsible Sidebar**: Added support for collapsing and expanding the sidebar to maximize workspace. The sidebar state is now persisted in local storage.
 
 ### Changed
 - **Log Management Tool Redesign**: Completely refactored the log management interface with a modern master-detail layout. Replaced native confirmation dialogs with HeroUI Modals and added support for deleting individual log entries and entire sessions.
