@@ -27,6 +27,7 @@
     "i18next": "^25.7.3",
     "js-beautify": "^1.15.4",
     "js-md2": "^0.2.2",
+    "js-yaml": "^4.1.1",
     "lucide-react": "^0.562.0",
     "monaco-editor": "^0.55.1",
     "postcss": "^8.5.6",
@@ -45,6 +46,7 @@
   "devDependencies": {
     "@tauri-apps/cli": "^2",
     "@types/js-beautify": "^1.14.3",
+    "@types/js-yaml": "^4.0.9",
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
     "@vitejs/plugin-react": "^4.6.0",
