@@ -159,6 +159,14 @@
         "long": "Long",
         "case": "Result Case",
         "noCase": "No Change"
+      },
+      "bacon": {
+        "title": "Bacon Cipher",
+        "alphabet": "Alphabet Type",
+        "standard": "Standard (26 letters)",
+        "traditional": "Traditional (24 letters, I=J, U=V)",
+        "mode": "Symbol Mode",
+        "custom": "Custom Symbols"
       }
     },
     "qr": {

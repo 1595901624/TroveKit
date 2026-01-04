@@ -159,6 +159,14 @@
         "long": "长",
         "case": "结果大小写",
         "noCase": "无变化"
+      },
+      "bacon": {
+        "title": "培根密码",
+        "alphabet": "字母表类型",
+        "standard": "标准 (26字母)",
+        "traditional": "传统 (24字母, I=J, U=V)",
+        "mode": "符号模式",
+        "custom": "自定义符号"
       }
     },
     "qr": {
