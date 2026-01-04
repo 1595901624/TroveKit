@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useState } from "react"
 import { invoke } from "@tauri-apps/api/core"
-import { Button, Card, CardBody, Input, Select, SelectItem, Spinner } from "@heroui/react"
-import { Trash2, RefreshCw, Pencil } from "lucide-react"
+import { Button, Card, Input, Spinner, Chip, ScrollShadow } from "@heroui/react"
+import { Trash2, RefreshCw, Search, Archive, Clock, AlertCircle, CheckCircle2, Info, AlertTriangle } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import type { LogEntry } from "../contexts/LogContext"
+import { cn } from "../lib/utils"
 
 type LogSessionSummary = {
   sessionId: string
@@ -14,39 +15,58 @@ type LogSessionSummary = {
 export function LogManagementTool() {
   const { t } = useTranslation()
 
-  const [loading, setLoading] = useState(true)
+  const [loadingSessions, setLoadingSessions] = useState(true)
+  const [loadingLogs, setLoadingLogs] = useState(false)
   const [sessions, setSessions] = useState<LogSessionSummary[]>([])
   const [activeSessionId, setActiveSessionId] = useState<string>("")
   const [logs, setLogs] = useState<LogEntry[]>([])
   const [query, setQuery] = useState("")
   const [error, setError] = useState<string | null>(null)
 
-  const filtered = useMemo(() => {
+  const filteredLogs = useMemo(() => {
     const q = query.trim().toLowerCase()
     if (!q) return logs
     return logs.filter((l) => {
-      const hay = [l.message, l.method, l.details, l.note, l.input, l.output].filter(Boolean).join("\n").toLowerCase()
+      const hay = [
+        l.message, 
+        l.method, 
+        l.details, 
+        l.note, 
+        l.input, 
+        l.output,
+        l.type
+      ].filter(Boolean).join("\n").toLowerCase()
       return hay.includes(q)
     })
   }, [logs, query])
 
-  const reloadSessions = async () => {
+  const reloadSessions = async (keepActive = false) => {
     setError(null)
-    setLoading(true)
+    setLoadingSessions(true)
     try {
       const result = await invoke<LogSessionSummary[]>("list_log_sessions")
       setSessions(result)
-      if (result.length > 0) {
-        setActiveSessionId((prev) => prev || result[0].sessionId)
-      } else {
-        setActiveSessionId("")
-        setLogs([])
+      
+      if (!keepActive) {
+         if (result.length > 0) {
+            setActiveSessionId(result[0].sessionId)
+         } else {
+            setActiveSessionId("")
+            setLogs([])
+         }
+      } else if (activeSessionId && !result.find(s => s.sessionId === activeSessionId)) {
+          // If active session was deleted, select first or none
+          if (result.length > 0) {
+            setActiveSessionId(result[0].sessionId)
+          } else {
+            setActiveSessionId("")
+            setLogs([])
+          }
       }
     } catch (e: any) {
-      // 后端命令尚未实现时，给出清晰提示
       setError(typeof e === "string" ? e : (e?.toString?.() ?? "Unknown error"))
     } finally {
-      setLoading(false)
+      setLoadingSessions(false)
     }
   }
 
@@ -56,14 +76,14 @@ export function LogManagementTool() {
       return
     }
     setError(null)
-    setLoading(true)
+    setLoadingLogs(true)
     try {
       const result = await invoke<LogEntry[]>("get_logs_by_session", { sessionId })
       setLogs(result)
     } catch (e: any) {
       setError(typeof e === "string" ? e : (e?.toString?.() ?? "Unknown error"))
     } finally {
-      setLoading(false)
+      setLoadingLogs(false)
     }
   }
 
@@ -73,145 +93,204 @@ export function LogManagementTool() {
   }, [])
 
   useEffect(() => {
-    if (activeSessionId) reloadLogs(activeSessionId)
+    if (activeSessionId) {
+        reloadLogs(activeSessionId)
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeSessionId])
 
-  const handleDeleteLog = async (id: string) => {
-    setError(null)
+  const handleDeleteLog = async (id: string, e: React.MouseEvent) => {
+    e.stopPropagation()
+    if (!confirm(t("logManagement.confirmDeleteLog", "Are you sure you want to delete this log?"))) return
+    
     try {
       await invoke("delete_log", { id })
-      await reloadLogs(activeSessionId)
+      // Optimistic update
+      setLogs(prev => prev.filter(l => l.id !== id))
+      // Update session count locally or reload
+      reloadSessions(true)
+    } catch (e: any) {
+      setError(typeof e === "string" ? e : (e?.toString?.() ?? "Unknown error"))
+    }
+  }
+
+  const handleDeleteSession = async (sessionId: string, e: React.MouseEvent) => {
+    e.stopPropagation()
+    if (!confirm(t("logManagement.confirmDeleteSession", "Are you sure you want to delete this entire session?"))) return
+
+    try {
+      await invoke("delete_log_session", { sessionId })
       await reloadSessions()
     } catch (e: any) {
       setError(typeof e === "string" ? e : (e?.toString?.() ?? "Unknown error"))
     }
   }
 
+  const getLogIcon = (type: string) => {
+    switch (type) {
+      case "error": return <AlertCircle className="w-4 h-4 text-danger" />
+      case "success": return <CheckCircle2 className="w-4 h-4 text-success" />
+      case "warning": return <AlertTriangle className="w-4 h-4 text-warning" />
+      default: return <Info className="w-4 h-4 text-primary" />
+    }
+  }
+
   return (
-    <div className="h-full p-4">
-      <div className="flex items-center justify-between gap-3 mb-4">
-        <div className="space-y-1">
-          <div className="text-xl font-semibold">{t("nav.logManagement", "日志管理")}</div>
-          <div className="text-tiny text-default-500">
-            {t("logManagement.subtitle", "查看已保存日志（按会话），支持搜索与删除。")}
+    <div className="flex h-[calc(100vh-140px)] gap-4 w-full">
+      {/* Sidebar: Sessions List */}
+      <Card className="w-72 h-full flex-none bg-content1/50">
+        <div className="p-3 border-b border-divider flex items-center justify-between bg-content1/50 backdrop-blur-md">
+          <div className="text-sm font-semibold flex items-center gap-2">
+            <Archive className="w-4 h-4" />
+            {t("logManagement.sessions", "Sessions")}
           </div>
+          <Button isIconOnly size="sm" variant="light" onPress={() => reloadSessions(true)} isLoading={loadingSessions}>
+            <RefreshCw className="w-4 h-4" />
+          </Button>
         </div>
-        <Button variant="flat" startContent={<RefreshCw className="w-4 h-4" />} onPress={reloadSessions}>
-          {t("common.refresh", "刷新")}
-        </Button>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 h-[calc(100%-64px)]">
-        <Card className="lg:col-span-1">
-          <CardBody className="space-y-3">
-            <div className="text-sm font-semibold">{t("logManagement.sessions", "日志会话")}</div>
-
-            {loading && sessions.length === 0 ? (
-              <div className="flex items-center gap-2 text-default-500 text-sm">
-                <Spinner size="sm" /> {t("common.loading", "加载中...")}
-              </div>
-            ) : (
-              <Select
-                label={t("logManagement.selectSession", "选择会话")}
-                selectedKeys={activeSessionId ? new Set([activeSessionId]) : new Set()}
-                onSelectionChange={(keys) => {
-                  const first = Array.from(keys)[0] as string | undefined
-                  setActiveSessionId(first ?? "")
-                }}
-                disallowEmptySelection={false}
-              >
-                {sessions.map((s) => (
-                  <SelectItem key={s.sessionId} textValue={s.sessionId}>
-                    {new Date(s.latestTimestamp).toLocaleString()} · {s.count}
-                  </SelectItem>
-                ))}
-              </Select>
-            )}
-
-            <Input
-              label={t("common.search", "搜索")}
-              value={query}
-              onValueChange={setQuery}
-              placeholder={t("logManagement.searchPlaceholder", "搜索 message / method / note ...")}
-            />
-
-            {error && (
-              <div className="text-danger text-tiny break-all">
-                {t("common.error", "错误")}: {error}
-                <div className="text-default-500 mt-1">
-                  {t("logManagement.backendHint", "提示：后端数据库/命令正在接入中，下一步会实现。")}
-                </div>
-              </div>
-            )}
-          </CardBody>
-        </Card>
-
-        <Card className="lg:col-span-2 overflow-hidden">
-          <CardBody className="space-y-3 overflow-hidden">
-            <div className="flex items-center justify-between">
-              <div className="text-sm font-semibold">
-                {t("logManagement.logs", "日志")}
-                <span className="text-tiny text-default-500 ml-2">({filtered.length})</span>
-              </div>
-            </div>
-
-            <div className="flex-1 overflow-auto space-y-2">
-              {loading && logs.length === 0 ? (
-                <div className="flex items-center gap-2 text-default-500 text-sm">
-                  <Spinner size="sm" /> {t("common.loading", "加载中...")}
-                </div>
-              ) : filtered.length === 0 ? (
-                <div className="text-default-400 text-sm py-8 text-center">
-                  {t("logManagement.empty", "暂无日志")}
-                </div>
-              ) : (
-                filtered.map((l) => (
-                  <div key={l.id} className="p-3 rounded-medium border border-divider bg-content1/40">
-                    <div className="flex items-start justify-between gap-3">
-                      <div className="min-w-0">
-                        <div className="text-tiny text-default-500">
-                          {new Date(l.timestamp).toLocaleString()} · {l.type}
-                        </div>
-                        <div className="text-sm font-mono break-all text-foreground/90 mt-1">
-                          {l.method ? `${l.method}: ${l.input ?? ""} -> ${l.output ?? ""}` : (l.message ?? "")}
-                        </div>
-                        {l.note && (
-                          <div className="text-tiny text-default-600 mt-1 break-all">
-                            {t("log.note", "备注")}: {l.note}
-                          </div>
-                        )}
-                      </div>
-                      <div className="flex gap-1 shrink-0">
-                        <Button
-                          isIconOnly
-                          size="sm"
-                          variant="light"
-                          className="h-8 w-8 min-w-8"
-                          isDisabled
-                          title={t("common.edit", "编辑")}
-                        >
-                          <Pencil className="w-4 h-4 text-default-400" />
-                        </Button>
-                        <Button
-                          isIconOnly
-                          size="sm"
-                          variant="light"
-                          className="h-8 w-8 min-w-8"
-                          onPress={() => handleDeleteLog(l.id)}
-                          title={t("common.delete", "删除")}
-                        >
-                          <Trash2 className="w-4 h-4 text-danger" />
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-                ))
+        
+        <ScrollShadow className="flex-1 p-2 space-y-1">
+          {sessions.length === 0 && !loadingSessions && (
+             <div className="text-center text-default-400 text-xs py-4">
+               {t("logManagement.noSessions", "No sessions found")}
+             </div>
+          )}
+          
+          {sessions.map((s) => (
+            <div
+              key={s.sessionId}
+              onClick={() => setActiveSessionId(s.sessionId)}
+              className={cn(
+                "group flex flex-col gap-1 p-3 rounded-lg cursor-pointer transition-all border border-transparent",
+                activeSessionId === s.sessionId 
+                  ? "bg-primary/10 border-primary/20 shadow-sm"
+                  : "hover:bg-content2 hover:border-default-200"
               )}
+            >
+              <div className="flex items-center justify-between">
+                <div className="text-xs font-medium text-default-700">
+                   {new Date(s.latestTimestamp).toLocaleDateString()}
+                </div>
+                <Button
+                    isIconOnly
+                    size="sm"
+                    variant="light"
+                    className="w-6 h-6 min-w-6 opacity-0 group-hover:opacity-100 transition-opacity"
+                    onClick={(e) => handleDeleteSession(s.sessionId, e)}
+                    color="danger"
+                >
+                    <Trash2 className="w-3 h-3" />
+                </Button>
+              </div>
+              <div className="flex items-center justify-between text-tiny text-default-500">
+                 <div className="flex items-center gap-1">
+                    <Clock className="w-3 h-3" />
+                    {new Date(s.latestTimestamp).toLocaleTimeString()}
+                 </div>
+                 <Chip size="sm" variant="flat" className="h-5 text-[10px] px-1">
+                    {s.count} logs
+                 </Chip>
+              </div>
             </div>
-          </CardBody>
-        </Card>
-      </div>
+          ))}
+        </ScrollShadow>
+      </Card>
+
+      {/* Main Content: Logs List */}
+      <Card className="flex-1 h-full bg-content1/50 flex flex-col overflow-hidden">
+        {/* Toolbar */}
+        <div className="p-3 border-b border-divider flex items-center justify-between gap-4 bg-content1/50 backdrop-blur-md shrink-0">
+             <Input
+                size="sm"
+                startContent={<Search className="w-4 h-4 text-default-400" />}
+                placeholder={t("logManagement.searchPlaceholder", "Search logs...")}
+                value={query}
+                onValueChange={setQuery}
+                className="max-w-md"
+                isClearable
+             />
+             
+             {error && (
+                <div className="text-tiny text-danger flex items-center gap-1 bg-danger/10 px-2 py-1 rounded">
+                   <AlertCircle className="w-3 h-3" />
+                   {error}
+                </div>
+             )}
+        </div>
+
+        {/* Logs List */}
+        <ScrollShadow className="flex-1 p-4">
+           {loadingLogs ? (
+             <div className="flex justify-center py-10">
+                <Spinner label={t("common.loading", "Loading...")} />
+             </div>
+           ) : filteredLogs.length === 0 ? (
+             <div className="text-center text-default-400 py-20 flex flex-col items-center gap-2">
+                <Search className="w-10 h-10 opacity-20" />
+                <p>{t("logManagement.empty", "No logs found")}</p>
+             </div>
+           ) : (
+             <div className="space-y-3">
+               {filteredLogs.map((log) => (
+                 <div key={log.id} className="group relative flex gap-3 p-4 rounded-xl border border-divider bg-content1 hover:bg-content2 transition-colors">
+                    <div className="mt-1 shrink-0">
+                       {getLogIcon(log.type)}
+                    </div>
+                    
+                    <div className="flex-1 min-w-0 space-y-1">
+                       <div className="flex items-center justify-between gap-2">
+                          <div className="text-xs text-default-500 font-mono">
+                             {new Date(log.timestamp).toLocaleTimeString()}
+                          </div>
+                          {log.method && (
+                             <Chip size="sm" variant="flat" color="primary" className="h-5 text-[10px]">
+                                {log.method}
+                             </Chip>
+                          )}
+                       </div>
+                       
+                       <div className="text-sm font-medium break-all text-foreground">
+                          {log.message || (
+                             <span className="font-mono text-xs">
+                                {log.input && `${log.input.substring(0, 50)}${log.input.length > 50 ? '...' : ''}`}
+                                {log.input && log.output && ' → '}
+                                {log.output && `${log.output.substring(0, 50)}${log.output.length > 50 ? '...' : ''}`}
+                             </span>
+                          )}
+                       </div>
+
+                       {(log.details || log.note) && (
+                          <div className="text-xs text-default-500 space-y-1 mt-2 p-2 bg-default-100/50 rounded-lg">
+                             {log.details && <div>{log.details}</div>}
+                             {log.note && (
+                                <div className="flex items-start gap-1 text-warning-600">
+                                   <span className="font-semibold">{t("log.note", "Note")}:</span>
+                                   {log.note}
+                                </div>
+                             )}
+                          </div>
+                       )}
+                       
+                       {/* Full content expansion could go here */}
+                    </div>
+
+                    <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                       <Button
+                          isIconOnly
+                          size="sm"
+                          variant="light"
+                          color="danger"
+                          onClick={(e) => handleDeleteLog(log.id, e)}
+                       >
+                          <Trash2 className="w-4 h-4" />
+                       </Button>
+                    </div>
+                 </div>
+               ))}
+             </div>
+           )}
+        </ScrollShadow>
+      </Card>
     </div>
   )
 }
