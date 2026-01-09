@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { Card, CardBody, Input, Select, SelectItem, Button, Tooltip } from "@heroui/react"
+import { Card, CardBody, Input, Select, SelectItem, Button } from "@heroui/react"
 import { invoke } from "@tauri-apps/api/core"
 import { useTranslation } from "react-i18next"
 import { Clock, ArrowRightLeft, Copy, RefreshCw } from "lucide-react"
@@ -40,7 +40,7 @@ export function TimestampTab() {
         }
         
         fetchTime()
-        intervalId = setInterval(fetchTime, 100)
+        intervalId = setInterval(fetchTime, 1000)
         return () => { active = false; clearInterval(intervalId) }
     }, [isPaused])
 
