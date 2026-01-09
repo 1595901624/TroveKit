@@ -27,7 +27,7 @@ export function TimestampTab() {
     // Current Time Polling
     useEffect(() => {
         let active = true
-        let intervalId: NodeJS.Timeout
+        let intervalId: number = -1
 
         const fetchTime = async () => {
             if (isPaused) return
@@ -112,16 +112,18 @@ export function TimestampTab() {
     }, [dateInput])
 
     const CurrentTimeItem = ({ label, value }: { label: string, value: string }) => (
-        <div className="flex items-center justify-between p-3 rounded-lg bg-default-100 hover:bg-default-200 transition-colors group">
-            <div className="flex flex-col gap-1">
+        <div className="flex items-start justify-between p-3 rounded-lg bg-default-100 hover:bg-default-200 transition-colors group">
+            <div className="flex flex-col gap-1 min-w-0 flex-1">
                 <span className="text-xs text-default-500 font-medium uppercase tracking-wider">{label}</span>
-                <span className="font-mono text-sm md:text-base font-semibold text-primary">{value}</span>
+                <span className="font-mono text-sm lg:text-base font-semibold text-primary break-all">
+                    {value}
+                </span>
             </div>
             <Button
                 isIconOnly
                 size="sm"
                 variant="light"
-                className="opacity-0 group-hover:opacity-100 transition-opacity text-default-400 hover:text-primary"
+                className="opacity-0 group-hover:opacity-100 transition-opacity text-default-400 hover:text-primary shrink-0 ml-2 mt-0.5"
                 onPress={() => copyToClipboard(value)}
             >
                 <Copy className="w-3.5 h-3.5" />
@@ -130,18 +132,18 @@ export function TimestampTab() {
     )
 
     return (
-        <div className="h-full flex flex-col gap-6 p-4 md:p-6 overflow-y-auto animate-in fade-in duration-500">
+        <div className="flex flex-col gap-6 p-2 sm:p-4 md:p-6 animate-in fade-in duration-500">
             {/* Current Time Section */}
             <Card className="border-none bg-gradient-to-br from-primary/5 to-secondary/5 dark:from-primary/10 dark:to-secondary/10">
-                <CardBody className="p-6 space-y-6">
-                    <div className="flex items-center justify-between">
+                <CardBody className="p-4 sm:p-6 space-y-6">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                         <div className="flex items-center gap-3">
-                            <div className="p-2.5 rounded-xl bg-primary/10 text-primary">
+                            <div className="p-2.5 rounded-xl bg-primary/10 text-primary shrink-0">
                                 <Clock className="w-6 h-6" />
                             </div>
-                            <div>
+                            <div className="min-w-0">
                                 <h3 className="text-lg font-bold">{t("tools.converter.currentTime")}</h3>
-                                <p className="text-sm text-default-500 font-mono mt-0.5">
+                                <p className="text-sm text-default-500 font-mono mt-0.5 break-all">
                                     {formatDate(currentTime.millis)}
                                 </p>
                             </div>
@@ -157,7 +159,7 @@ export function TimestampTab() {
                         </Button>
                     </div>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
                         <CurrentTimeItem label={t("tools.converter.seconds")} value={currentTime.secs} />
                         <CurrentTimeItem label={t("tools.converter.milliseconds")} value={currentTime.millis} />
                         <CurrentTimeItem label={t("tools.converter.microseconds")} value={currentTime.micros} />
@@ -238,7 +240,7 @@ export function TimestampTab() {
                                 classNames={{ inputWrapper: "bg-default-100" }}
                             />
                             
-                            <div className="grid grid-cols-2 gap-3">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                 {[
                                     { k: "s", v: dateOutput?.secs, l: t("tools.converter.seconds") },
                                     { k: "ms", v: dateOutput?.millis, l: t("tools.converter.milliseconds") },
@@ -250,7 +252,7 @@ export function TimestampTab() {
                                         onClick={() => item.v && copyToClipboard(item.v)}
                                     >
                                         <div className="text-[10px] text-default-400 uppercase font-bold mb-1">{item.l}</div>
-                                        <div className="font-mono text-sm font-semibold text-foreground truncate">{item.v || "-"}</div>
+                                        <div className="font-mono text-sm font-semibold text-foreground break-all pr-4">{item.v || "-"}</div>
                                         {item.v && (
                                             <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
                                                 <Copy className="w-3 h-3 text-primary" />
