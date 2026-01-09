@@ -82,7 +82,6 @@ export function Md5Tab() {
   const copyToClipboard = (text: string) => {
     if (!text) return
     navigator.clipboard.writeText(text)
-    addLog(t("tools.hash.copiedToClipboard"), "info")
   }
 
   return (

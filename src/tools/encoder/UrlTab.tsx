@@ -63,7 +63,6 @@ export function UrlTab() {
   const copyToClipboard = (text: string) => {
     if (!text) return
     navigator.clipboard.writeText(text)
-    addLog(t("tools.encoder.copiedToClipboard"), "info")
   }
 
   return (

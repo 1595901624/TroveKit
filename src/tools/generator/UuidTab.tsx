@@ -113,7 +113,6 @@ export function UuidTab() {
   const copyToClipboard = () => {
     if (!formattedOutput) return
     navigator.clipboard.writeText(formattedOutput)
-    addLog(t("tools.encoder.copiedToClipboard"), "info")
   }
 
   return (
