@@ -1,6 +1,7 @@
 // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
 mod basex;
 mod log_manager;
+mod time_utils;
 
 #[tauri::command]
 fn greet(name: &str) -> String {
@@ -28,7 +29,8 @@ pub fn run() {
             log_manager::get_logs_by_session,
             log_manager::delete_log,
             log_manager::delete_log_session,
-            log_manager::update_log_fields
+            log_manager::update_log_fields,
+            time_utils::get_system_time
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
