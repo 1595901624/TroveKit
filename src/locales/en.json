@@ -112,12 +112,14 @@
       "input": "Input",
       "output": "Output",
       "urlPlaceholder": "Enter text to URL encode/decode...",
+      "hexPlaceholder": "Enter text to Hex encode/decode...",
       "base64Placeholder": "Enter text to Base64 encode/decode...",
       "base32Placeholder": "Enter text to Base32 encode/decode...",
       "baseXPlaceholder": "Enter text to BaseX encode/decode...",
       "encode": "Encode",
       "decode": "Decode",
       "url": "URL",
+      "hex": "Hex",
       "base64": "Base64",
       "base32": "Base32",
       "baseX": "BaseX",
@@ -133,7 +135,10 @@
       "clearAll": "Clear All",
       "copy": "Copy",
       "copiedToClipboard": "Copied to clipboard",
-      "encoderOptions": "Encoder Options"
+      "encoderOptions": "Encoder Options",
+      "newlineMode": "Newline Mode",
+      "lf": "LF (\\n)",
+      "crlf": "CRLF (\\r\\n)"
     },
     "classical": {
       "title": "Classical Ciphers",

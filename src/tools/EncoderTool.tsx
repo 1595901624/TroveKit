@@ -5,6 +5,7 @@ import { UrlTab } from "./encoder/UrlTab"
 import { Base64Tab } from "./encoder/Base64Tab"
 import { Base32Tab } from "./encoder/Base32Tab"
 import { BaseXTab } from "./encoder/BaseXTab"
+import { HexTab } from "./encoder/HexTab"
 
 export function EncoderTool() {
   const { t } = useTranslation()
@@ -24,6 +25,7 @@ export function EncoderTool() {
           }}
         >
           <Tab key="url" title={t("tools.encoder.url")} />
+          <Tab key="hex" title={t("tools.encoder.hex")} />
           <Tab key="base64" title={t("tools.encoder.base64")} />
           <Tab key="base32" title={t("tools.encoder.base32")} />
           <Tab key="basex" title={t("tools.encoder.baseX")} />
@@ -33,6 +35,9 @@ export function EncoderTool() {
       <div className="flex-1 overflow-y-auto min-h-0 pt-4 pb-2">
         <div className={selectedKey === "url" ? "" : "hidden"}>
           <UrlTab />
+        </div>
+        <div className={selectedKey === "hex" ? "" : "hidden"}>
+          <HexTab />
         </div>
         <div className={selectedKey === "base64" ? "" : "hidden"}>
           <Base64Tab />

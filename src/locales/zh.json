@@ -112,12 +112,14 @@
       "input": "输入",
       "output": "输出",
       "urlPlaceholder": "输入要进行 URL 编码/解码的文本...",
+      "hexPlaceholder": "输入要进行 Hex 编码/解码的文本...",
       "base64Placeholder": "输入要进行 Base64 编码/解码的文本...",
       "base32Placeholder": "输入要进行 Base32 编码/解码的文本...",
       "baseXPlaceholder": "输入要进行 BaseX 编码/解码的文本...",
       "encode": "编码",
       "decode": "解码",
       "url": "URL",
+      "hex": "Hex",
       "base64": "Base64",
       "base32": "Base32",
       "baseX": "BaseX",
@@ -133,7 +135,10 @@
       "clearAll": "清空全部",
       "copy": "复制",
       "copiedToClipboard": "已复制到剪贴板",
-      "encoderOptions": "编码选项"
+      "encoderOptions": "编码选项",
+      "newlineMode": "换行模式",
+      "lf": "LF (\\n)",
+      "crlf": "CRLF (\\r\\n)"
     },
     "classical": {
       "title": "古典密码",
