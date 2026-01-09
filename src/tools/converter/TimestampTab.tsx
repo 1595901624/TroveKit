@@ -12,7 +12,7 @@ interface TimeInfo {
     nanos: string
 }
 
-export function TimestampTab() {
+export function TimestampTab({ isVisible = true }: { isVisible?: boolean }) {
     const { t } = useTranslation()
     const { addToast } = useToast()
     const [currentTime, setCurrentTime] = useState<TimeInfo>({ secs: "0", millis: "0", micros: "0", nanos: "0" })
@@ -26,6 +26,9 @@ export function TimestampTab() {
 
     // Current Time Polling
     useEffect(() => {
+        console.log("isVisible", isVisible)
+        if (!isVisible) return
+
         let active = true
         let intervalId: number = -1
 
@@ -40,9 +43,12 @@ export function TimestampTab() {
         }
         
         fetchTime()
-        intervalId = setInterval(fetchTime, 1000)
-        return () => { active = false; clearInterval(intervalId) }
-    }, [isPaused])
+        intervalId = window.setInterval(fetchTime, 1000)
+        return () => { 
+            active = false
+            if (intervalId !== -1) clearInterval(intervalId) 
+        }
+    }, [isPaused, isVisible])
 
     const copyToClipboard = (text: string) => {
         navigator.clipboard.writeText(text)

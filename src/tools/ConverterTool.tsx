@@ -5,7 +5,7 @@ import { JsonXmlTab } from "./converter/JsonXmlTab"
 import { JsonYamlTab } from "./converter/JsonYamlTab"
 import { TimestampTab } from "./converter/TimestampTab"
 
-export function ConverterTool() {
+export function ConverterTool({ isVisible = true }: { isVisible?: boolean }) {
   const { t } = useTranslation()
   const [selectedKey, setSelectedKey] = useState<string>("timestamp")
 
@@ -30,7 +30,7 @@ export function ConverterTool() {
 
       <div className="flex-1 overflow-y-auto min-h-0 pt-4 pb-2">
         <div className={selectedKey === "timestamp" ? "h-full" : "hidden h-full"}>
-          <TimestampTab />
+          <TimestampTab isVisible={isVisible && selectedKey === "timestamp"} />
         </div>
         <div className={selectedKey === "jsonXml" ? "h-full" : "hidden h-full"}>
           <JsonXmlTab />

@@ -60,7 +60,7 @@ function App() {
             <GeneratorTool />
           </div>
           <div className={activeTool === "converter" ? "block h-full" : "hidden"}>
-            <ConverterTool />
+            <ConverterTool isVisible={activeTool === "converter"} />
           </div>
           <div className={activeTool === "logManagement" ? "block h-full" : "hidden"}>
             <LogManagementTool />
