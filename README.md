@@ -75,6 +75,7 @@ Built with [Tauri v2](https://v2.tauri.app/) + [React](https://react.dev/), Trov
 
 ### 🔄 Converters
 
+- **Timestamp**: Bidirectional conversion between Date and Timestamp (s/ms/μs/ns) with real-time high-precision system clock.
 - **JSON ↔ XML**: Bidirectional conversion with real-time processing
 - **JSON ↔ YAML**: Bidirectional conversion with real-time processing
 - Syntax highlighting for all formats

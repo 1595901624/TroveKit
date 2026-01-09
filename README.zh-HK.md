@@ -75,6 +75,7 @@ TroveKit 基於 [Tauri v2](https://v2.tauri.app/) + [React](https://react.dev/) 
 
 ### 🔄 Converters（轉換器）
 
+- **時間戳轉換**：支援日期與時間戳（秒/毫秒/微秒/納秒）雙向轉換，提供即時高精度系統時鐘。
 - **JSON ↔ XML**：雙向轉換，即時處理
 - **JSON ↔ YAML**：雙向轉換，即時處理
 - 多種格式語法高亮

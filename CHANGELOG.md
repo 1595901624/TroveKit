@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.1.8] - Unreleased
 
 ### Added
+- **Timestamp Converter**: Added new timestamp converter tool supporting bidirectional conversion between timestamps (s/ms/μs/ns) and dates, with high-precision real-time system clock display.
 - **Hex Encoder**: Added new Hex encoding/decoding tool with support for customizable newline modes (LF/CRLF).
 - **JSON/YAML Converter**: Added new converter tool for bidirectional conversion between JSON and YAML formats with real-time processing, syntax highlighting, and example data support.
 - **Bacon Cipher**: Added new Bacon cipher tool with support for Standard (26 letters) and Traditional (24 letters) alphabets, multiple symbol modes (A/B, a/b, 0/1, custom), and automatic space recognition during decoding.
