@@ -63,6 +63,7 @@ TroveKit 基於 [Tauri v2](https://v2.tauri.app/) + [React](https://react.dev/) 
 ### 🔢 Encoders & Decoders（編碼與解碼）
 
 - URL / Base64 即時編碼解碼
+- **Hex**：支援編碼/解碼，可配置換行模式（LF/CRLF）
 - Base32 / Hex(Base16) / Base58 / Base62 / Base91 / 自訂字母表
 
 ### 📝 Formatters（格式化）

@@ -63,6 +63,7 @@ TroveKit は [Tauri v2](https://v2.tauri.app/) + [React](https://react.dev/) で
 ### 🔢 Encoders & Decoders
 
 - リアルタイム URL / Base64 エンコード & デコード
+- **Hex**：設定可能な改行モード（LF/CRLF）でのエンコード/デコード
 - Base32 / Hex(Base16) / Base58 / Base62 / Base91 / カスタムアルファベット
 
 ### 📝 Formatters

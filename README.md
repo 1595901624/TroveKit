@@ -63,6 +63,7 @@ Built with [Tauri v2](https://v2.tauri.app/) + [React](https://react.dev/), Trov
 ### 🔢 Encoders & Decoders
 
 - Real-time URL / Base64 encode & decode
+- **Hex**: Encode/decode with configurable newline mode (LF/CRLF)
 - Base32 / Hex(Base16) / Base58 / Base62 / Base91 / custom alphabets
 
 ### 📝 Formatters
