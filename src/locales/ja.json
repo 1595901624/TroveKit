@@ -112,12 +112,16 @@
       "input": "入力",
       "output": "出力",
       "urlPlaceholder": "URLエンコード/デコードするテキストを入力...",
+      "hexPlaceholder": "Hexエンコード/デコードするテキストを入力...",
       "base64Placeholder": "Base64エンコード/デコードするテキストを入力...",
       "base32Placeholder": "Base32エンコード/デコードするテキストを入力...",
       "baseXPlaceholder": "BaseXエンコード/デコードするテキストを入力...",
       "encode": "エンコード",
       "decode": "デコード",
+      "hexEncode": "Hexエンコード",
+      "hexDecode": "Hexデコード",
       "url": "URL",
+      "hex": "Hex",
       "base64": "Base64",
       "base32": "Base32",
       "baseX": "BaseX",
@@ -133,7 +137,10 @@
       "clearAll": "すべてクリア",
       "copy": "コピー",
       "copiedToClipboard": "クリップボードにコピーされました",
-      "encoderOptions": "エンコーダーオプション"
+      "encoderOptions": "エンコーダーオプション",
+      "newlineMode": "改行モード",
+      "lf": "LF (\\n)",
+      "crlf": "CRLF (\\r\\n)"
     },
     "classical": {
       "title": "古典暗号",

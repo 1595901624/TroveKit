@@ -118,6 +118,8 @@
       "baseXPlaceholder": "Enter text to BaseX encode/decode...",
       "encode": "Encode",
       "decode": "Decode",
+      "hexEncode": "Hex Encode",
+      "hexDecode": "Hex Decode",
       "url": "URL",
       "hex": "Hex",
       "base64": "Base64",

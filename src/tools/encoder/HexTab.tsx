@@ -57,9 +57,9 @@ export function HexTab() {
         .join("")
       
       setHexOutput(hex)
-      addLog({ method: "Hex Encode", input: hexInput, output: hex }, "success")
+      addLog({ method: t("tools.encoder.hexEncode"), input: hexInput, output: hex }, "success")
     } catch (e) {
-      addLog({ method: "Hex Encode", input: hexInput, output: (e as Error).message }, "error")
+      addLog({ method: t("tools.encoder.hexEncode"), input: hexInput, output: (e as Error).message }, "error")
     }
   }
 
@@ -81,9 +81,9 @@ export function HexTab() {
       const result = decoder.decode(bytes)
       
       setHexOutput(result)
-      addLog({ method: "Hex Decode", input: hexInput, output: result }, "success")
+      addLog({ method: t("tools.encoder.hexDecode"), input: hexInput, output: result }, "success")
     } catch (e) {
-      addLog({ method: "Hex Decode", input: hexInput, output: (e as Error).message }, "error")
+      addLog({ method: t("tools.encoder.hexDecode"), input: hexInput, output: (e as Error).message }, "error")
     }
   }
 
