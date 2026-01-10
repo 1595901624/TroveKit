@@ -47,8 +47,8 @@ export function Sidebar({ activeTool, onToolChange }: SidebarProps) {
     { id: "classical", label: t("nav.classical"), icon: Shield },
     { id: "formatters", label: t("nav.formatters"), icon: FileJson },
     { id: "generators", label: t("nav.generators"), icon: Wand2 },
-    { id: "converter", label: t("nav.converter", "转换器"), icon: ArrowRightLeft },
-    { id: "logManagement", label: t("nav.logManagement", "日志管理"), icon: FileText },
+    { id: "converter", label: t("nav.converter"), icon: ArrowRightLeft },
+    // { id: "logManagement", label: t("nav.logManagement", "日志管理"), icon: FileText },
   ] as const
 
   return (
