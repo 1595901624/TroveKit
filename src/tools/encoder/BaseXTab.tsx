@@ -55,10 +55,20 @@ export function BaseXTab() {
         alphabet: isCustomAlphabet ? customAlphabet : null
       })
       setBaseXOutput(result)
-      addLog({ method: `BaseX Encode (${selectedBase})`, input: baseXInput, output: result }, "success")
+      addLog({ 
+        method: `BaseX Encode (${selectedBase})`, 
+        input: baseXInput, 
+        output: result,
+        cryptoParams: { algorithm: selectedBase }
+      }, "success")
     } catch (e) {
       setBaseXOutput("")
-      addLog({ method: `BaseX Encode (${selectedBase})`, input: baseXInput, output: String(e) }, "error")
+      addLog({ 
+        method: `BaseX Encode (${selectedBase})`, 
+        input: baseXInput, 
+        output: String(e),
+        cryptoParams: { algorithm: selectedBase }
+      }, "error")
     }
   }
 
@@ -71,10 +81,20 @@ export function BaseXTab() {
         alphabet: isCustomAlphabet ? customAlphabet : null
       })
       setBaseXOutput(result)
-      addLog({ method: `BaseX Decode (${selectedBase})`, input: baseXInput, output: result }, "success")
+      addLog({ 
+        method: `BaseX Decode (${selectedBase})`, 
+        input: baseXInput, 
+        output: result,
+        cryptoParams: { algorithm: selectedBase }
+      }, "success")
     } catch (e) {
       setBaseXOutput("")
-      addLog({ method: `BaseX Decode (${selectedBase})`, input: baseXInput, output: String(e) }, "error")
+      addLog({ 
+        method: `BaseX Decode (${selectedBase})`, 
+        input: baseXInput, 
+        output: String(e),
+        cryptoParams: { algorithm: selectedBase }
+      }, "error")
     }
   }
 
