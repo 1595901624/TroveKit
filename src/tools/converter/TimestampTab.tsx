@@ -4,6 +4,7 @@ import { invoke } from "@tauri-apps/api/core"
 import { useTranslation } from "react-i18next"
 import { Clock, ArrowRightLeft, Copy, RefreshCw, Calendar } from "lucide-react"
 import { useToast } from "../../contexts/ToastContext"
+import { useLog } from "../../contexts/LogContext"
 import { getLocalTimeZone } from "@internationalized/date"
 import type { DateValue } from "@internationalized/date"
 
@@ -17,6 +18,7 @@ interface TimeInfo {
 export function TimestampTab({ isVisible = true }: { isVisible?: boolean }) {
     const { t } = useTranslation()
     const { addToast } = useToast()
+    const { addLog } = useLog()
     const [currentTime, setCurrentTime] = useState<TimeInfo>({ secs: "0", millis: "0", micros: "0", nanos: "0" })
     const [tsInput, setTsInput] = useState("")
     const [tsUnit, setTsUnit] = useState("s")
@@ -52,9 +54,17 @@ export function TimestampTab({ isVisible = true }: { isVisible?: boolean }) {
         }
     }, [isPaused, isVisible])
 
-    const copyToClipboard = (text: string) => {
+    const copyToClipboard = (text: string, context?: { method: string; input?: string }) => {
         navigator.clipboard.writeText(text)
         addToast(t("tools.converter.copiedToClipboard"), "success")
+        
+        if (context) {
+            addLog({
+                method: context.method,
+                input: context.input || "-",
+                output: text
+            }, "success")
+        }
     }
 
     const formatDate = (msStr: string) => {
@@ -119,7 +129,7 @@ export function TimestampTab({ isVisible = true }: { isVisible?: boolean }) {
         })
     }, [dateInput])
 
-    const CurrentTimeItem = ({ label, value }: { label: string, value: string }) => (
+    const CurrentTimeItem = ({ label, value, enLabel }: { label: string, value: string, enLabel: string }) => (
         <div className="flex items-start justify-between p-3 rounded-lg bg-default-100 hover:bg-default-200 transition-colors group">
             <div className="flex flex-col gap-1 min-w-0 flex-1">
                 <span className="text-xs text-default-500 font-medium uppercase tracking-wider">{label}</span>
@@ -132,7 +142,7 @@ export function TimestampTab({ isVisible = true }: { isVisible?: boolean }) {
                 size="sm"
                 variant="light"
                 className="opacity-0 group-hover:opacity-100 transition-opacity text-default-400 hover:text-primary shrink-0 ml-2 mt-0.5"
-                onPress={() => copyToClipboard(value)}
+                onPress={() => copyToClipboard(value, { method: `Copy Current Time (${enLabel})` })}
             >
                 <Copy className="w-3.5 h-3.5" />
             </Button>
@@ -168,10 +178,10 @@ export function TimestampTab({ isVisible = true }: { isVisible?: boolean }) {
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
-                        <CurrentTimeItem label={t("tools.converter.seconds")} value={currentTime.secs} />
-                        <CurrentTimeItem label={t("tools.converter.milliseconds")} value={currentTime.millis} />
-                        <CurrentTimeItem label={t("tools.converter.microseconds")} value={currentTime.micros} />
-                        <CurrentTimeItem label={t("tools.converter.nanoseconds")} value={currentTime.nanos} />
+                        <CurrentTimeItem label={t("tools.converter.seconds")} value={currentTime.secs} enLabel="s" />
+                        <CurrentTimeItem label={t("tools.converter.milliseconds")} value={currentTime.millis} enLabel="ms" />
+                        <CurrentTimeItem label={t("tools.converter.microseconds")} value={currentTime.micros} enLabel="us" />
+                        <CurrentTimeItem label={t("tools.converter.nanoseconds")} value={currentTime.nanos} enLabel="ns" />
                     </div>
                 </CardBody>
             </Card>
@@ -218,7 +228,7 @@ export function TimestampTab({ isVisible = true }: { isVisible?: boolean }) {
                                 </div>
                                 {tsOutput && tsOutput !== t("tools.converter.invalidTimestamp") && (
                                     <div className="pt-2 flex justify-end">
-                                        <Button size="sm" variant="flat" startContent={<Copy className="w-3.5 h-3.5"/>} onPress={() => copyToClipboard(tsOutput)}>
+                                        <Button size="sm" variant="flat" startContent={<Copy className="w-3.5 h-3.5"/>} onPress={() => copyToClipboard(tsOutput, { method: "Timestamp to Date", input: `${tsInput} ${tsUnit}` })}>
                                             {t("tools.converter.copy")}
                                         </Button>
                                     </div>
@@ -277,7 +287,7 @@ export function TimestampTab({ isVisible = true }: { isVisible?: boolean }) {
                                 ].map((item) => (
                                     <div key={item.k} 
                                         className="relative p-3 rounded-xl bg-default-50 border border-default-100 hover:border-primary/30 transition-colors cursor-pointer group"
-                                        onClick={() => item.v && copyToClipboard(item.v)}
+                                        onClick={() => item.v && copyToClipboard(item.v, { method: `Date to Timestamp (${item.k})`, input: dateInput })}
                                     >
                                         <div className="text-[10px] text-default-400 uppercase font-bold mb-1">{item.l}</div>
                                         <div className="font-mono text-sm font-semibold text-foreground break-all pr-4">{item.v || "-"}</div>
