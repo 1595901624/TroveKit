@@ -44,6 +44,16 @@ export function HmacMd5Tab() {
     saveStateToStorage({ input, output, key, keyType, outputCase })
   }, [input, output, key, keyType, outputCase])
 
+  // 实时更新大小写
+  useEffect(() => {
+    if (output) {
+      const updatedOutput = outputCase === "upper" ? output.toUpperCase() : output.toLowerCase()
+      if (updatedOutput !== output) {
+        setOutput(updatedOutput)
+      }
+    }
+  }, [outputCase, output])
+
   const parseKey = (value: string, type: string) => {
     if (type === "hex") {
       return CryptoJS.enc.Hex.parse(value)
