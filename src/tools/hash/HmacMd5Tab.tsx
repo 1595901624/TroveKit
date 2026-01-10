@@ -76,10 +76,17 @@ export function HmacMd5Tab() {
         method: `HMAC-MD5 (${outputCase})`,
         input,
         output: hash,
-        key_type: keyType
+        algorithm: "HMAC-MD5",
+        key_type: keyType,
       }, "success")
     } catch (e) {
-      addLog({ method: "HMAC-MD5", input, output: (e as Error).message }, "error")
+      addLog({
+        method: "HMAC-MD5",
+        input,
+        output: (e as Error).message,
+        algorithm: "HMAC-MD5",
+        key_type: keyType,
+      }, "error")
     }
   }
 
