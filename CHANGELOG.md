@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - **HMAC-MD5 Tool**: Added new HMAC-MD5 hash algorithm support.
 - **Log Panel Enhancements**: Optimized log interaction by highlighting trailing whitespaces (spaces, tabs, and newlines) with visual markers (`·`, `→`, `↵`) and descriptive tooltips.
+- **BaseX Algorithm Logging**: Added algorithm field to BaseXTab logs to track user-selected base encoding (base16, base32, base58, etc.).
 
 ### Changed
 - **Encryption Algorithm Logs**: Optimized log display for encryption algorithms.
