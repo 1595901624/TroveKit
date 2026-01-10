@@ -358,7 +358,8 @@
     "notePlaceholder": "Enter note...",
     "saveNote": "Save Note",
     "cancel": "Cancel",
-    "note": "Note"
+    "note": "Note",
+    "trailingSpaces": "Trailing spaces"
   },
   "logManagement": {
     "sessions": "Sessions",

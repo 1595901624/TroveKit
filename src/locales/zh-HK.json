@@ -350,7 +350,8 @@
     "notePlaceholder": "輸入備註...",
     "saveNote": "保存備註",
     "cancel": "取消",
-    "note": "備註"
+    "note": "備註",
+    "trailingSpaces": "尾部空格"
   },
   "logManagement": {
     "sessions": "會話",

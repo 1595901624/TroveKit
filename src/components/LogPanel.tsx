@@ -82,7 +82,7 @@ export function LogPanel() {
       return (
         <>
           {main}
-          <span className="bg-warning/20 text-warning-600 dark:text-warning inline-block rounded px-0.5 select-none" title="Trailing spaces">
+          <span className="bg-warning/20 text-warning-600 dark:text-warning inline-block rounded px-0.5 select-none" title={t('log.trailingSpaces', 'Trailing spaces')}>
             {trailing.replace(/ /g, '·').replace(/\t/g, '→')}
           </span>
         </>
@@ -114,7 +114,7 @@ export function LogPanel() {
                 {/* 操作按钮区域 */}
                 <div className="flex items-center gap-1">
                     {/* 新建日志按钮 */}
-                    <Tooltip content={t('logManager.newLog', 'New Log')}>
+                    <Tooltip content={t('tools.logManager.newLog', 'New Log')}>
                         <Button isIconOnly size="sm" variant="light" onPress={createNewLog}>
                             <Plus className="w-4 h-4 text-default-500" />
                         </Button>

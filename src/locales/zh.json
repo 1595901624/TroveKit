@@ -358,7 +358,8 @@
     "notePlaceholder": "输入备注信息...",
     "saveNote": "保存备注",
     "cancel": "取消",
-    "note": "备注"
+    "note": "备注",
+    "trailingSpaces": "尾部空格"
   },
   "logManagement": {
     "sessions": "会话",

@@ -350,7 +350,8 @@
     "notePlaceholder": "メモを入力...",
     "saveNote": "メモを保存",
     "cancel": "キャンセル",
-    "note": "メモ"
+    "note": "メモ",
+    "trailingSpaces": "末尾のスペース"
   },
   "logManagement": {
     "sessions": "セッション",
