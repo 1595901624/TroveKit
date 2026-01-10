@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react"
-import { Card, CardBody, Input, Select, SelectItem, Button } from "@heroui/react"
+import { Card, CardBody, Input, Select, SelectItem, Button, DatePicker } from "@heroui/react"
 import { invoke } from "@tauri-apps/api/core"
 import { useTranslation } from "react-i18next"
-import { Clock, ArrowRightLeft, Copy, RefreshCw } from "lucide-react"
+import { Clock, ArrowRightLeft, Copy, RefreshCw, Calendar } from "lucide-react"
 import { useToast } from "../../contexts/ToastContext"
+import { getLocalTimeZone } from "@internationalized/date"
+import type { DateValue } from "@internationalized/date"
 
 interface TimeInfo {
     secs: string
@@ -237,14 +239,34 @@ export function TimestampTab({ isVisible = true }: { isVisible?: boolean }) {
                         </div>
 
                         <div className="space-y-4">
-                            <Input
-                                label={t("tools.converter.input")}
-                                placeholder={t("tools.converter.datePlaceholder")}
-                                value={dateInput}
-                                onValueChange={setDateInput}
-                                description={t("tools.converter.format") + ": YYYY-MM-DD HH:mm:ss"}
-                                classNames={{ inputWrapper: "bg-default-100" }}
-                            />
+                            <div className="flex gap-2">
+                                <Input
+                                    label={t("tools.converter.input")}
+                                    placeholder={t("tools.converter.datePlaceholder")}
+                                    value={dateInput}
+                                    onValueChange={setDateInput}
+                                    description={t("tools.converter.format") + ": YYYY-MM-DD HH:mm:ss"}
+                                    classNames={{ inputWrapper: "bg-default-100" }}
+                                    className="flex-1"
+                                />
+                                <DatePicker
+                                    label={t("tools.converter.selectDate")}
+                                    granularity="second"
+                                    hideTimeZone
+                                    hourCycle={24}
+                                    showMonthAndYearPickers
+                                    onChange={(value: DateValue | null) => {
+                                        if (value) {
+                                            const date = value.toDate(getLocalTimeZone())
+                                            const pad = (n: number, z: number = 2) => ('00' + n).slice(-z)
+                                            const formatted = `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`
+                                            setDateInput(formatted)
+                                        }
+                                    }}
+                                    selectorIcon={<Calendar className="w-4 h-4" />}
+                                    classNames={{ base: "w-64", inputWrapper: "bg-default-100" }}
+                                />
+                            </div>
                             
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                 {[

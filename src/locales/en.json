@@ -278,6 +278,7 @@
       "format": "Format",
       "timestampPlaceholder": "Enter timestamp...",
       "datePlaceholder": "Enter date (YYYY-MM-DD HH:mm:ss)...",
+      "selectDate": "Select Date",
       "invalidDate": "Invalid Date",
       "invalidTimestamp": "Invalid Timestamp",
       "input": "Input",

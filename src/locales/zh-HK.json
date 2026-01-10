@@ -270,6 +270,7 @@
       "format": "格式",
       "timestampPlaceholder": "輸入時間戳...",
       "datePlaceholder": "輸入日期 (YYYY-MM-DD HH:mm:ss)...",
+      "selectDate": "選擇日期",
       "invalidDate": "無效日期",
       "invalidTimestamp": "無效時間戳",
       "input": "輸入",

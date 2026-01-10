@@ -12,6 +12,7 @@
   "dependencies": {
     "@heroui/react": "^2.7.5",
     "@heroui/theme": "2.4.13",
+    "@internationalized/date": "^3.10.1",
     "@monaco-editor/react": "^4.7.0",
     "@tauri-apps/api": "^2",
     "@tauri-apps/plugin-dialog": "^2.4.2",
