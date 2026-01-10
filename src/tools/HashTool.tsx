@@ -8,6 +8,7 @@ import { ShaTab } from "./hash/ShaTab"
 import { AesTab } from "./hash/AesTab"
 import { DesTab } from "./hash/DesTab"
 import { Rc4Tab } from "./hash/Rc4Tab"
+import { HmacMd5Tab } from "./hash/HmacMd5Tab"
 
 export function HashTool() {
   const { t } = useTranslation()
@@ -29,6 +30,7 @@ export function HashTool() {
           <Tab key="md2" title={t("tools.hash.md2")} />
           <Tab key="md4" title={t("tools.hash.md4")} />
           <Tab key="md5" title={t("tools.hash.md5")} />
+          <Tab key="hmacMd5" title={t("tools.hash.hmacMd5", "HMAC-MD5")} />
           <Tab key="sha" title={t("tools.hash.sha")} />
           <Tab key="aes" title={t("tools.hash.aes")} />
           <Tab key="des" title={t("tools.hash.des", "DES")} />
@@ -45,6 +47,9 @@ export function HashTool() {
         </div>
         <div className={selectedKey === "md5" ? "" : "hidden"}>
           <Md5Tab />
+        </div>
+        <div className={selectedKey === "hmacMd5" ? "" : "hidden"}>
+          <HmacMd5Tab />
         </div>
         <div className={selectedKey === "sha" ? "" : "hidden"}>
           <ShaTab />
