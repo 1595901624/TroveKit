@@ -3,7 +3,6 @@ import {
   Binary,
   Lock,
   FileJson,
-  FileText,
   Wand2,
   Settings,
   Shield,
