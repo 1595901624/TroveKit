@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.1.8] - Unreleased
+## [0.1.8] - 2026-01-10
 
 ### Added
 - **Timestamp Converter**: Added new timestamp converter tool supporting bidirectional conversion between timestamps (s/ms/μs/ns) and dates, with high-precision real-time system clock display.
@@ -13,13 +13,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **JSON/YAML Converter**: Added new converter tool for bidirectional conversion between JSON and YAML formats with real-time processing, syntax highlighting, and example data support.
 - **Bacon Cipher**: Added new Bacon cipher tool with support for Standard (26 letters) and Traditional (24 letters) alphabets, multiple symbol modes (A/B, a/b, 0/1, custom), and automatic space recognition during decoding.
 - **JSON/XML Converter**: Added new converter tool for bidirectional conversion between JSON and XML formats with real-time processing, syntax highlighting, and example data support.
-- **Log Management Tool**: Added a dedicated log management tool in the sidebar for viewing, searching, and managing saved logs.
+<!-- - **Log Management Tool**: Added a dedicated log management tool in the sidebar for viewing, searching, and managing saved logs. -->
 - **Collapsible Sidebar**: Added support for collapsing and expanding the sidebar to maximize workspace. The sidebar state is now persisted in local storage.
 
 ### Changed
 - **Log Management Tool Redesign**: Completely refactored the log management interface with a modern master-detail layout. Replaced native confirmation dialogs with HeroUI Modals and added support for deleting individual log entries and entire sessions.
-- **Log Storage Format**: Logs are now stored in a SQLite database instead of JSONL files (experimental feature).
-- **Sidebar Navigation**: Added QR Generator to the sidebar for easier access.
+<!-- - **Log Storage Format**: Logs are now stored in a SQLite database instead of JSONL files (experimental feature). -->
 
 ## [0.1.7] - 2026-01-03
 
