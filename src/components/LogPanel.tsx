@@ -72,6 +72,25 @@ export function LogPanel() {
     { key: 'warning', label: t('log.filterWarning'), color: 'warning' }, // 警告
   ]
 
+  // 渲染带有高亮后缀空格的文本
+  const renderHighlightedInput = (text?: string) => {
+    if (typeof text !== 'string') return text
+    const match = text.match(/([ \t]+)$/)
+    if (match && match.index !== undefined) {
+      const main = text.slice(0, match.index)
+      const trailing = text.slice(match.index)
+      return (
+        <>
+          {main}
+          <span className="bg-warning/20 text-warning-600 dark:text-warning inline-block rounded px-0.5 select-none" title="Trailing spaces">
+            {trailing.replace(/ /g, '·').replace(/\t/g, '→')}
+          </span>
+        </>
+      )
+    }
+    return text
+  }
+
   return (
     // 动画容器，控制面板的进入和退出动画
     <AnimatePresence>
@@ -234,7 +253,7 @@ export function LogPanel() {
                                             <div className="group/input relative p-2 rounded bg-default-100/50 hover:bg-default-100 transition-colors">
                                                 <div className="text-tiny text-default-400 font-semibold mb-0.5 select-none">{t('log.input', 'Input')}</div>
                                                 <div className="text-small font-mono text-default-600 break-all pr-6 whitespace-pre-wrap">
-                                                    {log.input}
+                                                    {renderHighlightedInput(log.input)}
                                                 </div>
                                                 {/* 复制输入按钮 */}
                                                 <Button
