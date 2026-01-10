@@ -174,49 +174,49 @@ export function LogPanel() {
                                             </span>
                                         </div>
 
-                                        {/* 加密参数信息：如果有加密相关字段则显示 */}
-                                        {(log.algorithm || log.mode || log.format || log.key_size || log.padding || log.iv) && (
+                                        {/* 加密参数信息：如果有 cryptoParams 则显示 */}
+                                        {log.cryptoParams && Object.keys(log.cryptoParams).length > 0 && (
                                             <div className="grid grid-cols-2 gap-1.5 p-1.5 rounded bg-default-50/50 border border-divider/30">
-                                                {log.algorithm && (
+                                                {log.cryptoParams.algorithm && (
                                                     <div className="text-tiny">
                                                         <span className="text-default-500 font-semibold">{t('tools.hash.algorithm')}</span>
-                                                        <span className="font-mono ml-1 text-default-700">{log.algorithm}</span>
+                                                        <span className="font-mono ml-1 text-default-700">{log.cryptoParams.algorithm}</span>
                                                     </div>
                                                 )}
-                                                {log.mode && (
+                                                {log.cryptoParams.mode && (
                                                     <div className="text-tiny">
                                                         <span className="text-default-500 font-semibold">{t('tools.hash.mode')}</span>
-                                                        <span className="font-mono ml-1 text-default-700">{log.mode}</span>
+                                                        <span className="font-mono ml-1 text-default-700">{log.cryptoParams.mode}</span>
                                                     </div>
                                                 )}
-                                                {log.key_size && (
+                                                {log.cryptoParams.key_size && (
                                                     <div className="text-tiny">
                                                         <span className="text-default-500 font-semibold">{t('tools.hash.keySize')}</span>
-                                                        <span className="font-mono ml-1 text-default-700">{log.key_size}</span>
+                                                        <span className="font-mono ml-1 text-default-700">{log.cryptoParams.key_size}</span>
                                                     </div>
                                                 )}
-                                                {log.format && (
+                                                {log.cryptoParams.format && (
                                                     <div className="text-tiny">
                                                         <span className="text-default-500 font-semibold">{t('tools.hash.format')}</span>
-                                                        <span className="font-mono ml-1 text-default-700">{log.format}</span>
+                                                        <span className="font-mono ml-1 text-default-700">{log.cryptoParams.format}</span>
                                                     </div>
                                                 )}
-                                                {log.padding && (
+                                                {log.cryptoParams.padding && (
                                                     <div className="text-tiny">
                                                         <span className="text-default-500 font-semibold">{t('tools.hash.padding')}</span>
-                                                        <span className="font-mono ml-1 text-default-700">{log.padding}</span>
+                                                        <span className="font-mono ml-1 text-default-700">{log.cryptoParams.padding}</span>
                                                     </div>
                                                 )}
-                                                {log.key_type && (
+                                                {log.cryptoParams.key_type && (
                                                     <div className="text-tiny">
                                                         <span className="text-default-500 font-semibold">{t('tools.hash.keyType')}</span>
-                                                        <span className="font-mono ml-1 text-default-700">{log.key_type}</span>
+                                                        <span className="font-mono ml-1 text-default-700">{log.cryptoParams.key_type}</span>
                                                     </div>
                                                 )}
-                                                {log.iv && (
+                                                {log.cryptoParams.iv && (
                                                     <div className="col-span-2 text-tiny">
                                                         <span className="text-default-500 font-semibold">{t('tools.hash.iv')}</span>
-                                                        <span className="font-mono ml-1 text-default-700 break-all">{log.iv}</span>
+                                                        <span className="font-mono ml-1 text-default-700 break-all">{log.cryptoParams.iv}</span>
                                                     </div>
                                                 )}
                                             </div>

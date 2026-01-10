@@ -1,6 +1,6 @@
 use rusqlite::{params, Connection};
 use serde::{Deserialize, Serialize};
-use serde_json::{json, Value};
+use serde_json::Value;
 use std::path::PathBuf;
 use std::sync::Mutex;
 use tauri::{AppHandle, Manager, Runtime, State};
@@ -18,26 +18,24 @@ pub struct LogEntry {
     pub note: Option<String>,
     #[serde(rename = "type")]
     pub log_type: String, // "info" | "success" | "error" | "warning"
-    /// 可扩展的加密参数：JSON 对象（例如 {"algorithm":"AES","mode":"CBC",...} ）
+    /// 可扩展加密参数对象（JSON），所有加密相关字段统一放在此处。
     /// 前端字段名使用 camelCase：cryptoParams
+    ///
+    /// 支持的 key：
+    /// - algorithm: 加密算法 (如 "AES", "DES", "3DES", "SM4", "RSA", "SM2" 等)
+    /// - mode: 加密模式 (如 "CBC", "ECB", "CFB", "OFB", "CTR", "GCM" 等)
+    /// - key_size: 密钥长度 (如 "128", "192", "256", "512", "1024", "2048", "4096" 等)
+    /// - padding: 填充方式 (如 "PKCS7", "PKCS5", "ZeroPadding", "NoPadding", "ISO10126", "ANSIX923" 等)
+    /// - format: 输出格式 (如 "hex", "base64", "utf8" 等)
+    /// - iv: 初始向量 (Base64 或 Hex 编码的字符串)
+    /// - key_type: 密钥类型 (如 "public", "private", "symmetric" 等)
+    /// - hash: 哈希算法 (如 "MD5", "SHA1", "SHA256", "SHA512", "SM3" 等)
+    /// - encoding: 编码方式 (如 "utf8", "gbk", "base64", "hex" 等)
+    /// - salt: 盐值
+    /// - iterations: 迭代次数 (用于 PBKDF2 等)
+    /// - tag_length: 认证标签长度 (用于 GCM 模式)
     #[serde(rename = "cryptoParams", default)]
     pub crypto_params: Option<Value>,
-
-    // 兼容旧前端字段：仍可由 cryptoParams 派生填充（便于现有 LogPanel 展示）
-    #[serde(default)]
-    pub algorithm: Option<String>,
-    #[serde(default)]
-    pub mode: Option<String>,
-    #[serde(default)]
-    pub key_size: Option<String>,
-    #[serde(default)]
-    pub padding: Option<String>,
-    #[serde(default)]
-    pub format: Option<String>,
-    #[serde(default)]
-    pub iv: Option<String>,
-    #[serde(default)]
-    pub key_type: Option<String>,
 }
 
 pub struct LogState {
@@ -104,66 +102,7 @@ fn init_db(conn: &Connection) -> Result<(), String> {
     Ok(())
 }
 
-fn merge_crypto_params(entry: &LogEntry) -> Value {
-    let mut v = entry.crypto_params.clone().unwrap_or_else(|| json!({}));
 
-    if !v.is_object() {
-        v = json!({});
-    }
-
-    // 将旧字段合并进 JSON（不覆盖已有 key）
-    let obj = v.as_object_mut().expect("crypto_params should be object");
-
-    let set_if_missing = |obj: &mut serde_json::Map<String, Value>, key: &str, val: &Option<String>| {
-        if obj.get(key).is_none() {
-            if let Some(s) = val {
-                obj.insert(key.to_string(), Value::String(s.clone()));
-            }
-        }
-    };
-
-    set_if_missing(obj, "algorithm", &entry.algorithm);
-    set_if_missing(obj, "mode", &entry.mode);
-    set_if_missing(obj, "key_size", &entry.key_size);
-    set_if_missing(obj, "padding", &entry.padding);
-    set_if_missing(obj, "format", &entry.format);
-    set_if_missing(obj, "iv", &entry.iv);
-    set_if_missing(obj, "key_type", &entry.key_type);
-
-    Value::Object(obj.clone())
-}
-
-fn fill_legacy_crypto_fields(entry: &mut LogEntry, crypto: &Value) {
-    let Some(obj) = crypto.as_object() else { return };
-
-    let get_str = |k: &str| -> Option<String> {
-        obj.get(k)
-            .and_then(|v| v.as_str())
-            .map(|s| s.to_string())
-    };
-
-    if entry.algorithm.is_none() {
-        entry.algorithm = get_str("algorithm");
-    }
-    if entry.mode.is_none() {
-        entry.mode = get_str("mode");
-    }
-    if entry.key_size.is_none() {
-        entry.key_size = get_str("key_size");
-    }
-    if entry.padding.is_none() {
-        entry.padding = get_str("padding");
-    }
-    if entry.format.is_none() {
-        entry.format = get_str("format");
-    }
-    if entry.iv.is_none() {
-        entry.iv = get_str("iv");
-    }
-    if entry.key_type.is_none() {
-        entry.key_type = get_str("key_type");
-    }
-}
 
 #[tauri::command]
 pub fn start_new_log<R: Runtime>(app: AppHandle<R>, state: State<LogState>) -> Result<(), String> {
@@ -192,8 +131,12 @@ pub fn append_log<R: Runtime>(
         .map_err(|e| e.to_string())?
         .clone();
 
-    let crypto = merge_crypto_params(&entry);
-    let crypto_str = serde_json::to_string(&crypto).map_err(|e| e.to_string())?;
+    let crypto_str = entry
+        .crypto_params
+        .as_ref()
+        .map(|v| serde_json::to_string(v))
+        .transpose()
+        .map_err(|e| e.to_string())?;
 
     conn.execute(
         r#"
@@ -248,41 +191,26 @@ pub fn load_logs<R: Runtime>(
     let rows = stmt
         .query_map(params![session_id], |row| {
             let crypto_str: Option<String> = row.get(9)?;
-            Ok((
-                LogEntry {
-                    id: row.get(0)?,
-                    timestamp: row.get(1)?,
-                    message: row.get(2)?,
-                    method: row.get(3)?,
-                    input: row.get(4)?,
-                    output: row.get(5)?,
-                    details: row.get(6)?,
-                    note: row.get(7)?,
-                    log_type: row.get(8)?,
-                    crypto_params: None,
-                    algorithm: None,
-                    mode: None,
-                    key_size: None,
-                    padding: None,
-                    format: None,
-                    iv: None,
-                    key_type: None,
-                },
-                crypto_str,
-            ))
+            let crypto_params = crypto_str
+                .and_then(|s| serde_json::from_str::<Value>(&s).ok());
+            Ok(LogEntry {
+                id: row.get(0)?,
+                timestamp: row.get(1)?,
+                message: row.get(2)?,
+                method: row.get(3)?,
+                input: row.get(4)?,
+                output: row.get(5)?,
+                details: row.get(6)?,
+                note: row.get(7)?,
+                log_type: row.get(8)?,
+                crypto_params,
+            })
         })
         .map_err(|e| e.to_string())?;
 
     let mut logs = Vec::new();
     for r in rows {
-        let (mut entry, crypto_str) = r.map_err(|e| e.to_string())?;
-        if let Some(s) = crypto_str {
-            if let Ok(v) = serde_json::from_str::<Value>(&s) {
-                fill_legacy_crypto_fields(&mut entry, &v);
-                entry.crypto_params = Some(v);
-            }
-        }
-        logs.push(entry);
+        logs.push(r.map_err(|e| e.to_string())?);
     }
 
     Ok(logs)
@@ -395,41 +323,26 @@ pub fn get_logs_by_session<R: Runtime>(
     let rows = stmt
         .query_map(params![session_id], |row| {
             let crypto_str: Option<String> = row.get(9)?;
-            Ok((
-                LogEntry {
-                    id: row.get(0)?,
-                    timestamp: row.get(1)?,
-                    message: row.get(2)?,
-                    method: row.get(3)?,
-                    input: row.get(4)?,
-                    output: row.get(5)?,
-                    details: row.get(6)?,
-                    note: row.get(7)?,
-                    log_type: row.get(8)?,
-                    crypto_params: None,
-                    algorithm: None,
-                    mode: None,
-                    key_size: None,
-                    padding: None,
-                    format: None,
-                    iv: None,
-                    key_type: None,
-                },
-                crypto_str,
-            ))
+            let crypto_params = crypto_str
+                .and_then(|s| serde_json::from_str::<Value>(&s).ok());
+            Ok(LogEntry {
+                id: row.get(0)?,
+                timestamp: row.get(1)?,
+                message: row.get(2)?,
+                method: row.get(3)?,
+                input: row.get(4)?,
+                output: row.get(5)?,
+                details: row.get(6)?,
+                note: row.get(7)?,
+                log_type: row.get(8)?,
+                crypto_params,
+            })
         })
         .map_err(|e| e.to_string())?;
 
     let mut logs = Vec::new();
     for r in rows {
-        let (mut entry, crypto_str) = r.map_err(|e| e.to_string())?;
-        if let Some(s) = crypto_str {
-            if let Ok(v) = serde_json::from_str::<Value>(&s) {
-                fill_legacy_crypto_fields(&mut entry, &v);
-                entry.crypto_params = Some(v);
-            }
-        }
-        logs.push(entry);
+        logs.push(r.map_err(|e| e.to_string())?);
     }
     Ok(logs)
 }

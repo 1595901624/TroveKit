@@ -30,30 +30,30 @@ export interface LogEntry {
   details?: string
   note?: string
   type: "info" | "success" | "error" | "warning"
-  // 可扩展加密参数（后续新增算法字段都放这里）
+  /**
+   * 可扩展加密参数对象，所有加密相关字段统一放在此处。
+   * 支持的 key：
+   * - algorithm: 加密算法 (如 "AES", "DES", "3DES", "SM4", "RSA", "SM2" 等)
+   * - mode: 加密模式 (如 "CBC", "ECB", "CFB", "OFB", "CTR", "GCM" 等)
+   * - key_size: 密钥长度 (如 "128", "192", "256", "512", "1024", "2048", "4096" 等)
+   * - padding: 填充方式 (如 "PKCS7", "PKCS5", "ZeroPadding", "NoPadding", "ISO10126", "ANSIX923" 等)
+   * - format: 输出格式 (如 "hex", "base64", "utf8" 等)
+   * - iv: 初始向量 (Base64 或 Hex 编码的字符串)
+   * - key_type: 密钥类型 (如 "public", "private", "symmetric" 等)
+   * - hash: 哈希算法 (如 "MD5", "SHA1", "SHA256", "SHA512", "SM3" 等)
+   * - encoding: 编码方式 (如 "utf8", "gbk", "base64", "hex" 等)
+   * - salt: 盐值
+   * - iterations: 迭代次数 (用于 PBKDF2 等)
+   * - tag_length: 认证标签长度 (用于 GCM 模式)
+   */
   cryptoParams?: Record<string, any>
-  // 加密相关字段
-  algorithm?: string
-  mode?: string
-  key_size?: string
-  padding?: string
-  format?: string
-  iv?: string
-  key_type?: string
 }
 
 export type LogContent = string | {
     method: string
     input: string
     output: string
-  cryptoParams?: Record<string, any>
-    algorithm?: string
-    mode?: string
-    key_size?: string
-    padding?: string
-    format?: string
-    iv?: string
-    key_type?: string
+    cryptoParams?: Record<string, any>
 }
 
 interface LogContextType {
@@ -97,15 +97,6 @@ export function LogProvider({ children }: { children: React.ReactNode }) {
       newLog.input = content.input
       newLog.output = content.output
       if (content.cryptoParams) newLog.cryptoParams = content.cryptoParams
-      // 加密相关字段
-      if (content.algorithm) newLog.algorithm = content.algorithm
-      if (content.mode) newLog.mode = content.mode
-      if (content.key_size) newLog.key_size = content.key_size
-      if (content.padding) newLog.padding = content.padding
-      if (content.format) newLog.format = content.format
-      if (content.iv) newLog.iv = content.iv
-      if (content.key_type) newLog.key_type = content.key_type
-      // Generate a fallback message for compatibility or search
       newLog.message = `${content.method}: ${content.input} -> ${content.output}`
     }
 
