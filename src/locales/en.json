@@ -359,7 +359,9 @@
     "saveNote": "Save Note",
     "cancel": "Cancel",
     "note": "Note",
-    "trailingSpaces": "Trailing spaces"
+    "trailingSpaces": "Trailing spaces",
+    "trailingTab": "Trailing tab",
+    "trailingNewline": "Trailing newline"
   },
   "logManagement": {
     "sessions": "Sessions",

@@ -351,7 +351,9 @@
     "saveNote": "メモを保存",
     "cancel": "キャンセル",
     "note": "メモ",
-    "trailingSpaces": "末尾のスペース"
+    "trailingSpaces": "末尾のスペース",
+    "trailingTab": "末尾のタブ",
+    "trailingNewline": "末尾の改行"
   },
   "logManagement": {
     "sessions": "セッション",

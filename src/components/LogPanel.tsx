@@ -72,6 +72,13 @@ export function LogPanel() {
     { key: 'warning', label: t('log.filterWarning'), color: 'warning' }, // 警告
   ]
 
+  // 获取尾部空白字符的描述
+  const getTrailingDescription = (trailing: string) => {
+    if (trailing.includes('\n') || trailing.includes('\r')) return t('log.trailingNewline', 'Trailing newline')
+    if (trailing.includes('\t')) return t('log.trailingTab', 'Trailing tab')
+    return t('log.trailingSpaces', 'Trailing spaces')
+  }
+
   // 渲染带有高亮后缀空格和换行的文本
   const renderHighlightedText = (text?: string) => {
     if (typeof text !== 'string') return text
@@ -84,7 +91,7 @@ export function LogPanel() {
           {main}
           <span 
             className="bg-warning/20 text-warning-600 dark:text-warning rounded px-0.5 select-none" 
-            title={t('log.trailingSpaces', 'Trailing whitespace')}
+            title={getTrailingDescription(trailing)}
           >
             {trailing
               .replace(/ /g, '·')

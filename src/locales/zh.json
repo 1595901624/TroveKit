@@ -359,7 +359,9 @@
     "saveNote": "保存备注",
     "cancel": "取消",
     "note": "备注",
-    "trailingSpaces": "尾部空格"
+    "trailingSpaces": "尾部空格",
+    "trailingTab": "尾部制表符",
+    "trailingNewline": "尾部换行符"
   },
   "logManagement": {
     "sessions": "会话",
