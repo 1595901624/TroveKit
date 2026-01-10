@@ -9,9 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - **HMAC-MD5 Tool**: Added new HMAC-MD5 hash algorithm support.
+- **Log Panel Enhancements**: Optimized log interaction by highlighting trailing whitespaces (spaces, tabs, and newlines) with visual markers (`·`, `→`, `↵`) and descriptive tooltips.
 
 ### Changed
 - **Encryption Algorithm Logs**: Optimized log display for encryption algorithms.
+
+### Fixed
+- **Log Panel Tooltip**: Fixed an issue where the "New Log" button tooltip was not correctly localized.
 
 ## [0.1.8] - 2026-01-10
 
