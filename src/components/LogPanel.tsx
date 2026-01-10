@@ -72,18 +72,25 @@ export function LogPanel() {
     { key: 'warning', label: t('log.filterWarning'), color: 'warning' }, // 警告
   ]
 
-  // 渲染带有高亮后缀空格的文本
-  const renderHighlightedInput = (text?: string) => {
+  // 渲染带有高亮后缀空格和换行的文本
+  const renderHighlightedText = (text?: string) => {
     if (typeof text !== 'string') return text
-    const match = text.match(/([ \t]+)$/)
+    const match = text.match(/([ \t\n\r]+)$/)
     if (match && match.index !== undefined) {
       const main = text.slice(0, match.index)
       const trailing = text.slice(match.index)
       return (
         <>
           {main}
-          <span className="bg-warning/20 text-warning-600 dark:text-warning inline-block rounded px-0.5 select-none" title={t('log.trailingSpaces', 'Trailing spaces')}>
-            {trailing.replace(/ /g, '·').replace(/\t/g, '→')}
+          <span 
+            className="bg-warning/20 text-warning-600 dark:text-warning rounded px-0.5 select-none" 
+            title={t('log.trailingSpaces', 'Trailing whitespace')}
+          >
+            {trailing
+              .replace(/ /g, '·')
+              .replace(/\t/g, '→')
+              .replace(/\n/g, '↵\n')
+              .replace(/\r/g, '␍')}
           </span>
         </>
       )
@@ -253,7 +260,7 @@ export function LogPanel() {
                                             <div className="group/input relative p-2 rounded bg-default-100/50 hover:bg-default-100 transition-colors">
                                                 <div className="text-tiny text-default-400 font-semibold mb-0.5 select-none">{t('log.input', 'Input')}</div>
                                                 <div className="text-small font-mono text-default-600 break-all pr-6 whitespace-pre-wrap">
-                                                    {renderHighlightedInput(log.input)}
+                                                    {renderHighlightedText(log.input)}
                                                 </div>
                                                 {/* 复制输入按钮 */}
                                                 <Button
@@ -271,7 +278,7 @@ export function LogPanel() {
                                             <div className="group/output relative p-2 rounded bg-default-100/50 hover:bg-default-100 transition-colors">
                                                 <div className="text-tiny text-success/80 font-semibold mb-0.5 select-none">{t('log.output', 'Output')}</div>
                                                 <div className="text-small font-mono text-foreground break-all pr-6 whitespace-pre-wrap">
-                                                    {log.output}
+                                                    {renderHighlightedText(log.output)}
                                                 </div>
                                                 {/* 复制输出按钮 */}
                                                 <Button
@@ -289,14 +296,14 @@ export function LogPanel() {
                                 ) : (
                                     // 普通日志格式：直接显示消息
                                     <div className="text-small break-all font-mono leading-relaxed text-foreground/90 whitespace-pre-wrap">
-                                        {log.message}
+                                        {renderHighlightedText(log.message)}
                                     </div>
                                 )}
                                 
                                 {/* 详情信息：如果有则显示 */}
                                 {log.details && (
                                     <div className="mt-1.5 pt-1.5 border-t border-divider/50 text-tiny text-default-400 break-all font-mono whitespace-pre-wrap">
-                                        {log.details}
+                                        {renderHighlightedText(log.details)}
                                     </div>
                                 )}
 
