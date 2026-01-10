@@ -29,7 +29,8 @@ export function BaseXTab() {
   const [baseXInput, setBaseXInput] = useState(savedState.baseXInput || "")
   const [baseXOutput, setBaseXOutput] = useState(savedState.baseXOutput || "")
   const [selectedBase, setSelectedBase] = useState(savedState.selectedBase || "base16")
-  const [isCustomAlphabet, setIsCustomAlphabet] = useState(savedState.isCustomAlphabet || false)
+  // const [isCustomAlphabet, setIsCustomAlphabet] = useState(savedState.isCustomAlphabet || false)
+  const [isCustomAlphabet, setIsCustomAlphabet] = useState<boolean>(false)
   const [customAlphabet, setCustomAlphabet] = useState(savedState.customAlphabet || "")
 
   useEffect(() => {
@@ -123,11 +124,11 @@ export function BaseXTab() {
             ))}
           </Select>
 
-          <div className="flex items-center pb-2">
+          {/* <div className="flex items-center pb-2">
             <Switch isSelected={isCustomAlphabet} onValueChange={setIsCustomAlphabet}>
               {t("tools.encoder.useCustomAlphabet")}
             </Switch>
-          </div>
+          </div> */}
         </div>
         
         {isCustomAlphabet && (
