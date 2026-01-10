@@ -134,12 +134,15 @@ export function DesTab() {
         method: `${desAlgorithm} Encrypt (${desMode}, ${desFormat})`,
         input: desInput,
         output: output,
-        algorithm: desAlgorithm,
-        mode: desMode,
-        format: desFormat,
-        key_type: desKeyType,
-        iv: desIv,
-        padding: desPadding
+        cryptoParams: {
+          algorithm: desAlgorithm,
+          mode: desMode,
+          format: desFormat,
+          key: desKey,
+          key_type: desKeyType,
+          iv: desIv,
+          padding: desPadding
+        }
       }, "success");
     } catch (e) {
       addLog({ method: `${desAlgorithm} Encrypt`, input: desInput, output: (e as Error).message }, "error");
@@ -176,12 +179,15 @@ export function DesTab() {
         method: `${desAlgorithm} Decrypt (${desMode}, ${desFormat})`,
         input: desInput,
         output: output,
-        algorithm: desAlgorithm,
-        mode: desMode,
-        format: desFormat,
-        key_type: desKeyType,
-        iv: desIv,
-        padding: desPadding
+        cryptoParams: {
+          algorithm: desAlgorithm,
+          mode: desMode,
+          format: desFormat,
+          key: desKey,
+          key_type: desKeyType,
+          iv: desIv,
+          padding: desPadding
+        }
       }, "success");
     } catch (e) {
       addLog({ method: `${desAlgorithm} Decrypt`, input: desInput, output: (e as Error).message }, "error");
