@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Log Panel Session Notes**: Added session note editing functionality to the log panel, allowing users to add and edit notes for log sessions.
 
 ### Changed
+- **Log Management View**: Optimized the log viewing interface in the log management page for better readability and user experience.
 - **Encryption Algorithm Logs**: Optimized log display for encryption algorithms.
 - **BaseXTab**: Removed custom alphabet feature (commented out).
 - **Toast Implementation**: Optimized toast notifications by replacing custom implementation with HeroUI's built-in addToast functionality for better consistency and maintainability.
