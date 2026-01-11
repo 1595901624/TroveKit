@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - **Encryption Algorithm Logs**: Optimized log display for encryption algorithms.
 - **BaseXTab**: Removed custom alphabet feature (commented out).
+- **Toast Implementation**: Optimized toast notifications by replacing custom implementation with HeroUI's built-in addToast functionality for better consistency and maintainability.
 
 ### Fixed
 - **Log Panel Tooltip**: Fixed an issue where the "New Log" button tooltip was not correctly localized.
