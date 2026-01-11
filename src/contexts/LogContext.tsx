@@ -70,6 +70,8 @@ interface LogContextType {
   sessionNote: string
   updateSessionNote: (note: string) => Promise<void>
   removeSessionNote: () => Promise<void>
+  refresh: () => Promise<void>
+  currentSessionId: string | null
 }
 
 const LogContext = createContext<LogContextType | undefined>(undefined)
@@ -80,113 +82,134 @@ export function LogProvider({ children }: { children: React.ReactNode }) {
   const [sessionNote, setSessionNote] = useState("")
   const [currentSessionId, setCurrentSessionId] = useState<string | null>(null)
 
+  const refresh = useCallback(async () => {
+    try {
+      const newLogs = await invoke<LogEntry[]>("load_logs")
+      setLogs(newLogs)
+      
+      const info = await invoke<{ sessionId: string; note: string | null }>("get_current_session_info")
+      setCurrentSessionId(info.sessionId)
+      setSessionNote(info.note || "")
+    } catch (err) {
+      console.error("Failed to refresh logs:", err)
+    }
+  }, [])
+
   // Load logs and session note from backend on mount
   useEffect(() => {
-    invoke<LogEntry[]>("load_logs")
-      .then(setLogs)
-      .catch(err => console.error("Failed to load logs:", err));
-    
-    // Get current session info
-    invoke<{ sessionId: string; note: string | null }>("get_current_session_info")
-      .then((info) => {
-        setCurrentSessionId(info.sessionId)
-        setSessionNote(info.note || "")
-      })
-      .catch(err => console.error("Failed to get session info:", err));
-  }, []);
+    refresh()
+  }, [refresh]);
 
-  const addLog = useCallback((content: LogContent, type: LogEntry["type"] = "info", details?: string) => {
-    const newLog: LogEntry = {
-      id: Math.random().toString(36).substring(7),
-      timestamp: Date.now(),
-      type,
-      details,
+  useEffect(() => {
+    const handleLogsChanged = () => {
+      refresh()
     }
+    window.addEventListener('logs-changed', handleLogsChanged)
+    return () => window.removeEventListener('logs-changed', handleLogsChanged)
+  }, [refresh])
 
-    if (typeof content === 'string') {
-      newLog.message = content
-    } else {
-      newLog.method = content.method
-      newLog.input = content.input
-      newLog.output = content.output
-      if (content.cryptoParams) newLog.cryptoParams = content.cryptoParams
-      newLog.message = `${content.method}: ${content.input} -> ${content.output}`
-    }
-
-    setLogs((prev) => [newLog, ...prev])
-    
-    // Persist to backend
-    invoke("append_log", { entry: newLog }).catch(err => console.error("Failed to save log:", err));
-    
-    // Show toast for errors
-    if (type === 'error') {
-      const message = typeof content === 'string' ? content : `${content.method} failed`;
-      addToast({ title: message, severity: "danger" });
-    }
-  }, [])
-
-  const clearLogs = useCallback(() => {
-    setLogs([])
-    invoke("clear_logs_file").catch(err => console.error("Failed to clear logs file:", err));
-  }, [])
-
-  const createNewLog = useCallback(() => {
-    setLogs([]);
-    setSessionNote("");
-    invoke<string>("start_new_log").then((newSessionId) => {
-      setCurrentSessionId(newSessionId)
-      addToast({ title: "New log session started", severity: "success" });
-    }).catch(err => console.error("Failed to start new log:", err));
-  }, []);
-
-  const togglePanel = useCallback(() => {
-    setIsOpen((prev) => !prev)
-  }, [])
-
-  const addNote = useCallback((logId: string, note: string) => {
-    setLogs((prev) =>
-      prev.map((log) =>
-        log.id === logId ? { ...log, note } : log
+    const addLog = useCallback((content: LogContent, type: LogEntry["type"] = "info", details?: string) => {
+      const newLog: LogEntry = {
+        id: Math.random().toString(36).substring(7),
+        timestamp: Date.now(),
+        type,
+        details,
+      }
+  
+      if (typeof content === 'string') {
+        newLog.message = content
+      } else {
+        newLog.method = content.method
+        newLog.input = content.input
+        newLog.output = content.output
+        if (content.cryptoParams) newLog.cryptoParams = content.cryptoParams
+        newLog.message = `${content.method}: ${content.input} -> ${content.output}`
+      }
+  
+      setLogs((prev) => [newLog, ...prev])
+      
+      // Persist to backend
+      invoke("append_log", { entry: newLog })
+        .then(() => window.dispatchEvent(new CustomEvent('logs-changed')))
+        .catch(err => console.error("Failed to save log:", err));
+      
+      // Show toast for errors
+      if (type === 'error') {
+        const message = typeof content === 'string' ? content : `${content.method} failed`;
+        addToast({ title: message, severity: "danger" });
+      }
+    }, [])
+  
+    const clearLogs = useCallback(() => {
+      setLogs([])
+      invoke("clear_logs_file")
+        .then(() => window.dispatchEvent(new CustomEvent('logs-changed')))
+        .catch(err => console.error("Failed to clear logs file:", err));
+    }, [])
+  
+    const createNewLog = useCallback(() => {
+      setLogs([]);
+      setSessionNote("");
+      invoke<string>("start_new_log").then((newSessionId) => {
+        setCurrentSessionId(newSessionId)
+        window.dispatchEvent(new CustomEvent('logs-changed'))
+        addToast({ title: "New log session started", severity: "success" });
+      }).catch(err => console.error("Failed to start new log:", err));
+    }, []);
+  
+    const togglePanel = useCallback(() => {
+      setIsOpen((prev) => !prev)
+    }, [])
+  
+    const addNote = useCallback((logId: string, note: string) => {
+      setLogs((prev) =>
+        prev.map((log) =>
+          log.id === logId ? { ...log, note } : log
+        )
       )
-    )
-    
-    // Persist to backend
-    invoke("update_log_note", { logId, note }).catch(err => console.error("Failed to save note:", err))
-  }, [])
-
-  const removeNote = useCallback((logId: string) => {
-    setLogs((prev) =>
-      prev.map((log) =>
-        log.id === logId ? { ...log, note: undefined } : log
+      
+      // Persist to backend
+      invoke("update_log_note", { logId, note })
+        .then(() => window.dispatchEvent(new CustomEvent('logs-changed')))
+        .catch(err => console.error("Failed to save note:", err))
+    }, [])
+  
+    const removeNote = useCallback((logId: string) => {
+      setLogs((prev) =>
+        prev.map((log) =>
+          log.id === logId ? { ...log, note: undefined } : log
+        )
       )
-    )
-    
-    // Persist to backend
-    invoke("remove_log_note", { logId }).catch(err => console.error("Failed to remove note:", err))
-  }, [])
-
-  const updateSessionNote = useCallback(async (note: string) => {
-    if (!currentSessionId) return
-    try {
-      await invoke("update_session_note", { sessionId: currentSessionId, note })
-      setSessionNote(note)
-    } catch (err) {
-      console.error("Failed to update session note:", err)
-    }
-  }, [currentSessionId])
-
-  const removeSessionNote = useCallback(async () => {
-    if (!currentSessionId) return
-    try {
-      await invoke("remove_session_note", { sessionId: currentSessionId })
-      setSessionNote("")
-    } catch (err) {
-      console.error("Failed to remove session note:", err)
-    }
-  }, [currentSessionId])
-
+      
+      // Persist to backend
+      invoke("remove_log_note", { logId })
+        .then(() => window.dispatchEvent(new CustomEvent('logs-changed')))
+        .catch(err => console.error("Failed to remove note:", err))
+    }, [])
+  
+    const updateSessionNote = useCallback(async (note: string) => {
+      if (!currentSessionId) return
+      try {
+        await invoke("update_session_note", { sessionId: currentSessionId, note })
+        setSessionNote(note)
+        window.dispatchEvent(new CustomEvent('logs-changed'))
+      } catch (err) {
+        console.error("Failed to update session note:", err)
+      }
+    }, [currentSessionId])
+  
+    const removeSessionNote = useCallback(async () => {
+      if (!currentSessionId) return
+      try {
+        await invoke("remove_session_note", { sessionId: currentSessionId })
+        setSessionNote("")
+        window.dispatchEvent(new CustomEvent('logs-changed'))
+      } catch (err) {
+        console.error("Failed to remove session note:", err)
+      }
+    }, [currentSessionId])
   return (
-    <LogContext.Provider value={{ logs, addLog, clearLogs, createNewLog, isOpen, setIsOpen, togglePanel, addNote, removeNote, sessionNote, updateSessionNote, removeSessionNote }}>
+    <LogContext.Provider value={{ logs, addLog, clearLogs, createNewLog, isOpen, setIsOpen, togglePanel, addNote, removeNote, sessionNote, updateSessionNote, removeSessionNote, refresh, currentSessionId }}>
       {children}
     </LogContext.Provider>
   )

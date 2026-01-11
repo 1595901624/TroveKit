@@ -3,7 +3,7 @@ import { invoke } from "@tauri-apps/api/core"
 import { Button, Card, Input, Spinner, Chip, ScrollShadow, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure, Tooltip } from "@heroui/react"
 import { Trash2, RefreshCw, Search, Archive, Clock, AlertCircle, CheckCircle2, Info, AlertTriangle, Edit, X, Check, MessageSquare } from "lucide-react"
 import { useTranslation } from "react-i18next"
-import type { LogEntry } from "../contexts/LogContext"
+import { useLog, type LogEntry } from "../contexts/LogContext"
 import { cn } from "../lib/utils"
 
 type LogSessionSummary = {
@@ -15,6 +15,7 @@ type LogSessionSummary = {
 
 export function LogManagementTool() {
   const { t } = useTranslation()
+  const { currentSessionId, refresh: refreshCurrentSession } = useLog()
 
   const [loadingSessions, setLoadingSessions] = useState(true)
   const [loadingLogs, setLoadingLogs] = useState(false)
@@ -103,6 +104,17 @@ export function LogManagementTool() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeSessionId])
 
+  useEffect(() => {
+    const handleLogsChanged = () => {
+      reloadSessions(true)
+      if (activeSessionId) {
+        reloadLogs(activeSessionId)
+      }
+    }
+    window.addEventListener('logs-changed', handleLogsChanged)
+    return () => window.removeEventListener('logs-changed', handleLogsChanged)
+  }, [activeSessionId])
+
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure()
   const [deleteTarget, setDeleteTarget] = useState<{ type: 'log' | 'session', id: string } | null>(null)
 
@@ -124,7 +136,15 @@ export function LogManagementTool() {
       // Optimistic update
       setLogs(prev => prev.filter(l => l.id !== id))
       // Update session count locally or reload
-      reloadSessions(true)
+      await reloadSessions(true)
+      
+      // Notify other components
+      window.dispatchEvent(new CustomEvent('logs-changed'))
+      
+      // If it belongs to current session, refresh LogPanel
+      if (activeSessionId === currentSessionId) {
+        refreshCurrentSession()
+      }
     } catch (e: any) {
       setError(typeof e === "string" ? e : (e?.toString?.() ?? "Unknown error"))
     }
@@ -134,6 +154,14 @@ export function LogManagementTool() {
     try {
       await invoke("delete_log_session", { sessionId })
       await reloadSessions()
+      
+      // Notify other components
+      window.dispatchEvent(new CustomEvent('logs-changed'))
+
+      // If it IS the current session, refresh LogPanel
+      if (sessionId === currentSessionId) {
+        refreshCurrentSession()
+      }
     } catch (e: any) {
       setError(typeof e === "string" ? e : (e?.toString?.() ?? "Unknown error"))
     }
@@ -178,6 +206,14 @@ export function LogManagementTool() {
       ))
       setEditingSessionNote(null)
       setSessionNoteInput("")
+      
+      // Notify other components
+      window.dispatchEvent(new CustomEvent('logs-changed'))
+      
+      // If it's current session, sync with LogPanel
+      if (sessionId === currentSessionId) {
+        refreshCurrentSession()
+      }
     } catch (e: any) {
       setError(typeof e === "string" ? e : (e?.toString?.() ?? "Unknown error"))
     }
