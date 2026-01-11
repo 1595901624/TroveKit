@@ -333,7 +333,7 @@ export function LogManagementTool() {
                     {new Date(s.latestTimestamp).toLocaleTimeString()}
                  </div>
                  <Chip size="sm" variant="flat" className="h-5 text-[10px] px-1">
-                    {s.count} logs
+                    {t("logManagement.logCount", { count: s.count })}
                  </Chip>
               </div>
             </div>

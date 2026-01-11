@@ -7,6 +7,7 @@
     "search": "Search",
     "error": "Error",
     "edit": "Edit",
+    "cancel": "Cancel",
     "delete": "Delete"
   },
   "nav": {
@@ -375,6 +376,7 @@
     "confirmDeleteSession": "Are you sure you want to delete this entire session?",
     "confirmDeleteLog": "Are you sure you want to delete this log?",
     "editSessionNote": "Edit Note",
-    "sessionNotePlaceholder": "Enter session note..."
+    "sessionNotePlaceholder": "Enter session note...",
+    "logCount": "{{count}} logs"
   }
 }

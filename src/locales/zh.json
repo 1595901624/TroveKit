@@ -7,6 +7,7 @@
     "search": "搜索",
     "error": "错误",
     "edit": "编辑",
+    "cancel": "取消",
     "delete": "删除"
   },
   "nav": {
@@ -375,6 +376,7 @@
     "confirmDeleteSession": "确定要删除整个会话吗？",
     "confirmDeleteLog": "确定要删除此日志吗？",
     "editSessionNote": "编辑备注",
-    "sessionNotePlaceholder": "输入会话备注..."
+    "sessionNotePlaceholder": "输入会话备注...",
+    "logCount": "{{count}} 条日志"
   }
 }

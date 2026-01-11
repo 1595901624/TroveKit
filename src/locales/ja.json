@@ -7,6 +7,7 @@
     "search": "検索",
     "error": "エラー",
     "edit": "編集",
+    "cancel": "キャンセル",
     "delete": "削除"
   },
   "nav": {
@@ -367,6 +368,7 @@
     "confirmDeleteSession": "このセッション全体を削除しますか？",
     "confirmDeleteLog": "このログを削除しますか？",
     "editSessionNote": "メモを編集",
-    "sessionNotePlaceholder": "セッションメモを入力..."
+    "sessionNotePlaceholder": "セッションメモを入力...",
+    "logCount": "{{count}} ログ"
   }
 }
