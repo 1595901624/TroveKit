@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react"
 import { invoke } from "@tauri-apps/api/core"
 import { Button, Card, Input, Spinner, Chip, ScrollShadow, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure, Tooltip } from "@heroui/react"
-import { Trash2, RefreshCw, Search, Archive, Clock, AlertCircle, CheckCircle2, Info, AlertTriangle, Edit, X, Check, MessageSquare } from "lucide-react"
+import { Trash2, RefreshCw, Search, Archive, Clock, AlertCircle, CheckCircle2, Info, AlertTriangle, Edit, X, Check, MessageSquare, Copy } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { useLog, type LogEntry } from "../contexts/LogContext"
 import { cn } from "../lib/utils"
@@ -27,6 +27,37 @@ export function LogManagementTool() {
 
   const [editingSessionNote, setEditingSessionNote] = useState<string | null>(null)
   const [sessionNoteInput, setSessionNoteInput] = useState("")
+
+  const getTrailingDescription = (trailing: string) => {
+    if (trailing.includes('\n') || trailing.includes('\r')) return t('log.trailingNewline', 'Trailing newline')
+    if (trailing.includes('\t')) return t('log.trailingTab', 'Trailing tab')
+    return t('log.trailingSpaces', 'Trailing spaces')
+  }
+
+  const renderHighlightedText = (text?: string) => {
+    if (typeof text !== 'string') return text
+    const match = text.match(/([ \t\n\r]+)$/)
+    if (match && match.index !== undefined) {
+      const main = text.slice(0, match.index)
+      const trailing = text.slice(match.index)
+      return (
+        <>
+          {main}
+          <span 
+            className="bg-warning/20 text-warning-600 dark:text-warning rounded px-0.5 select-none" 
+            title={getTrailingDescription(trailing)}
+          >
+            {trailing
+              .replace(/ /g, '·')
+              .replace(/\t/g, '→')
+              .replace(/\n/g, '↵\n')
+              .replace(/\r/g, '␍')}
+          </span>
+        </>
+      )
+    }
+    return text
+  }
 
   const filteredLogs = useMemo(() => {
     const q = query.trim().toLowerCase()
@@ -375,60 +406,163 @@ export function LogManagementTool() {
                 <p>{t("logManagement.empty", "No logs found")}</p>
              </div>
            ) : (
-             <div className="space-y-3">
+            <div className="space-y-3">
                {filteredLogs.map((log) => (
-                 <div key={log.id} className="group relative flex gap-3 p-4 rounded-xl border border-divider bg-content1 hover:bg-content2 transition-colors">
-                    <div className="mt-1 shrink-0">
-                       {getLogIcon(log.type)}
+                 <div key={log.id} className="group relative p-4 rounded-xl border border-divider bg-content1 hover:bg-content2 transition-colors">
+                    {/* Header */}
+                    <div className="flex items-start justify-between gap-2 mb-2">
+                        <div className="flex items-center gap-2">
+                            {getLogIcon(log.type)}
+                            <time className="text-xs text-default-500 font-mono">
+                                {new Date(log.timestamp).toLocaleTimeString()}
+                            </time>
+                        </div>
+                        
+                        <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                            {/* Copy Message Button for non-method logs */}
+                            {!log.method && (
+                                <Button
+                                    isIconOnly
+                                    size="sm"
+                                    variant="light"
+                                    className="h-6 w-6 min-w-6"
+                                    onPress={() => navigator.clipboard.writeText(log.message || '')}
+                                >
+                                    <Copy className="w-3 h-3 text-default-500" />
+                                </Button>
+                            )}
+                            <Button
+                                isIconOnly
+                                size="sm"
+                                variant="light"
+                                color="danger"
+                                className="h-6 w-6 min-w-6"
+                                onClick={(e) => handleDeleteLog(log.id, e)}
+                            >
+                                <Trash2 className="w-3 h-3" />
+                            </Button>
+                        </div>
                     </div>
-                    
-                    <div className="flex-1 min-w-0 space-y-1">
-                       <div className="flex items-center justify-between gap-2">
-                          <div className="text-xs text-default-500 font-mono">
-                             {new Date(log.timestamp).toLocaleTimeString()}
-                          </div>
-                          {log.method && (
-                             <Chip size="sm" variant="flat" color="primary" className="h-5 text-[10px]">
-                                {log.method}
-                             </Chip>
-                          )}
-                       </div>
-                       
-                       <div className="text-sm font-medium break-all text-foreground">
-                          {log.message || (
-                             <span className="font-mono text-xs">
-                                {log.input && `${log.input.substring(0, 50)}${log.input.length > 50 ? '...' : ''}`}
-                                {log.input && log.output && ' → '}
-                                {log.output && `${log.output.substring(0, 50)}${log.output.length > 50 ? '...' : ''}`}
-                             </span>
-                          )}
-                       </div>
 
-                       {(log.details || log.note) && (
-                          <div className="text-xs text-default-500 space-y-1 mt-2 p-2 bg-default-100/50 rounded-lg">
-                             {log.details && <div>{log.details}</div>}
-                             {log.note && (
-                                <div className="flex items-start gap-1 text-warning-600">
-                                   <span className="font-semibold">{t("log.note", "Note")}:</span>
-                                   {log.note}
+                    {/* Content */}
+                    <div className="pl-6">
+                        {log.method ? (
+                            <div className="flex flex-col gap-3">
+                                {/* Method Name */}
+                                <div>
+                                    <span className="text-primary font-bold font-mono text-small px-2 py-0.5 bg-primary/10 rounded">
+                                        {log.method}
+                                    </span>
                                 </div>
-                             )}
-                          </div>
-                       )}
-                       
-                       {/* Full content expansion could go here */}
-                    </div>
 
-                    <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                       <Button
-                          isIconOnly
-                          size="sm"
-                          variant="light"
-                          color="danger"
-                          onClick={(e) => handleDeleteLog(log.id, e)}
-                       >
-                          <Trash2 className="w-4 h-4" />
-                       </Button>
+                                {/* Crypto Params */}
+                                {log.cryptoParams && Object.keys(log.cryptoParams).length > 0 && (
+                                    <div className="grid grid-cols-2 md:grid-cols-4 gap-2 p-2 rounded bg-default-50/50 border border-divider/30 text-xs">
+                                        {log.cryptoParams.algorithm && (
+                                            <div className="flex flex-col">
+                                                <span className="text-default-500 font-semibold">{t('tools.hash.algorithm')}</span>
+                                                <span className="font-mono text-default-700">{log.cryptoParams.algorithm}</span>
+                                            </div>
+                                        )}
+                                        {log.cryptoParams.mode && (
+                                            <div className="flex flex-col">
+                                                <span className="text-default-500 font-semibold">{t('tools.hash.mode')}</span>
+                                                <span className="font-mono text-default-700">{log.cryptoParams.mode}</span>
+                                            </div>
+                                        )}
+                                        {log.cryptoParams.key_size && (
+                                            <div className="flex flex-col">
+                                                <span className="text-default-500 font-semibold">{t('tools.hash.keySize')}</span>
+                                                <span className="font-mono text-default-700">{log.cryptoParams.key_size}</span>
+                                            </div>
+                                        )}
+                                        {log.cryptoParams.format && (
+                                            <div className="flex flex-col">
+                                                <span className="text-default-500 font-semibold">{t('tools.hash.format')}</span>
+                                                <span className="font-mono text-default-700">{log.cryptoParams.format}</span>
+                                            </div>
+                                        )}
+                                        {log.cryptoParams.padding && (
+                                            <div className="flex flex-col">
+                                                <span className="text-default-500 font-semibold">{t('tools.hash.padding')}</span>
+                                                <span className="font-mono text-default-700">{log.cryptoParams.padding}</span>
+                                            </div>
+                                        )}
+                                        {log.cryptoParams.key_type && (
+                                            <div className="flex flex-col">
+                                                <span className="text-default-500 font-semibold">{t('tools.hash.keyType')}</span>
+                                                <span className="font-mono text-default-700">{log.cryptoParams.key_type}</span>
+                                            </div>
+                                        )}
+                                        {log.cryptoParams.iv && (
+                                            <div className="col-span-2 flex flex-col">
+                                                <span className="text-default-500 font-semibold">{t('tools.hash.iv')}</span>
+                                                <span className="font-mono text-default-700 break-all">{log.cryptoParams.iv}</span>
+                                            </div>
+                                        )}
+                                        {log.cryptoParams.key && (
+                                            <div className="col-span-2 flex flex-col">
+                                                <span className="text-default-500 font-semibold">{t('tools.hash.key')}</span>
+                                                <span className="font-mono text-default-700 break-all">{log.cryptoParams.key}</span>
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
+
+                                {/* Input */}
+                                <div className="group/input relative p-3 rounded bg-default-100/50 hover:bg-default-100 transition-colors">
+                                    <div className="text-xs text-default-400 font-semibold mb-1 select-none">{t('log.input', 'Input')}</div>
+                                    <div className="text-sm font-mono text-default-600 break-all pr-8 whitespace-pre-wrap">
+                                        {renderHighlightedText(log.input)}
+                                    </div>
+                                    <Button
+                                        isIconOnly
+                                        size="sm"
+                                        variant="light"
+                                        className="absolute top-2 right-2 h-6 w-6 min-w-6 opacity-0 group-hover/input:opacity-100"
+                                        onPress={() => navigator.clipboard.writeText(log.input || '')}
+                                    >
+                                        <Copy className="w-3 h-3 text-default-400" />
+                                    </Button>
+                                </div>
+
+                                {/* Output */}
+                                <div className="group/output relative p-3 rounded bg-default-100/50 hover:bg-default-100 transition-colors">
+                                    <div className="text-xs text-success/80 font-semibold mb-1 select-none">{t('log.output', 'Output')}</div>
+                                    <div className="text-sm font-mono text-foreground break-all pr-8 whitespace-pre-wrap">
+                                        {renderHighlightedText(log.output)}
+                                    </div>
+                                    <Button
+                                        isIconOnly
+                                        size="sm"
+                                        variant="light"
+                                        className="absolute top-2 right-2 h-6 w-6 min-w-6 opacity-0 group-hover/output:opacity-100"
+                                        onPress={() => navigator.clipboard.writeText(log.output || '')}
+                                    >
+                                        <Copy className="w-3 h-3 text-default-400" />
+                                    </Button>
+                                </div>
+                            </div>
+                        ) : (
+                            <div className="text-sm break-all font-mono leading-relaxed text-foreground/90 whitespace-pre-wrap">
+                                {renderHighlightedText(log.message)}
+                            </div>
+                        )}
+
+                        {/* Details */}
+                        {log.details && (
+                            <div className="mt-2 pt-2 border-t border-divider/50 text-xs text-default-400 break-all font-mono whitespace-pre-wrap">
+                                {renderHighlightedText(log.details)}
+                            </div>
+                        )}
+
+                        {/* Note */}
+                        {log.note && (
+                            <div className="mt-2 flex items-start gap-2 text-xs bg-warning/10 text-warning-700 dark:text-warning-400 p-2 rounded">
+                                <span className="font-semibold select-none">💡 {t('log.note', 'Note')}:</span>
+                                <span className="font-mono whitespace-pre-wrap">{log.note}</span>
+                            </div>
+                        )}
                     </div>
                  </div>
                ))}
