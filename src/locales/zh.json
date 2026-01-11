@@ -361,7 +361,9 @@
     "note": "备注",
     "trailingSpaces": "尾部空格",
     "trailingTab": "尾部制表符",
-    "trailingNewline": "尾部换行符"
+    "trailingNewline": "尾部换行符",
+    "addSessionNote": "添加会话备注",
+    "sessionNotePlaceholder": "输入会话备注..."
   },
   "logManagement": {
     "sessions": "会话",

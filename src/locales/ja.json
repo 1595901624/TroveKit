@@ -353,7 +353,9 @@
     "note": "メモ",
     "trailingSpaces": "末尾のスペース",
     "trailingTab": "末尾のタブ",
-    "trailingNewline": "末尾の改行"
+    "trailingNewline": "末尾の改行",
+    "addSessionNote": "セッションメモを追加",
+    "sessionNotePlaceholder": "セッションメモを入力..."
   },
   "logManagement": {
     "sessions": "セッション",

@@ -1,8 +1,8 @@
 // 导入必要的依赖
 import { motion, AnimatePresence } from "framer-motion" // 用于动画效果
 import { useLog, LogEntry } from "../contexts/LogContext" // 日志上下文
-import { Trash2, X, Terminal, Info, CheckCircle, AlertTriangle, AlertCircle, Copy, Plus, Edit } from "lucide-react" // 图标
-import { Button, ScrollShadow, Tooltip } from "@heroui/react" // UI 组件
+import { Trash2, X, Terminal, Info, CheckCircle, AlertTriangle, AlertCircle, Copy, Plus, Edit, Check, MessageSquare } from "lucide-react" // 图标
+import { Button, ScrollShadow, Tooltip, Input } from "@heroui/react" // UI 组件
 import { useTranslation } from "react-i18next" // 国际化
 import { useState, useMemo } from "react" // React hooks
 
@@ -12,7 +12,7 @@ type FilterType = LogEntry['type'] | 'all'
 // 日志面板组件
 export function LogPanel() {
   // 从日志上下文中获取数据和方法
-  const { logs, isOpen, setIsOpen, clearLogs, createNewLog, addNote, removeNote } = useLog()
+  const { logs, isOpen, setIsOpen, clearLogs, createNewLog, addNote, removeNote, sessionNote, updateSessionNote, removeSessionNote } = useLog()
   // 国际化钩子
   const { t } = useTranslation()
   // 过滤器状态，默认显示全部
@@ -20,6 +20,9 @@ export function LogPanel() {
   // 编辑备注的状态
   const [editingNoteId, setEditingNoteId] = useState<string | null>(null)
   const [noteInput, setNoteInput] = useState('')
+  // 会话备注编辑状态
+  const [editingSessionNote, setEditingSessionNote] = useState(false)
+  const [sessionNoteInput, setSessionNoteInput] = useState('')
 
   // 使用 useMemo 优化性能，根据过滤器筛选日志
   const filteredLogs = useMemo(() => {
@@ -51,6 +54,29 @@ export function LogPanel() {
   // 删除备注
   const handleRemoveNote = (logId: string) => {
     removeNote(logId)
+  }
+
+  // 开始编辑会话备注
+  const handleStartEditSessionNote = () => {
+    setEditingSessionNote(true)
+    setSessionNoteInput(sessionNote || '')
+  }
+
+  // 取消编辑会话备注
+  const handleCancelEditSessionNote = () => {
+    setEditingSessionNote(false)
+    setSessionNoteInput('')
+  }
+
+  // 保存会话备注
+  const handleSaveSessionNote = async () => {
+    if (sessionNoteInput.trim()) {
+      await updateSessionNote(sessionNoteInput.trim())
+    } else {
+      await removeSessionNote()
+    }
+    setEditingSessionNote(false)
+    setSessionNoteInput('')
   }
 
   // 根据日志类型返回对应图标
@@ -144,6 +170,51 @@ export function LogPanel() {
                         <X className="w-4 h-4 text-default-500" />
                     </Button>
                 </div>
+            </div>
+
+            {/* 会话备注区域 */}
+            <div className="px-3 py-2 border-b border-divider shrink-0">
+                {editingSessionNote ? (
+                    <div className="flex items-center gap-2">
+                        <Input
+                            size="sm"
+                            value={sessionNoteInput}
+                            onValueChange={setSessionNoteInput}
+                            placeholder={t('log.sessionNotePlaceholder', 'Enter session note...')}
+                            className="flex-1"
+                            autoFocus
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter') handleSaveSessionNote()
+                                if (e.key === 'Escape') handleCancelEditSessionNote()
+                            }}
+                        />
+                        <Button isIconOnly size="sm" variant="light" onPress={handleCancelEditSessionNote}>
+                            <X className="w-3.5 h-3.5" />
+                        </Button>
+                        <Button isIconOnly size="sm" variant="flat" color="primary" onPress={handleSaveSessionNote}>
+                            <Check className="w-3.5 h-3.5" />
+                        </Button>
+                    </div>
+                ) : sessionNote ? (
+                    <div 
+                        className="flex items-center gap-2 text-tiny text-warning-600 dark:text-warning bg-warning/10 px-2 py-1.5 rounded cursor-pointer hover:bg-warning/20 transition-colors"
+                        onClick={handleStartEditSessionNote}
+                    >
+                        <MessageSquare className="w-3.5 h-3.5 shrink-0" />
+                        <span className="truncate flex-1">{sessionNote}</span>
+                        <Edit className="w-3 h-3 opacity-50" />
+                    </div>
+                ) : (
+                    <Button
+                        size="sm"
+                        variant="light"
+                        className="w-full h-7 text-tiny text-default-400"
+                        startContent={<Plus className="w-3 h-3" />}
+                        onPress={handleStartEditSessionNote}
+                    >
+                        {t('log.addSessionNote', 'Add Session Note')}
+                    </Button>
+                )}
             </div>
 
             {/* 过滤器区域：日志类型筛选按钮 */}

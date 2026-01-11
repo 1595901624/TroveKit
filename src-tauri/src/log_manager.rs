@@ -112,16 +112,49 @@ fn init_db(conn: &Connection) -> Result<(), String> {
 
 
 
+#[derive(Debug, Serialize, Deserialize)]
+pub struct CurrentSessionInfo {
+    #[serde(rename = "sessionId")]
+    pub session_id: String,
+    pub note: Option<String>,
+}
+
+#[tauri::command(rename_all = "camelCase")]
+pub fn get_current_session_info<R: Runtime>(
+    app: AppHandle<R>,
+    state: State<LogState>,
+) -> Result<CurrentSessionInfo, String> {
+    let conn = open_conn(&app)?;
+    init_db(&conn)?;
+
+    let session_id = state
+        .current_session_id
+        .lock()
+        .map_err(|e| e.to_string())?
+        .clone();
+
+    let note: Option<String> = conn
+        .query_row(
+            "SELECT note FROM session_notes WHERE session_id = ?1",
+            params![&session_id],
+            |row| row.get(0),
+        )
+        .ok();
+
+    Ok(CurrentSessionInfo { session_id, note })
+}
+
 #[tauri::command]
-pub fn start_new_log<R: Runtime>(app: AppHandle<R>, state: State<LogState>) -> Result<(), String> {
+pub fn start_new_log<R: Runtime>(app: AppHandle<R>, state: State<LogState>) -> Result<String, String> {
     // 保持与旧语义一致：新建日志 = 新会话
     let _ = open_conn(&app).and_then(|conn| init_db(&conn));
     let mut sid = state
         .current_session_id
         .lock()
         .map_err(|e| e.to_string())?;
-    *sid = Uuid::new_v4().to_string();
-    Ok(())
+    let new_sid = Uuid::new_v4().to_string();
+    *sid = new_sid.clone();
+    Ok(new_sid)
 }
 
 #[tauri::command(rename_all = "camelCase")]

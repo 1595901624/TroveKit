@@ -361,7 +361,9 @@
     "note": "Note",
     "trailingSpaces": "Trailing spaces",
     "trailingTab": "Trailing tab",
-    "trailingNewline": "Trailing newline"
+    "trailingNewline": "Trailing newline",
+    "addSessionNote": "Add Session Note",
+    "sessionNotePlaceholder": "Enter session note..."
   },
   "logManagement": {
     "sessions": "Sessions",

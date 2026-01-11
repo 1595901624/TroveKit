@@ -67,6 +67,9 @@ interface LogContextType {
   togglePanel: () => void
   addNote: (logId: string, note: string) => void
   removeNote: (logId: string) => void
+  sessionNote: string
+  updateSessionNote: (note: string) => Promise<void>
+  removeSessionNote: () => Promise<void>
 }
 
 const LogContext = createContext<LogContextType | undefined>(undefined)
@@ -74,12 +77,22 @@ const LogContext = createContext<LogContextType | undefined>(undefined)
 export function LogProvider({ children }: { children: React.ReactNode }) {
   const [logs, setLogs] = useState<LogEntry[]>([])
   const [isOpen, setIsOpen] = useState(false)
+  const [sessionNote, setSessionNote] = useState("")
+  const [currentSessionId, setCurrentSessionId] = useState<string | null>(null)
 
-  // Load logs from backend on mount
+  // Load logs and session note from backend on mount
   useEffect(() => {
     invoke<LogEntry[]>("load_logs")
       .then(setLogs)
       .catch(err => console.error("Failed to load logs:", err));
+    
+    // Get current session info
+    invoke<{ sessionId: string; note: string | null }>("get_current_session_info")
+      .then((info) => {
+        setCurrentSessionId(info.sessionId)
+        setSessionNote(info.note || "")
+      })
+      .catch(err => console.error("Failed to get session info:", err));
   }, []);
 
   const addLog = useCallback((content: LogContent, type: LogEntry["type"] = "info", details?: string) => {
@@ -119,7 +132,9 @@ export function LogProvider({ children }: { children: React.ReactNode }) {
 
   const createNewLog = useCallback(() => {
     setLogs([]);
-    invoke("start_new_log").then(() => {
+    setSessionNote("");
+    invoke<string>("start_new_log").then((newSessionId) => {
+      setCurrentSessionId(newSessionId)
       addToast({ title: "New log session started", severity: "success" });
     }).catch(err => console.error("Failed to start new log:", err));
   }, []);
@@ -150,8 +165,28 @@ export function LogProvider({ children }: { children: React.ReactNode }) {
     invoke("remove_log_note", { logId }).catch(err => console.error("Failed to remove note:", err))
   }, [])
 
+  const updateSessionNote = useCallback(async (note: string) => {
+    if (!currentSessionId) return
+    try {
+      await invoke("update_session_note", { sessionId: currentSessionId, note })
+      setSessionNote(note)
+    } catch (err) {
+      console.error("Failed to update session note:", err)
+    }
+  }, [currentSessionId])
+
+  const removeSessionNote = useCallback(async () => {
+    if (!currentSessionId) return
+    try {
+      await invoke("remove_session_note", { sessionId: currentSessionId })
+      setSessionNote("")
+    } catch (err) {
+      console.error("Failed to remove session note:", err)
+    }
+  }, [currentSessionId])
+
   return (
-    <LogContext.Provider value={{ logs, addLog, clearLogs, createNewLog, isOpen, setIsOpen, togglePanel, addNote, removeNote }}>
+    <LogContext.Provider value={{ logs, addLog, clearLogs, createNewLog, isOpen, setIsOpen, togglePanel, addNote, removeNote, sessionNote, updateSessionNote, removeSessionNote }}>
       {children}
     </LogContext.Provider>
   )
