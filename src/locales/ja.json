@@ -171,6 +171,14 @@
         "long": "長",
         "case": "結果の大文字小文字",
         "noCase": "変更なし"
+      },
+      "bacon": {
+        "title": "ベーコン暗号",
+        "alphabet": "アルファベットタイプ",
+        "standard": "標準 (26文字)",
+        "traditional": "伝統 (24文字, I=J, U=V)",
+        "mode": "シンボルモード",
+        "custom": "カスタムシンボル"
       }
     },
     "qr": {
@@ -370,5 +378,10 @@
     "editSessionNote": "メモを編集",
     "sessionNotePlaceholder": "セッションメモを入力...",
     "logCount": "{{count}} ログ"
+  },
+  "logContext": {
+    "newLogSessionStarted": "新しいログセッションが開始されました",
+    "operationFailed": "{{method}} 操作に失敗しました",
+    "useLogMustBeUsedWithinProvider": "useLog は LogProvider 内で使用する必要があります"
   }
 }

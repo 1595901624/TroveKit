@@ -378,5 +378,10 @@
     "editSessionNote": "Edit Note",
     "sessionNotePlaceholder": "Enter session note...",
     "logCount": "{{count}} logs"
+  },
+  "logContext": {
+    "newLogSessionStarted": "New log session started",
+    "operationFailed": "{{method}} operation failed",
+    "useLogMustBeUsedWithinProvider": "useLog must be used within a LogProvider"
   }
 }

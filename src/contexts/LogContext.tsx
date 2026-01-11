@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useCallback, useEffect } from "react"
 import { addToast } from "@heroui/react"
 import { invoke } from "@tauri-apps/api/core"
+import { useTranslation } from "react-i18next"
 
 // This context provides logging functionality throughout the app.
 // example：
@@ -77,6 +78,7 @@ interface LogContextType {
 const LogContext = createContext<LogContextType | undefined>(undefined)
 
 export function LogProvider({ children }: { children: React.ReactNode }) {
+  const { t } = useTranslation()
   const [logs, setLogs] = useState<LogEntry[]>([])
   const [isOpen, setIsOpen] = useState(false)
   const [sessionNote, setSessionNote] = useState("")
@@ -135,10 +137,10 @@ export function LogProvider({ children }: { children: React.ReactNode }) {
       
       // Show toast for errors
       if (type === 'error') {
-        const message = typeof content === 'string' ? content : `${content.method} failed`;
+        const message = typeof content === 'string' ? content : t('logContext.operationFailed', { method: content.method });
         addToast({ title: message, severity: "danger" });
       }
-    }, [])
+    }, [t])
   
     const clearLogs = useCallback(() => {
       setLogs([])
@@ -153,9 +155,9 @@ export function LogProvider({ children }: { children: React.ReactNode }) {
       invoke<string>("start_new_log").then((newSessionId) => {
         setCurrentSessionId(newSessionId)
         window.dispatchEvent(new CustomEvent('logs-changed'))
-        addToast({ title: "New log session started", severity: "success" });
+        addToast({ title: t('logContext.newLogSessionStarted'), severity: "success" });
       }).catch(err => console.error("Failed to start new log:", err));
-    }, []);
+    }, [t]);
   
     const togglePanel = useCallback(() => {
       setIsOpen((prev) => !prev)

@@ -171,6 +171,14 @@
         "long": "長",
         "case": "結果大小寫",
         "noCase": "無變化"
+      },
+      "bacon": {
+        "title": "培根密碼",
+        "alphabet": "字母表類型",
+        "standard": "標準 (26字母)",
+        "traditional": "傳統 (24字母, I=J, U=V)",
+        "mode": "符號模式",
+        "custom": "自訂符號"
       }
     },
     "qr": {
@@ -370,5 +378,10 @@
     "editSessionNote": "編輯備註",
     "sessionNotePlaceholder": "輸入會話備註...",
     "logCount": "{{count}} 條紀錄"
+  },
+  "logContext": {
+    "newLogSessionStarted": "新建日誌會話已啟動",
+    "operationFailed": "{{method}} 操作失敗",
+    "useLogMustBeUsedWithinProvider": "useLog 必須在 LogProvider 內部使用"
   }
 }
