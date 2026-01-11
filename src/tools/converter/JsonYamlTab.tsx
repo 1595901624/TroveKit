@@ -1,17 +1,15 @@
 import { useState } from "react"
-import { Button } from "@heroui/react"
+import { Button, addToast } from "@heroui/react"
 import Editor from "@monaco-editor/react"
 import { ArrowRight, ArrowLeft, Copy, Trash2, BookOpen } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import yaml from "js-yaml"
 import { useTheme } from "../../components/theme-provider"
-import { useToast } from "../../contexts/ToastContext"
 import { useLog } from "../../contexts/LogContext"
 
 export function JsonYamlTab() {
   const { t } = useTranslation()
   const { theme } = useTheme()
-  const { addToast } = useToast()
   const { addLog } = useLog()
 
   const [jsonCode, setJsonCode] = useState("")
@@ -32,9 +30,9 @@ export function JsonYamlTab() {
         input: jsonCode,
         output: yamlStr
       }, "success")
-      addToast(t("tools.converter.convertSuccessfully"), "success")
+      addToast({ title: t("tools.converter.convertSuccessfully"), severity: "success" })
     } catch (e) {
-      addToast(`${t("tools.converter.invalidJson")}: ${(e as Error).message}`, "error")
+      addToast({ title: `${t("tools.converter.invalidJson")}: ${(e as Error).message}`, severity: "danger" })
     }
   }
 
@@ -49,9 +47,9 @@ export function JsonYamlTab() {
         input: yamlCode,
         output: json
       }, "success")
-      addToast(t("tools.converter.convertSuccessfully"), "success")
+      addToast({ title: t("tools.converter.convertSuccessfully"), severity: "success" })
     } catch (e) {
-      addToast(`${t("tools.converter.invalidYaml")}: ${(e as Error).message}`, "error")
+      addToast({ title: `${t("tools.converter.invalidYaml")}: ${(e as Error).message}`, severity: "danger" })
     }
   }
 
@@ -88,7 +86,7 @@ export function JsonYamlTab() {
   const copyToClipboard = (text: string) => {
     if (!text) return
     navigator.clipboard.writeText(text)
-    addToast(t("tools.converter.copiedToClipboard"), "success")
+    addToast({ title: t("tools.converter.copiedToClipboard"), severity: "success" })
   }
 
   return (

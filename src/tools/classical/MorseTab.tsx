@@ -1,7 +1,6 @@
 import { useState, useMemo, useEffect } from "react"
-import { Button, Textarea, Select, SelectItem, Input } from "@heroui/react"
+import { Button, Textarea, Select, SelectItem, Input, addToast } from "@heroui/react"
 import { useTranslation } from "react-i18next"
-import { useToast } from "../../contexts/ToastContext"
 import { useLog } from "../../contexts/LogContext"
 import { ArrowRightLeft, Copy, Trash2, Replace } from "lucide-react"
 // @ts-ignore
@@ -24,7 +23,6 @@ const saveStateToStorage = (state: Record<string, any>) => {
 
 export function MorseTab() {
   const { t } = useTranslation()
-  const { addToast } = useToast()
   const { addLog } = useLog()
 
   const savedState = loadStateFromStorage()
@@ -68,11 +66,11 @@ export function MorseTab() {
     try {
       const encoded = morseEncode(input, morseOptions)
       setOutput(encoded)
-      addToast(t("log.filterSuccess"), "success")
+      addToast({ title: t("log.filterSuccess"), severity: "success" })
       addLog({ method: "Morse Encode (xmorse)", input, output: encoded }, "success")
     } catch (e) {
       console.error(e)
-      addToast(t("log.filterError"), "error")
+      addToast({ title: t("log.filterError"), severity: "danger" })
     }
   }
 
@@ -87,11 +85,11 @@ export function MorseTab() {
       else if (caseMode === "upper") finalOutput = finalOutput.toUpperCase()
 
       setOutput(finalOutput)
-      addToast(t("log.filterSuccess"), "success")
+      addToast({ title: t("log.filterSuccess"), severity: "success" })
       addLog({ method: "Morse Decode (xmorse)", input, output: finalOutput }, "success")
     } catch (e) {
       console.error(e)
-      addToast(t("log.filterError"), "error")
+      addToast({ title: t("log.filterError"), severity: "danger" })
     }
   }
 
@@ -99,7 +97,7 @@ export function MorseTab() {
   const handleClear = () => { setInput(""); setOutput(""); localStorage.removeItem(STORAGE_KEY); }
   const handleCopy = () => {
     navigator.clipboard.writeText(output)
-    addToast(t("tools.encoder.copiedToClipboard"), "success")
+    addToast({ title: t("tools.encoder.copiedToClipboard"), severity: "success" })
   }
 
   return (

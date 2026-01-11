@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useCallback, useEffect } from "react"
-import { useToast } from "./ToastContext"
+import { addToast } from "@heroui/react"
 import { invoke } from "@tauri-apps/api/core"
 
 // This context provides logging functionality throughout the app.
@@ -74,7 +74,6 @@ const LogContext = createContext<LogContextType | undefined>(undefined)
 export function LogProvider({ children }: { children: React.ReactNode }) {
   const [logs, setLogs] = useState<LogEntry[]>([])
   const [isOpen, setIsOpen] = useState(false)
-  const { addToast } = useToast()
 
   // Load logs from backend on mount
   useEffect(() => {
@@ -109,9 +108,9 @@ export function LogProvider({ children }: { children: React.ReactNode }) {
     // Show toast for errors
     if (type === 'error') {
       const message = typeof content === 'string' ? content : `${content.method} failed`;
-      addToast(message, 'error');
+      addToast({ title: message, severity: "danger" });
     }
-  }, [addToast])
+  }, [])
 
   const clearLogs = useCallback(() => {
     setLogs([])
@@ -121,9 +120,9 @@ export function LogProvider({ children }: { children: React.ReactNode }) {
   const createNewLog = useCallback(() => {
     setLogs([]);
     invoke("start_new_log").then(() => {
-      // addToast("New log session started", "success");
+      addToast({ title: "New log session started", severity: "success" });
     }).catch(err => console.error("Failed to start new log:", err));
-  }, [addToast]);
+  }, []);
 
   const togglePanel = useCallback(() => {
     setIsOpen((prev) => !prev)

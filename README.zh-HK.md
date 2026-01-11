@@ -90,7 +90,7 @@ TroveKit 基於 [Tauri v2](https://v2.tauri.app/) + [React](https://react.dev/) 
 - **備註功能**：可為日誌條目添加註釋/備註，便於更好地記錄上下文和文檔
 - **重構日誌管理工具**：全新的 **Master-Detail 佈局** 介面，用於查看、搜尋和管理所有已儲存的日誌。支援**刪除單個條目和整個會話**
 - **增強 UUID 日誌**：顯示生成的 UUID，支援可配置格式（字串/Hex/Base64/二進位）、大小寫和連字元。在日誌中顯示數量和格式詳情。日誌條目中最多顯示 10 個 UUID，達到限制時會清楚標示
-- 結構化的方法/輸入/輸出檢視
+- 結構化的操作方法/輸入/輸出檢視
 - 錯誤/成功提示 + 一鍵複製
 
 ## 🗺️ Roadmap
@@ -166,7 +166,7 @@ pnpm tauri dev
 ### 打包建構
 
 ```bash
-pnpm tauri build
+pnすれば tauri build
 ```
 
 ## 🔒 隱私說明（Privacy）
@@ -181,7 +181,7 @@ TroveKit/
 ├── src-tauri/       # Rust backend and Tauri configuration
 ├── src/             # React frontend source code
 │   ├── components/  # UI Components (Sidebar, LogPanel, Toast, etc.)
-│   ├── contexts/    # Context Providers (LogContext, ToastContext)
+│   ├── contexts/    # Context Providers (LogContext)
 │   ├── tools/       # Tool Views (Hash, Encoder, Formatter, Converter, QR, Classical, Settings)
 │   │   ├── converter/  # JSON/XML converter
 │   │   └── ...     # Other tool directories

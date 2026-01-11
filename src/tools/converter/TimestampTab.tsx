@@ -1,9 +1,8 @@
 import { useState, useEffect } from "react"
-import { Card, CardBody, Input, Select, SelectItem, Button, DatePicker } from "@heroui/react"
+import { Card, CardBody, Input, Select, SelectItem, Button, DatePicker, addToast } from "@heroui/react"
 import { invoke } from "@tauri-apps/api/core"
 import { useTranslation } from "react-i18next"
 import { Clock, ArrowRightLeft, Copy, RefreshCw, Calendar } from "lucide-react"
-import { useToast } from "../../contexts/ToastContext"
 import { useLog } from "../../contexts/LogContext"
 import { getLocalTimeZone } from "@internationalized/date"
 import type { DateValue } from "@internationalized/date"
@@ -17,7 +16,6 @@ interface TimeInfo {
 
 export function TimestampTab({ isVisible = true }: { isVisible?: boolean }) {
     const { t } = useTranslation()
-    const { addToast } = useToast()
     const { addLog } = useLog()
     const [currentTime, setCurrentTime] = useState<TimeInfo>({ secs: "0", millis: "0", micros: "0", nanos: "0" })
     const [tsInput, setTsInput] = useState("")
@@ -56,7 +54,7 @@ export function TimestampTab({ isVisible = true }: { isVisible?: boolean }) {
 
     const copyToClipboard = (text: string, context?: { method: string; input?: string }) => {
         navigator.clipboard.writeText(text)
-        addToast(t("tools.converter.copiedToClipboard"), "success")
+        addToast({ title: t("tools.converter.copiedToClipboard"), severity: "success" })
         
         if (context) {
             addLog({

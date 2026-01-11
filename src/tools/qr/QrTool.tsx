@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from "react"
-import { Button, Input, Switch, Select, SelectItem, Popover, PopoverTrigger, PopoverContent, ButtonGroup } from "@heroui/react"
+import { Button, Input, Switch, Select, SelectItem, Popover, PopoverTrigger, PopoverContent, ButtonGroup, addToast } from "@heroui/react"
 import { useTranslation } from "react-i18next"
-import { useToast } from "../../contexts/ToastContext"
 import { TextTab } from "./TextTab"
 import { WifiTab, WifiState } from "./WifiTab"
 import QRCodeStyling, { Options } from "qr-code-styling"
@@ -178,7 +177,6 @@ const utf8Encode = (str: string): string => {
 
 export function QrTool() {
   const { t } = useTranslation()
-  const { addToast } = useToast()
   
   const savedState = loadStateFromStorage()
 
@@ -228,7 +226,7 @@ export function QrTool() {
     const encoder = new TextEncoder()
     const bytes = encoder.encode(newText).length
     if (bytes > MAX_INPUT_BYTES) {
-        addToast(t("tools.qr.error.inputTooLong"), "error")
+        addToast({ title: t("tools.qr.error.inputTooLong"), severity: "danger" })
         return
     }
     setText(newText)
@@ -340,11 +338,11 @@ export function QrTool() {
 
   const handleDownload = async () => {
     if (width > MAX_QR_SIZE) {
-        addToast(t("tools.qr.error.tooLarge"), "error")
+        addToast({ title: t("tools.qr.error.tooLarge"), severity: "danger" })
         return
     }
     if (width < MIN_QR_SIZE) {
-        addToast(t("tools.qr.error.tooSmall"), "error")
+        addToast({ title: t("tools.qr.error.tooSmall"), severity: "danger" })
         return
     }
 

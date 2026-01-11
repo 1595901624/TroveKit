@@ -168,7 +168,7 @@ TroveKit/
 ├── src-tauri/       # Rust backend and Tauri configuration
 ├── src/             # React frontend source code
 │   ├── components/  # UI Components (Sidebar, LogPanel, Toast, etc.)
-│   ├── contexts/    # Context Providers (LogContext, ToastContext)
+│   ├── contexts/    # Context Providers (LogContext)
 │   ├── tools/       # Tool Views (Hash, Encoder, Formatter, Converter, QR, Classical, Settings)
 │   │   ├── converter/  # JSON/XML converter
 │   │   └── ...     # Other tool directories
