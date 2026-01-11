@@ -30,6 +30,8 @@ pub fn run() {
             log_manager::delete_log,
             log_manager::delete_log_session,
             log_manager::update_log_fields,
+            log_manager::update_session_note,
+            log_manager::remove_session_note,
             time_utils::get_system_time
         ])
         .run(tauri::generate_context!())

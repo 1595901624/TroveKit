@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react"
 import { invoke } from "@tauri-apps/api/core"
-import { Button, Card, Input, Spinner, Chip, ScrollShadow, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure } from "@heroui/react"
-import { Trash2, RefreshCw, Search, Archive, Clock, AlertCircle, CheckCircle2, Info, AlertTriangle } from "lucide-react"
+import { Button, Card, Input, Spinner, Chip, ScrollShadow, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure, Tooltip } from "@heroui/react"
+import { Trash2, RefreshCw, Search, Archive, Clock, AlertCircle, CheckCircle2, Info, AlertTriangle, Edit, X, Check, MessageSquare } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import type { LogEntry } from "../contexts/LogContext"
 import { cn } from "../lib/utils"
@@ -10,6 +10,7 @@ type LogSessionSummary = {
   sessionId: string
   latestTimestamp: number
   count: number
+  note?: string
 }
 
 export function LogManagementTool() {
@@ -22,6 +23,9 @@ export function LogManagementTool() {
   const [logs, setLogs] = useState<LogEntry[]>([])
   const [query, setQuery] = useState("")
   const [error, setError] = useState<string | null>(null)
+
+  const [editingSessionNote, setEditingSessionNote] = useState<string | null>(null)
+  const [sessionNoteInput, setSessionNoteInput] = useState("")
 
   const filteredLogs = useMemo(() => {
     const q = query.trim().toLowerCase()
@@ -147,6 +151,38 @@ export function LogManagementTool() {
     onOpen()
   }
 
+  const handleStartEditSessionNote = (sessionId: string, currentNote?: string, e?: React.MouseEvent) => {
+    e?.stopPropagation()
+    setEditingSessionNote(sessionId)
+    setSessionNoteInput(currentNote || "")
+  }
+
+  const handleCancelEditSessionNote = (e?: React.MouseEvent) => {
+    e?.stopPropagation()
+    setEditingSessionNote(null)
+    setSessionNoteInput("")
+  }
+
+  const handleSaveSessionNote = async (sessionId: string, e?: React.MouseEvent) => {
+    e?.stopPropagation()
+    try {
+      if (sessionNoteInput.trim()) {
+        await invoke("update_session_note", { sessionId, note: sessionNoteInput.trim() })
+      } else {
+        await invoke("remove_session_note", { sessionId })
+      }
+      setSessions(prev => prev.map(s => 
+        s.sessionId === sessionId 
+          ? { ...s, note: sessionNoteInput.trim() || undefined }
+          : s
+      ))
+      setEditingSessionNote(null)
+      setSessionNoteInput("")
+    } catch (e: any) {
+      setError(typeof e === "string" ? e : (e?.toString?.() ?? "Unknown error"))
+    }
+  }
+
   const getLogIcon = (type: string) => {
     switch (type) {
       case "error": return <AlertCircle className="w-4 h-4 text-danger" />
@@ -192,17 +228,69 @@ export function LogManagementTool() {
                 <div className="text-xs font-medium text-default-700">
                    {new Date(s.latestTimestamp).toLocaleDateString()}
                 </div>
-                <Button
-                    isIconOnly
-                    size="sm"
-                    variant="light"
-                    className="w-6 h-6 min-w-6 opacity-0 group-hover:opacity-100 transition-opacity"
-                    onClick={(e) => handleDeleteSession(s.sessionId, e)}
-                    color="danger"
-                >
-                    <Trash2 className="w-3 h-3" />
-                </Button>
+                <div className="flex gap-0.5">
+                  <Tooltip content={t("logManagement.editSessionNote", "Edit Note")}>
+                    <Button
+                        isIconOnly
+                        size="sm"
+                        variant="light"
+                        className="w-6 h-6 min-w-6 opacity-0 group-hover:opacity-100 transition-opacity"
+                        onClick={(e) => handleStartEditSessionNote(s.sessionId, s.note, e)}
+                    >
+                        {s.note ? <MessageSquare className="w-3 h-3 text-warning" /> : <Edit className="w-3 h-3" />}
+                    </Button>
+                  </Tooltip>
+                  <Button
+                      isIconOnly
+                      size="sm"
+                      variant="light"
+                      className="w-6 h-6 min-w-6 opacity-0 group-hover:opacity-100 transition-opacity"
+                      onClick={(e) => handleDeleteSession(s.sessionId, e)}
+                      color="danger"
+                  >
+                      <Trash2 className="w-3 h-3" />
+                  </Button>
+                </div>
               </div>
+              
+              {editingSessionNote === s.sessionId ? (
+                <div className="space-y-1.5" onClick={(e) => e.stopPropagation()}>
+                  <Input
+                    size="sm"
+                    value={sessionNoteInput}
+                    onValueChange={setSessionNoteInput}
+                    placeholder={t("logManagement.sessionNotePlaceholder", "Enter session note...")}
+                    className="text-xs"
+                    autoFocus
+                  />
+                  <div className="flex justify-end gap-1">
+                    <Button
+                      isIconOnly
+                      size="sm"
+                      variant="light"
+                      className="w-5 h-5 min-w-5"
+                      onClick={(e) => handleCancelEditSessionNote(e)}
+                    >
+                      <X className="w-3 h-3" />
+                    </Button>
+                    <Button
+                      isIconOnly
+                      size="sm"
+                      variant="flat"
+                      color="primary"
+                      className="w-5 h-5 min-w-5"
+                      onClick={(e) => handleSaveSessionNote(s.sessionId, e)}
+                    >
+                      <Check className="w-3 h-3" />
+                    </Button>
+                  </div>
+                </div>
+              ) : s.note ? (
+                <div className="text-tiny text-warning-600 dark:text-warning bg-warning/10 px-2 py-1 rounded truncate">
+                  💡 {s.note}
+                </div>
+              ) : null}
+              
               <div className="flex items-center justify-between text-tiny text-default-500">
                  <div className="flex items-center gap-1">
                     <Clock className="w-3 h-3" />

@@ -58,6 +58,8 @@ pub struct LogSessionSummary {
     #[serde(rename = "latestTimestamp")]
     pub latest_timestamp: i64,
     pub count: i64,
+    /// 会话备注
+    pub note: Option<String>,
 }
 
 fn get_db_path<R: Runtime>(app: &AppHandle<R>) -> Result<PathBuf, String> {
@@ -91,6 +93,11 @@ fn init_db(conn: &Connection) -> Result<(), String> {
             details TEXT,
             note TEXT,
             crypto_params TEXT
+        );
+
+        CREATE TABLE IF NOT EXISTS session_notes (
+            session_id TEXT PRIMARY KEY,
+            note TEXT
         );
 
         CREATE INDEX IF NOT EXISTS idx_logs_session_ts ON logs(session_id, timestamp);
@@ -276,9 +283,10 @@ pub fn list_log_sessions<R: Runtime>(app: AppHandle<R>) -> Result<Vec<LogSession
     let mut stmt = conn
         .prepare(
             r#"
-            SELECT session_id, MAX(timestamp) AS latest_ts, COUNT(*) AS cnt
-            FROM logs
-            GROUP BY session_id
+            SELECT l.session_id, MAX(l.timestamp) AS latest_ts, COUNT(*) AS cnt, sn.note
+            FROM logs l
+            LEFT JOIN session_notes sn ON l.session_id = sn.session_id
+            GROUP BY l.session_id
             ORDER BY latest_ts DESC
             "#,
         )
@@ -290,6 +298,7 @@ pub fn list_log_sessions<R: Runtime>(app: AppHandle<R>) -> Result<Vec<LogSession
                 session_id: row.get(0)?,
                 latest_timestamp: row.get(1)?,
                 count: row.get(2)?,
+                note: row.get(3)?,
             })
         })
         .map_err(|e| e.to_string())?;
@@ -365,6 +374,39 @@ pub fn delete_log_session<R: Runtime>(app: AppHandle<R>, session_id: String) -> 
     init_db(&conn)?;
     conn.execute("DELETE FROM logs WHERE session_id = ?1", params![session_id])
         .map_err(|e| e.to_string())?;
+    Ok(())
+}
+
+/// 管理端：更新会话备注
+#[tauri::command(rename_all = "camelCase")]
+pub fn update_session_note<R: Runtime>(
+    app: AppHandle<R>,
+    session_id: String,
+    note: String,
+) -> Result<(), String> {
+    let conn = open_conn(&app)?;
+    init_db(&conn)?;
+    conn.execute(
+        "INSERT OR REPLACE INTO session_notes (session_id, note) VALUES (?1, ?2)",
+        params![session_id, note],
+    )
+    .map_err(|e| e.to_string())?;
+    Ok(())
+}
+
+/// 管理端：删除会话备注
+#[tauri::command(rename_all = "camelCase")]
+pub fn remove_session_note<R: Runtime>(
+    app: AppHandle<R>,
+    session_id: String,
+) -> Result<(), String> {
+    let conn = open_conn(&app)?;
+    init_db(&conn)?;
+    conn.execute(
+        "DELETE FROM session_notes WHERE session_id = ?1",
+        params![session_id],
+    )
+    .map_err(|e| e.to_string())?;
     Ok(())
 }
 

@@ -363,6 +363,8 @@
     "deleteSessionTitle": "刪除會話",
     "deleteLogTitle": "刪除紀錄",
     "confirmDeleteSession": "確定要刪除整個會話嗎？",
-    "confirmDeleteLog": "確定要刪除此紀錄嗎？"
+    "confirmDeleteLog": "確定要刪除此紀錄嗎？",
+    "editSessionNote": "編輯備註",
+    "sessionNotePlaceholder": "輸入會話備註..."
   }
 }

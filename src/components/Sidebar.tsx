@@ -9,6 +9,7 @@ import {
   ArrowRightLeft,
   ChevronLeft,
   ChevronRight,
+  FileText,
 } from "lucide-react"
 import { Button, Tooltip } from "@heroui/react"
 import { cn } from "../lib/utils"
@@ -47,7 +48,7 @@ export function Sidebar({ activeTool, onToolChange }: SidebarProps) {
     { id: "formatters", label: t("nav.formatters"), icon: FileJson },
     { id: "generators", label: t("nav.generators"), icon: Wand2 },
     { id: "converter", label: t("nav.converter"), icon: ArrowRightLeft },
-    // { id: "logManagement", label: t("nav.logManagement", "日志管理"), icon: FileText },
+    { id: "logManagement", label: t("nav.logManagement", "日志管理"), icon: FileText },
   ] as const
 
   return (

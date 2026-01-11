@@ -103,7 +103,7 @@ export function LogProvider({ children }: { children: React.ReactNode }) {
     setLogs((prev) => [newLog, ...prev])
     
     // Persist to backend
-    // invoke("append_log", { entry: newLog }).catch(err => console.error("Failed to save log:", err));
+    invoke("append_log", { entry: newLog }).catch(err => console.error("Failed to save log:", err));
     
     // Show toast for errors
     if (type === 'error') {

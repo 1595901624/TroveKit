@@ -371,6 +371,8 @@
     "deleteSessionTitle": "删除会话",
     "deleteLogTitle": "删除日志",
     "confirmDeleteSession": "确定要删除整个会话吗？",
-    "confirmDeleteLog": "确定要删除此日志吗？"
+    "confirmDeleteLog": "确定要删除此日志吗？",
+    "editSessionNote": "编辑备注",
+    "sessionNotePlaceholder": "输入会话备注..."
   }
 }

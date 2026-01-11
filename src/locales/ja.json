@@ -363,6 +363,8 @@
     "deleteSessionTitle": "セッションを削除",
     "deleteLogTitle": "ログを削除",
     "confirmDeleteSession": "このセッション全体を削除しますか？",
-    "confirmDeleteLog": "このログを削除しますか？"
+    "confirmDeleteLog": "このログを削除しますか？",
+    "editSessionNote": "メモを編集",
+    "sessionNotePlaceholder": "セッションメモを入力..."
   }
 }
