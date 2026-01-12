@@ -42,6 +42,7 @@ pub fn run() {
             log_manager::update_log_fields,
             log_manager::update_session_note,
             log_manager::remove_session_note,
+            log_manager::switch_to_session,
             time_utils::get_system_time
         ])
         .run(tauri::generate_context!())

@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react"
 import { invoke } from "@tauri-apps/api/core"
 import { Button, Card, Input, Spinner, Chip, ScrollShadow, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure, Tooltip } from "@heroui/react"
-import { Trash2, RefreshCw, Search, Archive, Clock, AlertCircle, CheckCircle2, Info, AlertTriangle, Edit, X, Check, MessageSquare, Copy } from "lucide-react"
+import { Trash2, RefreshCw, Search, Archive, Clock, AlertCircle, CheckCircle2, Info, AlertTriangle, Edit, X, Check, MessageSquare, Copy, Eye } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { useLog, type LogEntry } from "../contexts/LogContext"
 import { cn } from "../lib/utils"
@@ -15,7 +15,7 @@ type LogSessionSummary = {
 
 export function LogManagementTool() {
   const { t } = useTranslation()
-  const { currentSessionId, refresh: refreshCurrentSession } = useLog()
+  const { currentSessionId, refresh: refreshCurrentSession, switchToSession } = useLog()
 
   const [loadingSessions, setLoadingSessions] = useState(true)
   const [loadingLogs, setLoadingLogs] = useState(false)
@@ -222,6 +222,11 @@ export function LogManagementTool() {
     setSessionNoteInput("")
   }
 
+  const handleSwitchToSession = async (sessionId: string, e: React.MouseEvent) => {
+    e.stopPropagation()
+    await switchToSession(sessionId)
+  }
+
   const handleSaveSessionNote = async (sessionId: string, e?: React.MouseEvent) => {
     e?.stopPropagation()
     try {
@@ -296,6 +301,18 @@ export function LogManagementTool() {
                    {new Date(s.latestTimestamp).toLocaleDateString()}
                 </div>
                 <div className="flex gap-0.5">
+                  <Tooltip content={t("logManagement.switchToSession", "Switch to this session")}>
+                    <Button
+                        isIconOnly
+                        size="sm"
+                        variant="light"
+                        className="w-6 h-6 min-w-6 opacity-0 group-hover:opacity-100 transition-opacity"
+                        onClick={(e) => handleSwitchToSession(s.sessionId, e)}
+                        color="primary"
+                    >
+                        <Eye className="w-3 h-3" />
+                    </Button>
+                  </Tooltip>
                   <Tooltip content={t("logManagement.editSessionNote", "Edit Note")}>
                     <Button
                         isIconOnly

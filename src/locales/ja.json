@@ -377,7 +377,8 @@
     "confirmDeleteLog": "このログを削除しますか？",
     "editSessionNote": "メモを編集",
     "sessionNotePlaceholder": "セッションメモを入力...",
-    "logCount": "{{count}} ログ"
+    "logCount": "{{count}} ログ",
+    "switchToSession": "このセッションに切り替え"
   },
   "logContext": {
     "newLogSessionStarted": "新建ログ",

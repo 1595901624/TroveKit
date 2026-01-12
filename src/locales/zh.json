@@ -377,7 +377,8 @@
     "confirmDeleteLog": "确定要删除此日志吗？",
     "editSessionNote": "编辑备注",
     "sessionNotePlaceholder": "输入会话备注...",
-    "logCount": "{{count}} 条日志"
+    "logCount": "{{count}} 条日志",
+    "switchToSession": "切换到此会话"
   },
   "logContext": {
     "newLogSessionStarted": "新建日志",

@@ -73,6 +73,7 @@ interface LogContextType {
   removeSessionNote: () => Promise<void>
   refresh: () => Promise<void>
   currentSessionId: string | null
+  switchToSession: (sessionId: string) => Promise<void>
 }
 
 const LogContext = createContext<LogContextType | undefined>(undefined)
@@ -210,8 +211,23 @@ export function LogProvider({ children }: { children: React.ReactNode }) {
         console.error("Failed to remove session note:", err)
       }
     }, [currentSessionId])
+
+    const switchToSession = useCallback(async (sessionId: string) => {
+      try {
+        await invoke("switch_to_session", { sessionId })
+        setCurrentSessionId(sessionId)
+        const newLogs = await invoke<LogEntry[]>("load_logs")
+        setLogs(newLogs)
+        const info = await invoke<{ sessionId: string; note: string | null }>("get_current_session_info")
+        setSessionNote(info.note || "")
+        window.dispatchEvent(new CustomEvent('logs-changed'))
+      } catch (err) {
+        console.error("Failed to switch session:", err)
+      }
+    }, [])
+
   return (
-    <LogContext.Provider value={{ logs, addLog, clearLogs, createNewLog, isOpen, setIsOpen, togglePanel, addNote, removeNote, sessionNote, updateSessionNote, removeSessionNote, refresh, currentSessionId }}>
+    <LogContext.Provider value={{ logs, addLog, clearLogs, createNewLog, isOpen, setIsOpen, togglePanel, addNote, removeNote, sessionNote, updateSessionNote, removeSessionNote, refresh, currentSessionId, switchToSession }}>
       {children}
     </LogContext.Provider>
   )

@@ -377,7 +377,8 @@
     "confirmDeleteLog": "Are you sure you want to delete this log?",
     "editSessionNote": "Edit Note",
     "sessionNotePlaceholder": "Enter session note...",
-    "logCount": "{{count}} logs"
+    "logCount": "{{count}} logs",
+    "switchToSession": "Switch to this session"
   },
   "logContext": {
     "newLogSessionStarted": "New log",

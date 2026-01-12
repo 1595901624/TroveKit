@@ -466,6 +466,21 @@ pub fn remove_session_note<R: Runtime>(
     Ok(())
 }
 
+/// 切换当前会话（用于 LogPanel 切换到历史会话）
+#[tauri::command(rename_all = "camelCase")]
+pub fn switch_to_session<R: Runtime>(
+    _app: AppHandle<R>,
+    state: State<LogState>,
+    session_id: String,
+) -> Result<(), String> {
+    let mut sid = state
+        .current_session_id
+        .lock()
+        .map_err(|e| e.to_string())?;
+    *sid = session_id;
+    Ok(())
+}
+
 /// 管理端：更新日志字段（只更新传入的字段）
 #[tauri::command(rename_all = "camelCase")]
 pub fn update_log_fields<R: Runtime>(
