@@ -307,6 +307,7 @@ export function LogManagementTool() {
                         placeholder={t("logManagement.sessionNotePlaceholder", "Enter session note...")}
                         className="text-xs"
                         autoFocus
+                        maxLength={100}
                       />
                       <div className="flex justify-end gap-1">
                         <Button

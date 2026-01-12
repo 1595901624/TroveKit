@@ -183,6 +183,7 @@ export function LogPanel() {
                             placeholder={t('log.sessionNotePlaceholder', 'Enter session note...')}
                             className="flex-1"
                             autoFocus
+                            maxLength={100}
                             onKeyDown={(e) => {
                                 if (e.key === 'Enter') handleSaveSessionNote()
                                 if (e.key === 'Escape') handleCancelEditSessionNote()
@@ -429,6 +430,7 @@ export function LogPanel() {
                                                 placeholder={t('log.notePlaceholder', 'Enter note...')}
                                                 className="w-full text-small font-mono bg-default-100/50 rounded px-2 py-1 border border-divider focus:border-primary focus:outline-none resize-none"
                                                 rows={2}
+                                                maxLength={100}
                                             />
                                             <div className="flex gap-1 justify-end">
                                                 <Button
