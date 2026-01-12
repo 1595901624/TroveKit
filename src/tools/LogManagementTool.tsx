@@ -434,7 +434,7 @@ export function LogManagementTool() {
                         <div className="flex items-center gap-2">
                             {getLogIcon(log.type)}
                             <time className="text-xs text-default-500 font-mono">
-                                {new Date(log.timestamp).toLocaleTimeString()}
+                                {new Date(log.timestamp).toLocaleDateString()} {new Date(log.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                             </time>
                         </div>
                         
