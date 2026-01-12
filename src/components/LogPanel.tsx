@@ -251,7 +251,7 @@ export function LogPanel() {
                                 <div className="flex items-start justify-between gap-2 mb-1">
                                     <div className="flex items-center gap-1.5 text-tiny text-default-500">
                                          {getIcon(log.type)} {/* 类型图标 */}
-                                         <time>{new Date(log.timestamp).toLocaleTimeString()}</time> {/* 时间戳 */}
+                                         <time>{new Date(log.timestamp).toLocaleString()}</time> {/* 时间戳 */}
                                     </div>
                                     {/* 复制按钮：仅在没有方法名时显示（普通日志） */}
                                     {!log.method && (
