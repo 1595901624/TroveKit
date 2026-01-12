@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { Textarea, Button, Select, SelectItem, Switch, Input } from "@heroui/react"
+import { Textarea, Button, Select, SelectItem, Input } from "@heroui/react"
 import { Copy, Trash2, ArrowDownUp, ChevronDown } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { useLog } from "../../contexts/LogContext"
@@ -30,7 +30,7 @@ export function BaseXTab() {
   const [baseXOutput, setBaseXOutput] = useState(savedState.baseXOutput || "")
   const [selectedBase, setSelectedBase] = useState(savedState.selectedBase || "base16")
   // const [isCustomAlphabet, setIsCustomAlphabet] = useState(savedState.isCustomAlphabet || false)
-  const [isCustomAlphabet, setIsCustomAlphabet] = useState<boolean>(false)
+  const [isCustomAlphabet] = useState<boolean>(false)
   const [customAlphabet, setCustomAlphabet] = useState(savedState.customAlphabet || "")
 
   useEffect(() => {

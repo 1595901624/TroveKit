@@ -81,7 +81,29 @@ const LogContext = createContext<LogContextType | undefined>(undefined)
 export function LogProvider({ children }: { children: React.ReactNode }) {
   const { t } = useTranslation()
   const [logs, setLogs] = useState<LogEntry[]>([])
-  const [isOpen, setIsOpen] = useState(false)
+
+  // 从 localStorage 恢复面板展开状态，默认关闭
+  const getInitialIsOpen = () => {
+    try {
+      const stored = localStorage.getItem('logPanelIsOpen')
+      return stored ? JSON.parse(stored) : false
+    } catch (err) {
+      console.warn('Failed to load logPanelIsOpen from localStorage:', err)
+      return false
+    }
+  }
+
+  const [isOpen, setIsOpen] = useState<boolean>(getInitialIsOpen)
+
+  // 持久化 isOpen 到 localStorage（含错误处理）
+  useEffect(() => {
+    try {
+      localStorage.setItem('logPanelIsOpen', JSON.stringify(isOpen))
+    } catch (err) {
+      console.warn('Failed to save logPanelIsOpen to localStorage:', err)
+    }
+  }, [isOpen])
+
   const [sessionNote, setSessionNote] = useState("")
   const [currentSessionId, setCurrentSessionId] = useState<string | null>(null)
 
