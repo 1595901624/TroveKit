@@ -296,11 +296,50 @@ export function LogManagementTool() {
                   : "hover:bg-content2 hover:border-default-200"
               )}
             >
-              <div className="flex items-center justify-between">
-                <div className="text-xs font-medium text-default-700">
-                   {new Date(s.latestTimestamp).toLocaleDateString()}
+              <div className="flex items-start justify-between gap-1">
+                <div className="flex-1 min-w-0">
+                  {editingSessionNote === s.sessionId ? (
+                    <div className="space-y-1.5" onClick={(e) => e.stopPropagation()}>
+                      <Input
+                        size="sm"
+                        value={sessionNoteInput}
+                        onValueChange={setSessionNoteInput}
+                        placeholder={t("logManagement.sessionNotePlaceholder", "Enter session note...")}
+                        className="text-xs"
+                        autoFocus
+                      />
+                      <div className="flex justify-end gap-1">
+                        <Button
+                          isIconOnly
+                          size="sm"
+                          variant="light"
+                          className="w-5 h-5 min-w-5"
+                          onClick={(e) => handleCancelEditSessionNote(e)}
+                        >
+                          <X className="w-3 h-3" />
+                        </Button>
+                        <Button
+                          isIconOnly
+                          size="sm"
+                          variant="flat"
+                          color="primary"
+                          className="w-5 h-5 min-w-5"
+                          onClick={(e) => handleSaveSessionNote(s.sessionId, e)}
+                        >
+                          <Check className="w-3 h-3" />
+                        </Button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className={cn(
+                      "text-xs font-bold truncate",
+                      s.note ? "text-warning-600 dark:text-warning" : "text-default-500 font-mono"
+                    )}>
+                      {s.note ? `💡 ${s.note}` : `# ${s.sessionId.slice(0, 8)}`}
+                    </div>
+                  )}
                 </div>
-                <div className="flex gap-0.5">
+                <div className="flex gap-0.5 shrink-0">
                   <Tooltip content={t("logManagement.switchToSession", "Switch to this session")}>
                     <Button
                         isIconOnly
@@ -337,50 +376,14 @@ export function LogManagementTool() {
                 </div>
               </div>
               
-              {editingSessionNote === s.sessionId ? (
-                <div className="space-y-1.5" onClick={(e) => e.stopPropagation()}>
-                  <Input
-                    size="sm"
-                    value={sessionNoteInput}
-                    onValueChange={setSessionNoteInput}
-                    placeholder={t("logManagement.sessionNotePlaceholder", "Enter session note...")}
-                    className="text-xs"
-                    autoFocus
-                  />
-                  <div className="flex justify-end gap-1">
-                    <Button
-                      isIconOnly
-                      size="sm"
-                      variant="light"
-                      className="w-5 h-5 min-w-5"
-                      onClick={(e) => handleCancelEditSessionNote(e)}
-                    >
-                      <X className="w-3 h-3" />
-                    </Button>
-                    <Button
-                      isIconOnly
-                      size="sm"
-                      variant="flat"
-                      color="primary"
-                      className="w-5 h-5 min-w-5"
-                      onClick={(e) => handleSaveSessionNote(s.sessionId, e)}
-                    >
-                      <Check className="w-3 h-3" />
-                    </Button>
-                  </div>
-                </div>
-              ) : s.note ? (
-                <div className="text-tiny text-warning-600 dark:text-warning bg-warning/10 px-2 py-1 rounded truncate">
-                  💡 {s.note}
-                </div>
-              ) : null}
-              
-              <div className="flex items-center justify-between text-tiny text-default-500">
-                 <div className="flex items-center gap-1">
-                    <Clock className="w-3 h-3" />
-                    {new Date(s.latestTimestamp).toLocaleTimeString()}
+              <div className="flex items-center justify-between text-tiny text-default-400 mt-0.5">
+                 <div className="flex items-center gap-1 truncate">
+                    <Clock className="w-3 h-3 shrink-0" />
+                    <span className="truncate">
+                      {new Date(s.latestTimestamp).toLocaleDateString()} {new Date(s.latestTimestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                    </span>
                  </div>
-                 <Chip size="sm" variant="flat" className="h-5 text-[10px] px-1">
+                 <Chip size="sm" variant="flat" className="h-4 text-[10px] px-1 bg-default-100 shrink-0">
                     {t("logManagement.logCount", { count: s.count })}
                  </Chip>
               </div>
