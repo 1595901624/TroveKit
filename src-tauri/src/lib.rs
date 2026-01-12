@@ -1,4 +1,6 @@
 // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
+use tauri::Manager;
+
 mod basex;
 mod log_manager;
 mod time_utils;
@@ -15,6 +17,13 @@ pub fn run() {
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_opener::init())
         .manage(log_manager::LogState::new())
+        .setup(|app| {
+            let state = app.state::<log_manager::LogState>();
+            if let Err(e) = log_manager::init_log_state(app.handle(), &state) {
+                eprintln!("Failed to init log state: {}", e);
+            }
+            Ok(())
+        })
         .invoke_handler(tauri::generate_handler![
             greet,
             basex::basex_encode,

@@ -380,7 +380,7 @@
     "logCount": "{{count}} 条日志"
   },
   "logContext": {
-    "newLogSessionStarted": "新建日志会话已启动",
+    "newLogSessionStarted": "新建日志",
     "operationFailed": "{{method}} 操作失败",
     "useLogMustBeUsedWithinProvider": "useLog 必须在 LogProvider 内部使用"
   }

@@ -380,7 +380,7 @@
     "logCount": "{{count}} logs"
   },
   "logContext": {
-    "newLogSessionStarted": "New log session started",
+    "newLogSessionStarted": "New log",
     "operationFailed": "{{method}} operation failed",
     "useLogMustBeUsedWithinProvider": "useLog must be used within a LogProvider"
   }

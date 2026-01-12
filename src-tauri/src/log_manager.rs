@@ -46,9 +46,32 @@ pub struct LogState {
 impl LogState {
     pub fn new() -> Self {
         Self {
-            current_session_id: Mutex::new(Uuid::new_v4().to_string()),
+            current_session_id: Mutex::new(String::new()),
         }
     }
+}
+
+pub fn init_log_state<R: Runtime>(app: &AppHandle<R>, state: &LogState) -> Result<(), String> {
+    let conn = open_conn(app)?;
+    init_db(&conn)?;
+
+    let latest_session: Option<String> = conn
+        .query_row(
+            "SELECT session_id FROM logs ORDER BY timestamp DESC LIMIT 1",
+            [],
+            |row| row.get(0),
+        )
+        .ok();
+
+    let session_id = latest_session.unwrap_or_else(|| Uuid::new_v4().to_string());
+
+    let mut sid = state
+        .current_session_id
+        .lock()
+        .map_err(|e| e.to_string())?;
+    *sid = session_id;
+
+    Ok(())
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]

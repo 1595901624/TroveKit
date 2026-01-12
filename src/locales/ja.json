@@ -380,7 +380,7 @@
     "logCount": "{{count}} ログ"
   },
   "logContext": {
-    "newLogSessionStarted": "新しいログセッションが開始されました",
+    "newLogSessionStarted": "新建ログ",
     "operationFailed": "{{method}} 操作に失敗しました",
     "useLogMustBeUsedWithinProvider": "useLog は LogProvider 内で使用する必要があります"
   }
