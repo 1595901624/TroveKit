@@ -103,3 +103,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Project initialization
+- Set up development environment and toolchain
