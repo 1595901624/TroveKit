@@ -8,7 +8,7 @@ English | [简体中文](README.zh-CN.md) | [繁體中文（香港）](README.zh
 </div>
 
 <div align="center">
-<a href="https://github.com/1595901624/trovekit/releases"><img src="https://img.shields.io/badge/version-v0.1.9-blue" alt="Version"></a>
+<a href="https://github.com/1595901624/trovekit/releases"><img src="https://img.shields.io/badge/version-v0.1.10-blue" alt="Version"></a>
 <a href="https://github.com/1595901624/trovekit/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-green" alt="License"></a>
 <img src="https://img.shields.io/badge/Windows-Supported-blue" alt="Windows">
 <img src="https://img.shields.io/badge/macOS-Supported-blue" alt="macOS">
