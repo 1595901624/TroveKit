@@ -8,7 +8,7 @@
 </div>
 
 <div align="center">
-<a href="https://github.com/1595901624/trovekit/releases"><img src="https://img.shields.io/badge/version-v0.1.8-blue" alt="Version"></a>
+<a href="https://github.com/1595901624/trovekit/releases"><img src="https://img.shields.io/badge/version-v0.1.9-blue" alt="Version"></a>
 <a href="https://github.com/1595901624/trovekit/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-green" alt="License"></a>
 <img src="https://img.shields.io/badge/Windows-Supported-blue" alt="Windows">
 <img src="https://img.shields.io/badge/macOS-Supported-blue" alt="macOS">
@@ -33,6 +33,7 @@ TroveKit は [Tauri v2](https://v2.tauri.app/) + [React](https://react.dev/) で
 
 - オールインワンユーティリティ：Hash / AES / DES / RC4 / エンコーダー-デコーダー / JSON / XML / YAML / **コンバーター** / QR / シーザー暗号 / **ログ管理**
 - モダン UI：ライト/ダークテーマ、レスポンシブレイアウト、スムーズなアニメーション
+- **グローバル機能検索**：アプリケーション全体のツールや機能を素早く検索してナビゲートできます。
 - **折りたたみ可能なサイドバー**：サイドバーを切り替えてワークスペースを最大化し、状態を記憶します。
 - **拡張国際化**：English / 簡體中文 / 繁體中文（HK/TW）/ 日本語、文字サイズと翻訳品質の最適化
 - ログとトースト：履歴、エラーフィードバック、コピーボタン、**メモ機能付き**
@@ -57,6 +58,7 @@ TroveKit は [Tauri v2](https://v2.tauri.app/) + [React](https://react.dev/) で
 ### 🔒 Hash & Cryptography
 
 - **MD5 / MD4 / MD2**：16 / 32 文字、大文字/小文字選択
+- **HMAC-MD5**：HMAC ベースの MD5 ハッシュアルゴリズムサポート
 - **SHA ファミリー**：SHA1 / SHA224 / SHA256 / SHA384 / SHA512 / SHA3
 - **AES / DES / RC4**：複数のモードとパディングをサポート（Hex/Base64 入出力をサポート）
 
@@ -88,6 +90,8 @@ TroveKit は [Tauri v2](https://v2.tauri.app/) + [React](https://react.dev/) で
 - **リアルタイム自動保存**：すべての操作が自動的にローカルの **SQLite データベース** に保存されます
 - **手動ログセッション作成**のサポート（新規ログ）
 - **メモ機能**：ログエントリにコメント/メモを追加可能、より良いコンテキストとドキュメントの記録に
+- **セッションメモ編集**：ログセッションのメモを追加・編集可能
+- **強化されたログインタラクション**：末尾の空白文字が視覚的なマーカー（`·`, `→`, `↵`）で強調表示され、説明用のツールチップが提供されます
 - **再設計されたログ管理ツール**：保存されたすべてのログを表示、検索、管理するための専用の **Master-Detail レイアウト** インターフェース。**個別のエントリやセッション全体の削除**をサポート
 - **UUID 生成のログ最適化**：生成された UUID とその設定形式（String/Hex/Base64/Binary）、大文字/小文字、ハイフン設定を表示。ログには数量と形式の詳細が表示され、最大10個のUUIDが表示され、制限超過時には明確な通知が表示されます
 - 構造化されたメソッド/入力/輸出ビュー

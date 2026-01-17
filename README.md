@@ -8,7 +8,7 @@ English | [简体中文](README.zh-CN.md) | [繁體中文（香港）](README.zh
 </div>
 
 <div align="center">
-<a href="https://github.com/1595901624/trovekit/releases"><img src="https://img.shields.io/badge/version-v0.1.8-blue" alt="Version"></a>
+<a href="https://github.com/1595901624/trovekit/releases"><img src="https://img.shields.io/badge/version-v0.1.9-blue" alt="Version"></a>
 <a href="https://github.com/1595901624/trovekit/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-green" alt="License"></a>
 <img src="https://img.shields.io/badge/Windows-Supported-blue" alt="Windows">
 <img src="https://img.shields.io/badge/macOS-Supported-blue" alt="macOS">
@@ -33,6 +33,7 @@ Built with [Tauri v2](https://v2.tauri.app/) + [React](https://react.dev/), Trov
 
 - All-in-one utilities: Hash / AES / DES / RC4 / Encoders-Decoders / JSON / XML / YAML / **Converters** / QR / Caesar cipher / **Log Management**
 - Modern UI: light/dark theme, responsive layout, smooth animations
+- **Global Feature Search**: Quickly find and navigate to tools and features across the application.
 - **Collapsible Sidebar**: Toggle sidebar to maximize workspace with state persistence.
 - **Enhanced i18n**: English / 简体中文 / 繁體中文（HK/TW）/ 日本語 with optimized text sizing and translation quality
 - Logs & toasts: history, error feedback, copy buttons with **note functionality**
@@ -57,6 +58,7 @@ Built with [Tauri v2](https://v2.tauri.app/) + [React](https://react.dev/), Trov
 ### 🔒 Hash & Cryptography
 
 - **MD5 / MD4 / MD2**: 16 / 32 chars, upper/lower case
+- **HMAC-MD5**: HMAC-based MD5 hash algorithm support
 - **SHA family**: SHA1 / SHA224 / SHA256 / SHA384 / SHA512 / SHA3
 - **AES / DES / RC4**: Multiple modes and paddings supported (Hex/Base64 input/output)
 
@@ -88,6 +90,8 @@ Built with [Tauri v2](https://v2.tauri.app/) + [React](https://react.dev/), Trov
 - **Real-time auto-save**: all operations are saved to local **SQLite database** automatically
 - Support for **manual log session creation** (New Log)
 - **Note functionality**: add comments/notes to log entries for better context and documentation
+- **Session note editing**: add and edit notes for log sessions
+- **Enhanced log interaction**: trailing whitespaces highlighted with visual markers (`·`, `→`, `↵`) and descriptive tooltips
 - **Redesigned Log Management Tool**: dedicated interface with a **master-detail layout** for viewing, searching, and managing all saved logs. Supports **deleting individual entries and entire sessions**
 - **Enhanced UUID logging**: displays generated UUIDs with configurable format (String/Hex/Base64/Binary), case, and hyphens. Shows count and format details in logs. Maximum 10 UUIDs displayed in log entries with clear indication when limit is reached
 - Structured method/input/output view

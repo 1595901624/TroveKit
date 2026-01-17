@@ -8,7 +8,7 @@
 </div>
 
 <div align="center">
-<a href="https://github.com/1595901624/trovekit/releases"><img src="https://img.shields.io/badge/version-v0.1.8-blue" alt="Version"></a>
+<a href="https://github.com/1595901624/trovekit/releases"><img src="https://img.shields.io/badge/version-v0.1.9-blue" alt="Version"></a>
 <a href="https://github.com/1595901624/trovekit/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-green" alt="License"></a>
 <img src="https://img.shields.io/badge/Windows-Supported-blue" alt="Windows">
 <img src="https://img.shields.io/badge/macOS-Supported-blue" alt="macOS">
@@ -33,6 +33,7 @@ TroveKit 基於 [Tauri v2](https://v2.tauri.app/) + [React](https://react.dev/) 
 
 - 多工具集合：Hash / AES / DES / RC4 / 編碼解碼 / JSON / XML / YAML / **轉換器** / 二維碼 / 凱撒密碼 / **日誌管理**
 - 現代 UI：深淺色主題、響應式佈局、順滑動畫
+- **全局功能搜索**：快速查找並導航到應用中的各種工具和功能。
 - **可收起側邊欄**：支持側邊欄折疊以最大化工作空間，並自動記憶狀態。
 - **增強國際化**：English / 簡體中文 / 繁體中文（HK/TW）/ 日本語，優化文字大小與翻譯質量
 - 日誌與提示：操作記錄、錯誤提示、複製按鈕，支援**備註功能**
@@ -57,6 +58,7 @@ TroveKit 基於 [Tauri v2](https://v2.tauri.app/) + [React](https://react.dev/) 
 ### 🔒 Hash & Cryptography（雜湊與加解密）
 
 - **MD5 / MD4 / MD2**：16 位元 / 32 位元，大小寫可選
+- **HMAC-MD5**：基於 HMAC 的 MD5 雜湊算法支援
 - **SHA 家族**：SHA1 / SHA224 / SHA256 / SHA384 / SHA512 / SHA3
 - **AES / DES / RC4**：支持多種模式與填充（支援 Hex/Base64 格式）
 
@@ -88,6 +90,8 @@ TroveKit 基於 [Tauri v2](https://v2.tauri.app/) + [React](https://react.dev/) 
 - **即時自動儲存**：所有操作自動儲存到本地的 **SQLite 資料庫** 中
 - 支援**手動建立日誌會話**（新建日誌）
 - **備註功能**：可為日誌條目添加註釋/備註，便於更好地記錄上下文和文檔
+- **會話備註編輯**：可為日誌會話添加和編輯備註
+- **增強日誌交互**：尾隨空白字元使用視覺標記（`·`, `→`, `↵`）高亮顯示，並提供描述性提示
 - **重構日誌管理工具**：全新的 **Master-Detail 佈局** 介面，用於查看、搜尋和管理所有已儲存的日誌。支援**刪除單個條目和整個會話**
 - **增強 UUID 日誌**：顯示生成的 UUID，支援可配置格式（字串/Hex/Base64/二進位）、大小寫和連字元。在日誌中顯示數量和格式詳情。日誌條目中最多顯示 10 個 UUID，達到限制時會清楚標示
 - 結構化的操作方法/輸入/輸出檢視

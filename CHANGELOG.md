@@ -5,9 +5,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.1.9] - Unreleased
+## [0.1.9] - 2026-01-17
 
 ### Added
+- **Global Feature Search**: Added global feature search functionality to quickly find and navigate to tools and features across the application.
 - **HMAC-MD5 Tool**: Added new HMAC-MD5 hash algorithm support.
 - **Log Panel Enhancements**: Optimized log interaction by highlighting trailing whitespaces (spaces, tabs, and newlines) with visual markers (`·`, `→`, `↵`) and descriptive tooltips.
 - **BaseX Algorithm Logging**: Added algorithm field to BaseXTab logs to track user-selected base encoding (base16, base32, base58, etc.).
