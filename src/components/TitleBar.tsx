@@ -86,10 +86,10 @@ interface TitleBarProps {
 function SearchTrigger({ onClick }: { onClick: () => void }) {
   const { t } = useTranslation();
   return (
-    <div className="flex justify-center items-center w-full max-w-sm h-full pointer-events-auto"> 
+    <div className="flex justify-center items-center h-full pointer-events-none"> 
         <button 
             onClick={onClick}
-            className="flex items-center gap-2 px-3 py-0.5 text-xs text-default-400 bg-default-100/50 hover:bg-default-200/50 rounded-md border border-transparent hover:border-default-200 transition-all w-full justify-between group h-[22px]"
+            className="flex items-center gap-2 px-3 py-0.5 text-xs text-default-400 bg-default-100/50 hover:bg-default-200/50 rounded-md border border-transparent hover:border-default-200 transition-all w-48 sm:w-64 justify-between group h-[22px] pointer-events-auto"
         >
             <div className="flex items-center gap-2">
                 <Search className="w-3 h-3" />
@@ -178,7 +178,7 @@ export default function TitleBar({ onNavigate }: TitleBarProps) {
               </svg>
             </div>
           </div>
-          <div className="flex-1 px-4 flex justify-center">
+          <div className="flex-1 px-4 flex justify-center pointer-events-none">
              <SearchTrigger onClick={() => setIsSearchOpen(true)} />
           </div>
           <div className="w-[70px]" />
@@ -190,7 +190,7 @@ export default function TitleBar({ onNavigate }: TitleBarProps) {
           <div className="flex-1 flex items-center px-2 pointer-events-none w-[100px]">
             <span className="text-xs font-bold text-[#2e3436] dark:text-[#d3d7cf]">TroveKit</span>
           </div>
-           <div className="flex-1 px-4 flex justify-center">
+           <div className="flex-1 px-4 flex justify-center pointer-events-none">
              <SearchTrigger onClick={() => setIsSearchOpen(true)} />
           </div>
           <div className="flex items-center gap-1 w-[100px] justify-end">
@@ -213,7 +213,7 @@ export default function TitleBar({ onNavigate }: TitleBarProps) {
             <span className="text-[10px] text-default-500 font-medium">TroveKit</span>
           </div>
           
-          <div className="flex-1 px-4 flex items-center justify-center">
+          <div className="flex-1 px-4 flex items-center justify-center pointer-events-none">
              <SearchTrigger onClick={() => setIsSearchOpen(true)} />
           </div>
 
