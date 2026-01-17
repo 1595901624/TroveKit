@@ -7,6 +7,7 @@ import { BaconTab } from "./classical/BaconTab"
 
 interface ClassicalToolProps {
   activeTab?: string
+  isVisible?: boolean
 }
 
 export function ClassicalTool({ activeTab }: ClassicalToolProps) {

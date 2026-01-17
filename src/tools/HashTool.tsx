@@ -12,6 +12,7 @@ import { HmacMd5Tab } from "./hash/HmacMd5Tab"
 
 interface HashToolProps {
   activeTab?: string
+  isVisible?: boolean
 }
 
 export function HashTool({ activeTab }: HashToolProps) {

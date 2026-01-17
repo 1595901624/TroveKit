@@ -6,6 +6,7 @@ import { UuidTab } from "./generator/UuidTab"
 
 interface GeneratorToolProps {
   activeTab?: string
+  isVisible?: boolean
 }
 
 export function GeneratorTool({ activeTab }: GeneratorToolProps) {

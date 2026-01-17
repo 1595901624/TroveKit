@@ -8,6 +8,7 @@ import { SqlTab } from "./formatter/SqlTab"
 
 interface FormatterToolProps {
   activeTab?: string
+  isVisible?: boolean
 }
 
 export function FormatterTool({ activeTab }: FormatterToolProps) {

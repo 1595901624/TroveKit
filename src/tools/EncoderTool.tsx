@@ -9,6 +9,7 @@ import { HexTab } from "./encoder/HexTab"
 
 interface EncoderToolProps {
   activeTab?: string
+  isVisible?: boolean
 }
 
 export function EncoderTool({ activeTab }: EncoderToolProps) {

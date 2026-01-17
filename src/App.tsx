@@ -26,9 +26,7 @@ function App() {
 
   const handleNavigate = (toolId: ToolId, tabId?: string) => {
     setActiveTool(toolId)
-    if (tabId) {
-      setActiveTab(tabId)
-    }
+    setActiveTab(tabId)
   }
 
   const getTitle = () => {
@@ -39,8 +37,8 @@ function App() {
       case "classical": return t("nav.classical")
       case "formatters": return t("nav.formatters")
       case "generators": return t("nav.generators")
-      case "converter": return t("nav.converter", "转换器")
-      case "logManagement": return t("nav.logManagement", "日志管理")
+      case "converter": return t("nav.converter")
+      case "logManagement": return t("nav.logManagement")
       case "settings": return t("settings.title")
       default: return "TroveKit"
     }
@@ -59,22 +57,22 @@ function App() {
             <HomeView onNavigate={handleToolChange} />
           </div>
           <div className={activeTool === "crypto" ? "block h-full" : "hidden"}>
-            <HashTool activeTab={activeTab} />
+            <HashTool activeTab={activeTool === "crypto" ? activeTab : undefined} isVisible={activeTool === "crypto"} />
           </div>
           <div className={activeTool === "encoder" ? "block h-full" : "hidden"}>
-            <EncoderTool activeTab={activeTab} />
+            <EncoderTool activeTab={activeTool === "encoder" ? activeTab : undefined} isVisible={activeTool === "encoder"} />
           </div>
           <div className={activeTool === "classical" ? "block h-full" : "hidden"}>
-            <ClassicalTool activeTab={activeTab} />
+            <ClassicalTool activeTab={activeTool === "classical" ? activeTab : undefined} isVisible={activeTool === "classical"} />
           </div>
           <div className={activeTool === "formatters" ? "block h-full" : "hidden"}>
-            <FormatterTool activeTab={activeTab} />
+            <FormatterTool activeTab={activeTool === "formatters" ? activeTab : undefined} isVisible={activeTool === "formatters"} />
           </div>
           <div className={activeTool === "generators" ? "block h-full" : "hidden"}>
-            <GeneratorTool activeTab={activeTab} />
+            <GeneratorTool activeTab={activeTool === "generators" ? activeTab : undefined} isVisible={activeTool === "generators"} />
           </div>
           <div className={activeTool === "converter" ? "block h-full" : "hidden"}>
-            <ConverterTool isVisible={activeTool === "converter"} activeTab={activeTab} />
+            <ConverterTool isVisible={activeTool === "converter"} activeTab={activeTool === "converter" ? activeTab : undefined} />
           </div>
           <div className={activeTool === "logManagement" ? "block h-full" : "hidden"}>
             <LogManagementTool />
