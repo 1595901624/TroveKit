@@ -5,20 +5,27 @@ import { ThemeToggle } from "../components/ThemeToggle"
 import { Github } from "lucide-react"
 import { openUrl } from "@tauri-apps/plugin-opener"
 import { useLog } from "../contexts/LogContext"
+import { useEffect, useState } from "react"
+import { getVersion } from "@tauri-apps/api/app"
 
 export function Settings() {
   const { t } = useTranslation()
   const { addLog } = useLog()
+  const [version, setVersion] = useState("v0.1.0")
+
+  useEffect(() => {
+    getVersion().then(setVersion).catch(() => setVersion("v0.1.0"))
+  }, [])
 
   const handleGithubClick = async () => {
     try {
       await openUrl("https://github.com/1595901624/trovekit")
     } catch (error) {
       console.error("Failed to open URL:", error)
-      addLog({ 
-        method: "Open URL", 
-        input: "https://github.com/1595901624/trovekit", 
-        output: String(error) 
+      addLog({
+        method: "Open URL",
+        input: "https://github.com/1595901624/trovekit",
+        output: String(error)
       }, "error")
     }
   }
@@ -52,7 +59,7 @@ export function Settings() {
       </Card>
 
       <div className="text-center text-xs text-default-400 mt-8 flex items-center justify-center gap-2">
-        <span>TroveKit • © 2025 Cloris</span>
+        <span>TroveKit v{version} © Cloris 2026</span>
         <Button
           isIconOnly
           size="sm"

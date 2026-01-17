@@ -15,7 +15,6 @@ import { Button, Tooltip } from "@heroui/react"
 import { cn } from "../lib/utils"
 import { useTranslation } from "react-i18next"
 import { useState, useEffect } from "react"
-import { getVersion } from "@tauri-apps/api/app"
 
 export type ToolId = "home" | "encoder" | "crypto" | "classical" | "formatters" | "generators" | "converter" | "logManagement" | "settings"
 
@@ -26,15 +25,15 @@ interface SidebarProps {
 
 export function Sidebar({ activeTool, onToolChange }: SidebarProps) {
   const { t } = useTranslation()
-  const [version, setVersion] = useState("v0.1.0")
+  // const [version, setVersion] = useState("v0.1.0")
   const [isCollapsed, setIsCollapsed] = useState(() => {
     const saved = localStorage.getItem("sidebar-collapsed")
     return saved === "true"
   })
 
-  useEffect(() => {
-    getVersion().then(setVersion).catch(() => setVersion("v0.1.0"))
-  }, [])
+  // useEffect(() => {
+  //   getVersion().then(setVersion).catch(() => setVersion("v0.1.0"))
+  // }, [])
 
   useEffect(() => {
     localStorage.setItem("sidebar-collapsed", String(isCollapsed))
@@ -118,11 +117,11 @@ export function Sidebar({ activeTool, onToolChange }: SidebarProps) {
           </Button>
         </Tooltip>
         
-        {!isCollapsed && (
+        {/* {!isCollapsed && (
           <div className="text-[10px] text-default-400 font-mono opacity-60">
             {version}
           </div>
-        )}
+        )} */}
       </div>
 
       {/* Collapse Toggle Button */}
