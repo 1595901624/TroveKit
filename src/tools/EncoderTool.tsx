@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Tabs, Tab } from "@heroui/react"
 import { useTranslation } from "react-i18next"
 import { UrlTab } from "./encoder/UrlTab"
@@ -7,9 +7,19 @@ import { Base32Tab } from "./encoder/Base32Tab"
 import { BaseXTab } from "./encoder/BaseXTab"
 import { HexTab } from "./encoder/HexTab"
 
-export function EncoderTool() {
+interface EncoderToolProps {
+  activeTab?: string
+}
+
+export function EncoderTool({ activeTab }: EncoderToolProps) {
   const { t } = useTranslation()
   const [selectedKey, setSelectedKey] = useState<string>("url")
+
+  useEffect(() => {
+    if (activeTab) {
+      setSelectedKey(activeTab)
+    }
+  }, [activeTab])
 
   return (
     <div className="flex flex-col h-full overflow-hidden">

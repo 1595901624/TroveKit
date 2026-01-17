@@ -1,13 +1,19 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Tabs, Tab } from "@heroui/react"
 import { useTranslation } from "react-i18next"
 import { JsonXmlTab } from "./converter/JsonXmlTab"
 import { JsonYamlTab } from "./converter/JsonYamlTab"
 import { TimestampTab } from "./converter/TimestampTab"
 
-export function ConverterTool({ isVisible = true }: { isVisible?: boolean }) {
+export function ConverterTool({ isVisible = true, activeTab }: { isVisible?: boolean; activeTab?: string }) {
   const { t } = useTranslation()
   const [selectedKey, setSelectedKey] = useState<string>("timestamp")
+
+  useEffect(() => {
+    if (activeTab) {
+      setSelectedKey(activeTab)
+    }
+  }, [activeTab])
 
   return (
     <div className="flex flex-col h-full overflow-hidden">

@@ -1,7 +1,11 @@
 import { useEffect, useState } from "react";
 import { getCurrentWindow } from "@tauri-apps/api/window";
+import { Search } from "lucide-react";
+import { useTranslation } from "react-i18next";
+import { CommandMenu } from "./CommandMenu";
+import { ToolId } from "./Sidebar";
 
-// SVG 图标
+// SVG Icons
 const Icons = {
   Windows: {
     Minimize: () => (
@@ -64,22 +68,10 @@ const Icons = {
       <svg width="6" height="6" viewBox="0 0 6 6" className="fill-current opacity-0 group-hover:opacity-100 transition-opacity">
         <path d="M0,3 L3,0 L6,3 L3,6 Z" fill="#006500" />
       </svg>
-      // 实际的缩放图标通常是两个三角形或加号，但全屏图标通常是两个箭头。
-      // 简化为加号用于“缩放”行为或类似。
-      // 让我们使用标准的“加号”用于缩放，或箭头用于全屏。
-      // 现代Mac使用箭头用于全屏。
     ),
-    MaximizeArrows: () => (
-      <svg width="6" height="6" viewBox="0 0 6 6" className="opacity-0 group-hover:opacity-100 transition-opacity">
-        <path d="M1.5,4.5 L0,6 L6,6 L6,0 L4.5,1.5 L1.5,4.5" fill="#006500" />
-        {/* 粗略的箭头近似 */}
-        <path d="M1,5 L5,1" stroke="#004d00" strokeWidth="1" strokeLinecap="round" />
-      </svg>
-    )
   }
 };
 
-// 检测操作系统
 const getOS = () => {
   const userAgent = window.navigator.userAgent.toLowerCase();
   if (userAgent.includes("mac")) return "macos";
@@ -87,12 +79,37 @@ const getOS = () => {
   return "windows";
 };
 
-export default function TitleBar() {
+interface TitleBarProps {
+  onNavigate?: (toolId: ToolId, tabId?: string) => void;
+}
+
+function SearchTrigger({ onClick }: { onClick: () => void }) {
+  const { t } = useTranslation();
+  return (
+    <div className="flex justify-center items-center w-full max-w-sm h-full pointer-events-auto"> 
+        <button 
+            onClick={onClick}
+            className="flex items-center gap-2 px-3 py-0.5 text-xs text-default-400 bg-default-100/50 hover:bg-default-200/50 rounded-md border border-transparent hover:border-default-200 transition-all w-full justify-between group h-[22px]"
+        >
+            <div className="flex items-center gap-2">
+                <Search className="w-3 h-3" />
+                <span>{t('common.search', 'Search')}</span>
+            </div>
+            <div className="flex items-center gap-1">
+               <span className="hidden sm:inline-flex h-3.5 items-center justify-center rounded bg-default-200/50 px-1 font-mono text-[9px] font-medium text-default-500 group-hover:bg-default-200 transition-colors">
+                  Ctrl K
+               </span>
+            </div>
+        </button>
+    </div>
+  )
+}
+
+export default function TitleBar({ onNavigate }: TitleBarProps) {
   const [appWindow, setAppWindow] = useState<any>(null);
   const [isMaximized, setIsMaximized] = useState(false);
   const [os, setOs] = useState("windows");
-  // 如果需要，强制OS用于调试，否则坚持自动
-  // const os = "linux"; 
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   useEffect(() => {
     const _window = getCurrentWindow();
@@ -110,89 +127,109 @@ export default function TitleBar() {
     }
   }, []);
 
+  // Global keyboard shortcut for search
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+        e.preventDefault();
+        setIsSearchOpen(true);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
   const minimize = () => appWindow?.minimize();
   const toggleMaximize = async () => {
     if (!appWindow) return;
     const max = await appWindow.isMaximized();
-    // if (max) {
-    //   await appWindow.unmaximize();
-    // } else {
     await appWindow.toggleMaximize();
-    // }
     setIsMaximized(!max);
   };
   const close = () => appWindow?.close();
 
-  if (os === "macos") {
-    return (
-      // <div data-tauri-drag-region className="h-[28px] bg-gray-200 dark:bg-[#282828] flex items-center px-3 select-none justify-between border-b border-gray-300 dark:border-black/50">
-      <div data-tauri-drag-region className="h-[28px] flex items-center px-3 select-none justify-between">
-        <div className="flex gap-2 items-center group">
-          {/* 关闭 */}
-          <div onClick={close} className="w-[12px] h-[12px] rounded-full bg-[#FF5F56] border border-[#E0443E] flex items-center justify-center cursor-default active:brightness-90">
-            <Icons.Mac.Close />
-          </div>
-          {/* 最小化 */}
-          <div onClick={minimize} className="w-[12px] h-[12px] rounded-full bg-[#FFBD2E] border border-[#DEA123] flex items-center justify-center cursor-default active:brightness-90">
-            <Icons.Mac.Minimize />
-          </div>
-          {/* 最大化 */}
-          <div onClick={toggleMaximize} className="w-[12px] h-[12px] rounded-full bg-[#27C93F] border border-[#1AAB29] flex items-center justify-center cursor-default active:brightness-90">
-            {/* 简单的加号或箭头 */}
-            <svg width="6" height="6" viewBox="0 0 6 6" className="opacity-0 group-hover:opacity-100 transition-opacity">
-              <path d="M1,3 L5,3 M3,1 L3,5" stroke="#004d00" strokeWidth="1.5" strokeLinecap="round" />
-            </svg>
-          </div>
-        </div>
-        <div className="flex-1 flex justify-center text-[10px] font-semibold text-gray-600 dark:text-gray-400 pointer-events-none">
-          TroveKit
-        </div>
-        <div className="w-[60px]" />
-      </div>
-    );
-  }
+  const handleNavigate = (toolId: ToolId, tabId?: string) => {
+    if (onNavigate) {
+      onNavigate(toolId, tabId);
+    }
+  };
 
-  if (os === "linux") {
-    // Adwaita 风格 (GNOME)
-    return (
-      // <div data-tauri-drag-region className="h-[36px] bg-[#f6f5f4] dark:bg-[#242424] flex items-center justify-between select-none px-2 border-b border-gray-300 dark:border-[#1e1e1e]">
-      <div data-tauri-drag-region className="h-[36px] flex items-center justify-between select-none px-2">
-        <div className="flex-1 flex items-center text-xs font-bold text-[#2e3436] dark:text-[#d3d7cf] px-2 pointer-events-none">
-          TroveKit
-        </div>
-        <div className="flex items-center gap-1">
-          <button onClick={minimize} className="w-[28px] h-[28px] rounded-full hover:bg-black/10 dark:hover:bg-white/10 flex items-center justify-center text-gray-600 dark:text-gray-300 transition-colors">
-            <Icons.Linux.Minimize />
-          </button>
-          <button onClick={toggleMaximize} className="w-[28px] h-[28px] rounded-full hover:bg-black/10 dark:hover:bg-white/10 flex items-center justify-center text-gray-600 dark:text-gray-300 transition-colors">
-            {isMaximized ? <Icons.Linux.Restore /> : <Icons.Linux.Maximize />}
-          </button>
-          <button onClick={close} className="w-[28px] h-[28px] rounded-full hover:bg-[#e01b24] hover:text-white flex items-center justify-center text-gray-600 dark:text-gray-300 transition-colors">
-            <Icons.Linux.Close />
-          </button>
-        </div>
-      </div>
-    );
-  }
-
-  // 默认 Windows
   return (
-    <div data-tauri-drag-region className="h-[32px] bg-background flex items-stretch justify-between select-none text-sm z-50 border-b border-divider">
-      <div className="flex items-center px-3 pointer-events-none gap-2">
-        {/* Optional: Add app icon here if needed */}
-        <span className="text-[10px] text-default-500 font-medium">TroveKit</span>
-      </div>
-      <div className="flex items-stretch">
-        <div onClick={minimize} className="w-[46px] flex items-center justify-center hover:bg-default-100 transition-colors cursor-default text-foreground">
-          <Icons.Windows.Minimize />
+    <>
+      <CommandMenu 
+        isOpen={isSearchOpen} 
+        onClose={() => setIsSearchOpen(false)} 
+        onNavigate={handleNavigate}
+      />
+
+      {os === "macos" && (
+        <div data-tauri-drag-region className="h-[32px] flex items-center px-3 select-none justify-between bg-transparent">
+          <div className="flex gap-2 items-center group w-[70px]">
+            {/* Window Controls */}
+            <div onClick={close} className="w-[12px] h-[12px] rounded-full bg-[#FF5F56] border border-[#E0443E] flex items-center justify-center cursor-default active:brightness-90">
+              <Icons.Mac.Close />
+            </div>
+            <div onClick={minimize} className="w-[12px] h-[12px] rounded-full bg-[#FFBD2E] border border-[#DEA123] flex items-center justify-center cursor-default active:brightness-90">
+              <Icons.Mac.Minimize />
+            </div>
+            <div onClick={toggleMaximize} className="w-[12px] h-[12px] rounded-full bg-[#27C93F] border border-[#1AAB29] flex items-center justify-center cursor-default active:brightness-90">
+              <svg width="6" height="6" viewBox="0 0 6 6" className="opacity-0 group-hover:opacity-100 transition-opacity">
+                <path d="M1,3 L5,3 M3,1 L3,5" stroke="#004d00" strokeWidth="1.5" strokeLinecap="round" />
+              </svg>
+            </div>
+          </div>
+          <div className="flex-1 px-4 flex justify-center">
+             <SearchTrigger onClick={() => setIsSearchOpen(true)} />
+          </div>
+          <div className="w-[70px]" />
         </div>
-        <div onClick={toggleMaximize} className="w-[46px] flex items-center justify-center hover:bg-default-100 transition-colors cursor-default text-foreground">
-          {isMaximized ? <Icons.Windows.Restore /> : <Icons.Windows.Maximize />}
+      )}
+
+      {os === "linux" && (
+        <div data-tauri-drag-region className="h-[36px] flex items-center justify-between select-none px-2">
+          <div className="flex-1 flex items-center px-2 pointer-events-none w-[100px]">
+            <span className="text-xs font-bold text-[#2e3436] dark:text-[#d3d7cf]">TroveKit</span>
+          </div>
+           <div className="flex-1 px-4 flex justify-center">
+             <SearchTrigger onClick={() => setIsSearchOpen(true)} />
+          </div>
+          <div className="flex items-center gap-1 w-[100px] justify-end">
+            <button onClick={minimize} className="w-[28px] h-[28px] rounded-full hover:bg-black/10 dark:hover:bg-white/10 flex items-center justify-center text-gray-600 dark:text-gray-300 transition-colors">
+              <Icons.Linux.Minimize />
+            </button>
+            <button onClick={toggleMaximize} className="w-[28px] h-[28px] rounded-full hover:bg-black/10 dark:hover:bg-white/10 flex items-center justify-center text-gray-600 dark:text-gray-300 transition-colors">
+              {isMaximized ? <Icons.Linux.Restore /> : <Icons.Linux.Maximize />}
+            </button>
+            <button onClick={close} className="w-[28px] h-[28px] rounded-full hover:bg-[#e01b24] hover:text-white flex items-center justify-center text-gray-600 dark:text-gray-300 transition-colors">
+              <Icons.Linux.Close />
+            </button>
+          </div>
         </div>
-        <div onClick={close} className="w-[46px] flex items-center justify-center hover:bg-danger hover:text-danger-foreground transition-colors cursor-default text-foreground">
-          <Icons.Windows.Close />
+      )}
+
+      {os === "windows" && (
+        <div data-tauri-drag-region className="h-[32px] bg-background flex items-stretch justify-between select-none text-sm z-50 border-b border-divider">
+          <div className="flex items-center px-3 pointer-events-none gap-2 w-[140px]">
+            <span className="text-[10px] text-default-500 font-medium">TroveKit</span>
+          </div>
+          
+          <div className="flex-1 px-4 flex items-center justify-center">
+             <SearchTrigger onClick={() => setIsSearchOpen(true)} />
+          </div>
+
+          <div className="flex items-stretch w-[140px] justify-end">
+            <div onClick={minimize} className="w-[46px] flex items-center justify-center hover:bg-default-100 transition-colors cursor-default text-foreground">
+              <Icons.Windows.Minimize />
+            </div>
+            <div onClick={toggleMaximize} className="w-[46px] flex items-center justify-center hover:bg-default-100 transition-colors cursor-default text-foreground">
+              {isMaximized ? <Icons.Windows.Restore /> : <Icons.Windows.Maximize />}
+            </div>
+            <div onClick={close} className="w-[46px] flex items-center justify-center hover:bg-danger hover:text-danger-foreground transition-colors cursor-default text-foreground">
+              <Icons.Windows.Close />
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
+      )}
+    </>
   );
 }

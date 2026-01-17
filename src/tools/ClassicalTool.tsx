@@ -1,13 +1,23 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Tabs, Tab } from "@heroui/react"
 import { useTranslation } from "react-i18next"
 import { CaesarTab } from "./classical/CaesarTab"
 import { MorseTab } from "./classical/MorseTab"
 import { BaconTab } from "./classical/BaconTab"
 
-export function ClassicalTool() {
+interface ClassicalToolProps {
+  activeTab?: string
+}
+
+export function ClassicalTool({ activeTab }: ClassicalToolProps) {
   const { t } = useTranslation()
   const [selectedKey, setSelectedKey] = useState<string>("caesar")
+
+  useEffect(() => {
+    if (activeTab) {
+      setSelectedKey(activeTab)
+    }
+  }, [activeTab])
 
   return (
     <div className="flex flex-col h-full overflow-hidden">

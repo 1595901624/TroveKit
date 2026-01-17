@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Tabs, Tab } from "@heroui/react"
 import { useTranslation } from "react-i18next"
 import { JsonTab } from "./formatter/JsonTab"
@@ -6,9 +6,19 @@ import { XmlTab } from "./formatter/XmlTab"
 import { CssTab } from "./formatter/CssTab"
 import { SqlTab } from "./formatter/SqlTab"
 
-export function FormatterTool() {
+interface FormatterToolProps {
+  activeTab?: string
+}
+
+export function FormatterTool({ activeTab }: FormatterToolProps) {
   const { t } = useTranslation()
   const [selectedKey, setSelectedKey] = useState<string>("json")
+
+  useEffect(() => {
+    if (activeTab) {
+      setSelectedKey(activeTab)
+    }
+  }, [activeTab])
 
   return (
     <div className="flex flex-col h-full overflow-hidden">

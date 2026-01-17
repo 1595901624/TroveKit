@@ -12,17 +12,18 @@ interface LayoutProps {
   children: React.ReactNode
   activeTool: ToolId
   onToolChange: (id: ToolId) => void
+  onNavigate: (toolId: ToolId, tabId?: string) => void
   title: string
 }
 
-export function Layout({ children, activeTool, onToolChange, title }: LayoutProps) {
+export function Layout({ children, activeTool, onToolChange, onNavigate, title }: LayoutProps) {
   const { togglePanel, isOpen } = useLog()
   const { t } = useTranslation()
 
   return (
     <div className="h-screen w-screen flex flex-col bg-background text-foreground overflow-hidden">
       {/* Global TitleBar (Window Controls) */}
-      <TitleBar />
+      <TitleBar onNavigate={onNavigate} />
       
       <div className="flex-1 flex overflow-hidden">
         {/* Sidebar Navigation */}

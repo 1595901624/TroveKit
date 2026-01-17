@@ -1,12 +1,22 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Tabs, Tab } from "@heroui/react"
 import { useTranslation } from "react-i18next"
 import { QrTool } from "./qr/QrTool"
 import { UuidTab } from "./generator/UuidTab"
 
-export function GeneratorTool() {
+interface GeneratorToolProps {
+  activeTab?: string
+}
+
+export function GeneratorTool({ activeTab }: GeneratorToolProps) {
   const { t } = useTranslation()
   const [selectedKey, setSelectedKey] = useState<string>("uuid")
+
+  useEffect(() => {
+    if (activeTab) {
+      setSelectedKey(activeTab)
+    }
+  }, [activeTab])
 
   return (
     <div className="flex flex-col h-full overflow-hidden">

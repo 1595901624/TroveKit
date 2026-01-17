@@ -16,7 +16,20 @@ import { useTranslation } from "react-i18next"
 
 function App() {
   const [activeTool, setActiveTool] = useState<ToolId>("home")
+  const [activeTab, setActiveTab] = useState<string | undefined>()
   const { t } = useTranslation()
+
+  const handleToolChange = (id: ToolId) => {
+    setActiveTool(id)
+    setActiveTab(undefined)
+  }
+
+  const handleNavigate = (toolId: ToolId, tabId?: string) => {
+    setActiveTool(toolId)
+    if (tabId) {
+      setActiveTab(tabId)
+    }
+  }
 
   const getTitle = () => {
     switch (activeTool) {
@@ -37,30 +50,31 @@ function App() {
     <ThemeProvider storageKey="trovekit-theme">
       <Layout 
         activeTool={activeTool} 
-        onToolChange={setActiveTool}
+        onToolChange={handleToolChange}
+        onNavigate={handleNavigate}
         title={getTitle()}
       >
         <div className="max-w-7xl mx-auto h-full">
           <div className={activeTool === "home" ? "block h-full" : "hidden"}>
-            <HomeView onNavigate={setActiveTool} />
+            <HomeView onNavigate={handleToolChange} />
           </div>
           <div className={activeTool === "crypto" ? "block h-full" : "hidden"}>
-            <HashTool />
+            <HashTool activeTab={activeTab} />
           </div>
           <div className={activeTool === "encoder" ? "block h-full" : "hidden"}>
-            <EncoderTool />
+            <EncoderTool activeTab={activeTab} />
           </div>
           <div className={activeTool === "classical" ? "block h-full" : "hidden"}>
-            <ClassicalTool />
+            <ClassicalTool activeTab={activeTab} />
           </div>
           <div className={activeTool === "formatters" ? "block h-full" : "hidden"}>
-            <FormatterTool />
+            <FormatterTool activeTab={activeTab} />
           </div>
           <div className={activeTool === "generators" ? "block h-full" : "hidden"}>
-            <GeneratorTool />
+            <GeneratorTool activeTab={activeTab} />
           </div>
           <div className={activeTool === "converter" ? "block h-full" : "hidden"}>
-            <ConverterTool isVisible={activeTool === "converter"} />
+            <ConverterTool isVisible={activeTool === "converter"} activeTab={activeTab} />
           </div>
           <div className={activeTool === "logManagement" ? "block h-full" : "hidden"}>
             <LogManagementTool />
@@ -68,10 +82,6 @@ function App() {
           <div className={activeTool === "settings" ? "block h-full" : "hidden"}>
             <Settings />
           </div>
-          
-          {/* {["generators"].includes(activeTool) && (
-            <ComingSoon activeTool={activeTool} onNavigate={setActiveTool} />
-          )} */}
         </div>
       </Layout>
     </ThemeProvider>

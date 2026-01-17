@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Tabs, Tab } from "@heroui/react"
 import { useTranslation } from "react-i18next"
 import { Md2Tab } from "./hash/Md2Tab"
@@ -10,9 +10,19 @@ import { DesTab } from "./hash/DesTab"
 import { Rc4Tab } from "./hash/Rc4Tab"
 import { HmacMd5Tab } from "./hash/HmacMd5Tab"
 
-export function HashTool() {
+interface HashToolProps {
+  activeTab?: string
+}
+
+export function HashTool({ activeTab }: HashToolProps) {
   const { t } = useTranslation()
   const [selectedKey, setSelectedKey] = useState<string>("md2")
+
+  useEffect(() => {
+    if (activeTab) {
+      setSelectedKey(activeTab)
+    }
+  }, [activeTab])
 
   return (
     <div className="flex flex-col h-full overflow-hidden">
