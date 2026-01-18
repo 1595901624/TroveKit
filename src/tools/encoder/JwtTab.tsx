@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
-import { Textarea, Button, Select, SelectItem, Card, CardBody, Input, Chip, Divider } from "@heroui/react"
-import { Copy, Trash2, RotateCw, CheckCircle2, AlertCircle, KeyRound, Lock, Unlock, FileJson } from "lucide-react"
+import { Textarea, Button, Select, SelectItem, Card, CardBody, Input, Chip, ScrollShadow } from "@heroui/react"
+import { Copy, Trash2, RotateCw, CheckCircle2, AlertCircle, KeyRound, Lock, Unlock, FileJson, ShieldCheck, Fingerprint } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { useLog } from "../../contexts/LogContext"
 import * as jose from 'jose';
@@ -112,7 +112,6 @@ export function JwtTab() {
         // verify
         if (looksPublic) return await jose.importSPKI(pem, alg)
         if (looksPrivate) {
-            // Try to derive public key
             try {
                 const privKey = await jose.importPKCS8(pem, alg)
                 const spkiPem = await jose.exportSPKI(privKey)
@@ -121,8 +120,6 @@ export function JwtTab() {
                 return await jose.importPKCS8(pem, alg)
             }
         }
-        
-        // Fallback
         return await jose.importSPKI(pem, alg)
     } catch (e) {
         throw new Error(`${t("tools.encoder.error.invalidKey", { alg })}: ${(e as Error).message}`)
@@ -139,7 +136,6 @@ export function JwtTab() {
         setHeader(JSON.stringify(decodedHeader, null, 2));
         setPayload(JSON.stringify(decodedPayload, null, 2));
         
-        // Check verification
         if (decodedHeader.alg && decodedHeader.alg !== 'none') {
             setAlgorithm(decodedHeader.alg);
             const alg = decodedHeader.alg
@@ -192,7 +188,7 @@ export function JwtTab() {
           
           setToken(jwt);
           setIsValid(true);
-          setValidationMsg("Signature Verified (Just Signed)");
+          setValidationMsg("Generated & Signed");
           addLog({ method: "JWT Encode", input: "Payload", output: "Token generated" }, "success");
       } catch (e) {
           console.error(e);
@@ -236,186 +232,199 @@ export function JwtTab() {
   }
 
   return (
-    <div className="flex flex-col xl:flex-row h-full gap-6 p-4 overflow-hidden bg-default-50/30">
-      {/* Left Panel: Encoded Token */}
-      <div className="flex-1 flex flex-col min-w-[300px] gap-3">
-          <div className="flex items-center justify-between px-1">
-              <h3 className="text-sm font-bold text-default-700 tracking-wide uppercase">{t("tools.encoder.jwtToken")}</h3>
-              <div className="flex gap-2">
-                 <Button size="sm" variant="flat" color="primary" onPress={() => handleDecode()} startContent={<RotateCw className="w-3.5 h-3.5" />}>
-                     {t("tools.encoder.decode")}
+    <div className="h-full flex flex-col gap-4 p-2 overflow-hidden bg-default-50/20">
+      {/* Three-Column Grid Layout */}
+      <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 min-h-0">
+        
+        {/* Column 1: Encoded Token */}
+        <Card className="flex flex-col border border-default-200 shadow-sm overflow-hidden" shadow="none">
+          <CardBody className="p-0 flex flex-col">
+            <div className="p-3 border-b border-divider bg-default-50/50 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Fingerprint className="w-4 h-4 text-primary" />
+                <h3 className="text-xs font-bold text-default-700 uppercase tracking-wider">{t("tools.encoder.jwtToken")}</h3>
+              </div>
+              <div className="flex gap-1">
+                 <Button size="sm" variant="flat" color="primary" isIconOnly onPress={() => handleDecode()} title={t("tools.encoder.decode")}>
+                     <RotateCw className="w-3.5 h-3.5" />
                  </Button>
                  <Button size="sm" isIconOnly variant="flat" onPress={() => copyToClipboard(token)}>
-                     <Copy className="w-3.5 h-3.5 text-default-600" />
+                     <Copy className="w-3.5 h-3.5" />
                  </Button>
                  <Button size="sm" isIconOnly variant="flat" color="danger" onPress={() => setToken("")}>
                      <Trash2 className="w-3.5 h-3.5" />
                  </Button>
               </div>
-          </div>
-          
-          <div className="flex-1 relative group rounded-xl overflow-hidden shadow-sm border border-default-200">
-            <Textarea 
-                className="h-full font-mono text-sm"
-                classNames={{ 
-                    input: "h-full !text-default-700 p-4", 
-                    inputWrapper: "h-full bg-background group-hover:bg-default-50 transition-colors" 
-                }}
-                minRows={15}
-                value={token}
-                onValueChange={setToken}
-                placeholder={t("tools.encoder.jwtPlaceholder")}
-                variant="flat"
-                disableAnimation
-            />
-          </div>
-      </div>
+            </div>
+            <div className="flex-1 p-0">
+              <Textarea 
+                  className="h-full font-mono text-sm"
+                  classNames={{ 
+                      input: "h-full !text-default-700 p-4 leading-relaxed", 
+                      inputWrapper: "h-full bg-background border-none rounded-none" 
+                  }}
+                  value={token}
+                  onValueChange={setToken}
+                  placeholder={t("tools.encoder.jwtPlaceholder")}
+                  variant="flat"
+                  disableAnimation
+              />
+            </div>
+          </CardBody>
+        </Card>
 
-      {/* Right Panel: Decoded & Config */}
-      <div className="flex-1 flex flex-col min-w-[350px] gap-4 overflow-y-auto scrollbar-hide pr-1">
-          
-          {/* Header & Payload */}
-          <div className="grid grid-cols-1 gap-4">
+        {/* Column 2: Decoded JSON (Header & Payload) */}
+        <Card className="flex flex-col border border-default-200 shadow-sm overflow-hidden" shadow="none">
+          <CardBody className="p-0 flex flex-col gap-0">
+            {/* Header Section */}
+            <div className="p-3 border-b border-divider bg-default-50/50 flex items-center gap-2">
+              <FileJson className="w-4 h-4 text-warning" />
+              <span className="text-xs font-bold text-default-700 uppercase tracking-wider">{t("tools.encoder.header")}</span>
+            </div>
+            <div className="h-1/4 min-h-[120px]">
+              <Textarea 
+                  minRows={4}
+                  value={header}
+                  onValueChange={setHeader}
+                  className="h-full font-mono text-xs"
+                  classNames={{ input: "p-4", inputWrapper: "h-full bg-background border-none rounded-none border-b border-divider" }}
+                  variant="flat"
+              />
+            </div>
+
+            {/* Payload Section */}
+            <div className="p-3 border-b border-divider bg-default-50/50 flex items-center gap-2">
+              <FileJson className="w-4 h-4 text-success" />
+              <span className="text-xs font-bold text-default-700 uppercase tracking-wider">{t("tools.encoder.payload")}</span>
+            </div>
+            <div className="flex-1">
+              <Textarea 
+                  value={payload}
+                  onValueChange={setPayload}
+                  className="h-full font-mono text-xs"
+                  classNames={{ input: "p-4", inputWrapper: "h-full bg-background border-none rounded-none" }}
+                  variant="flat"
+              />
+            </div>
+          </CardBody>
+        </Card>
+
+        {/* Column 3: Signature Configuration */}
+        <Card className="flex flex-col border border-default-200 shadow-sm overflow-hidden bg-background/60 backdrop-blur-sm" shadow="none">
+          <CardBody className="p-0 flex flex-col">
+            <div className="p-3 border-b border-divider bg-default-50/50 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <ShieldCheck className="w-4 h-4 text-success" />
+                <h3 className="text-xs font-bold text-default-700 uppercase tracking-wider">{t("tools.encoder.signatureConfig")}</h3>
+              </div>
+              {isValid !== null && (
+                  <Chip
+                    size="sm"
+                    variant="flat"
+                    color={isValid ? "success" : "danger"}
+                    startContent={isValid ? <CheckCircle2 className="w-3 h-3" /> : <AlertCircle className="w-3 h-3" />}
+                    className="h-6"
+                    classNames={{ content: "font-bold text-[9px] uppercase tracking-tighter" }}
+                  >
+                      {validationMsg || (isValid ? "Verified" : "Invalid")}
+                  </Chip>
+              )}
+            </div>
+
+            <ScrollShadow className="flex-1 p-5 space-y-6">
+              {/* Algorithm Selection */}
               <div className="space-y-2">
-                 <div className="flex items-center gap-2 px-1">
-                    <FileJson className="w-4 h-4 text-default-500" />
-                    <span className="text-xs font-bold text-default-600 uppercase">{t("tools.encoder.header")}</span>
-                 </div>
-                 <Textarea 
-                    minRows={3}
-                    maxRows={8}
-                    value={header}
-                    onValueChange={setHeader}
-                    className="font-mono text-xs"
-                    classNames={{ inputWrapper: "bg-background border-default-200" }}
+                <label className="text-[10px] font-bold text-default-400 uppercase ml-1">{t("tools.encoder.algorithm")}</label>
+                <Select 
+                    placeholder="Select Algorithm"
+                    size="md"
+                    selectedKeys={[algorithm]}
+                    onChange={(e) => setAlgorithm(e.target.value)}
                     variant="bordered"
-                 />
+                    disallowEmptySelection
+                    className="max-w-full"
+                >
+                    {ALGORITHMS.map(alg => <SelectItem key={alg}>{alg}</SelectItem>)}
+                </Select>
               </div>
 
-              <div className="space-y-2">
-                 <div className="flex items-center gap-2 px-1">
-                    <FileJson className="w-4 h-4 text-default-500" />
-                    <span className="text-xs font-bold text-default-600 uppercase">{t("tools.encoder.payload")}</span>
-                 </div>
-                 <Textarea 
-                    minRows={8}
-                    value={payload}
-                    onValueChange={setPayload}
-                    className="font-mono text-xs"
-                    classNames={{ inputWrapper: "bg-background border-default-200" }}
-                    variant="bordered"
-                 />
-              </div>
-          </div>
-
-          <div className="flex-1" />
-
-          {/* Signature Configuration */}
-          <Card className="border border-default-200 shadow-md bg-background/80 backdrop-blur-md">
-              <CardBody className="space-y-5 p-5">
-                  {/* Title & Status */}
-                  <div className="flex items-center justify-between pb-2 border-b border-divider/50">
-                      <div className="flex items-center gap-2 text-default-800">
-                          {algorithm === 'none' ? <Unlock className="w-4 h-4 text-warning" /> : <Lock className="w-4 h-4 text-primary" />}
-                          <span className="text-sm font-bold uppercase tracking-wide">{t("tools.encoder.signatureConfig")}</span>
-                      </div>
-                      
-                      {isValid !== null && (
-                          <Chip
-                            size="sm"
-                            variant="flat"
-                            color={isValid ? "success" : "danger"}
-                            startContent={isValid ? <CheckCircle2 className="w-3.5 h-3.5" /> : <AlertCircle className="w-3.5 h-3.5" />}
-                            classNames={{ content: "font-semibold text-[10px] uppercase" }}
-                          >
-                              {validationMsg || (isValid ? "Verified" : "Invalid")}
-                          </Chip>
-                      )}
-                  </div>
-                  
-                  {/* Algorithm Select */}
-                  <div>
-                      <Select 
-                          label={t("tools.encoder.algorithm")} 
-                          labelPlacement="outside"
-                          placeholder="Select Algorithm"
+              {/* Keys Input Section */}
+              <div className="space-y-4 pt-2">
+                  {isHmacAlg(algorithm) && (
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-bold text-default-400 uppercase ml-1">{t("tools.encoder.secret")}</label>
+                      <Input 
+                          placeholder="Enter your secret key"
                           size="md"
-                          selectedKeys={[algorithm]}
-                          onChange={(e) => setAlgorithm(e.target.value)}
+                          value={hmacSecret}
+                          onValueChange={setHmacSecret}
+                          type="text"
                           variant="bordered"
-                          disallowEmptySelection
-                      >
-                          {ALGORITHMS.map(alg => <SelectItem key={alg}>{alg}</SelectItem>)}
-                      </Select>
-                  </div>
-
-                  {/* Keys Inputs */}
-                  <div className="space-y-4">
-                      {isHmacAlg(algorithm) && (
-                        <Input 
-                            label={t("tools.encoder.secret")}
-                            labelPlacement="outside"
-                            placeholder="Enter your secret key"
-                            size="md"
-                            value={hmacSecret}
-                            onValueChange={setHmacSecret}
-                            type="text"
-                            variant="bordered"
-                            startContent={<KeyRound className="w-4 h-4 text-default-400" />}
-                        />
-                      )}
-                      
-                      {!isHmacAlg(algorithm) && !isNoneAlg(algorithm) && (
-                          <div className="grid grid-cols-1 gap-4">
-                              <Textarea 
-                                  label={t("tools.encoder.privateKey")}
-                                  labelPlacement="outside"
-                                  placeholder="-----BEGIN PRIVATE KEY-----"
-                                  minRows={4}
-                                  maxRows={8}
-                                  value={privateKeyPem}
-                                  onValueChange={setPrivateKeyPem}
-                                  className="font-mono text-[10px]"
-                                  variant="bordered"
-                              />
-                              <Textarea 
-                                  label={t("tools.encoder.publicKey")}
-                                  labelPlacement="outside"
-                                  placeholder="-----BEGIN PUBLIC KEY-----"
-                                  minRows={4}
-                                  maxRows={8}
-                                  value={publicKeyPem}
-                                  onValueChange={setPublicKeyPem}
-                                  className="font-mono text-[10px]"
-                                  variant="bordered"
-                              />
+                          startContent={<KeyRound className="w-4 h-4 text-default-400" />}
+                      />
+                    </div>
+                  )}
+                  
+                  {!isHmacAlg(algorithm) && !isNoneAlg(algorithm) && (
+                      <div className="space-y-4 animate-in fade-in slide-in-from-top-2 duration-300">
+                          <div className="space-y-2">
+                            <label className="text-[10px] font-bold text-default-400 uppercase ml-1">{t("tools.encoder.privateKey")}</label>
+                            <Textarea 
+                                placeholder="-----BEGIN PRIVATE KEY-----"
+                                minRows={5}
+                                maxRows={10}
+                                value={privateKeyPem}
+                                onValueChange={setPrivateKeyPem}
+                                className="font-mono text-[10px]"
+                                variant="bordered"
+                            />
                           </div>
-                      )}
-                  </div>
+                          <div className="space-y-2">
+                            <label className="text-[10px] font-bold text-default-400 uppercase ml-1">{t("tools.encoder.publicKey")}</label>
+                            <Textarea 
+                                placeholder="-----BEGIN PUBLIC KEY-----"
+                                minRows={5}
+                                maxRows={10}
+                                value={publicKeyPem}
+                                onValueChange={setPublicKeyPem}
+                                className="font-mono text-[10px]"
+                                variant="bordered"
+                            />
+                          </div>
+                      </div>
+                  )}
 
-                  {/* Actions */}
-                  <div className="flex gap-3 pt-2">
-                      <Button 
-                          className="flex-1 font-medium"
-                          variant="flat"
-                          color="default"
-                          onPress={() => handleVerify()}
-                          startContent={<CheckCircle2 className="w-4 h-4" />}
-                      >
-                          {t("tools.encoder.verify")}
-                      </Button>
-                      <Button 
-                          className="flex-1 font-medium shadow-md shadow-primary/20"
-                          color="primary"
-                          onPress={handleEncode}
-                          isLoading={isEncoding}
-                          startContent={!isEncoding && <KeyRound className="w-4 h-4" />}
-                      >
-                          {t("tools.encoder.encodeJwt")}
-                      </Button>
-                  </div>
-              </CardBody>
-          </Card>
+                  {isNoneAlg(algorithm) && (
+                    <div className="py-8 text-center border-2 border-dashed border-default-200 rounded-xl bg-default-50/50">
+                      <Unlock className="w-8 h-8 text-warning mx-auto mb-2 opacity-50" />
+                      <p className="text-xs text-default-500 font-medium">Unsecured JWT - No key required</p>
+                    </div>
+                  )}
+              </div>
+            </ScrollShadow>
+
+            {/* Bottom Actions */}
+            <div className="p-4 border-t border-divider bg-default-50/30 flex gap-3">
+                <Button 
+                    className="flex-1 font-bold h-11"
+                    variant="flat"
+                    onPress={() => handleVerify()}
+                    startContent={<CheckCircle2 className="w-4 h-4" />}
+                >
+                    {t("tools.encoder.verify")}
+                </Button>
+                <Button 
+                    className="flex-1 font-bold h-11 bg-gradient-to-r from-primary to-primary-600 text-white shadow-lg shadow-primary/20"
+                    onPress={handleEncode}
+                    isLoading={isEncoding}
+                    startContent={!isEncoding && <Lock className="w-4 h-4" />}
+                >
+                    {t("tools.encoder.encodeJwt")}
+                </Button>
+            </div>
+          </CardBody>
+        </Card>
+
       </div>
     </div>
   )
