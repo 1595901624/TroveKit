@@ -281,33 +281,35 @@ export function JwtTab() {
                   <span className="text-xs font-bold uppercase">{t("tools.encoder.signatureConfig")}</span>
               </div>
               
-              <div className="grid grid-cols-3 gap-2">
+              <div className="flex gap-2">
                   <Select 
                       label={t("tools.encoder.algorithm")} 
                       size="sm" 
-                      className="col-span-1"
+                      className={algorithm.startsWith("HS") ? "w-1/3" : "w-full"}
                       selectedKeys={[algorithm]}
                       onChange={(e) => setAlgorithm(e.target.value)}
                   >
                       {ALGORITHMS.map(alg => <SelectItem key={alg}>{alg}</SelectItem>)}
                   </Select>
                   
-                  <Input 
-                      label={algorithm.startsWith("HS") ? t("tools.encoder.secret") : t("tools.encoder.privatePublicKey")}
-                      size="sm"
-                      className="col-span-2"
-                      value={secret}
-                      onValueChange={setSecret}
-                      type={algorithm.startsWith("HS") ? "text" : "text"} 
-                  />
+                  {algorithm.startsWith("HS") && (
+                    <Input 
+                        label={t("tools.encoder.secret")}
+                        size="sm"
+                        className="w-2/3"
+                        value={secret}
+                        onValueChange={setSecret}
+                        type="text"
+                    />
+                  )}
               </div>
               
               {/* If RSA/EC, show bigger text area for key */}
               {(!algorithm.startsWith("HS") && algorithm !== 'none') && (
                    <Textarea 
-                      label={t("tools.encoder.pemKey")}
+                      label={t("tools.encoder.privatePublicKey")}
                       placeholder={t("tools.encoder.pemPlaceholder")}
-                      minRows={3}
+                      minRows={6}
                       value={secret}
                       onValueChange={setSecret}
                       className="font-mono text-[10px]"
