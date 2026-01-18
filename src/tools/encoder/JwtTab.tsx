@@ -27,7 +27,12 @@ export function JwtTab() {
   const [token, setToken] = useState("")
   const [header, setHeader] = useState("{\n  \"alg\": \"HS256\",\n  \"typ\": \"JWT\"\n}")
   const [payload, setPayload] = useState("{\n  \"sub\": \"1234567890\",\n  \"name\": \"John Doe\",\n  \"iat\": 1516239022\n}")
-  const [secret, setSecret] = useState("your-256-bit-secret")
+    // Keys
+    // - HS* uses a shared secret (raw bytes)
+    // - RS*/PS*/ES* uses a Private Key (PKCS8 PEM) for signing and a Public Key (SPKI PEM) for verification
+    const [hmacSecret, setHmacSecret] = useState("your-256-bit-secret")
+    const [privateKeyPem, setPrivateKeyPem] = useState("")
+    const [publicKeyPem, setPublicKeyPem] = useState("")
   const [algorithm, setAlgorithm] = useState("HS256")
   
   const [isValid, setIsValid] = useState<boolean | null>(null)
@@ -41,7 +46,20 @@ export function JwtTab() {
         // If we have saved header/payload/secret, use them, otherwise defaults
         if (savedState.header) setHeader(savedState.header)
         if (savedState.payload) setPayload(savedState.payload)
-        if (savedState.secret) setSecret(savedState.secret)
+                if (typeof savedState.hmacSecret === 'string') setHmacSecret(savedState.hmacSecret)
+                if (typeof savedState.privateKeyPem === 'string') setPrivateKeyPem(savedState.privateKeyPem)
+                if (typeof savedState.publicKeyPem === 'string') setPublicKeyPem(savedState.publicKeyPem)
+
+                // Backward compatibility: previous versions stored a single `secret` for everything.
+                // We keep it as best-effort migration.
+                if (typeof savedState.secret === 'string' && !savedState.hmacSecret && !savedState.privateKeyPem && !savedState.publicKeyPem) {
+                    const migrated = savedState.secret
+                    if ((savedState.algorithm ?? algorithm).startsWith('HS')) {
+                        setHmacSecret(migrated)
+                    } else {
+                        setPrivateKeyPem(migrated)
+                    }
+                }
         if (savedState.algorithm) setAlgorithm(savedState.algorithm)
     }
   }, [isLoaded, savedState])
@@ -50,60 +68,67 @@ export function JwtTab() {
   useEffect(() => {
     if (isLoaded) {
       setStoredItem(STORAGE_KEY, JSON.stringify({
-        token, header, payload, secret, algorithm
+                token,
+                header,
+                payload,
+                algorithm,
+                hmacSecret,
+                privateKeyPem,
+                publicKeyPem
       }))
     }
-  }, [token, header, payload, secret, algorithm, isLoaded])
+    }, [token, header, payload, algorithm, hmacSecret, privateKeyPem, publicKeyPem, isLoaded])
 
-  const getKey = async (alg: string, keyStr: string, usage: 'sign' | 'verify') => {
-    if (alg === 'none') return undefined;
-    
-    // HMAC
-    if (alg.startsWith('HS')) {
-        return new TextEncoder().encode(keyStr);
-    }
-    
-    // Asymmetric
-    try {
-        // Normalize key string
-        keyStr = keyStr.replace(/\r\n/g, '\n').trim();
-        
-        const isPrivate = keyStr.includes("PRIVATE KEY");
-        const isPublic = keyStr.includes("PUBLIC KEY");
+    const normalizePem = (pem: string) => pem.replace(/\r\n/g, '\n').trim()
 
-        if (usage === 'sign') {
-            if (isPublic) {
-                throw new Error(t("tools.encoder.error.signWithPublic"));
-            }
-            return await jose.importPKCS8(keyStr, alg);
-        } else {
-            // Verify
-            if (isPublic) {
-                return await jose.importSPKI(keyStr, alg);
-            } else if (isPrivate) {
-                // User provided private key for verification.
-                // Try to derive public key from it
-                try {
-                    const privKey = await jose.importPKCS8(keyStr, alg);
-                    // Export as SPKI (Public Key)
-                    const spkiPem = await jose.exportSPKI(privKey);
-                    return await jose.importSPKI(spkiPem, alg);
-                } catch (e) {
-                     console.warn("Failed to derive public key from private key", e);
-                     // Fallback: try using private key directly (might fail depending on runtime)
-                     return await jose.importPKCS8(keyStr, alg);
-                }
-            } else {
-                 // Try importing as SPKI by default if headers are missing or unclear, 
-                 // but usually PEM headers are required by jose.
-                 // Let's just try SPKI first.
-                 return await jose.importSPKI(keyStr, alg);
-            }
+    const isHmacAlg = (alg: string) => alg.startsWith('HS')
+    const isNoneAlg = (alg: string) => alg === 'none'
+
+    const getKey = async (alg: string, keyStr: string, usage: 'sign' | 'verify') => {
+        if (isNoneAlg(alg)) return undefined
+
+        // HMAC
+        if (isHmacAlg(alg)) {
+            if (!keyStr) throw new Error(t("tools.encoder.error.missingSecret"))
+            return new TextEncoder().encode(keyStr)
         }
-    } catch (e) {
-        throw new Error(`${t("tools.encoder.error.invalidKey", { alg })}: ${(e as Error).message}`);
+
+        // Asymmetric (RSA / RSA-PSS / ECDSA)
+        try {
+            const pem = normalizePem(keyStr)
+            if (!pem) {
+                throw new Error(
+                    usage === 'sign'
+                        ? t("tools.encoder.error.missingPrivateKey", { alg })
+                        : t("tools.encoder.error.missingPublicKey", { alg })
+                )
+            }
+
+            const looksPrivate = pem.includes("PRIVATE KEY")
+            const looksPublic = pem.includes("PUBLIC KEY")
+
+            if (usage === 'sign') {
+                if (looksPublic) throw new Error(t("tools.encoder.error.signWithPublic"))
+                return await jose.importPKCS8(pem, alg)
+            }
+
+            // verify
+            if (looksPublic) return await jose.importSPKI(pem, alg)
+
+            // Some users paste a private key into the verify box.
+            // We can *try* to import it and let WebCrypto decide whether verification is allowed.
+            if (looksPrivate) return await jose.importPKCS8(pem, alg)
+
+            // If headers are missing, attempt SPKI first, then PKCS8 as fallback.
+            try {
+                return await jose.importSPKI(pem, alg)
+            } catch {
+                return await jose.importPKCS8(pem, alg)
+            }
+        } catch (e) {
+            throw new Error(`${t("tools.encoder.error.invalidKey", { alg })}: ${(e as Error).message}`)
+        }
     }
-  }
 
   // Actions
   const handleDecode = async () => {
@@ -119,8 +144,18 @@ export function JwtTab() {
         if (decodedHeader.alg && decodedHeader.alg !== 'none') {
             setAlgorithm(decodedHeader.alg);
             // We don't automatically verify because we might not have the key
-            // But we can try if secret is set
-            handleVerify(token, decodedHeader.alg);
+                        // But we can try if the user already provided a key
+                        const alg = decodedHeader.alg
+                        const hasKey = isHmacAlg(alg)
+                            ? !!hmacSecret.trim()
+                            : !!(publicKeyPem || privateKeyPem).trim()
+
+                        if (hasKey) {
+                            await handleVerify(token, alg)
+                        } else {
+                            setIsValid(null)
+                            setValidationMsg("")
+                        }
         } else {
              setAlgorithm('none');
              setIsValid(true);
@@ -151,7 +186,8 @@ export function JwtTab() {
                 .setProtectedHeader(h)
                 .encode();
           } else {
-              const key = await getKey(algorithm, secret, 'sign');
+                            const keyStr = isHmacAlg(algorithm) ? hmacSecret : privateKeyPem
+                            const key = await getKey(algorithm, keyStr, 'sign');
               jwt = await new jose.SignJWT(p)
                 .setProtectedHeader(h)
                 .setIssuedAt()
@@ -181,7 +217,11 @@ export function JwtTab() {
               return;
           }
 
-          const key = await getKey(algToVerify, secret, 'verify');
+          const keyStr = isHmacAlg(algToVerify)
+            ? hmacSecret
+            : (publicKeyPem || privateKeyPem)
+
+          const key = await getKey(algToVerify, keyStr, 'verify');
           await jose.jwtVerify(tokenToVerify, key!, {
               algorithms: [algToVerify]
           });
@@ -297,24 +337,34 @@ export function JwtTab() {
                         label={t("tools.encoder.secret")}
                         size="sm"
                         className="w-2/3"
-                        value={secret}
-                        onValueChange={setSecret}
+                                                value={hmacSecret}
+                                                onValueChange={setHmacSecret}
                         type="text"
                     />
                   )}
               </div>
               
-              {/* If RSA/EC, show bigger text area for key */}
-              {(!algorithm.startsWith("HS") && algorithm !== 'none') && (
-                   <Textarea 
-                      label={t("tools.encoder.privatePublicKey")}
-                      placeholder={t("tools.encoder.pemPlaceholder")}
-                      minRows={6}
-                      value={secret}
-                      onValueChange={setSecret}
-                      className="font-mono text-[10px]"
-                   />
-              )}
+                            {/* If RSA/EC, show separate private/public PEM inputs */}
+                            {(!algorithm.startsWith("HS") && algorithm !== 'none') && (
+                                <div className="space-y-3">
+                                    <Textarea 
+                                        label={t("tools.encoder.privateKey")}
+                                        placeholder={t("tools.encoder.pemPlaceholder")}
+                                        minRows={5}
+                                        value={privateKeyPem}
+                                        onValueChange={setPrivateKeyPem}
+                                        className="font-mono text-[10px]"
+                                    />
+                                    <Textarea 
+                                        label={t("tools.encoder.publicKey")}
+                                        placeholder={t("tools.encoder.pemPlaceholder")}
+                                        minRows={5}
+                                        value={publicKeyPem}
+                                        onValueChange={setPublicKeyPem}
+                                        className="font-mono text-[10px]"
+                                    />
+                                </div>
+                            )}
 
               <Button 
                   color="secondary" 

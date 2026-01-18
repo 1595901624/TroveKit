@@ -156,9 +156,18 @@
       "signatureConfig": "簽名配置",
       "algorithm": "演算法",
       "secret": "密鑰",
+      "privateKey": "私鑰 (PKCS8 PEM)",
+      "publicKey": "公鑰 (SPKI PEM)",
       "privatePublicKey": "私鑰/公鑰 (PEM)",
       "pemKey": "PEM 密鑰",
-      "pemPlaceholder": "-----BEGIN..."
+      "pemPlaceholder": "-----BEGIN...",
+      "error": {
+        "invalidKey": "{{alg}} 的密鑰無效",
+        "signWithPublic": "不能使用公鑰進行簽名，請提供私鑰（PKCS8）。",
+        "missingSecret": "HS* 演算法需要填寫密鑰（Secret）。",
+        "missingPrivateKey": "使用 {{alg}} 簽名需要私鑰（PKCS8 PEM）。",
+        "missingPublicKey": "使用 {{alg}} 驗證需要公鑰（SPKI PEM）。"
+      }
     },
     "classical": {
       "title": "古典密碼",

@@ -156,9 +156,18 @@
       "signatureConfig": "署名設定",
       "algorithm": "アルゴリズム",
       "secret": "シークレット",
+      "privateKey": "秘密鍵 (PKCS8 PEM)",
+      "publicKey": "公開鍵 (SPKI PEM)",
       "privatePublicKey": "秘密鍵/公開鍵 (PEM)",
       "pemKey": "PEM キー",
-      "pemPlaceholder": "-----BEGIN..."
+      "pemPlaceholder": "-----BEGIN...",
+      "error": {
+        "invalidKey": "{{alg}} のキーが無効です",
+        "signWithPublic": "公開鍵では署名できません。秘密鍵（PKCS8）を指定してください。",
+        "missingSecret": "HS* アルゴリズムにはシークレットが必要です。",
+        "missingPrivateKey": "{{alg}} で署名するには秘密鍵（PKCS8 PEM）が必要です。",
+        "missingPublicKey": "{{alg}} を検証するには公開鍵（SPKI PEM）が必要です。"
+      }
     },
     "classical": {
       "title": "古典暗号",

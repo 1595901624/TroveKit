@@ -140,6 +140,8 @@
       "signatureConfig": "Signature Configuration",
       "algorithm": "Algorithm",
       "secret": "Secret",
+      "privateKey": "Private Key (PKCS8 PEM)",
+      "publicKey": "Public Key (SPKI PEM)",
       "privatePublicKey": "Private/Public Key (PEM)",
       "pemKey": "PEM Key",
       "pemPlaceholder": "-----BEGIN...",
@@ -161,7 +163,10 @@
       "crlf": "CRLF (\\r\\n)",
       "error": {
         "invalidKey": "Invalid Key for {{alg}}",
-        "signWithPublic": "Cannot sign with a Public Key. Please provide a Private Key (PKCS8)."
+        "signWithPublic": "Cannot sign with a Public Key. Please provide a Private Key (PKCS8).",
+        "missingSecret": "Secret is required for HS* algorithms.",
+        "missingPrivateKey": "Private key (PKCS8 PEM) is required for signing with {{alg}}.",
+        "missingPublicKey": "Public key (SPKI PEM) is required for verifying with {{alg}}."
       }
     },
     "classical": {
