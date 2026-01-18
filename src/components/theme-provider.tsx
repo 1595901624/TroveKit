@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useEffect, useState } from "react"
+import React, { createContext, useContext, useEffect } from "react"
+import { usePersistentState } from "../hooks/usePersistentState"
 
 type Theme = "dark" | "light" | "system"
 
@@ -25,9 +26,8 @@ export function ThemeProvider({
   defaultTheme = "system",
   storageKey = "vite-ui-theme",
 }: ThemeProviderProps) {
-  const [theme, setTheme] = useState<Theme>(
-    () => (localStorage.getItem(storageKey) as Theme) || defaultTheme
-  )
+  // Use persistent state hook. Note that it is async, so theme might update after mount.
+  const [theme, setTheme] = usePersistentState<Theme>(storageKey, defaultTheme)
 
   useEffect(() => {
     const root = window.document.documentElement
@@ -57,7 +57,6 @@ export function ThemeProvider({
   const value = {
     theme,
     setTheme: (theme: Theme) => {
-      localStorage.setItem(storageKey, theme)
       setTheme(theme)
     },
   }

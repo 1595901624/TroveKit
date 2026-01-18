@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useCallback, useEffect } fr
 import { addToast } from "@heroui/react"
 import { invoke } from "@tauri-apps/api/core"
 import { useTranslation } from "react-i18next"
+import { usePersistentState } from "../hooks/usePersistentState"
 
 // This context provides logging functionality throughout the app.
 // example：
@@ -83,26 +84,8 @@ export function LogProvider({ children }: { children: React.ReactNode }) {
   const [logs, setLogs] = useState<LogEntry[]>([])
 
   // 从 localStorage 恢复面板展开状态，默认关闭
-  const getInitialIsOpen = () => {
-    try {
-      const stored = localStorage.getItem('logPanelIsOpen')
-      return stored ? JSON.parse(stored) : false
-    } catch (err) {
-      console.warn('Failed to load logPanelIsOpen from localStorage:', err)
-      return false
-    }
-  }
-
-  const [isOpen, setIsOpen] = useState<boolean>(getInitialIsOpen)
-
-  // 持久化 isOpen 到 localStorage（含错误处理）
-  useEffect(() => {
-    try {
-      localStorage.setItem('logPanelIsOpen', JSON.stringify(isOpen))
-    } catch (err) {
-      console.warn('Failed to save logPanelIsOpen to localStorage:', err)
-    }
-  }, [isOpen])
+  // 使用 usePersistentState 替代 localStorage
+  const [isOpen, setIsOpen] = usePersistentState<boolean>('logPanelIsOpen', false)
 
   const [sessionNote, setSessionNote] = useState("")
   const [currentSessionId, setCurrentSessionId] = useState<string | null>(null)

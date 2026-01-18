@@ -5,39 +5,38 @@ import { Copy, Trash2, CheckCircle2, AlertCircle, Minimize2, Maximize2, AlignLef
 import { useTranslation } from "react-i18next"
 import ReactJson from 'react-json-view'
 import { useTheme } from "../../components/theme-provider"
+import { useStorageLoader } from "../../hooks/usePersistentState"
+import { setStoredItem, removeStoredItem } from "../../lib/store"
 
 const STORAGE_KEY = "json-tool-state"
-
-const loadStateFromStorage = () => {
-  try {
-    const stored = localStorage.getItem(STORAGE_KEY)
-    return stored ? JSON.parse(stored) : {}
-  } catch {
-    return {}
-  }
-}
-
-const saveStateToStorage = (state: Record<string, any>) => {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
-}
 
 export function JsonTab() {
   const { t } = useTranslation()
   const { theme } = useTheme()
 
-  const savedState = loadStateFromStorage()
+  const [savedState, isLoaded] = useStorageLoader<any>(STORAGE_KEY)
 
-  const [code, setCode] = useState(savedState.code || "")
+  const [code, setCode] = useState("")
   const [isValid, setIsValid] = useState<boolean | null>(null)
   const [errorMsg, setErrorMsg] = useState<string>("")
-  const [viewMode, setViewMode] = useState<"text" | "graph">(savedState.viewMode || "text")
-  const [collapsed, setCollapsed] = useState<boolean | number>(savedState.collapsed !== undefined ? savedState.collapsed : false)
+  const [viewMode, setViewMode] = useState<"text" | "graph">("text")
+  const [collapsed, setCollapsed] = useState<boolean | number>(false)
 
   const editorRef = useRef<any>(null)
 
   useEffect(() => {
-    saveStateToStorage({ code, viewMode, collapsed })
-  }, [code, viewMode, collapsed])
+    if (isLoaded && savedState) {
+        if (savedState.code) setCode(savedState.code)
+        if (savedState.viewMode) setViewMode(savedState.viewMode)
+        if (savedState.collapsed !== undefined) setCollapsed(savedState.collapsed)
+    }
+  }, [isLoaded, savedState])
+
+  useEffect(() => {
+    if (isLoaded) {
+      setStoredItem(STORAGE_KEY, JSON.stringify({ code, viewMode, collapsed }))
+    }
+  }, [code, viewMode, collapsed, isLoaded])
 
   const handleEditorDidMount: OnMount = (editor, monaco) => {
     editorRef.current = editor
@@ -291,7 +290,7 @@ export function JsonTab() {
           <Button isIconOnly variant="light" onPress={copyToClipboard} title={t("tools.encoder.copy")}>
             <Copy className="w-4 h-4" />
           </Button>
-          <Button isIconOnly variant="light" color="danger" onPress={() => { setCode(""); setIsValid(null); setErrorMsg(""); localStorage.removeItem(STORAGE_KEY); }} title={t("tools.encoder.clearAll")}>
+          <Button isIconOnly variant="light" color="danger" onPress={() => { setCode(""); setIsValid(null); setErrorMsg(""); removeStoredItem(STORAGE_KEY); }} title={t("tools.encoder.clearAll")}>
             <Trash2 className="w-4 h-4" />
           </Button>
         </div>

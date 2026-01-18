@@ -5,6 +5,7 @@ import CN from 'country-flag-icons/react/3x2/CN'
 import TW from 'country-flag-icons/react/3x2/TW'
 import HK from 'country-flag-icons/react/3x2/HK'
 import JP from 'country-flag-icons/react/3x2/JP'
+import { setStoredItem } from "../lib/store"
 
 export function LanguageSelector() {
   const { i18n, t } = useTranslation()
@@ -13,7 +14,7 @@ export function LanguageSelector() {
     const newLang = e.target.value
     if (newLang) {
       i18n.changeLanguage(newLang)
-      localStorage.setItem("i18nextLng", newLang)
+      setStoredItem("i18nextLng", newLang)
     }
   }
 

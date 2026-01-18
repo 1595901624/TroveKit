@@ -25,13 +25,11 @@ const resources = {
   },
 }
 
-const savedLanguage = localStorage.getItem("i18nextLng") || "en"
-
 i18n
   .use(initReactI18next)
   .init({
     resources,
-    lng: savedLanguage,
+    lng: "en", // Default to en, will be updated by App component
     fallbackLng: "en",
     interpolation: {
       escapeValue: false, // react already safes from xss

@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Layout } from "./components/Layout"
 import { ThemeProvider } from "./components/theme-provider"
 import { HashTool } from "./tools/HashTool"
@@ -13,11 +13,20 @@ import { ToolId } from "./components/Sidebar"
 import { Card, CardBody } from "@heroui/react"
 import { ArrowRight, Lock, Code2, FileCode2, Shield, Wand2, ArrowRightLeft } from "lucide-react"
 import { useTranslation } from "react-i18next"
+import { getStoredItem } from "./lib/store"
 
 function App() {
   const [activeTool, setActiveTool] = useState<ToolId>("home")
   const [activeTab, setActiveTab] = useState<string | undefined>()
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
+
+  useEffect(() => {
+    getStoredItem("i18nextLng").then((lang) => {
+      if (lang) {
+        i18n.changeLanguage(lang)
+      }
+    })
+  }, [i18n])
 
   const handleToolChange = (id: ToolId) => {
     setActiveTool(id)

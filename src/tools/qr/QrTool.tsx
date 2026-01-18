@@ -8,23 +8,11 @@ import { Download, Upload, X, Zap, RotateCcw, Type, Wifi } from "lucide-react"
 import { HexAlphaColorPicker } from "react-colorful"
 import { open, save } from "@tauri-apps/plugin-dialog"
 import { readFile, writeFile } from "@tauri-apps/plugin-fs"
+import { getStoredItem, setStoredItem, removeStoredItem } from "../../lib/store"
 
 type QrMode = "text" | "wifi"
 
 const STORAGE_KEY = "qr-tool-state"
-
-const loadStateFromStorage = () => {
-  try {
-    const stored = localStorage.getItem(STORAGE_KEY)
-    return stored ? JSON.parse(stored) : {}
-  } catch {
-    return {}
-  }
-}
-
-const saveStateToStorage = (state: Record<string, any>) => {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
-}
 
 const MAX_QR_SIZE = 5000
 const MIN_QR_SIZE = 50
@@ -178,30 +166,29 @@ const utf8Encode = (str: string): string => {
 export function QrTool() {
   const { t } = useTranslation()
   
-  const savedState = loadStateFromStorage()
-
-  const [selectedMode, setSelectedMode] = useState<QrMode>(savedState.selectedMode || "text")
+  const [selectedMode, setSelectedMode] = useState<QrMode>("text")
   const ref = useRef<HTMLDivElement>(null)
   const qrCode = useRef<QRCodeStyling>(null)
   const downloadRef = useRef<HTMLDivElement>(null)
+  const [isLoaded, setIsLoaded] = useState(false)
 
   // Content State
-  const [text, setText] = useState(savedState.text || "https://example.com")
-  const [wifi, setWifi] = useState<WifiState>(savedState.wifi || {
+  const [text, setText] = useState("https://example.com")
+  const [wifi, setWifi] = useState<WifiState>({
       ssid: "",
       encryption: "WPA",
       hidden: false
   })
 
   // Settings State
-  const [width, setWidth] = useState(savedState.width || 512)
-  const [realTime, setRealTime] = useState(savedState.realTime !== undefined ? savedState.realTime : true)
-  const [qrColor, setQrColor] = useState(savedState.qrColor || DEFAULT_OPTIONS.qrColor)
-  const [bgColor, setBgColor] = useState(savedState.bgColor || DEFAULT_OPTIONS.bgColor)
-  const [dotsColor, setDotsColor] = useState(savedState.dotsColor || DEFAULT_OPTIONS.qrColor)
-  const [cornersColor, setCornersColor] = useState(savedState.cornersColor || DEFAULT_OPTIONS.qrColor)
-  const [correction, setCorrection] = useState(savedState.correction || DEFAULT_OPTIONS.correction)
-  const [logo, setLogo] = useState(savedState.logo || "")
+  const [width, setWidth] = useState(512)
+  const [realTime, setRealTime] = useState(true)
+  const [qrColor, setQrColor] = useState(DEFAULT_OPTIONS.qrColor)
+  const [bgColor, setBgColor] = useState(DEFAULT_OPTIONS.bgColor)
+  const [dotsColor, setDotsColor] = useState(DEFAULT_OPTIONS.qrColor)
+  const [cornersColor, setCornersColor] = useState(DEFAULT_OPTIONS.qrColor)
+  const [correction, setCorrection] = useState(DEFAULT_OPTIONS.correction)
+  const [logo, setLogo] = useState("")
 
   // Init QR Code instance
   useEffect(() => {
@@ -220,6 +207,32 @@ export function QrTool() {
     }
     updateQr()
   }, [])
+
+  useEffect(() => {
+      let mounted = true;
+      getStoredItem(STORAGE_KEY).then((stored) => {
+          if (mounted && stored) {
+              try {
+                  const state = JSON.parse(stored);
+                  if (state.selectedMode) setSelectedMode(state.selectedMode);
+                  if (state.text) setText(state.text);
+                  if (state.wifi) setWifi(state.wifi);
+                  if (state.width) setWidth(state.width);
+                  if (state.realTime !== undefined) setRealTime(state.realTime);
+                  if (state.qrColor) setQrColor(state.qrColor);
+                  if (state.bgColor) setBgColor(state.bgColor);
+                  if (state.dotsColor) setDotsColor(state.dotsColor);
+                  if (state.cornersColor) setCornersColor(state.cornersColor);
+                  if (state.correction) setCorrection(state.correction);
+                  if (state.logo) setLogo(state.logo);
+              } catch (e) {
+                  console.error("Failed to parse QR tool state", e);
+              }
+          }
+          if (mounted) setIsLoaded(true);
+      });
+      return () => { mounted = false; };
+  }, []);
 
   // Input Validation Helper
   const handleTextChange = (newText: string) => {
@@ -307,8 +320,9 @@ export function QrTool() {
 
   // Effect for Real-time and Saving
   useEffect(() => {
+    if (!isLoaded) return;
     // Save state
-    saveStateToStorage({
+    setStoredItem(STORAGE_KEY, JSON.stringify({
         selectedMode,
         text,
         wifi,
@@ -320,7 +334,7 @@ export function QrTool() {
         cornersColor,
         correction,
         logo
-    })
+    }));
 
     if (realTime) {
         // Debounce slightly to prevent flashing
@@ -329,7 +343,7 @@ export function QrTool() {
         }, 100)
         return () => clearTimeout(timer)
     }
-  }, [text, wifi, qrColor, bgColor, dotsColor, cornersColor, correction, logo, selectedMode, realTime, width])
+  }, [text, wifi, qrColor, bgColor, dotsColor, cornersColor, correction, logo, selectedMode, realTime, width, isLoaded])
 
   // Explicit Generate
   const handleGenerate = () => {
@@ -427,7 +441,7 @@ export function QrTool() {
       setCorrection(DEFAULT_OPTIONS.correction)
       setLogo("")
       setWidth(512)
-      localStorage.removeItem(STORAGE_KEY)
+      removeStoredItem(STORAGE_KEY)
       if (realTime) setTimeout(() => updateQr(), 50)
   }
 

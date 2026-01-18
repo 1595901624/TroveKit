@@ -1,9 +1,9 @@
-import { useState, useEffect } from "react"
 import { Textarea, Button, RadioGroup, Radio } from "@heroui/react"
 import { Copy, Trash2, Hash } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { useLog } from "../../contexts/LogContext"
 import CryptoJS from "crypto-js"
+import { usePersistentState } from "../../hooks/usePersistentState"
 
 // 定义 MD5 状态接口
 interface Md5State {
@@ -21,32 +21,15 @@ export function Md5Tab() {
   const { addLog } = useLog()
 
   // 初始化状态，从 localStorage 恢复或使用默认值
-  const [state, setState] = useState<Md5State>(() => {
-    const saved = localStorage.getItem(MD5_STORAGE_KEY)
-    if (saved) {
-      try {
-        return JSON.parse(saved)
-      } catch {
-        // 如果解析失败，返回默认状态
-      }
-    }
-    
-    // 默认状态
-    return {
-      input: "",
-      output: "",
-      bit: "32",
-      case: "lower"
-    }
+  const [state, setState, clearState] = usePersistentState<Md5State>(MD5_STORAGE_KEY, {
+    input: "",
+    output: "",
+    bit: "32",
+    case: "lower"
   })
 
   // 解构状态以便于使用
   const { input, output, bit, case: md5Case } = state
-
-  // 当状态改变时，保存到 localStorage
-  useEffect(() => {
-    localStorage.setItem(MD5_STORAGE_KEY, JSON.stringify(state))
-  }, [state])
 
   const handleMd5Hash = () => {
     if (!input) return
@@ -133,7 +116,8 @@ export function Md5Tab() {
                 ...prev, 
                 input: "", 
                 output: "" 
-              }))
+              }));
+              clearState();
             }} title={t("tools.hash.clearAll")}>
               <Trash2 className="w-4 h-4" />
             </Button>
@@ -160,3 +144,4 @@ export function Md5Tab() {
     </div>
   )
 }
+

@@ -4,32 +4,38 @@ import { Copy, Trash2, Hash } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { useLog } from "../../contexts/LogContext"
 import CryptoJS from "crypto-js"
+import { getStoredItem, setStoredItem, removeStoredItem } from "../../lib/store"
 
 const STORAGE_KEY = "sha-tool-state"
-
-const loadStateFromStorage = () => {
-  try {
-    const stored = localStorage.getItem(STORAGE_KEY)
-    return stored ? JSON.parse(stored) : {}
-  } catch {
-    return {}
-  }
-}
-
-const saveStateToStorage = (state: Record<string, any>) => {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
-}
 
 export function ShaTab() {
   const { t } = useTranslation()
   const { addLog } = useLog()
 
-  const savedState = loadStateFromStorage()
+  const [shaInput, setShaInput] = useState("")
+  const [shaOutput, setShaOutput] = useState("")
+  const [shaType, setShaType] = useState("SHA256") // "SHA1" | "SHA256" | "SHA512"
+  const [shaCase, setShaCase] = useState("lower") // "lower" | "upper"
+  const [isLoaded, setIsLoaded] = useState(false)
 
-  const [shaInput, setShaInput] = useState(savedState.shaInput || "")
-  const [shaOutput, setShaOutput] = useState(savedState.shaOutput || "")
-  const [shaType, setShaType] = useState(savedState.shaType || "SHA256") // "SHA1" | "SHA256" | "SHA512"
-  const [shaCase, setShaCase] = useState(savedState.shaCase || "lower") // "lower" | "upper"
+  useEffect(() => {
+    let mounted = true;
+    getStoredItem(STORAGE_KEY).then((stored) => {
+      if (mounted && stored) {
+        try {
+          const state = JSON.parse(stored);
+          if (state.shaInput) setShaInput(state.shaInput);
+          if (state.shaOutput) setShaOutput(state.shaOutput);
+          if (state.shaType) setShaType(state.shaType);
+          if (state.shaCase) setShaCase(state.shaCase);
+        } catch (e) {
+          console.error("Failed to parse ShaTab state", e);
+        }
+      }
+      if (mounted) setIsLoaded(true);
+    });
+    return () => { mounted = false; };
+  }, []);
 
   const handleShaHash = () => {
     if (!shaInput) return
@@ -80,13 +86,15 @@ export function ShaTab() {
   }
 
   useEffect(() => {
-    saveStateToStorage({
-      shaInput,
-      shaOutput,
-      shaType,
-      shaCase
-    })
-  }, [shaInput, shaOutput, shaType, shaCase])
+    if (isLoaded) {
+      setStoredItem(STORAGE_KEY, JSON.stringify({
+        shaInput,
+        shaOutput,
+        shaType,
+        shaCase
+      }))
+    }
+  }, [shaInput, shaOutput, shaType, shaCase, isLoaded])
 
   return (
     <div className="space-y-4">
@@ -138,7 +146,7 @@ export function ShaTab() {
             <Button color="primary" variant="flat" onPress={handleShaHash} startContent={<Hash className="w-4 h-4" />}>
               {t("tools.hash.generate")}
             </Button>
-            <Button isIconOnly variant="light" color="danger" onPress={() => { setShaInput(""); setShaOutput(""); setShaType("SHA256"); setShaCase("lower"); localStorage.removeItem(STORAGE_KEY); }} title={t("tools.hash.clearAll")}>
+            <Button isIconOnly variant="light" color="danger" onPress={() => { setShaInput(""); setShaOutput(""); setShaType("SHA256"); setShaCase("lower"); removeStoredItem(STORAGE_KEY); }} title={t("tools.hash.clearAll")}>
               <Trash2 className="w-4 h-4" />
             </Button>
           </div>
@@ -164,3 +172,4 @@ export function ShaTab() {
     </div>
   )
 }
+

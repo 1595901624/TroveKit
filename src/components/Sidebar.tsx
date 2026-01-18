@@ -14,7 +14,7 @@ import {
 import { Button, Tooltip } from "@heroui/react"
 import { cn } from "../lib/utils"
 import { useTranslation } from "react-i18next"
-import { useState, useEffect } from "react"
+import { usePersistentState } from "../hooks/usePersistentState"
 
 export type ToolId = "home" | "encoder" | "crypto" | "classical" | "formatters" | "generators" | "converter" | "logManagement" | "settings"
 
@@ -26,18 +26,11 @@ interface SidebarProps {
 export function Sidebar({ activeTool, onToolChange }: SidebarProps) {
   const { t } = useTranslation()
   // const [version, setVersion] = useState("v0.1.0")
-  const [isCollapsed, setIsCollapsed] = useState(() => {
-    const saved = localStorage.getItem("sidebar-collapsed")
-    return saved === "true"
-  })
+  const [isCollapsed, setIsCollapsed] = usePersistentState<boolean>("sidebar-collapsed", false)
 
   // useEffect(() => {
   //   getVersion().then(setVersion).catch(() => setVersion("v0.1.0"))
   // }, [])
-
-  useEffect(() => {
-    localStorage.setItem("sidebar-collapsed", String(isCollapsed))
-  }, [isCollapsed])
 
   const menuItems = [
     { id: "home", label: t("nav.home"), icon: Home },
