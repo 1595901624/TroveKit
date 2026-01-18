@@ -145,7 +145,20 @@
       "encoderOptions": "エンコーダーオプション",
       "newlineMode": "改行モード",
       "lf": "LF (\\n)",
-      "crlf": "CRLF (\\r\\n)"
+      "crlf": "CRLF (\\r\\n)",
+      "jwtToken": "JWT トークン",
+      "encodeJwt": "トークンをエンコード",
+      "verify": "署名を検証",
+      "jwtPlaceholder": "JWT をここに貼り付け...",
+      "ready": "準備完了",
+      "header": "ヘッダー",
+      "payload": "ペイロード",
+      "signatureConfig": "署名設定",
+      "algorithm": "アルゴリズム",
+      "secret": "シークレット",
+      "privatePublicKey": "秘密鍵/公開鍵 (PEM)",
+      "pemKey": "PEM キー",
+      "pemPlaceholder": "-----BEGIN..."
     },
     "classical": {
       "title": "古典暗号",

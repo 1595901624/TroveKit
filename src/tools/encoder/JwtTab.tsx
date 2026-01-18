@@ -193,7 +193,7 @@ export function JwtTab() {
              minRows={10}
              value={token}
              onValueChange={setToken}
-             placeholder="Paste JWT here..."
+             placeholder={t("tools.encoder.jwtPlaceholder")}
           />
           
           {/* Validation Status */}
@@ -203,7 +203,7 @@ export function JwtTab() {
                   {isValid === false && <AlertCircle className="w-5 h-5 text-danger" />}
                   {isValid === null && <div className="w-5 h-5" />}
                   <div className="flex-1 text-xs font-mono truncate">
-                      {isValid === null ? "Ready" : validationMsg}
+                      {isValid === null ? t("tools.encoder.ready") : validationMsg}
                   </div>
                   <Button size="sm" variant="light" onPress={() => handleVerify()}>
                       {t("tools.encoder.verify")}
@@ -218,7 +218,7 @@ export function JwtTab() {
           {/* Header */}
           <div className="space-y-2">
              <div className="flex items-center justify-between">
-                 <span className="text-xs font-medium text-default-500">Header</span>
+                 <span className="text-xs font-medium text-default-500">{t("tools.encoder.header")}</span>
              </div>
              <Textarea 
                 minRows={3}
@@ -233,7 +233,7 @@ export function JwtTab() {
           {/* Payload */}
           <div className="space-y-2 flex-1">
              <div className="flex items-center justify-between">
-                 <span className="text-xs font-medium text-default-500">Payload</span>
+                 <span className="text-xs font-medium text-default-500">{t("tools.encoder.payload")}</span>
              </div>
              <Textarea 
                 minRows={6}
@@ -248,12 +248,12 @@ export function JwtTab() {
           <div className="p-4 bg-default-50 rounded-xl border border-default-200 space-y-4">
               <div className="flex items-center gap-2 text-default-600">
                   <KeyRound className="w-4 h-4" />
-                  <span className="text-xs font-bold uppercase">Signature Configuration</span>
+                  <span className="text-xs font-bold uppercase">{t("tools.encoder.signatureConfig")}</span>
               </div>
               
               <div className="grid grid-cols-3 gap-2">
                   <Select 
-                      label="Algorithm" 
+                      label={t("tools.encoder.algorithm")} 
                       size="sm" 
                       className="col-span-1"
                       selectedKeys={[algorithm]}
@@ -263,7 +263,7 @@ export function JwtTab() {
                   </Select>
                   
                   <Input 
-                      label={algorithm.startsWith("HS") ? "Secret" : "Private/Public Key (PEM)"}
+                      label={algorithm.startsWith("HS") ? t("tools.encoder.secret") : t("tools.encoder.privatePublicKey")}
                       size="sm"
                       className="col-span-2"
                       value={secret}
@@ -275,8 +275,8 @@ export function JwtTab() {
               {/* If RSA/EC, show bigger text area for key */}
               {(!algorithm.startsWith("HS") && algorithm !== 'none') && (
                    <Textarea 
-                      label="PEM Key"
-                      placeholder="-----BEGIN..."
+                      label={t("tools.encoder.pemKey")}
+                      placeholder={t("tools.encoder.pemPlaceholder")}
                       minRows={3}
                       value={secret}
                       onValueChange={setSecret}

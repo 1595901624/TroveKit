@@ -145,7 +145,20 @@
       "encoderOptions": "编码选项",
       "newlineMode": "换行模式",
       "lf": "LF (\\n)",
-      "crlf": "CRLF (\\r\\n)"
+      "crlf": "CRLF (\\r\\n)",
+      "jwtToken": "JWT 令牌",
+      "encodeJwt": "编码令牌",
+      "verify": "验证签名",
+      "jwtPlaceholder": "粘贴 JWT 这里...",
+      "ready": "就绪",
+      "header": "头部",
+      "payload": "载荷",
+      "signatureConfig": "签名配置",
+      "algorithm": "算法",
+      "secret": "密钥",
+      "privatePublicKey": "私钥/公钥 (PEM)",
+      "pemKey": "PEM 密钥",
+      "pemPlaceholder": "-----BEGIN..."
     },
     "classical": {
       "title": "古典密码",

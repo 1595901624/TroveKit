@@ -145,7 +145,20 @@
       "encoderOptions": "編碼選項",
       "newlineMode": "換行模式",
       "lf": "LF (\\n)",
-      "crlf": "CRLF (\\r\\n)"
+      "crlf": "CRLF (\\r\\n)",
+      "jwtToken": "JWT 令牌",
+      "encodeJwt": "編碼令牌",
+      "verify": "驗證簽名",
+      "jwtPlaceholder": "貼上 JWT 這裡...",
+      "ready": "準備就緒",
+      "header": "標頭",
+      "payload": "載荷",
+      "signatureConfig": "簽名配置",
+      "algorithm": "演算法",
+      "secret": "密鑰",
+      "privatePublicKey": "私鑰/公鑰 (PEM)",
+      "pemKey": "PEM 密鑰",
+      "pemPlaceholder": "-----BEGIN..."
     },
     "classical": {
       "title": "古典密碼",
