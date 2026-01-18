@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { Textarea, Button, Select, SelectItem, Card, CardBody, Input, Chip, ScrollShadow } from "@heroui/react"
+import { Textarea, Button, Select, SelectItem, Card, CardBody, Input, ScrollShadow } from "@heroui/react"
 import { Copy, Trash2, RotateCw, CheckCircle2, AlertCircle, KeyRound, Lock, Unlock, FileJson, ShieldCheck, Fingerprint } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { useLog } from "../../contexts/LogContext"
@@ -317,21 +317,28 @@ export function JwtTab() {
                 <ShieldCheck className="w-4 h-4 text-success" />
                 <h3 className="text-xs font-bold text-default-700 uppercase tracking-wider">{t("tools.encoder.signatureConfig")}</h3>
               </div>
-              {isValid !== null && (
-                  <Chip
-                    size="sm"
-                    variant="flat"
-                    color={isValid ? "success" : "danger"}
-                    startContent={isValid ? <CheckCircle2 className="w-3 h-3" /> : <AlertCircle className="w-3 h-3" />}
-                    className="h-6"
-                    classNames={{ content: "font-bold text-[9px] uppercase tracking-tighter" }}
-                  >
-                      {validationMsg || (isValid ? "Verified" : "Invalid")}
-                  </Chip>
-              )}
             </div>
 
             <ScrollShadow className="flex-1 p-5 space-y-6">
+              {/* Validation Status Area */}
+              {isValid !== null && (
+                  <div className={`p-3 rounded-xl border flex items-start gap-3 animate-in fade-in slide-in-from-top-1 duration-200 ${
+                    isValid ? "bg-success-50/50 border-success-200" : "bg-danger-50/50 border-danger-200"
+                  }`}>
+                    <div className={`p-1.5 rounded-lg ${isValid ? "bg-success-100" : "bg-danger-100"}`}>
+                        {isValid ? <CheckCircle2 className="w-4 h-4 text-success" /> : <AlertCircle className="w-4 h-4 text-danger" />}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                        <p className={`text-xs font-bold ${isValid ? "text-success-700" : "text-danger-700"}`}>
+                            {isValid ? "Verified" : "Invalid Signature"}
+                        </p>
+                        <p className={`text-[10px] mt-0.5 break-words leading-relaxed ${isValid ? "text-success-600/80" : "text-danger-600/80"}`}>
+                            {validationMsg || (isValid ? "Token signature is valid." : "Token signature verification failed.")}
+                        </p>
+                    </div>
+                  </div>
+              )}
+
               {/* Algorithm Selection */}
               <div className="space-y-2">
                 <label className="text-[10px] font-bold text-default-400 uppercase ml-1">{t("tools.encoder.algorithm")}</label>
