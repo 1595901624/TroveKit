@@ -152,7 +152,7 @@ export function JwtTab() {
         } else {
              setAlgorithm('none');
              setIsValid(true);
-             setValidationMsg("Unsecured JWT");
+             setValidationMsg(t("tools.encoder.unsecuredJwt"));
         }
         
         addLog({ method: "JWT Decode", input: "Token", output: "Decoded" }, "success");
@@ -188,7 +188,7 @@ export function JwtTab() {
           
           setToken(jwt);
           setIsValid(true);
-          setValidationMsg("Generated & Signed");
+          setValidationMsg(t("tools.encoder.generatedAndSigned"));
           addLog({ method: "JWT Encode", input: "Payload", output: "Token generated" }, "success");
       } catch (e) {
           console.error(e);
@@ -205,7 +205,7 @@ export function JwtTab() {
       try {
           if (algToVerify === 'none') {
               setIsValid(true);
-              setValidationMsg("Algorithm is none.");
+              setValidationMsg(t("tools.encoder.algNoneMessage"));
               return;
           }
 
@@ -219,7 +219,7 @@ export function JwtTab() {
           });
           
           setIsValid(true);
-          setValidationMsg("Signature Verified");
+          setValidationMsg(t("tools.encoder.tokenSignatureValid"));
       } catch (e) {
           setIsValid(false);
           setValidationMsg((e as Error).message);
@@ -330,10 +330,10 @@ export function JwtTab() {
                     </div>
                     <div className="flex-1 min-w-0">
                         <p className={`text-xs font-bold ${isValid ? "text-success-700" : "text-danger-700"}`}>
-                            {isValid ? "Verified" : "Invalid Signature"}
+                            {isValid ? t("tools.encoder.verified") : t("tools.encoder.invalidSignature")}
                         </p>
                         <p className={`text-[10px] mt-0.5 break-words leading-relaxed ${isValid ? "text-success-600/80" : "text-danger-600/80"}`}>
-                            {validationMsg || (isValid ? "Token signature is valid." : "Token signature verification failed.")}
+                            {validationMsg || (isValid ? t("tools.encoder.tokenSignatureValid") : t("tools.encoder.tokenSignatureInvalid"))}
                         </p>
                     </div>
                   </div>
@@ -343,7 +343,7 @@ export function JwtTab() {
               <div className="space-y-2">
                 <label className="text-[10px] font-bold text-default-400 uppercase ml-1">{t("tools.encoder.algorithm")}</label>
                 <Select 
-                    placeholder="Select Algorithm"
+                    placeholder={t("tools.encoder.selectAlgorithm")}
                     size="md"
                     selectedKeys={[algorithm]}
                     onChange={(e) => setAlgorithm(e.target.value)}
@@ -361,7 +361,7 @@ export function JwtTab() {
                     <div className="space-y-2">
                       <label className="text-[10px] font-bold text-default-400 uppercase ml-1">{t("tools.encoder.secret")}</label>
                       <Input 
-                          placeholder="Enter your secret key"
+                          placeholder={t("tools.encoder.secretPlaceholder")}
                           size="md"
                           value={hmacSecret}
                           onValueChange={setHmacSecret}
@@ -377,7 +377,7 @@ export function JwtTab() {
                           <div className="space-y-2">
                             <label className="text-[10px] font-bold text-default-400 uppercase ml-1">{t("tools.encoder.privateKey")}</label>
                             <Textarea 
-                                placeholder="-----BEGIN PRIVATE KEY-----"
+                                placeholder={t("tools.encoder.privateKeyPlaceholder")}
                                 minRows={5}
                                 maxRows={10}
                                 value={privateKeyPem}
@@ -389,7 +389,7 @@ export function JwtTab() {
                           <div className="space-y-2">
                             <label className="text-[10px] font-bold text-default-400 uppercase ml-1">{t("tools.encoder.publicKey")}</label>
                             <Textarea 
-                                placeholder="-----BEGIN PUBLIC KEY-----"
+                                placeholder={t("tools.encoder.publicKeyPlaceholder")}
                                 minRows={5}
                                 maxRows={10}
                                 value={publicKeyPem}
@@ -404,7 +404,7 @@ export function JwtTab() {
                   {isNoneAlg(algorithm) && (
                     <div className="py-8 text-center border-2 border-dashed border-default-200 rounded-xl bg-default-50/50">
                       <Unlock className="w-8 h-8 text-warning mx-auto mb-2 opacity-50" />
-                      <p className="text-xs text-default-500 font-medium">Unsecured JWT - No key required</p>
+                      <p className="text-xs text-default-500 font-medium">{t("tools.encoder.unsecuredJwt")}</p>
                     </div>
                   )}
               </div>
