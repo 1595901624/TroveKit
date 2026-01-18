@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { Textarea, Button, Select, SelectItem, Card, CardBody, Input, Badge, Chip } from "@heroui/react"
+import { Textarea, Button, Select, SelectItem, Card, CardBody, Input, Chip, Divider } from "@heroui/react"
 import { Copy, Trash2, RotateCw, CheckCircle2, AlertCircle, KeyRound, Lock, Unlock, FileJson } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { useLog } from "../../contexts/LogContext"
@@ -236,91 +236,88 @@ export function JwtTab() {
   }
 
   return (
-    <div className="flex flex-col lg:flex-row h-full gap-6 p-2 overflow-hidden">
+    <div className="flex flex-col xl:flex-row h-full gap-6 p-4 overflow-hidden bg-default-50/30">
       {/* Left Panel: Encoded Token */}
-      <div className="flex-1 flex flex-col min-w-[300px] gap-2">
+      <div className="flex-1 flex flex-col min-w-[300px] gap-3">
           <div className="flex items-center justify-between px-1">
               <h3 className="text-sm font-bold text-default-700 tracking-wide uppercase">{t("tools.encoder.jwtToken")}</h3>
-              <div className="flex gap-1">
-                 <Button size="sm" variant="light" color="primary" onPress={() => handleDecode()} startContent={<RotateCw className="w-3.5 h-3.5" />}>
+              <div className="flex gap-2">
+                 <Button size="sm" variant="flat" color="primary" onPress={() => handleDecode()} startContent={<RotateCw className="w-3.5 h-3.5" />}>
                      {t("tools.encoder.decode")}
                  </Button>
-                 <Button size="sm" isIconOnly variant="light" onPress={() => copyToClipboard(token)}>
-                     <Copy className="w-3.5 h-3.5 text-default-500" />
+                 <Button size="sm" isIconOnly variant="flat" onPress={() => copyToClipboard(token)}>
+                     <Copy className="w-3.5 h-3.5 text-default-600" />
                  </Button>
-                 <Button size="sm" isIconOnly variant="light" color="danger" onPress={() => setToken("")}>
+                 <Button size="sm" isIconOnly variant="flat" color="danger" onPress={() => setToken("")}>
                      <Trash2 className="w-3.5 h-3.5" />
                  </Button>
               </div>
           </div>
           
-          <div className="flex-1 relative group">
+          <div className="flex-1 relative group rounded-xl overflow-hidden shadow-sm border border-default-200">
             <Textarea 
                 className="h-full font-mono text-sm"
                 classNames={{ 
-                    input: "h-full !text-default-700", 
-                    inputWrapper: "h-full bg-default-50 hover:bg-default-100 group-hover:ring-1 ring-default-200 transition-all" 
+                    input: "h-full !text-default-700 p-4", 
+                    inputWrapper: "h-full bg-background group-hover:bg-default-50 transition-colors" 
                 }}
                 minRows={15}
                 value={token}
                 onValueChange={setToken}
                 placeholder={t("tools.encoder.jwtPlaceholder")}
                 variant="flat"
+                disableAnimation
             />
           </div>
       </div>
 
       {/* Right Panel: Decoded & Config */}
-      <div className="flex-1 flex flex-col min-w-[300px] gap-4 overflow-y-auto scrollbar-hide pr-1">
+      <div className="flex-1 flex flex-col min-w-[350px] gap-4 overflow-y-auto scrollbar-hide pr-1">
           
-          {/* Decoded Sections */}
+          {/* Header & Payload */}
           <div className="grid grid-cols-1 gap-4">
-              {/* Header */}
-              <div className="space-y-1.5">
-                 <div className="flex items-center justify-between">
-                     <span className="text-xs font-semibold text-default-500 uppercase flex items-center gap-1.5">
-                        <FileJson className="w-3.5 h-3.5" />
-                        {t("tools.encoder.header")}
-                     </span>
+              <div className="space-y-2">
+                 <div className="flex items-center gap-2 px-1">
+                    <FileJson className="w-4 h-4 text-default-500" />
+                    <span className="text-xs font-bold text-default-600 uppercase">{t("tools.encoder.header")}</span>
                  </div>
                  <Textarea 
-                    minRows={2}
-                    maxRows={6}
+                    minRows={3}
+                    maxRows={8}
                     value={header}
                     onValueChange={setHeader}
                     className="font-mono text-xs"
-                    classNames={{ inputWrapper: "bg-default-50" }}
+                    classNames={{ inputWrapper: "bg-background border-default-200" }}
                     variant="bordered"
                  />
               </div>
 
-              {/* Payload */}
-              <div className="space-y-1.5">
-                 <div className="flex items-center justify-between">
-                     <span className="text-xs font-semibold text-default-500 uppercase flex items-center gap-1.5">
-                        <FileJson className="w-3.5 h-3.5" />
-                        {t("tools.encoder.payload")}
-                     </span>
+              <div className="space-y-2">
+                 <div className="flex items-center gap-2 px-1">
+                    <FileJson className="w-4 h-4 text-default-500" />
+                    <span className="text-xs font-bold text-default-600 uppercase">{t("tools.encoder.payload")}</span>
                  </div>
                  <Textarea 
-                    minRows={6}
+                    minRows={8}
                     value={payload}
                     onValueChange={setPayload}
                     className="font-mono text-xs"
-                    classNames={{ inputWrapper: "bg-default-50" }}
+                    classNames={{ inputWrapper: "bg-background border-default-200" }}
                     variant="bordered"
                  />
               </div>
           </div>
 
+          <div className="flex-1" />
+
           {/* Signature Configuration */}
-          <Card className="border border-default-200 shadow-sm bg-background/60 backdrop-blur-sm mt-auto">
-              <CardBody className="space-y-4 p-4">
+          <Card className="border border-default-200 shadow-md bg-background/80 backdrop-blur-md">
+              <CardBody className="space-y-5 p-5">
                   {/* Title & Status */}
-                  <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2 text-default-700">
+                  <div className="flex items-center justify-between pb-2 border-b border-divider/50">
+                      <div className="flex items-center gap-2 text-default-800">
                           {algorithm === 'none' ? <Unlock className="w-4 h-4 text-warning" /> : <Lock className="w-4 h-4 text-primary" />}
-                          <span className="text-xs font-bold uppercase tracking-wider">{t("tools.encoder.signatureConfig")}</span>
+                          <span className="text-sm font-bold uppercase tracking-wide">{t("tools.encoder.signatureConfig")}</span>
                       </div>
                       
                       {isValid !== null && (
@@ -328,48 +325,53 @@ export function JwtTab() {
                             size="sm"
                             variant="flat"
                             color={isValid ? "success" : "danger"}
-                            startContent={isValid ? <CheckCircle2 className="w-3 h-3" /> : <AlertCircle className="w-3 h-3" />}
-                            classNames={{ content: "font-medium text-[10px]" }}
+                            startContent={isValid ? <CheckCircle2 className="w-3.5 h-3.5" /> : <AlertCircle className="w-3.5 h-3.5" />}
+                            classNames={{ content: "font-semibold text-[10px] uppercase" }}
                           >
                               {validationMsg || (isValid ? "Verified" : "Invalid")}
                           </Chip>
                       )}
                   </div>
                   
-                  {/* Controls */}
-                  <div className="space-y-3">
-                      <div className="flex gap-3">
-                          <Select 
-                              label={t("tools.encoder.algorithm")} 
-                              size="sm" 
-                              className={isHmacAlg(algorithm) ? "w-1/3" : "w-full"}
-                              selectedKeys={[algorithm]}
-                              onChange={(e) => setAlgorithm(e.target.value)}
-                              variant="bordered"
-                          >
-                              {ALGORITHMS.map(alg => <SelectItem key={alg}>{alg}</SelectItem>)}
-                          </Select>
-                          
-                          {isHmacAlg(algorithm) && (
-                            <Input 
-                                label={t("tools.encoder.secret")}
-                                size="sm"
-                                className="w-2/3"
-                                value={hmacSecret}
-                                onValueChange={setHmacSecret}
-                                type="text"
-                                variant="bordered"
-                            />
-                          )}
-                      </div>
+                  {/* Algorithm Select */}
+                  <div>
+                      <Select 
+                          label={t("tools.encoder.algorithm")} 
+                          labelPlacement="outside"
+                          placeholder="Select Algorithm"
+                          size="md"
+                          selectedKeys={[algorithm]}
+                          onChange={(e) => setAlgorithm(e.target.value)}
+                          variant="bordered"
+                          disallowEmptySelection
+                      >
+                          {ALGORITHMS.map(alg => <SelectItem key={alg}>{alg}</SelectItem>)}
+                      </Select>
+                  </div>
+
+                  {/* Keys Inputs */}
+                  <div className="space-y-4">
+                      {isHmacAlg(algorithm) && (
+                        <Input 
+                            label={t("tools.encoder.secret")}
+                            labelPlacement="outside"
+                            placeholder="Enter your secret key"
+                            size="md"
+                            value={hmacSecret}
+                            onValueChange={setHmacSecret}
+                            type="text"
+                            variant="bordered"
+                            startContent={<KeyRound className="w-4 h-4 text-default-400" />}
+                        />
+                      )}
                       
-                      {/* Asymmetric Keys */}
                       {!isHmacAlg(algorithm) && !isNoneAlg(algorithm) && (
-                          <div className="grid grid-cols-1 gap-3 animate-in fade-in slide-in-from-top-2 duration-200">
+                          <div className="grid grid-cols-1 gap-4">
                               <Textarea 
                                   label={t("tools.encoder.privateKey")}
+                                  labelPlacement="outside"
                                   placeholder="-----BEGIN PRIVATE KEY-----"
-                                  minRows={3}
+                                  minRows={4}
                                   maxRows={8}
                                   value={privateKeyPem}
                                   onValueChange={setPrivateKeyPem}
@@ -378,8 +380,9 @@ export function JwtTab() {
                               />
                               <Textarea 
                                   label={t("tools.encoder.publicKey")}
+                                  labelPlacement="outside"
                                   placeholder="-----BEGIN PUBLIC KEY-----"
-                                  minRows={3}
+                                  minRows={4}
                                   maxRows={8}
                                   value={publicKeyPem}
                                   onValueChange={setPublicKeyPem}
@@ -391,17 +394,18 @@ export function JwtTab() {
                   </div>
 
                   {/* Actions */}
-                  <div className="flex items-center justify-end gap-2 pt-2 border-t border-divider">
+                  <div className="flex gap-3 pt-2">
                       <Button 
-                          size="sm"
-                          variant="light"
+                          className="flex-1 font-medium"
+                          variant="flat"
+                          color="default"
                           onPress={() => handleVerify()}
                           startContent={<CheckCircle2 className="w-4 h-4" />}
                       >
                           {t("tools.encoder.verify")}
                       </Button>
                       <Button 
-                          size="sm"
+                          className="flex-1 font-medium shadow-md shadow-primary/20"
                           color="primary"
                           onPress={handleEncode}
                           isLoading={isEncoding}
