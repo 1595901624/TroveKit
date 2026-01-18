@@ -65,13 +65,43 @@ export function JwtTab() {
     
     // Asymmetric
     try {
+        // Normalize key string
+        keyStr = keyStr.replace(/\r\n/g, '\n').trim();
+        
+        const isPrivate = keyStr.includes("PRIVATE KEY");
+        const isPublic = keyStr.includes("PUBLIC KEY");
+
         if (usage === 'sign') {
+            if (isPublic) {
+                throw new Error(t("tools.encoder.error.signWithPublic"));
+            }
             return await jose.importPKCS8(keyStr, alg);
         } else {
-            return await jose.importSPKI(keyStr, alg);
+            // Verify
+            if (isPublic) {
+                return await jose.importSPKI(keyStr, alg);
+            } else if (isPrivate) {
+                // User provided private key for verification.
+                // Try to derive public key from it
+                try {
+                    const privKey = await jose.importPKCS8(keyStr, alg);
+                    // Export as SPKI (Public Key)
+                    const spkiPem = await jose.exportSPKI(privKey);
+                    return await jose.importSPKI(spkiPem, alg);
+                } catch (e) {
+                     console.warn("Failed to derive public key from private key", e);
+                     // Fallback: try using private key directly (might fail depending on runtime)
+                     return await jose.importPKCS8(keyStr, alg);
+                }
+            } else {
+                 // Try importing as SPKI by default if headers are missing or unclear, 
+                 // but usually PEM headers are required by jose.
+                 // Let's just try SPKI first.
+                 return await jose.importSPKI(keyStr, alg);
+            }
         }
     } catch (e) {
-        throw new Error(`Invalid Key for ${alg}: ${(e as Error).message}`);
+        throw new Error(`${t("tools.encoder.error.invalidKey", { alg })}: ${(e as Error).message}`);
     }
   }
 

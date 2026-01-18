@@ -158,7 +158,11 @@
       "encoderOptions": "Encoder Options",
       "newlineMode": "Newline Mode",
       "lf": "LF (\\n)",
-      "crlf": "CRLF (\\r\\n)"
+      "crlf": "CRLF (\\r\\n)",
+      "error": {
+        "invalidKey": "Invalid Key for {{alg}}",
+        "signWithPublic": "Cannot sign with a Public Key. Please provide a Private Key (PKCS8)."
+      }
     },
     "classical": {
       "title": "Classical Ciphers",
