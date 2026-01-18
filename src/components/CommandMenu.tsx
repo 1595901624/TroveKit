@@ -42,6 +42,7 @@ export function CommandMenu({ isOpen, onClose, onNavigate }: CommandMenuProps) {
     { id: 'encoder-base64', toolId: 'encoder', tabId: 'base64', label: t('tools.encoder.base64'), category: t('nav.encoder') },
     { id: 'encoder-base32', toolId: 'encoder', tabId: 'base32', label: t('tools.encoder.base32'), category: t('nav.encoder') },
     { id: 'encoder-basex', toolId: 'encoder', tabId: 'basex', label: t('tools.encoder.baseX'), category: t('nav.encoder') },
+    { id: 'encoder-jwt', toolId: 'encoder', tabId: 'jwt', label: t('tools.encoder.jwtToken'), category: t('nav.encoder') },
 
     // Classical
     { id: 'classical-caesar', toolId: 'classical', tabId: 'caesar', label: t('tools.classical.caesar'), category: t('nav.classical') },

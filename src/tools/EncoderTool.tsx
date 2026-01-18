@@ -41,7 +41,7 @@ export function EncoderTool({ activeTab }: EncoderToolProps) {
           <Tab key="base64" title={t("tools.encoder.base64")} />
           <Tab key="base32" title={t("tools.encoder.base32")} />
           <Tab key="basex" title={t("tools.encoder.baseX")} />
-          <Tab key="jwt" title="JWT" />
+          <Tab key="jwt" title={t("tools.encoder.jwtToken")} />
         </Tabs>
       </div>
 
