@@ -61,7 +61,7 @@ export function EncoderTool({ activeTab }: EncoderToolProps) {
         <div className={selectedKey === "basex" ? "" : "hidden"}>
           <BaseXTab />
         </div>
-        <div className={selectedKey === "jwt" ? "" : "hidden"}>
+        <div className={selectedKey === "jwt" ? "h-full" : "hidden"}>
           <JwtTab />
         </div>
       </div>
