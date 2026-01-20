@@ -1,17 +1,21 @@
-import { Card, CardBody, CardHeader, Button } from "@heroui/react"
+import { Card, CardBody, CardHeader, Button, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure } from "@heroui/react"
 import { LanguageSelector } from "../components/LanguageSelector"
 import { useTranslation } from "react-i18next"
 import { ThemeToggle } from "../components/ThemeToggle"
-import { Github } from "lucide-react"
+import { Github, Trash2, RefreshCw } from "lucide-react"
 import { openUrl } from "@tauri-apps/plugin-opener"
 import { useLog } from "../contexts/LogContext"
 import { useEffect, useState } from "react"
 import { getVersion } from "@tauri-apps/api/app"
+import { Store } from "@tauri-apps/plugin-store"
 
 export function Settings() {
   const { t } = useTranslation()
-  const { addLog } = useLog()
+  const { addLog, clearLogs } = useLog()
   const [version, setVersion] = useState("v0.1.0")
+  
+  const cacheModal = useDisclosure()
+  const logsModal = useDisclosure()
 
   useEffect(() => {
     getVersion().then(setVersion).catch(() => setVersion("v0.1.0"))
@@ -27,6 +31,32 @@ export function Settings() {
         input: "https://github.com/1595901624/trovekit",
         output: String(error)
       }, "error")
+    }
+  }
+
+  const handleClearCache = async () => {
+    try {
+      localStorage.clear()
+      const store = await Store.load("store.bin")
+      await store.clear()
+      await store.save()
+      window.location.reload()
+    } catch (error) {
+      console.error("Failed to clear cache:", error)
+      addLog({
+        method: "Clear Cache",
+        input: "N/A",
+        output: String(error)
+      }, "error")
+    }
+  }
+
+  const handleClearLogs = () => {
+    try {
+      clearLogs()
+      logsModal.onClose()
+    } catch (error) {
+      console.error("Failed to clear logs:", error)
     }
   }
 
@@ -58,6 +88,44 @@ export function Settings() {
         </CardBody>
       </Card>
 
+      <Card className="shadow-sm border border-default-200">
+        <CardHeader className="flex flex-col items-start px-6 pt-6 pb-0">
+          <h2 className="text-lg font-bold">{t("settings.dataManagement")}</h2>
+          <p className="text-default-500 text-small mt-1">{t("settings.dataManagementDesc")}</p>
+        </CardHeader>
+        <CardBody className="px-6 py-6 gap-6">
+          <div className="flex items-center justify-between">
+            <div className="flex flex-col">
+              <span className="text-medium font-medium">{t("settings.clearCache")}</span>
+              <span className="text-tiny text-default-400">{t("settings.clearCacheDesc")}</span>
+            </div>
+            <Button
+              color="warning"
+              variant="flat"
+              startContent={<RefreshCw size={18} />}
+              onPress={cacheModal.onOpen}
+            >
+              {t("settings.clearCache")}
+            </Button>
+          </div>
+          
+          {/* <div className="flex items-center justify-between border-t border-default-100 pt-6">
+            <div className="flex flex-col">
+              <span className="text-medium font-medium">{t("settings.clearLogs")}</span>
+              <span className="text-tiny text-default-400">{t("settings.clearLogsDesc")}</span>
+            </div>
+            <Button
+              color="danger"
+              variant="flat"
+              startContent={<Trash2 size={18} />}
+              onPress={logsModal.onOpen}
+            >
+              {t("settings.clearLogs")}
+            </Button>
+          </div> */}
+        </CardBody>
+      </Card>
+
       <div className="text-center text-xs text-default-400 mt-8 flex items-center justify-center gap-2">
         <span>TroveKit v{version} © Cloris 2026</span>
         <Button
@@ -71,6 +139,50 @@ export function Settings() {
           <Github size={14} />
         </Button>
       </div>
+
+      {/* Clear Cache Modal */}
+      <Modal isOpen={cacheModal.isOpen} onClose={cacheModal.onClose}>
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader>{t("settings.clearCache")}</ModalHeader>
+              <ModalBody>
+                <p>{t("settings.confirmClearCache")}</p>
+              </ModalBody>
+              <ModalFooter>
+                <Button variant="light" onPress={onClose}>
+                  {t("common.cancel")}
+                </Button>
+                <Button color="warning" onPress={handleClearCache}>
+                  {t("settings.confirm")}
+                </Button>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
+
+      {/* Clear Logs Modal */}
+      {/* <Modal isOpen={logsModal.isOpen} onClose={logsModal.onClose}>
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader>{t("settings.clearLogs")}</ModalHeader>
+              <ModalBody>
+                <p>{t("settings.confirmClearLogs")}</p>
+              </ModalBody>
+              <ModalFooter>
+                <Button variant="light" onPress={onClose}>
+                  {t("common.cancel")}
+                </Button>
+                <Button color="danger" onPress={handleClearLogs}>
+                  {t("common.delete")}
+                </Button>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal> */}
     </div>
   )
 }
