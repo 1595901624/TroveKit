@@ -119,11 +119,11 @@ export function JwtTab() {
 
     addLog({
         method: `JWT ${op} (${alg})`,
-        input: op === "Sign" ? `Header:\n${h}\n\nPayload:\n${p}` : `Token:\n${tkn}`,
-        output: op === "Sign" ? `Token:\n${tkn}` : `Header:\n${h}\n\nPayload:\n${p}`,
+        input: op === "Sign" ? `${t("tools.encoder.log.header")}:\n${h}\n\n${t("tools.encoder.log.payload")}:\n${p}` : `${t("tools.encoder.log.token")}:\n${tkn}`,
+        output: op === "Sign" ? `${t("tools.encoder.log.token")}:\n${tkn}` : `${t("tools.encoder.log.header")}:\n${h}\n\n${t("tools.encoder.log.payload")}:\n${p}`,
         cryptoParams: {
             algorithm: alg,
-            key: k || (op === "Decode" ? "None (Unverified)" : "None"),
+            key: k || (op === "Decode" ? t("tools.encoder.noneUnverified") : t("tools.encoder.none")),
             key_type: getAlgType(alg)
         }
     }, "success")
