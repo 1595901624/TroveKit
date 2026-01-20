@@ -1,13 +1,13 @@
-import { Card, CardBody, CardHeader, Button, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure } from "@heroui/react"
-import { LanguageSelector } from "../components/LanguageSelector"
-import { useTranslation } from "react-i18next"
-import { ThemeToggle } from "../components/ThemeToggle"
-import { Github, Trash2, RefreshCw } from "lucide-react"
-import { openUrl } from "@tauri-apps/plugin-opener"
-import { useLog } from "../contexts/LogContext"
-import { useEffect, useState } from "react"
+import { Button, Card, CardBody, CardHeader, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from "@heroui/react"
 import { getVersion } from "@tauri-apps/api/app"
+import { openUrl } from "@tauri-apps/plugin-opener"
 import { Store } from "@tauri-apps/plugin-store"
+import { Github, RefreshCw } from "lucide-react"
+import { useEffect, useState } from "react"
+import { useTranslation } from "react-i18next"
+import { LanguageSelector } from "../components/LanguageSelector"
+import { ThemeToggle } from "../components/ThemeToggle"
+import { useLog } from "../contexts/LogContext"
 
 export function Settings() {
   const { t } = useTranslation()
@@ -61,70 +61,76 @@ export function Settings() {
   }
 
   return (
-    <div className="space-y-6 max-w-2xl mx-auto">
-      <Card className="shadow-sm border border-default-200">
-        <CardHeader className="flex flex-col items-start px-6 pt-6 pb-0">
-          <h2 className="text-lg font-bold">{t("settings.appearance")}</h2>
-          <p className="text-default-500 text-small mt-1">{t("settings.appearanceDesc")}</p>
-        </CardHeader>
-        <CardBody className="px-6 py-6 gap-6">
-          <div className="flex items-center justify-between">
-            <div className="flex flex-col">
-              <span className="text-medium font-medium">{t("settings.theme")}</span>
-              <span className="text-tiny text-default-400">{t("settings.themeDesc")}</span>
-            </div>
-            <ThemeToggle />
-          </div>
-        </CardBody>
-      </Card>
+    <div className="max-w-5xl mx-auto">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="space-y-6">
+          <Card className="shadow-sm border border-default-200">
+            <CardHeader className="flex flex-col items-start px-6 pt-6 pb-0">
+              <h2 className="text-lg font-bold">{t("settings.appearance")}</h2>
+              <p className="text-default-500 text-small mt-1">{t("settings.appearanceDesc")}</p>
+            </CardHeader>
+            <CardBody className="px-6 py-6 gap-6">
+              <div className="flex items-center justify-between">
+                <div className="flex flex-col">
+                  <span className="text-medium font-medium">{t("settings.theme")}</span>
+                  <span className="text-tiny text-default-400">{t("settings.themeDesc")}</span>
+                </div>
+                <ThemeToggle />
+              </div>
+            </CardBody>
+          </Card>
 
-      <Card className="shadow-sm border border-default-200">
-        <CardHeader className="flex flex-col items-start px-6 pt-6 pb-0">
-          <h2 className="text-lg font-bold">{t("settings.language")}</h2>
-          <p className="text-default-500 text-small mt-1">{t("settings.languageDesc")}</p>
-        </CardHeader>
-        <CardBody className="px-6 py-6">
-          <LanguageSelector />
-        </CardBody>
-      </Card>
+          <Card className="shadow-sm border border-default-200">
+            <CardHeader className="flex flex-col items-start px-6 pt-6 pb-0">
+              <h2 className="text-lg font-bold">{t("settings.language")}</h2>
+              <p className="text-default-500 text-small mt-1">{t("settings.languageDesc")}</p>
+            </CardHeader>
+            <CardBody className="px-6 py-6">
+              <LanguageSelector />
+            </CardBody>
+          </Card>
+        </div>
 
-      <Card className="shadow-sm border border-default-200">
-        <CardHeader className="flex flex-col items-start px-6 pt-6 pb-0">
-          <h2 className="text-lg font-bold">{t("settings.dataManagement")}</h2>
-          <p className="text-default-500 text-small mt-1">{t("settings.dataManagementDesc")}</p>
-        </CardHeader>
-        <CardBody className="px-6 py-6 gap-6">
-          <div className="flex items-center justify-between">
-            <div className="flex flex-col">
-              <span className="text-medium font-medium">{t("settings.clearCache")}</span>
-              <span className="text-tiny text-default-400">{t("settings.clearCacheDesc")}</span>
-            </div>
-            <Button
-              color="warning"
-              variant="flat"
-              startContent={<RefreshCw size={18} />}
-              onPress={cacheModal.onOpen}
-            >
-              {t("settings.clearCache")}
-            </Button>
-          </div>
-          
-          {/* <div className="flex items-center justify-between border-t border-default-100 pt-6">
-            <div className="flex flex-col">
-              <span className="text-medium font-medium">{t("settings.clearLogs")}</span>
-              <span className="text-tiny text-default-400">{t("settings.clearLogsDesc")}</span>
-            </div>
-            <Button
-              color="danger"
-              variant="flat"
-              startContent={<Trash2 size={18} />}
-              onPress={logsModal.onOpen}
-            >
-              {t("settings.clearLogs")}
-            </Button>
-          </div> */}
-        </CardBody>
-      </Card>
+        <div className="space-y-6">
+          <Card className="shadow-sm border border-default-200">
+            <CardHeader className="flex flex-col items-start px-6 pt-6 pb-0">
+              <h2 className="text-lg font-bold">{t("settings.dataManagement")}</h2>
+              <p className="text-default-500 text-small mt-1">{t("settings.dataManagementDesc")}</p>
+            </CardHeader>
+            <CardBody className="px-6 py-6 gap-6">
+              <div className="flex items-center justify-between">
+                <div className="flex flex-col">
+                  <span className="text-medium font-medium">{t("settings.clearCache")}</span>
+                  <span className="text-tiny text-default-400">{t("settings.clearCacheDesc")}</span>
+                </div>
+                <Button
+                  color="warning"
+                  variant="flat"
+                  startContent={<RefreshCw size={18} />}
+                  onPress={cacheModal.onOpen}
+                >
+                  {t("settings.clearCache")}
+                </Button>
+              </div>
+              
+              {/* <div className="flex items-center justify-between border-t border-default-100 pt-6">
+                <div className="flex flex-col">
+                  <span className="text-medium font-medium">{t("settings.clearLogs")}</span>
+                  <span className="text-tiny text-default-400">{t("settings.clearLogsDesc")}</span>
+                </div>
+                <Button
+                  color="danger"
+                  variant="flat"
+                  startContent={<Trash2 size={18} />}
+                  onPress={logsModal.onOpen}
+                >
+                  {t("settings.clearLogs")}
+                </Button>
+              </div> */}
+            </CardBody>
+          </Card>
+        </div>
+      </div>
 
       <div className="text-center text-xs text-default-400 mt-8 flex items-center justify-center gap-2">
         <span>TroveKit v{version} © Cloris 2026</span>
