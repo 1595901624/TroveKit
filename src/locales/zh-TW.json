@@ -375,7 +375,7 @@
     "clearLogs": "清除操作紀錄",
     "clearLogsDesc": "永久刪除所有歷史操作紀錄。",
     "confirm": "確認",
-    "confirmClearCache": "確定要清除所有緩存嗎？應用將自動重啟以應用更改。",
+    "confirmClearCache": "確定要清除所有緩存嗎？應用將自動重新載入以應用更改。",
     "confirmClearLogs": "確定要刪除所有操作紀錄嗎？此操作不可撤銷。",
     "light": "淺色",
     "dark": "深色",

@@ -375,7 +375,7 @@
     "clearLogs": "Clear Operation Logs",
     "clearLogsDesc": "Permanently delete all historical operation records.",
     "confirm": "Confirm",
-    "confirmClearCache": "Are you sure you want to clear all cache? The application will restart automatically to apply changes.",
+    "confirmClearCache": "Are you sure you want to clear all cache? The application will reload automatically to apply changes.",
     "confirmClearLogs": "Are you sure you want to delete all operation logs? This action cannot be undone.",
     "light": "Light",
     "dark": "Dark",

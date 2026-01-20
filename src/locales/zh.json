@@ -375,7 +375,7 @@
     "clearLogs": "清除操作日志",
     "clearLogsDesc": "永久删除所有历史操作记录。",
     "confirm": "确认",
-    "confirmClearCache": "确定要清除所有缓存吗？应用将自动重启以应用更改。",
+    "confirmClearCache": "确定要清除所有缓存吗？应用将自动重新加载以应用更改。",
     "confirmClearLogs": "确定要删除所有操作日志吗？此操作不可撤销。",
     "light": "浅色",
     "dark": "深色",
