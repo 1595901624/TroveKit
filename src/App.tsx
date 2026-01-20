@@ -13,7 +13,7 @@ import { ToolId } from "./components/Sidebar"
 import { Card, CardBody } from "@heroui/react"
 import { ArrowRight, Lock, Code2, FileCode2, Shield, Wand2, ArrowRightLeft } from "lucide-react"
 import { useTranslation } from "react-i18next"
-import { getStoredItem } from "./lib/store"
+import { getStoredItem, setStoredItem } from "./lib/store"
 
 function App() {
   const [activeTool, setActiveTool] = useState<ToolId>("home")
@@ -42,6 +42,8 @@ function App() {
         }
 
         i18n.changeLanguage(targetLang)
+        // Store the detected language
+        setStoredItem("i18nextLng", targetLang)
       }
     })
   }, [i18n])
@@ -73,8 +75,8 @@ function App() {
 
   return (
     <ThemeProvider storageKey="trovekit-theme">
-      <Layout 
-        activeTool={activeTool} 
+      <Layout
+        activeTool={activeTool}
         onToolChange={handleToolChange}
         onNavigate={handleNavigate}
         title={getTitle()}
@@ -117,34 +119,34 @@ function HomeView({ onNavigate }: { onNavigate: (id: ToolId) => void }) {
   const { t } = useTranslation()
 
   const tools = [
-    { 
-      id: "crypto", 
-      title: t("home.cards.crypto.title"), 
-      desc: t("home.cards.crypto.desc"), 
+    {
+      id: "crypto",
+      title: t("home.cards.crypto.title"),
+      desc: t("home.cards.crypto.desc"),
       icon: <Lock className="w-6 h-6" />,
       gradient: "from-blue-500/20 to-indigo-500/20",
       iconColor: "text-blue-600 dark:text-blue-400"
     },
-    { 
-      id: "classical", 
-      title: t("home.cards.classical.title"), 
-      desc: t("home.cards.classical.desc"), 
+    {
+      id: "classical",
+      title: t("home.cards.classical.title"),
+      desc: t("home.cards.classical.desc"),
       icon: <Shield className="w-6 h-6" />,
       gradient: "from-orange-500/20 to-red-500/20",
       iconColor: "text-orange-600 dark:text-orange-400"
     },
-    { 
-      id: "generators", 
-      title: t("nav.generators"), 
-      desc: t("home.cards.qr.desc"), 
+    {
+      id: "generators",
+      title: t("nav.generators"),
+      desc: t("home.cards.qr.desc"),
       icon: <Wand2 className="w-6 h-6" />,
       gradient: "from-amber-500/20 to-yellow-500/20",
       iconColor: "text-amber-600 dark:text-amber-400"
     },
-    { 
-      id: "encoder", 
-      title: t("home.cards.encoder.title"), 
-      desc: t("home.cards.encoder.desc"), 
+    {
+      id: "encoder",
+      title: t("home.cards.encoder.title"),
+      desc: t("home.cards.encoder.desc"),
       icon: <Code2 className="w-6 h-6" />,
       gradient: "from-purple-500/20 to-pink-500/20",
       iconColor: "text-purple-600 dark:text-purple-400"
@@ -182,9 +184,9 @@ function HomeView({ onNavigate }: { onNavigate: (id: ToolId) => void }) {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {tools.map((item) => (
-          <Card 
-            key={item.id} 
-            isPressable 
+          <Card
+            key={item.id}
+            isPressable
             onPress={() => onNavigate(item.id as ToolId)}
             className="group border border-default-200/50 bg-background/60 backdrop-blur-sm hover:bg-default-100/50 transition-all duration-300 hover:-translate-y-1.5 hover:shadow-2xl hover:shadow-primary/5"
             shadow="none"
