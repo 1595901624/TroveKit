@@ -11,11 +11,11 @@ import { useLog } from "../contexts/LogContext"
 
 export function Settings() {
   const { t } = useTranslation()
-  const { addLog, clearLogs } = useLog()
+  const { addLog } = useLog()
   const [version, setVersion] = useState("v0.1.0")
   
   const cacheModal = useDisclosure()
-  const logsModal = useDisclosure()
+  // const logsModal = useDisclosure()
 
   useEffect(() => {
     getVersion().then(setVersion).catch(() => setVersion("v0.1.0"))
@@ -51,14 +51,14 @@ export function Settings() {
     }
   }
 
-  const handleClearLogs = () => {
-    try {
-      clearLogs()
-      logsModal.onClose()
-    } catch (error) {
-      console.error("Failed to clear logs:", error)
-    }
-  }
+  // const handleClearLogs = () => {
+  //   try {
+  //     clearLogs()
+  //     logsModal.onClose()
+  //   } catch (error) {
+  //     console.error("Failed to clear logs:", error)
+  //   }
+  // }
 
   return (
     <div className="max-w-5xl mx-auto">
