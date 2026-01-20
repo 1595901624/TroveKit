@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { Textarea, Button, Input, Select, SelectItem, Card, CardBody } from "@heroui/react"
 import Editor from "@monaco-editor/react"
 import { Copy, Trash2, ArrowRight, ShieldCheck, ShieldAlert, KeyRound, RefreshCw, Wand2 } from "lucide-react"
@@ -66,6 +66,8 @@ export function JwtTab() {
   const [algorithm, setAlgorithm] = useState("HS256")
   const [verificationStatus, setVerificationStatus] = useState<"valid" | "invalid" | "none">("none")
   const [verificationMsg, setVerificationMsg] = useState("")
+  
+  const lastLoggedTokenRef = useRef("")
 
   // Load state
   useEffect(() => {
@@ -103,6 +105,42 @@ export function JwtTab() {
       return ""
     }
   }
+
+  const logOperation = (op: "Decode" | "Sign", tkn: string, h: string, p: string, alg: string, k: string) => {
+    // Check validity for Decode to avoid logging garbage
+    if (op === "Decode") {
+        try {
+            JSON.parse(h)
+            JSON.parse(p)
+        } catch {
+            return
+        }
+    }
+
+    addLog({
+        method: `JWT ${op} (${alg})`,
+        input: op === "Sign" ? `Header:\n${h}\n\nPayload:\n${p}` : `Token:\n${tkn}`,
+        output: op === "Sign" ? `Token:\n${tkn}` : `Header:\n${h}\n\nPayload:\n${p}`,
+        cryptoParams: {
+            algorithm: alg,
+            key: k || (op === "Decode" ? "None (Unverified)" : "None"),
+            key_type: getAlgType(alg)
+        }
+    }, "success")
+  }
+
+  // Automatic logging for Decode
+  useEffect(() => {
+    const timer = setTimeout(() => {
+        // Log if token is valid (3 parts), stable, and different from last log
+        if (token && token.split('.').length === 3 && token !== lastLoggedTokenRef.current) {
+             const keyUsed = getAlgType(algorithm) === "HMAC" ? secret : publicKey
+             logOperation("Decode", token, header, payload, algorithm, keyUsed)
+             lastLoggedTokenRef.current = token
+        }
+    }, 1500)
+    return () => clearTimeout(timer)
+  }, [token, header, payload, algorithm, secret, publicKey])
 
   const handleDecode = (inputToken: string) => {
     const trimmed = inputToken.trim()
@@ -156,6 +194,12 @@ export function JwtTab() {
     }
   }
 
+  const handleManualDecode = () => {
+    handleDecode(token)
+    const keyUsed = getAlgType(algorithm) === "HMAC" ? secret : publicKey
+    logOperation("Decode", token, header, payload, algorithm, keyUsed)
+  }
+
   const handleTokenChange = (val: string) => {
     setToken(val)
     handleDecode(val)
@@ -193,15 +237,20 @@ export function JwtTab() {
 
         let jwt = ""
         const encoder = new TextEncoder()
+        
+        const algType = getAlgType(algorithm)
+        let keyUsed = ""
 
-        if (getAlgType(algorithm) === "HMAC") {
+        if (algType === "HMAC") {
             if (!secret) throw new Error(t("tools.encoder.error.missingSecret"))
+            keyUsed = secret
             jwt = await new jose.SignJWT(p)
                 .setProtectedHeader(h)
                 .sign(encoder.encode(secret))
         } else {
             if (!privateKey) throw new Error(t("tools.encoder.error.missingPrivateKey", { alg: algorithm }))
              // Import key
+            keyUsed = privateKey
             const privKey = await jose.importPKCS8(privateKey, algorithm)
             jwt = await new jose.SignJWT(p)
                 .setProtectedHeader(h)
@@ -211,11 +260,11 @@ export function JwtTab() {
         setToken(jwt)
         setVerificationStatus("valid")
         setVerificationMsg(t("tools.encoder.generatedAndSigned"))
-        addLog({ method: "JWT Sign", input: "Header/Payload", output: "JWT Token" }, "success")
+        
+        logOperation("Sign", jwt, updatedHeader, payload, algorithm, keyUsed)
     } catch (e) {
         setVerificationStatus("invalid")
         setVerificationMsg((e as Error).message)
-        addLog({ method: "JWT Sign", input: "Header/Payload", output: (e as Error).message }, "error")
     }
   }
 
@@ -268,7 +317,7 @@ export function JwtTab() {
             <div className="flex justify-between items-center px-1">
                 <div className="flex items-center gap-2">
                   <h3 className="text-sm font-semibold text-default-600">{t("tools.encoder.jwtToken")}</h3>
-                  <Button size="sm" variant="flat" color="primary" onPress={() => handleDecode(token)} startContent={<RefreshCw className="w-3 h-3" />} className="h-7 px-2">
+                  <Button size="sm" variant="flat" color="primary" onPress={handleManualDecode} startContent={<RefreshCw className="w-3 h-3" />} className="h-7 px-2">
                     {t("tools.encoder.decode")}
                   </Button>
                 </div>
