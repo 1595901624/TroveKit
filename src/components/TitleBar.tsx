@@ -116,15 +116,15 @@ export default function TitleBar({ onNavigate }: TitleBarProps) {
     setAppWindow(_window);
     setOs(getOS());
 
-    const updateMaximized = async () => {
-      setIsMaximized(await _window.isMaximized());
-    }
-    updateMaximized();
+    // const updateMaximized = async () => {
+    //   setIsMaximized(await _window.isMaximized());
+    // }
+    // updateMaximized();
 
-    const unlisten = _window.onResized(updateMaximized);
-    return () => {
-      unlisten.then(f => f());
-    }
+    // const unlisten = _window.onResized(updateMaximized);
+    // return () => {
+    //   unlisten.then(f => f());
+    // }
   }, []);
 
   // Global keyboard shortcut for search
