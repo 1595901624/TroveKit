@@ -24,6 +24,24 @@ function App() {
     getStoredItem("i18nextLng").then((lang) => {
       if (lang) {
         i18n.changeLanguage(lang)
+      } else {
+        const systemLang = navigator.language
+        let targetLang = "en"
+
+        if (systemLang.startsWith("zh")) {
+          const lower = systemLang.toLowerCase()
+          if (lower.includes("tw") || lower.includes("hant")) {
+            targetLang = "zh-TW"
+          } else if (lower.includes("hk")) {
+            targetLang = "zh-HK"
+          } else {
+            targetLang = "zh"
+          }
+        } else if (systemLang.startsWith("ja")) {
+          targetLang = "ja"
+        }
+
+        i18n.changeLanguage(targetLang)
       }
     })
   }, [i18n])
