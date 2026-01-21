@@ -4,38 +4,46 @@ import { Copy, Trash2, ArrowDownUp, ChevronDown } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { useLog } from "../../contexts/LogContext"
 import { invoke } from "@tauri-apps/api/core"
+import { getStoredItem, setStoredItem, removeStoredItem } from "../../lib/store"
 
 const STORAGE_KEY = "basex-tool-state"
-
-const loadStateFromStorage = () => {
-  try {
-    const stored = localStorage.getItem(STORAGE_KEY)
-    return stored ? JSON.parse(stored) : {}
-  } catch {
-    return {}
-  }
-}
-
-const saveStateToStorage = (state: Record<string, any>) => {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
-}
 
 export function BaseXTab() {
   const { t } = useTranslation()
   const { addLog } = useLog()
 
-  const savedState = loadStateFromStorage()
-
-  const [baseXInput, setBaseXInput] = useState(savedState.baseXInput || "")
-  const [baseXOutput, setBaseXOutput] = useState(savedState.baseXOutput || "")
-  const [selectedBase, setSelectedBase] = useState(savedState.selectedBase || "base16")
+  const [baseXInput, setBaseXInput] = useState("")
+  const [baseXOutput, setBaseXOutput] = useState("")
+  const [selectedBase, setSelectedBase] = useState("base16")
   // const [isCustomAlphabet, setIsCustomAlphabet] = useState(savedState.isCustomAlphabet || false)
   const [isCustomAlphabet] = useState<boolean>(false)
-  const [customAlphabet, setCustomAlphabet] = useState(savedState.customAlphabet || "")
+  const [customAlphabet, setCustomAlphabet] = useState("")
+  const [isLoaded, setIsLoaded] = useState(false)
 
   useEffect(() => {
-    saveStateToStorage({ baseXInput, baseXOutput, selectedBase, isCustomAlphabet, customAlphabet })
-  }, [baseXInput, baseXOutput, selectedBase, isCustomAlphabet, customAlphabet])
+    let mounted = true;
+    getStoredItem(STORAGE_KEY).then((stored) => {
+      if (mounted && stored) {
+        try {
+          const state = JSON.parse(stored);
+          if (state.baseXInput) setBaseXInput(state.baseXInput);
+          if (state.baseXOutput) setBaseXOutput(state.baseXOutput);
+          if (state.selectedBase) setSelectedBase(state.selectedBase);
+          if (state.customAlphabet) setCustomAlphabet(state.customAlphabet);
+        } catch (e) {
+          console.error("Failed to parse BaseXTab state", e);
+        }
+      }
+      if (mounted) setIsLoaded(true);
+    });
+    return () => { mounted = false; };
+  }, []);
+
+  useEffect(() => {
+    if (isLoaded) {
+      setStoredItem(STORAGE_KEY, JSON.stringify({ baseXInput, baseXOutput, selectedBase, isCustomAlphabet, customAlphabet }))
+    }
+  }, [baseXInput, baseXOutput, selectedBase, isCustomAlphabet, customAlphabet, isLoaded])
 
   const baseOptions = [
     { key: "base16", label: t("tools.encoder.base16") },
@@ -167,7 +175,7 @@ export function BaseXTab() {
         <Button isIconOnly variant="light" onPress={swapBaseX} title={t("tools.encoder.swap")}>
           <ArrowDownUp className="w-4 h-4" />
         </Button>
-        <Button isIconOnly variant="light" color="danger" onPress={() => { setBaseXInput(""); setBaseXOutput(""); localStorage.removeItem(STORAGE_KEY); }} title={t("tools.encoder.clearAll")}>
+        <Button isIconOnly variant="light" color="danger" onPress={() => { setBaseXInput(""); setBaseXOutput(""); setSelectedBase("base16"); setCustomAlphabet(""); removeStoredItem(STORAGE_KEY); }} title={t("tools.encoder.clearAll")}>
           <Trash2 className="w-4 h-4" />
         </Button>
       </div>

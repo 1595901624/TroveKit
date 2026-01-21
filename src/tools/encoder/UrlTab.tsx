@@ -3,34 +3,40 @@ import { Textarea, Button } from "@heroui/react"
 import { Copy, Trash2, ArrowDownUp, ChevronDown } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { useLog } from "../../contexts/LogContext"
+import { getStoredItem, setStoredItem, removeStoredItem } from "../../lib/store"
 
 const STORAGE_KEY = "url-tool-state"
-
-const loadStateFromStorage = () => {
-  try {
-    const stored = localStorage.getItem(STORAGE_KEY)
-    return stored ? JSON.parse(stored) : {}
-  } catch {
-    return {}
-  }
-}
-
-const saveStateToStorage = (state: Record<string, any>) => {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
-}
 
 export function UrlTab() {
   const { t } = useTranslation()
   const { addLog } = useLog()
 
-  const savedState = loadStateFromStorage()
-
-  const [urlInput, setUrlInput] = useState(savedState.urlInput || "")
-  const [urlOutput, setUrlOutput] = useState(savedState.urlOutput || "")
+  const [urlInput, setUrlInput] = useState("")
+  const [urlOutput, setUrlOutput] = useState("")
+  const [isLoaded, setIsLoaded] = useState(false)
 
   useEffect(() => {
-    saveStateToStorage({ urlInput, urlOutput })
-  }, [urlInput, urlOutput])
+    let mounted = true;
+    getStoredItem(STORAGE_KEY).then((stored) => {
+      if (mounted && stored) {
+        try {
+          const state = JSON.parse(stored);
+          if (state.urlInput) setUrlInput(state.urlInput);
+          if (state.urlOutput) setUrlOutput(state.urlOutput);
+        } catch (e) {
+          console.error("Failed to parse UrlTab state", e);
+        }
+      }
+      if (mounted) setIsLoaded(true);
+    });
+    return () => { mounted = false; };
+  }, []);
+
+  useEffect(() => {
+    if (isLoaded) {
+      setStoredItem(STORAGE_KEY, JSON.stringify({ urlInput, urlOutput }))
+    }
+  }, [urlInput, urlOutput, isLoaded])
 
   const handleUrlEncode = () => {
     if (!urlInput) return
@@ -89,7 +95,7 @@ export function UrlTab() {
         <Button isIconOnly variant="light" onPress={swapUrl} title={t("tools.encoder.swap")}>
           <ArrowDownUp className="w-4 h-4" />
         </Button>
-        <Button isIconOnly variant="light" color="danger" onPress={() => { setUrlInput(""); setUrlOutput(""); localStorage.removeItem(STORAGE_KEY); }} title={t("tools.encoder.clearAll")}>
+        <Button isIconOnly variant="light" color="danger" onPress={() => { setUrlInput(""); setUrlOutput(""); removeStoredItem(STORAGE_KEY); }} title={t("tools.encoder.clearAll")}>
           <Trash2 className="w-4 h-4" />
         </Button>
       </div>
