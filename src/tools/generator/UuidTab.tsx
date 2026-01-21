@@ -4,21 +4,9 @@ import { Copy, Trash2, RefreshCw } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { useLog } from "../../contexts/LogContext"
 import CryptoJS from "crypto-js"
+import { getStoredItem, setStoredItem } from "../../lib/store"
 
 const STORAGE_KEY = "uuid-tool-state"
-
-const loadStateFromStorage = () => {
-  try {
-    const stored = localStorage.getItem(STORAGE_KEY)
-    return stored ? JSON.parse(stored) : {}
-  } catch {
-    return {}
-  }
-}
-
-const saveStateToStorage = (state: Record<string, any>) => {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
-}
 
 // Helper function to format UUID
 const formatUuid = (uuid: string, type: string, isUppercase: boolean, showHyphens: boolean) => {
@@ -62,17 +50,38 @@ export function UuidTab() {
   const { t } = useTranslation()
   const { addLog } = useLog()
   
-  const savedState = loadStateFromStorage()
-
-  const [count, setCount] = useState<string>(savedState.count || "5")
-  const [uuids, setUuids] = useState<string[]>(savedState.uuids || [])
-  const [isUppercase, setIsUppercase] = useState<boolean>(savedState.isUppercase !== undefined ? savedState.isUppercase : true)
-  const [showHyphens, setShowHyphens] = useState<boolean>(savedState.showHyphens !== undefined ? savedState.showHyphens : true)
-  const [type, setType] = useState<string>(savedState.type || "string")
+  const [count, setCount] = useState<string>("5")
+  const [uuids, setUuids] = useState<string[]>([])
+  const [isUppercase, setIsUppercase] = useState<boolean>(true)
+  const [showHyphens, setShowHyphens] = useState<boolean>(true)
+  const [type, setType] = useState<string>("string")
+  const [isLoaded, setIsLoaded] = useState(false)
 
   useEffect(() => {
-    saveStateToStorage({ count, uuids, isUppercase, showHyphens, type })
-  }, [count, uuids, isUppercase, showHyphens, type])
+    let mounted = true
+    getStoredItem(STORAGE_KEY).then((stored) => {
+      if (mounted && stored) {
+        try {
+          const state = JSON.parse(stored)
+          if (state.count) setCount(state.count)
+          if (state.uuids) setUuids(state.uuids)
+          if (state.isUppercase !== undefined) setIsUppercase(state.isUppercase)
+          if (state.showHyphens !== undefined) setShowHyphens(state.showHyphens)
+          if (state.type) setType(state.type)
+        } catch (e) {
+          console.error("Failed to parse UuidTab state", e)
+        }
+      }
+      if (mounted) setIsLoaded(true)
+    })
+    return () => { mounted = false }
+  }, [])
+
+  useEffect(() => {
+    if (isLoaded) {
+      setStoredItem(STORAGE_KEY, JSON.stringify({ count, uuids, isUppercase, showHyphens, type }))
+    }
+  }, [count, uuids, isUppercase, showHyphens, type, isLoaded])
 
   const handleGenerate = () => {
     const num = parseInt(count)

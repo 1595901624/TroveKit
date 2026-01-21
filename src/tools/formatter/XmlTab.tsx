@@ -5,37 +5,46 @@ import { Copy, Trash2, CheckCircle2, AlertCircle, Minimize2, Maximize2, BookOpen
 import { useTranslation } from "react-i18next"
 import { useTheme } from "../../components/theme-provider"
 import format from 'xml-formatter'
+import { getStoredItem, setStoredItem, removeStoredItem } from "../../lib/store"
 
 const STORAGE_KEY = "xml-tool-state"
-
-const loadStateFromStorage = () => {
-  try {
-    const stored = localStorage.getItem(STORAGE_KEY)
-    return stored ? JSON.parse(stored) : {}
-  } catch {
-    return {}
-  }
-}
-
-const saveStateToStorage = (state: Record<string, any>) => {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
-}
 
 export function XmlTab() {
   const { t } = useTranslation()
   const { theme } = useTheme()
 
-  const savedState = loadStateFromStorage()
-
-  const [code, setCode] = useState(savedState.code || "")
+  const [code, setCode] = useState("")
   const [isValid, setIsValid] = useState<boolean | null>(null)
   const [errorMsg, setErrorMsg] = useState<string>("")
+  const [isLoaded, setIsLoaded] = useState(false)
 
   const editorRef = useRef<any>(null)
 
   useEffect(() => {
-    saveStateToStorage({ code })
-  }, [code])
+    let mounted = true
+    getStoredItem(STORAGE_KEY).then((stored) => {
+      if (mounted && stored) {
+        try {
+          const state = JSON.parse(stored)
+          if (state.code) setCode(state.code)
+          if (state.isValid !== undefined) setIsValid(state.isValid)
+          if (state.errorMsg) setErrorMsg(state.errorMsg)
+        } catch (e) {
+          console.error("Failed to parse XmlTab state", e)
+        }
+      }
+      if (mounted) setIsLoaded(true)
+    })
+    return () => { mounted = false }
+  }, [])
+
+  useEffect(() => {
+    if (isLoaded) {
+      setStoredItem(STORAGE_KEY, JSON.stringify({ code, isValid, errorMsg }))
+    }
+  }, [code, isValid, errorMsg, isLoaded])
+
+  // ... later in the file, replace clear handler (handled below)
 
   const handleEditorDidMount: OnMount = (editor) => {
     editorRef.current = editor
@@ -150,7 +159,7 @@ export function XmlTab() {
           <Button isIconOnly variant="light" onPress={copyToClipboard} title={t("tools.encoder.copy")}>
             <Copy className="w-4 h-4" />
           </Button>
-          <Button isIconOnly variant="light" color="danger" onPress={() => { setCode(""); setIsValid(null); setErrorMsg(""); localStorage.removeItem(STORAGE_KEY); }} title={t("tools.encoder.clearAll")}>
+          <Button isIconOnly variant="light" color="danger" onPress={() => { setCode(""); setIsValid(null); setErrorMsg(""); removeStoredItem(STORAGE_KEY); }} title={t("tools.encoder.clearAll")}>
             <Trash2 className="w-4 h-4" />
           </Button>
         </div>
