@@ -83,8 +83,9 @@ export function LogProvider({ children }: { children: React.ReactNode }) {
   const { t } = useTranslation()
   const [logs, setLogs] = useState<LogEntry[]>([])
 
-  // 从 localStorage 恢复面板展开状态，默认关闭
-  // 使用 usePersistentState 替代 localStorage
+  // 状态原先使用 localStorage 存储以控制日志面板的展开（默认关闭）。
+  // 现改为使用 `usePersistentState`（基于 Tauri store）进行异步持久化与恢复。
+  // `src/lib/store.ts` 含有从 localStorage 到 store 的迁移逻辑，首次读取时会自动迁移旧数据以保持向后兼容性。
   const [isOpen, setIsOpen] = usePersistentState<boolean>('logPanelIsOpen', false)
 
   const [sessionNote, setSessionNote] = useState("")
