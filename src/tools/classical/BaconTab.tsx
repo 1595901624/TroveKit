@@ -3,41 +3,51 @@ import { Textarea, Button, Input, RadioGroup, Radio } from "@heroui/react"
 import { Copy, Trash2, ArrowDownUp, Shield, ShieldAlert } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { useLog } from "../../contexts/LogContext"
+import { getStoredItem, setStoredItem, removeStoredItem } from "../../lib/store"
 
 const STORAGE_KEY = "bacon-tool-state"
 
 const BACON_STANDARD_ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 const BACON_TRADITIONAL_ALPHABET = "ABCDEFGHIKLMNOPQRSTUWXYZ" // skips J and V
 
-const loadStateFromStorage = () => {
-  try {
-    const stored = localStorage.getItem(STORAGE_KEY)
-    return stored ? JSON.parse(stored) : {}
-  } catch {
-    return {}
-  }
-}
-
-const saveStateToStorage = (state: Record<string, any>) => {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
-}
-
 export function BaconTab() {
   const { t } = useTranslation()
   const { addLog } = useLog()
 
-  const savedState = loadStateFromStorage()
-
-  const [input, setInput] = useState(savedState.input || "")
-  const [output, setOutput] = useState(savedState.output || "")
-  const [alphabetType, setAlphabetType] = useState<"26" | "24">(savedState.alphabetType || "26")
-  const [mode, setMode] = useState<"AB" | "ab" | "01" | "custom">(savedState.mode || "AB")
-  const [customA, setCustomA] = useState(savedState.customA || "0")
-  const [customB, setCustomB] = useState(savedState.customB || "1")
+  const [input, setInput] = useState("")
+  const [output, setOutput] = useState("")
+  const [alphabetType, setAlphabetType] = useState<"26" | "24">("26")
+  const [mode, setMode] = useState<"AB" | "ab" | "01" | "custom">("AB")
+  const [customA, setCustomA] = useState("0")
+  const [customB, setCustomB] = useState("1")
+  const [isLoaded, setIsLoaded] = useState(false)
 
   useEffect(() => {
-    saveStateToStorage({ input, output, alphabetType, mode, customA, customB })
-  }, [input, output, alphabetType, mode, customA, customB])
+    let mounted = true
+    getStoredItem(STORAGE_KEY).then((stored) => {
+      if (mounted && stored) {
+        try {
+          const state = JSON.parse(stored)
+          if (state.input) setInput(state.input)
+          if (state.output) setOutput(state.output)
+          if (state.alphabetType) setAlphabetType(state.alphabetType)
+          if (state.mode) setMode(state.mode)
+          if (state.customA) setCustomA(state.customA)
+          if (state.customB) setCustomB(state.customB)
+        } catch (e) {
+          console.error("Failed to parse BaconTab state", e)
+        }
+      }
+      if (mounted) setIsLoaded(true)
+    })
+    return () => { mounted = false }
+  }, [])
+
+  useEffect(() => {
+    if (isLoaded) {
+      setStoredItem(STORAGE_KEY, JSON.stringify({ input, output, alphabetType, mode, customA, customB }))
+    }
+  }, [input, output, alphabetType, mode, customA, customB, isLoaded])
 
   const getSymbols = () => {
     switch (mode) {
@@ -224,7 +234,7 @@ export function BaconTab() {
             onPress={() => {
               setInput("")
               setOutput("")
-              localStorage.removeItem(STORAGE_KEY)
+              removeStoredItem(STORAGE_KEY)
             }}
             title={t("tools.encoder.clearAll")}
           >

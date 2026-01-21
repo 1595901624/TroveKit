@@ -5,48 +5,51 @@ import { useLog } from "../../contexts/LogContext"
 import { ArrowRightLeft, Copy, Trash2, Replace } from "lucide-react"
 // @ts-ignore
 import { encode as morseEncode, decode as morseDecode } from "xmorse"
+import { getStoredItem, setStoredItem, removeStoredItem } from "../../lib/store"
 
 const STORAGE_KEY = "morse-tool-state"
-
-const loadStateFromStorage = () => {
-  try {
-    const stored = localStorage.getItem(STORAGE_KEY)
-    return stored ? JSON.parse(stored) : {}
-  } catch {
-    return {}
-  }
-}
-
-const saveStateToStorage = (state: Record<string, any>) => {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
-}
 
 export function MorseTab() {
   const { t } = useTranslation()
   const { addLog } = useLog()
 
-  const savedState = loadStateFromStorage()
+  const [input, setInput] = useState("")
+  const [output, setOutput] = useState("")
 
-  const [input, setInput] = useState(savedState.input || "")
-  const [output, setOutput] = useState(savedState.output || "")
-
-  const [separatorType, setSeparatorType] = useState(savedState.separatorType || "space")
-  const [customSeparator, setCustomSeparator] = useState(savedState.customSeparator || " ")
-  const [shortCode, setShortCode] = useState(savedState.shortCode || ".")
-  const [longCode, setLongCode] = useState(savedState.longCode || "-")
-  const [caseMode, setCaseMode] = useState(savedState.caseMode || "none")
+  const [separatorType, setSeparatorType] = useState("space")
+  const [customSeparator, setCustomSeparator] = useState(" ")
+  const [shortCode, setShortCode] = useState(".")
+  const [longCode, setLongCode] = useState("-")
+  const [caseMode, setCaseMode] = useState("none")
+  const [isLoaded, setIsLoaded] = useState(false)
 
   useEffect(() => {
-    saveStateToStorage({
-      input,
-      output,
-      separatorType,
-      customSeparator,
-      shortCode,
-      longCode,
-      caseMode
+    let mounted = true
+    getStoredItem(STORAGE_KEY).then((stored) => {
+      if (mounted && stored) {
+        try {
+          const state = JSON.parse(stored)
+          if (state.input) setInput(state.input)
+          if (state.output) setOutput(state.output)
+          if (state.separatorType) setSeparatorType(state.separatorType)
+          if (state.customSeparator) setCustomSeparator(state.customSeparator)
+          if (state.shortCode) setShortCode(state.shortCode)
+          if (state.longCode) setLongCode(state.longCode)
+          if (state.caseMode) setCaseMode(state.caseMode)
+        } catch (e) {
+          console.error("Failed to parse MorseTab state", e)
+        }
+      }
+      if (mounted) setIsLoaded(true)
     })
-  }, [input, output, separatorType, customSeparator, shortCode, longCode, caseMode])
+    return () => { mounted = false }
+  }, [])
+
+  useEffect(() => {
+    if (isLoaded) {
+      setStoredItem(STORAGE_KEY, JSON.stringify({ input, output, separatorType, customSeparator, shortCode, longCode, caseMode }))
+    }
+  }, [input, output, separatorType, customSeparator, shortCode, longCode, caseMode, isLoaded])
 
   const separator = useMemo(() => {
     if (separatorType === "space") return " "
@@ -94,7 +97,7 @@ export function MorseTab() {
   }
 
   const handleSwap = () => { setInput(output); setOutput(input); }
-  const handleClear = () => { setInput(""); setOutput(""); localStorage.removeItem(STORAGE_KEY); }
+  const handleClear = () => { setInput(""); setOutput(""); removeStoredItem(STORAGE_KEY); }
   const handleCopy = () => {
     navigator.clipboard.writeText(output)
     addToast({ title: t("tools.encoder.copiedToClipboard"), severity: "success" })
