@@ -4,13 +4,7 @@ import { Copy, Trash2, Hash } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { useLog } from "../../contexts/LogContext"
 import md4 from "../../lib/md4"
-
-interface Md4State {
-  input: string
-  output: string
-  bit: string
-  case: string
-}
+import { getStoredItem, setStoredItem, removeStoredItem } from "../../lib/store"
 
 const MD4_STORAGE_KEY = "md4_state"
 
@@ -18,28 +12,41 @@ export function Md4Tab() {
   const { t } = useTranslation()
   const { addLog } = useLog()
 
-  const [state, setState] = useState<Md4State>(() => {
-    const saved = localStorage.getItem(MD4_STORAGE_KEY)
-    if (saved) {
-      try {
-        return JSON.parse(saved)
-      } catch {
-      }
-    }
-
-    return {
-      input: "",
-      output: "",
-      bit: "32",
-      case: "lower"
-    }
-  })
-
-  const { input, output, bit, case: md4Case } = state
+  const [input, setInput] = useState("")
+  const [output, setOutput] = useState("")
+  const [bit, setBit] = useState("32")
+  const [md4Case, setMd4Case] = useState("lower")
+  const [isLoaded, setIsLoaded] = useState(false)
 
   useEffect(() => {
-    localStorage.setItem(MD4_STORAGE_KEY, JSON.stringify(state))
-  }, [state])
+    let mounted = true;
+    getStoredItem(MD4_STORAGE_KEY).then((stored) => {
+      if (mounted && stored) {
+        try {
+          const state = JSON.parse(stored);
+          if (state.input) setInput(state.input);
+          if (state.output) setOutput(state.output);
+          if (state.bit) setBit(state.bit);
+          if (state.case) setMd4Case(state.case);
+        } catch (e) {
+          console.error("Failed to parse Md4Tab state", e);
+        }
+      }
+      if (mounted) setIsLoaded(true);
+    });
+    return () => { mounted = false; };
+  }, []);
+
+  useEffect(() => {
+    if (isLoaded) {
+      setStoredItem(MD4_STORAGE_KEY, JSON.stringify({
+        input,
+        output,
+        bit,
+        case: md4Case
+      }))
+    }
+  }, [input, output, bit, md4Case, isLoaded])
 
   const handleMd4Hash = () => {
     if (!input) return
@@ -54,10 +61,7 @@ export function Md4Tab() {
         hash = hash.toUpperCase()
       }
 
-      setState(prev => ({
-        ...prev,
-        output: hash
-      }))
+      setOutput(hash)
 
       addLog({
         method: `MD4 (${bit}-bit, ${md4Case})`,
@@ -83,7 +87,7 @@ export function Md4Tab() {
         minRows={6}
         variant="bordered"
         value={input}
-        onValueChange={(value) => setState(prev => ({ ...prev, input: value }))}
+        onValueChange={setInput}
         classNames={{
           inputWrapper: "bg-default-100/50 hover:bg-default-100 focus-within:bg-background"
         }}
@@ -94,7 +98,7 @@ export function Md4Tab() {
             <RadioGroup
               orientation="horizontal"
               value={bit}
-              onValueChange={(value) => setState(prev => ({ ...prev, bit: value }))}
+              onValueChange={setBit}
               label={t("tools.hash.length")}
               size="sm"
               className="text-tiny"
@@ -106,7 +110,7 @@ export function Md4Tab() {
             <RadioGroup
               orientation="horizontal"
               value={md4Case}
-              onValueChange={(value) => setState(prev => ({ ...prev, case: value }))}
+              onValueChange={setMd4Case}
               label={t("tools.hash.case")}
               size="sm"
             >
@@ -119,12 +123,10 @@ export function Md4Tab() {
             <Button color="primary" variant="flat" onPress={handleMd4Hash} startContent={<Hash className="w-4 h-4" />}>
               {t("tools.hash.generate")}
             </Button>
-            <Button isIconOnly variant="light" color="danger" onPress={() => {
-              setState(prev => ({
-                ...prev,
-                input: "",
-                output: ""
-              }))
+            <Button isIconOnly variant="light" color="danger" onPress={() => { 
+              setInput(""); 
+              setOutput(""); 
+              removeStoredItem(MD4_STORAGE_KEY); 
             }} title={t("tools.hash.clearAll") }>
               <Trash2 className="w-4 h-4" />
             </Button>

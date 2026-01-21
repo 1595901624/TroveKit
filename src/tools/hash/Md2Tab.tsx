@@ -4,13 +4,7 @@ import { Copy, Trash2, Hash } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { useLog } from "../../contexts/LogContext"
 import md2 from "js-md2"
-
-// 定义 MD2 状态接口
-interface Md2State {
-  input: string
-  output: string
-  case: string
-}
+import { getStoredItem, setStoredItem, removeStoredItem } from "../../lib/store"
 
 // 定义 STORAGE_KEY 常量
 const MD2_STORAGE_KEY = "md2_state"
@@ -19,32 +13,38 @@ export function Md2Tab() {
   const { t } = useTranslation()
   const { addLog } = useLog()
 
-  // 初始化状态，从 localStorage 恢复或使用默认值
-  const [state, setState] = useState<Md2State>(() => {
-    const saved = localStorage.getItem(MD2_STORAGE_KEY)
-    if (saved) {
-      try {
-        return JSON.parse(saved)
-      } catch {
-        // 如果解析失败，返回默认状态
-      }
-    }
-    
-    // 默认状态
-    return {
-      input: "",
-      output: "",
-      case: "lower"
-    }
-  })
+  const [input, setInput] = useState("")
+  const [output, setOutput] = useState("")
+  const [md2Case, setMd2Case] = useState("lower")
+  const [isLoaded, setIsLoaded] = useState(false)
 
-  // 解构状态以便于使用
-  const { input, output, case: md2Case } = state
-
-  // 当状态改变时，保存到 localStorage
   useEffect(() => {
-    localStorage.setItem(MD2_STORAGE_KEY, JSON.stringify(state))
-  }, [state])
+    let mounted = true;
+    getStoredItem(MD2_STORAGE_KEY).then((stored) => {
+      if (mounted && stored) {
+        try {
+          const state = JSON.parse(stored);
+          if (state.input) setInput(state.input);
+          if (state.output) setOutput(state.output);
+          if (state.case) setMd2Case(state.case);
+        } catch (e) {
+          console.error("Failed to parse Md2Tab state", e);
+        }
+      }
+      if (mounted) setIsLoaded(true);
+    });
+    return () => { mounted = false; };
+  }, []);
+
+  useEffect(() => {
+    if (isLoaded) {
+      setStoredItem(MD2_STORAGE_KEY, JSON.stringify({
+        input,
+        output,
+        case: md2Case
+      }))
+    }
+  }, [input, output, md2Case, isLoaded])
 
   const handleMd2Hash = () => {
     if (!input) return
@@ -55,11 +55,7 @@ export function Md2Tab() {
         hash = hash.toUpperCase()
       }
 
-      // 更新状态包含输出结果
-      setState(prev => ({
-        ...prev,
-        output: hash
-      }))
+      setOutput(hash)
 
       addLog({ 
         method: `MD2 (${md2Case})`, 
@@ -85,7 +81,7 @@ export function Md2Tab() {
         minRows={6}
         variant="bordered"
         value={input}
-        onValueChange={(value) => setState(prev => ({ ...prev, input: value }))}
+        onValueChange={setInput}
         classNames={{
           inputWrapper: "bg-default-100/50 hover:bg-default-100 focus-within:bg-background"
         }}
@@ -96,7 +92,7 @@ export function Md2Tab() {
             <RadioGroup
               orientation="horizontal"
               value={md2Case}
-              onValueChange={(value) => setState(prev => ({ ...prev, case: value }))}
+              onValueChange={setMd2Case}
               label={t("tools.hash.case")}
               size="sm"
             >
@@ -110,11 +106,9 @@ export function Md2Tab() {
               {t("tools.hash.generate")}
             </Button>
             <Button isIconOnly variant="light" color="danger" onPress={() => { 
-              setState(prev => ({ 
-                ...prev, 
-                input: "", 
-                output: "" 
-              }))
+              setInput(""); 
+              setOutput(""); 
+              removeStoredItem(MD2_STORAGE_KEY); 
             }} title={t("tools.hash.clearAll")}>
               <Trash2 className="w-4 h-4" />
             </Button>

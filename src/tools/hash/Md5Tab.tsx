@@ -1,17 +1,10 @@
+import { useState, useEffect } from "react"
 import { Textarea, Button, RadioGroup, Radio } from "@heroui/react"
 import { Copy, Trash2, Hash } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { useLog } from "../../contexts/LogContext"
 import CryptoJS from "crypto-js"
-import { usePersistentState } from "../../hooks/usePersistentState"
-
-// 定义 MD5 状态接口
-interface Md5State {
-  input: string
-  output: string
-  bit: string
-  case: string
-}
+import { getStoredItem, setStoredItem, removeStoredItem } from "../../lib/store"
 
 // 定义 STORAGE_KEY 常量
 const MD5_STORAGE_KEY = "md5_state"
@@ -20,16 +13,41 @@ export function Md5Tab() {
   const { t } = useTranslation()
   const { addLog } = useLog()
 
-  // 初始化状态，从 localStorage 恢复或使用默认值
-  const [state, setState, clearState] = usePersistentState<Md5State>(MD5_STORAGE_KEY, {
-    input: "",
-    output: "",
-    bit: "32",
-    case: "lower"
-  })
+  const [input, setInput] = useState("")
+  const [output, setOutput] = useState("")
+  const [bit, setBit] = useState("32")
+  const [md5Case, setMd5Case] = useState("lower")
+  const [isLoaded, setIsLoaded] = useState(false)
 
-  // 解构状态以便于使用
-  const { input, output, bit, case: md5Case } = state
+  useEffect(() => {
+    let mounted = true;
+    getStoredItem(MD5_STORAGE_KEY).then((stored) => {
+      if (mounted && stored) {
+        try {
+          const state = JSON.parse(stored);
+          if (state.input) setInput(state.input);
+          if (state.output) setOutput(state.output);
+          if (state.bit) setBit(state.bit);
+          if (state.case) setMd5Case(state.case);
+        } catch (e) {
+          console.error("Failed to parse Md5Tab state", e);
+        }
+      }
+      if (mounted) setIsLoaded(true);
+    });
+    return () => { mounted = false; };
+  }, []);
+
+  useEffect(() => {
+    if (isLoaded) {
+      setStoredItem(MD5_STORAGE_KEY, JSON.stringify({
+        input,
+        output,
+        bit,
+        case: md5Case
+      }))
+    }
+  }, [input, output, bit, md5Case, isLoaded])
 
   const handleMd5Hash = () => {
     if (!input) return
@@ -45,11 +63,7 @@ export function Md5Tab() {
         hash = hash.toUpperCase()
       }
 
-      // 更新状态包含输出结果
-      setState(prev => ({
-        ...prev,
-        output: hash
-      }))
+      setOutput(hash)
 
       addLog({ 
         method: `MD5 (${bit}-bit, ${md5Case})`, 
@@ -75,7 +89,7 @@ export function Md5Tab() {
         minRows={6}
         variant="bordered"
         value={input}
-        onValueChange={(value) => setState(prev => ({ ...prev, input: value }))}
+        onValueChange={setInput}
         classNames={{
           inputWrapper: "bg-default-100/50 hover:bg-default-100 focus-within:bg-background"
         }}
@@ -86,7 +100,7 @@ export function Md5Tab() {
             <RadioGroup
               orientation="horizontal"
               value={bit}
-              onValueChange={(value) => setState(prev => ({ ...prev, bit: value }))}
+              onValueChange={setBit}
               label={t("tools.hash.length")}
               size="sm"
               className="text-tiny"
@@ -98,7 +112,7 @@ export function Md5Tab() {
             <RadioGroup
               orientation="horizontal"
               value={md5Case}
-              onValueChange={(value) => setState(prev => ({ ...prev, case: value }))}
+              onValueChange={setMd5Case}
               label={t("tools.hash.case")}
               size="sm"
             >
@@ -112,12 +126,9 @@ export function Md5Tab() {
               {t("tools.hash.generate")}
             </Button>
             <Button isIconOnly variant="light" color="danger" onPress={() => { 
-              setState(prev => ({ 
-                ...prev, 
-                input: "", 
-                output: "" 
-              }));
-              clearState();
+              setInput(""); 
+              setOutput(""); 
+              removeStoredItem(MD5_STORAGE_KEY); 
             }} title={t("tools.hash.clearAll")}>
               <Trash2 className="w-4 h-4" />
             </Button>

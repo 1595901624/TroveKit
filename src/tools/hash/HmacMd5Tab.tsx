@@ -4,45 +4,52 @@ import { Copy, Trash2, Hash } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { useLog } from "../../contexts/LogContext"
 import CryptoJS from "crypto-js"
+import { getStoredItem, setStoredItem, removeStoredItem } from "../../lib/store"
 
 const STORAGE_KEY = "hmac-md5-tool-state"
-
-interface HmacMd5State {
-  input: string
-  output: string
-  key: string
-  keyType: string
-  outputCase: string
-}
-
-const loadStateFromStorage = (): Partial<HmacMd5State> => {
-  try {
-    const stored = localStorage.getItem(STORAGE_KEY)
-    return stored ? JSON.parse(stored) : {}
-  } catch {
-    return {}
-  }
-}
-
-const saveStateToStorage = (state: HmacMd5State) => {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
-}
 
 export function HmacMd5Tab() {
   const { t } = useTranslation()
   const { addLog } = useLog()
 
-  const savedState = loadStateFromStorage()
-
-  const [input, setInput] = useState(savedState.input || "")
-  const [output, setOutput] = useState(savedState.output || "")
-  const [key, setKey] = useState(savedState.key || "")
-  const [keyType, setKeyType] = useState(savedState.keyType || "text")
-  const [outputCase, setOutputCase] = useState(savedState.outputCase || "lower")
+  const [input, setInput] = useState("")
+  const [output, setOutput] = useState("")
+  const [key, setKey] = useState("")
+  const [keyType, setKeyType] = useState("text")
+  const [outputCase, setOutputCase] = useState("lower")
+  const [isLoaded, setIsLoaded] = useState(false)
 
   useEffect(() => {
-    saveStateToStorage({ input, output, key, keyType, outputCase })
-  }, [input, output, key, keyType, outputCase])
+    let mounted = true;
+    getStoredItem(STORAGE_KEY).then((stored) => {
+      if (mounted && stored) {
+        try {
+          const state = JSON.parse(stored);
+          if (state.input) setInput(state.input);
+          if (state.output) setOutput(state.output);
+          if (state.key) setKey(state.key);
+          if (state.keyType) setKeyType(state.keyType);
+          if (state.outputCase) setOutputCase(state.outputCase);
+        } catch (e) {
+          console.error("Failed to parse HmacMd5Tab state", e);
+        }
+      }
+      if (mounted) setIsLoaded(true);
+    });
+    return () => { mounted = false; };
+  }, []);
+
+  useEffect(() => {
+    if (isLoaded) {
+      setStoredItem(STORAGE_KEY, JSON.stringify({
+        input,
+        output,
+        key,
+        keyType,
+        outputCase
+      }))
+    }
+  }, [input, output, key, keyType, outputCase, isLoaded])
 
   // 实时更新大小写
   useEffect(() => {
@@ -97,7 +104,7 @@ export function HmacMd5Tab() {
     setInput("")
     setOutput("")
     setKey("")
-    localStorage.removeItem(STORAGE_KEY)
+    removeStoredItem(STORAGE_KEY)
   }
 
   return (

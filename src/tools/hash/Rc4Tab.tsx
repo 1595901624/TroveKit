@@ -4,43 +4,52 @@ import { Copy, Trash2, Lock, Unlock } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { useLog } from "../../contexts/LogContext"
 import CryptoJS from "crypto-js"
+import { getStoredItem, setStoredItem, removeStoredItem } from "../../lib/store"
 
 const STORAGE_KEY = "rc4-tool-state"
-
-const loadStateFromStorage = () => {
-  try {
-    const stored = localStorage.getItem(STORAGE_KEY)
-    return stored ? JSON.parse(stored) : {}
-  } catch {
-    return {}
-  }
-}
-
-const saveStateToStorage = (state: Record<string, any>) => {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
-}
 
 export function Rc4Tab() {
   const { t } = useTranslation()
   const { addLog } = useLog()
 
-  const savedState = loadStateFromStorage()
-
-  const [rc4Input, setRc4Input] = useState(savedState.rc4Input || "")
-  const [rc4Output, setRc4Output] = useState(savedState.rc4Output || "")
-  const [rc4Key, setRc4Key] = useState(savedState.rc4Key || "")
-  const [rc4KeyType, setRc4KeyType] = useState(savedState.rc4KeyType || "text") 
-  const [rc4Format, setRc4Format] = useState(savedState.rc4Format || "Base64") 
+  const [rc4Input, setRc4Input] = useState("")
+  const [rc4Output, setRc4Output] = useState("")
+  const [rc4Key, setRc4Key] = useState("")
+  const [rc4KeyType, setRc4KeyType] = useState("text") 
+  const [rc4Format, setRc4Format] = useState("Base64") 
+  const [isLoaded, setIsLoaded] = useState(false)
 
   useEffect(() => {
-    saveStateToStorage({
-      rc4Input,
-      rc4Output,
-      rc4Key,
-      rc4KeyType,
-      rc4Format
-    })
-  }, [rc4Input, rc4Output, rc4Key, rc4KeyType, rc4Format])
+    let mounted = true;
+    getStoredItem(STORAGE_KEY).then((stored) => {
+      if (mounted && stored) {
+        try {
+          const state = JSON.parse(stored);
+          if (state.rc4Input) setRc4Input(state.rc4Input);
+          if (state.rc4Output) setRc4Output(state.rc4Output);
+          if (state.rc4Key) setRc4Key(state.rc4Key);
+          if (state.rc4KeyType) setRc4KeyType(state.rc4KeyType);
+          if (state.rc4Format) setRc4Format(state.rc4Format);
+        } catch (e) {
+          console.error("Failed to parse Rc4Tab state", e);
+        }
+      }
+      if (mounted) setIsLoaded(true);
+    });
+    return () => { mounted = false; };
+  }, []);
+
+  useEffect(() => {
+    if (isLoaded) {
+      setStoredItem(STORAGE_KEY, JSON.stringify({
+        rc4Input,
+        rc4Output,
+        rc4Key,
+        rc4KeyType,
+        rc4Format
+      }))
+    }
+  }, [rc4Input, rc4Output, rc4Key, rc4KeyType, rc4Format, isLoaded])
 
   const parseKey = (value: string, type: string) => {
     if (type === "hex") {
@@ -187,7 +196,7 @@ export function Rc4Tab() {
           <Button color="secondary" variant="flat" onPress={handleRc4Decrypt} startContent={<Unlock className="w-4 h-4" />}>
           {t("tools.hash.decrypt")}
           </Button>
-          <Button isIconOnly variant="light" color="danger" onPress={() => { setRc4Input(""); setRc4Output(""); setRc4Key(""); localStorage.removeItem(STORAGE_KEY); }} title={t("tools.hash.clearAll")}>
+          <Button isIconOnly variant="light" color="danger" onPress={() => { setRc4Input(""); setRc4Output(""); setRc4Key(""); removeStoredItem(STORAGE_KEY); }} title={t("tools.hash.clearAll")}>
           <Trash2 className="w-4 h-4" />
           </Button>
       </div>

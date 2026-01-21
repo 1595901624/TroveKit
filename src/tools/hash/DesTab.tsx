@@ -4,53 +4,67 @@ import { Copy, Trash2, Lock, Unlock } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { useLog } from "../../contexts/LogContext"
 import CryptoJS from "crypto-js"
+import { getStoredItem, setStoredItem, removeStoredItem } from "../../lib/store"
 
 const STORAGE_KEY = "des-tool-state"
-
-const loadStateFromStorage = () => {
-  try {
-    const stored = localStorage.getItem(STORAGE_KEY)
-    return stored ? JSON.parse(stored) : {}
-  } catch {
-    return {}
-  }
-}
-
-const saveStateToStorage = (state: Record<string, any>) => {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
-}
 
 export function DesTab() {
   const { t } = useTranslation()
   const { addLog } = useLog()
 
-  const savedState = loadStateFromStorage()
-
-  const [desInput, setDesInput] = useState(savedState.desInput || "")
-  const [desOutput, setDesOutput] = useState(savedState.desOutput || "")
-  const [desKey, setDesKey] = useState(savedState.desKey || "")
-  const [desKeyType, setDesKeyType] = useState(savedState.desKeyType || "text") // "text" | "hex"
-  const [desAlgorithm, setDesAlgorithm] = useState(savedState.desAlgorithm || "DES") // "DES" | "TripleDES"
-  const [desIv, setDesIv] = useState(savedState.desIv || "")
-  const [desIvType, setDesIvType] = useState(savedState.desIvType || "text") // "text" | "hex"
-  const [desMode, setDesMode] = useState(savedState.desMode || "CBC") // CBC, ECB, OFB, CFB, CTR, CTS
-  const [desPadding, setDesPadding] = useState(savedState.desPadding || "Pkcs7") // Pkcs7, ZeroPadding, NoPadding, AnsiX923, Iso10126
-  const [desFormat, setDesFormat] = useState(savedState.desFormat || "Base64") // "Base64" | "Hex"
+  const [desInput, setDesInput] = useState("")
+  const [desOutput, setDesOutput] = useState("")
+  const [desKey, setDesKey] = useState("")
+  const [desKeyType, setDesKeyType] = useState("text") // "text" | "hex"
+  const [desAlgorithm, setDesAlgorithm] = useState("DES") // "DES" | "TripleDES"
+  const [desIv, setDesIv] = useState("")
+  const [desIvType, setDesIvType] = useState("text") // "text" | "hex"
+  const [desMode, setDesMode] = useState("CBC") // CBC, ECB, OFB, CFB, CTR, CTS
+  const [desPadding, setDesPadding] = useState("Pkcs7") // Pkcs7, ZeroPadding, NoPadding, AnsiX923, Iso10126
+  const [desFormat, setDesFormat] = useState("Base64") // "Base64" | "Hex"
+  const [isLoaded, setIsLoaded] = useState(false)
 
   useEffect(() => {
-    saveStateToStorage({
-      desInput,
-      desOutput,
-      desKey,
-      desKeyType,
-      desAlgorithm,
-      desIv,
-      desIvType,
-      desMode,
-      desPadding,
-      desFormat
-    })
-  }, [desInput, desOutput, desKey, desKeyType, desAlgorithm, desIv, desIvType, desMode, desPadding, desFormat])
+    let mounted = true;
+    getStoredItem(STORAGE_KEY).then((stored) => {
+      if (mounted && stored) {
+        try {
+          const state = JSON.parse(stored);
+          if (state.desInput) setDesInput(state.desInput);
+          if (state.desOutput) setDesOutput(state.desOutput);
+          if (state.desKey) setDesKey(state.desKey);
+          if (state.desKeyType) setDesKeyType(state.desKeyType);
+          if (state.desAlgorithm) setDesAlgorithm(state.desAlgorithm);
+          if (state.desIv) setDesIv(state.desIv);
+          if (state.desIvType) setDesIvType(state.desIvType);
+          if (state.desMode) setDesMode(state.desMode);
+          if (state.desPadding) setDesPadding(state.desPadding);
+          if (state.desFormat) setDesFormat(state.desFormat);
+        } catch (e) {
+          console.error("Failed to parse DesTab state", e);
+        }
+      }
+      if (mounted) setIsLoaded(true);
+    });
+    return () => { mounted = false; };
+  }, []);
+
+  useEffect(() => {
+    if (isLoaded) {
+      setStoredItem(STORAGE_KEY, JSON.stringify({
+        desInput,
+        desOutput,
+        desKey,
+        desKeyType,
+        desAlgorithm,
+        desIv,
+        desIvType,
+        desMode,
+        desPadding,
+        desFormat
+      }))
+    }
+  }, [desInput, desOutput, desKey, desKeyType, desAlgorithm, desIv, desIvType, desMode, desPadding, desFormat, isLoaded])
 
   const parseKeyIv = (value: string, type: string, lengthBits?: number) => {
     let wordArr;
@@ -332,7 +346,7 @@ export function DesTab() {
           <Button color="secondary" variant="flat" onPress={handleDesDecrypt} startContent={<Unlock className="w-4 h-4" />}>
           {t("tools.hash.decrypt")}
           </Button>
-          <Button isIconOnly variant="light" color="danger" onPress={() => { setDesInput(""); setDesOutput(""); setDesKey(""); setDesIv(""); localStorage.removeItem(STORAGE_KEY); }} title={t("tools.hash.clearAll")}>
+          <Button isIconOnly variant="light" color="danger" onPress={() => { setDesInput(""); setDesOutput(""); setDesKey(""); setDesIv(""); removeStoredItem(STORAGE_KEY); }} title={t("tools.hash.clearAll")}>
           <Trash2 className="w-4 h-4" />
           </Button>
       </div>

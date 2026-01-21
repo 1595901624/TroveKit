@@ -4,53 +4,67 @@ import { Copy, Trash2, Lock, Unlock } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { useLog } from "../../contexts/LogContext"
 import CryptoJS from "crypto-js"
+import { getStoredItem, setStoredItem, removeStoredItem } from "../../lib/store"
 
 const STORAGE_KEY = "aes-tool-state"
-
-const loadStateFromStorage = () => {
-  try {
-    const stored = localStorage.getItem(STORAGE_KEY)
-    return stored ? JSON.parse(stored) : {}
-  } catch {
-    return {}
-  }
-}
-
-const saveStateToStorage = (state: Record<string, any>) => {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
-}
 
 export function AesTab() {
   const { t } = useTranslation()
   const { addLog } = useLog()
 
-  const savedState = loadStateFromStorage()
-
-  const [aesInput, setAesInput] = useState(savedState.aesInput || "")
-  const [aesOutput, setAesOutput] = useState(savedState.aesOutput || "")
-  const [aesKey, setAesKey] = useState(savedState.aesKey || "")
-  const [aesKeyType, setAesKeyType] = useState(savedState.aesKeyType || "text") 
-  const [aesKeySize, setAesKeySize] = useState(savedState.aesKeySize || "128") 
-  const [aesIv, setAesIv] = useState(savedState.aesIv || "")
-  const [aesIvType, setAesIvType] = useState(savedState.aesIvType || "text") 
-  const [aesMode, setAesMode] = useState(savedState.aesMode || "CBC") 
-  const [aesPadding, setAesPadding] = useState(savedState.aesPadding || "Pkcs7") 
-  const [aesFormat, setAesFormat] = useState(savedState.aesFormat || "Base64") 
+  const [aesInput, setAesInput] = useState("")
+  const [aesOutput, setAesOutput] = useState("")
+  const [aesKey, setAesKey] = useState("")
+  const [aesKeyType, setAesKeyType] = useState("text") 
+  const [aesKeySize, setAesKeySize] = useState("128") 
+  const [aesIv, setAesIv] = useState("")
+  const [aesIvType, setAesIvType] = useState("text") 
+  const [aesMode, setAesMode] = useState("CBC") 
+  const [aesPadding, setAesPadding] = useState("Pkcs7") 
+  const [aesFormat, setAesFormat] = useState("Base64") 
+  const [isLoaded, setIsLoaded] = useState(false)
 
   useEffect(() => {
-    saveStateToStorage({
-      aesInput,
-      aesOutput,
-      aesKey,
-      aesKeyType,
-      aesKeySize,
-      aesIv,
-      aesIvType,
-      aesMode,
-      aesPadding,
-      aesFormat
-    })
-  }, [aesInput, aesOutput, aesKey, aesKeyType, aesKeySize, aesIv, aesIvType, aesMode, aesPadding, aesFormat])
+    let mounted = true;
+    getStoredItem(STORAGE_KEY).then((stored) => {
+      if (mounted && stored) {
+        try {
+          const state = JSON.parse(stored);
+          if (state.aesInput) setAesInput(state.aesInput);
+          if (state.aesOutput) setAesOutput(state.aesOutput);
+          if (state.aesKey) setAesKey(state.aesKey);
+          if (state.aesKeyType) setAesKeyType(state.aesKeyType);
+          if (state.aesKeySize) setAesKeySize(state.aesKeySize);
+          if (state.aesIv) setAesIv(state.aesIv);
+          if (state.aesIvType) setAesIvType(state.aesIvType);
+          if (state.aesMode) setAesMode(state.aesMode);
+          if (state.aesPadding) setAesPadding(state.aesPadding);
+          if (state.aesFormat) setAesFormat(state.aesFormat);
+        } catch (e) {
+          console.error("Failed to parse AesTab state", e);
+        }
+      }
+      if (mounted) setIsLoaded(true);
+    });
+    return () => { mounted = false; };
+  }, []);
+
+  useEffect(() => {
+    if (isLoaded) {
+      setStoredItem(STORAGE_KEY, JSON.stringify({
+        aesInput,
+        aesOutput,
+        aesKey,
+        aesKeyType,
+        aesKeySize,
+        aesIv,
+        aesIvType,
+        aesMode,
+        aesPadding,
+        aesFormat
+      }))
+    }
+  }, [aesInput, aesOutput, aesKey, aesKeyType, aesKeySize, aesIv, aesIvType, aesMode, aesPadding, aesFormat, isLoaded])
 
   const parseKeyIv = (value: string, type: string, lengthBits?: number) => {
     let wordArr;
@@ -324,7 +338,7 @@ export function AesTab() {
           <Button color="secondary" variant="flat" onPress={handleAesDecrypt} startContent={<Unlock className="w-4 h-4" />}>
           {t("tools.hash.decrypt")}
           </Button>
-          <Button isIconOnly variant="light" color="danger" onPress={() => { setAesInput(""); setAesOutput(""); setAesKey(""); setAesIv(""); localStorage.removeItem(STORAGE_KEY); }} title={t("tools.hash.clearAll")}>
+          <Button isIconOnly variant="light" color="danger" onPress={() => { setAesInput(""); setAesOutput(""); setAesKey(""); setAesIv(""); removeStoredItem(STORAGE_KEY); }} title={t("tools.hash.clearAll")}>
           <Trash2 className="w-4 h-4" />
           </Button>
       </div>
