@@ -28,6 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed issue #3: Resolved macOS application launch failure.
 - Fixed issue #6: Set default language to match system language on first launch.
 - Fixed issue #11: Updated T-SQL label to include SQL Server for clarity.
+- Fixed: Language selector flags not rendering on macOS — added explicit sizing (`className="w-full h-full"`) and `aria-label`s to flag SVGs to ensure consistent rendering across platforms.
 
 ### Notes
 - `src/lib/store.ts` contains migration logic: on first read the library falls back to `localStorage` for existing keys and migrates them into the Tauri `store` so existing user data remains available.
