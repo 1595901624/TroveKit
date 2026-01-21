@@ -5,6 +5,33 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.11] - 2026-01-21
+
+### Changed
+- Migrated tool state persistence from `localStorage` to the async Tauri-backed `store` (via `src/lib/store.ts`) across many tools to improve reliability and desktop integration; added automatic migration from existing localStorage entries.
+- Replaced synchronous `localStorage` helpers with `getStoredItem` / `setStoredItem` / `removeStoredItem` and adopted an async load/save pattern (with an `isLoaded` guard) in tools that persist state.
+- Clarified migration behavior in `src/contexts/LogContext.tsx` and kept `Settings.tsx` full-cache clear (`localStorage.clear()` + store clear) for thorough cleanup.
+
+### Added
+- **JWT Token parsing (experimental)**: Added basic JWT parsing, signing and verification helpers for testing and debugging within the `JwtTab`.
+- **Clear Cache and Reload Feature**: Added a new "Clear Cache" button in Settings that clears all localStorage and Tauri store data, then automatically reloads the application to apply changes.
+
+### Files Updated
+- **Hash tools**: `AesTab`, `DesTab`, `Rc4Tab`, `Md5Tab`, `Md4Tab`, `Md2Tab`, `HmacMd5Tab`, `ShaTab`
+- **Encoder tools**: `Base32Tab`, `Base64Tab`, `BaseXTab`, `HexTab`, `UrlTab`, `JwtTab`
+- **Classical tools**: `BaconTab`, `CaesarTab`, `MorseTab`
+- **Formatter tools**: `XmlTab`, `SqlTab`, `CssTab`
+- **Generator**: `UuidTab`
+
+### Fixed
+- Fixed type and JSX issues introduced during the migration process (e.g., SQL formatter typing, CSS tab JSX syntax). Build and bundling succeed after fixes.
+- Fixed issue #3: Resolved macOS application launch failure.
+- Fixed issue #6: Set default language to match system language on first launch.
+- Fixed issue #11: Updated T-SQL label to include SQL Server for clarity.
+
+### Notes
+- `src/lib/store.ts` contains migration logic: on first read the library falls back to `localStorage` for existing keys and migrates them into the Tauri `store` so existing user data remains available.
+
 ## [0.1.10] - 2026-01-17
 
 ### Fixed
