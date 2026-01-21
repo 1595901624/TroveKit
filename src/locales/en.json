@@ -369,7 +369,7 @@
     "themeDesc": "Toggle light or dark mode.",
     "languageDesc": "Select your preferred language.",
     "dataManagement": "Data Management",
-    "dataManagementDesc": "Manage your local storage data and logs.",
+    "dataManagementDesc": "Manage your local temporary storage data.",
     "clearCache": "Clear Cache",
     "clearCacheDesc": "Clear all local settings and plugin data (does not include operation logs).",
     "clearLogs": "Clear Operation Logs",

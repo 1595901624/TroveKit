@@ -369,7 +369,7 @@
     "themeDesc": "切換明暗模式。",
     "languageDesc": "選擇您的首選語言。",
     "dataManagement": "數據管理",
-    "dataManagementDesc": "管理您的本地存儲數據和日誌。",
+    "dataManagementDesc": "管理您的本地臨時存儲數據",
     "clearCache": "清除緩存",
     "clearCacheDesc": "清除所有本地設置項和插件數據（不包含操作紀錄）。",
     "clearLogs": "清除操作紀錄",
