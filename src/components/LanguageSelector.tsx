@@ -35,12 +35,12 @@ export function LanguageSelector() {
       className="max-w-xs"
       selectedKeys={[i18n.language]}
       onChange={handleSelectionChange}
-      startContent={ActiveFlag ? <div className="w-6 h-4 flex items-center"><ActiveFlag /></div> : null}
+      startContent={ActiveFlag ? <div className="w-6 h-4 flex items-center"><ActiveFlag className="w-full h-full" aria-label={languages.find(l => l.key === i18n.language)?.label ?? i18n.language} /></div> : null}
     >
       {languages.map((lang) => (
         <SelectItem
           key={lang.key}
-          startContent={<div className="w-6 h-4 flex items-center"><lang.Flag /></div>}
+          startContent={<div className="w-6 h-4 flex items-center"><lang.Flag className="w-full h-full" aria-label={lang.label} /></div>}
         >
           {lang.label}
         </SelectItem>
