@@ -371,7 +371,7 @@
     "dataManagement": "數據管理",
     "dataManagementDesc": "管理您嘅本地暫存數據",
     "clearCache": "清除緩存",
-    "clearCacheDesc": "清除所有本地設置項同埋插件數據（唔包含操作日誌）。",
+    "clearCacheDesc": "清除所有本地設置項及所有臨時數據（唔包含日誌管理內的數據）。",
     "clearLogs": "清除操作日誌",
     "clearLogsDesc": "永久刪除所有歷史操作紀錄。",
     "confirm": "確認",

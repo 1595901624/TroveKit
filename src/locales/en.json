@@ -371,7 +371,7 @@
     "dataManagement": "Data Management",
     "dataManagementDesc": "Manage your local temporary storage data.",
     "clearCache": "Clear Cache",
-    "clearCacheDesc": "Clear all local settings and plugin data (does not include operation logs).",
+    "clearCacheDesc": "Clear all local settings and temporary data (does not include data in Log Management).",
     "clearLogs": "Clear Operation Logs",
     "clearLogsDesc": "Permanently delete all historical operation records.",
     "confirm": "Confirm",

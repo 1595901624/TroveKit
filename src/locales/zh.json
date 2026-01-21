@@ -371,7 +371,7 @@
     "dataManagement": "数据管理",
     "dataManagementDesc": "管理您的本地临时存储数据",
     "clearCache": "清除缓存",
-    "clearCacheDesc": "清除所有本地设置项和插件数据（不包含操作日志）。",
+    "clearCacheDesc": "清除所有本地设置项和所有临时数据（不包含日志管理中的数据）。",
     "clearLogs": "清除操作日志",
     "clearLogsDesc": "永久删除所有历史操作记录。",
     "confirm": "确认",
