@@ -154,7 +154,7 @@ WHERE id = 1;`
     { key: "postgresql", label: "PostgreSQL" },
     { key: "sqlite", label: "SQLite" },
     { key: "mariadb", label: "MariaDB" },
-    { key: "tsql", label: "T-SQL" },
+    { key: "tsql", label: "T-SQL(SQL Server)" },
     { key: "plsql", label: "PL/SQL" },
     { key: "db2", label: "DB2" },
     { key: "snowflake", label: "Snowflake" },
