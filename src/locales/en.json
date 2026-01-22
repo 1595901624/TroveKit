@@ -81,6 +81,7 @@
       "aes": "AES",
       "des": "DES",
       "rc4": "RC4",
+      "trivium": "Trivium",
       "hmacMd5": "HMAC-MD5",
       "hmacMd5OutputLabel": "HMAC-MD5 Output",
       "keyType": "Key Type",
