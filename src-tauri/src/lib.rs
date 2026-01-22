@@ -4,7 +4,7 @@ use tauri::Manager;
 mod basex;
 mod log_manager;
 mod time_utils;
-mod trivium;
+mod command;
 
 #[tauri::command]
 fn greet(name: &str) -> String {
@@ -28,9 +28,9 @@ pub fn run() {
         })
         .invoke_handler(tauri::generate_handler![
             greet,
+            command::trivium_xor,
             basex::basex_encode,
             basex::basex_decode,
-            trivium::trivium_xor,
             log_manager::append_log,
             log_manager::load_logs,
             log_manager::clear_logs_file,

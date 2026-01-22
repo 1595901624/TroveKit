@@ -33,3 +33,5 @@ uuid = { version = "1.19.0", features = ["v4", "serde"] }
 rusqlite = { version = "0.31", features = ["bundled"] }
 tauri-plugin-store = "2.4.2"
 
+trivium = "0.1.0"
+

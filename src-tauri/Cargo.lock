@@ -4332,6 +4332,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "trivium"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "237e5e90a53de8307c30f1583be62961902a25631034415b4a0019360ac513a2"
+
+[[package]]
 name = "trovekit"
 version = "0.1.8"
 dependencies = [
@@ -4349,6 +4355,7 @@ dependencies = [
  "tauri-plugin-fs",
  "tauri-plugin-opener",
  "tauri-plugin-store",
+ "trivium",
  "uuid",
 ]
 
