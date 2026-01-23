@@ -8,6 +8,7 @@ import { ShaTab } from "./hash/ShaTab"
 import { AesTab } from "./hash/AesTab"
 import { DesTab } from "./hash/DesTab"
 import { Rc4Tab } from "./hash/Rc4Tab"
+import { ChaCha20Tab } from "./hash/ChaCha20Tab"
 import { HmacMd5Tab } from "./hash/HmacMd5Tab"
 import { TriviumTab } from "./hash/TriviumTab"
 
@@ -47,6 +48,7 @@ export function HashTool({ activeTab }: HashToolProps) {
           <Tab key="aes" title={t("tools.hash.aes")} />
           <Tab key="des" title={t("tools.hash.des", "DES")} />
           <Tab key="rc4" title={t("tools.hash.rc4", "RC4")} />
+          <Tab key="chacha20" title={t("tools.hash.chacha20", "ChaCha20")} />
           <Tab key="trivium" title={t("tools.hash.trivium", "Trivium")} />
         </Tabs>
       </div>
@@ -75,6 +77,9 @@ export function HashTool({ activeTab }: HashToolProps) {
         </div>
         <div className={selectedKey === "rc4" ? "" : "hidden"}>
           <Rc4Tab />
+        </div>
+        <div className={selectedKey === "chacha20" ? "" : "hidden"}>
+          <ChaCha20Tab />
         </div>
         <div className={selectedKey === "trivium" ? "" : "hidden"}>
           <TriviumTab />
