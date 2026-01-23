@@ -83,7 +83,6 @@ export function TriviumTab() {
   const [ivType, setIvType] = useState("text")
 
   const [format, setFormat] = useState("Hex")
-  const [bitOrder, setBitOrder] = useState<"msb" | "lsb">("msb")
   const [isLoaded, setIsLoaded] = useState(false)
 
   useEffect(() => {
@@ -99,7 +98,6 @@ export function TriviumTab() {
           if (state.iv) setIv(state.iv)
           if (state.ivType) setIvType(state.ivType)
           if (state.format) setFormat(state.format)
-          if (state.bitOrder === "msb" || state.bitOrder === "lsb") setBitOrder(state.bitOrder)
         } catch (e) {
           console.error("Failed to parse TriviumTab state", e)
         }
@@ -122,11 +120,10 @@ export function TriviumTab() {
         keyType,
         iv,
         ivType,
-        format,
-        bitOrder
+        format
       })
     )
-  }, [input, output, key, keyType, iv, ivType, format, bitOrder, isLoaded])
+  }, [input, output, key, keyType, iv, ivType, format, isLoaded])
 
   const parseKeyIv = (value: string, type: string) => {
     if (!value) return normalize80Bit(new Uint8Array())
@@ -159,8 +156,7 @@ export function TriviumTab() {
       const cipher = await invoke<number[]>("trivium_xor", {
         key: Array.from(keyBytes),
         iv: Array.from(ivBytes),
-        data: Array.from(plainBytes),
-        bitOrder
+        data: Array.from(plainBytes)
       })
       const cipherBytes = Uint8Array.from(cipher)
       const out = encodeCipherOutput(cipherBytes)
@@ -174,7 +170,6 @@ export function TriviumTab() {
           cryptoParams: {
             algorithm: "Trivium",
             format,
-            bit_order: bitOrder,
             key,
             key_type: keyType,
             iv,
@@ -200,8 +195,7 @@ export function TriviumTab() {
       const plain = await invoke<number[]>("trivium_xor", {
         key: Array.from(keyBytes),
         iv: Array.from(ivBytes),
-        data: Array.from(cipherBytes),
-        bitOrder
+        data: Array.from(cipherBytes)
       })
       const plainBytes = Uint8Array.from(plain)
       const out = bytesToUtf8(plainBytes)
@@ -215,7 +209,6 @@ export function TriviumTab() {
           cryptoParams: {
             algorithm: "Trivium",
             format,
-            bit_order: bitOrder,
             key,
             key_type: keyType,
             iv,
@@ -319,19 +312,7 @@ export function TriviumTab() {
             <Radio value="Hex">Hex</Radio>
           </RadioGroup>
 
-          <RadioGroup
-            orientation="horizontal"
-            value={bitOrder}
-            // HeroUI RadioGroup provides string; constrain to our union.
-            onValueChange={(v) => setBitOrder(v === "lsb" ? "lsb" : "msb")}
-            label={t("tools.hash.bitOrder", "Bit Order")}
-            description={t("tools.hash.bitOrderNote", "How key/IV bits and keystream bytes are interpreted")}
-            size="sm"
-            className="text-tiny"
-          >
-            <Radio value="msb">MSB-first</Radio>
-            <Radio value="lsb">LSB-first</Radio>
-          </RadioGroup>
+
         </div>
       </div>
 
