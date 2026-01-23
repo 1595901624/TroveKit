@@ -60,7 +60,7 @@ export function ChaCha20Tab() {
   const { t } = useTranslation()
   const { addLog } = useLog()
 
-  const [input, setInput] = useState("")
+  const [input, setInput] = useState<string>(() => t("tools.hash.defaultInput", "Hello, TroveKit"))
   const [output, setOutput] = useState("")
 
   const [key, setKey] = useState("")
@@ -68,7 +68,8 @@ export function ChaCha20Tab() {
   const [nonce, setNonce] = useState("")
   const [nonceType, setNonceType] = useState("hex") // hex | text
 
-  const [format, setFormat] = useState("Hex") // Hex | Base64
+  const [format, setFormat] = useState("Base64") // Hex | Base64
+  const [caseOption, setCaseOption] = useState<"lower" | "upper">("lower")
   const [isLoaded, setIsLoaded] = useState(false)
 
   useEffect(() => {
@@ -84,6 +85,7 @@ export function ChaCha20Tab() {
           if (state.nonce) setNonce(state.nonce)
           if (state.nonceType) setNonceType(state.nonceType)
           if (state.format) setFormat(state.format)
+          if (state.caseOption) setCaseOption(state.caseOption)
         } catch (e) {
           console.error("Failed to parse ChaCha20Tab state", e)
         }
@@ -106,10 +108,11 @@ export function ChaCha20Tab() {
         keyType,
         nonce,
         nonceType,
-        format
+        format,
+        caseOption
       })
     )
-  }, [input, output, key, keyType, nonce, nonceType, format, isLoaded])
+  }, [input, output, key, keyType, nonce, nonceType, format, caseOption, isLoaded])
 
   const parseKeyOrNonce = (value: string, type: string, expectedBytes: number | number[]) => {
     let bytes: Uint8Array
@@ -138,6 +141,21 @@ export function ChaCha20Tab() {
     return bytes
   }
 
+  // Case selector for Hex output
+  const CaseSelector = () => (
+    <RadioGroup
+      orientation="horizontal"
+      value={caseOption}
+      onValueChange={(v) => setCaseOption(v === "upper" ? "upper" : "lower")}
+      label={t("tools.hash.case", "Case")}
+      size="sm"
+      className="text-tiny"
+    >
+      <Radio value="lower">{t("tools.hash.lowercase", "Lowercase")}</Radio>
+      <Radio value="upper">{t("tools.hash.uppercase", "Uppercase")}</Radio>
+    </RadioGroup>
+  )
+
   const handleProcess = (mode: "encrypt" | "decrypt") => {
     if (!input) return
     try {
@@ -165,6 +183,7 @@ export function ChaCha20Tab() {
       if (mode === "encrypt") {
         if (format === "Hex") {
           outString = bytesToHex(resultBytes)
+          outString = caseOption === "upper" ? outString.toUpperCase() : outString.toLowerCase()
         } else {
           outString = bytesToBase64(resultBytes)
         }
@@ -203,7 +222,11 @@ export function ChaCha20Tab() {
 
   const copyToClipboard = (text: string) => {
     if (!text) return
-    navigator.clipboard.writeText(text)
+    let out = text
+    if (format === "Hex") {
+      out = caseOption === "upper" ? text.toUpperCase() : text.toLowerCase()
+    }
+    navigator.clipboard.writeText(out)
   }
 
   const clearAll = () => {
@@ -290,6 +313,7 @@ export function ChaCha20Tab() {
             <Radio value="Base64">{t("tools.hash.base64", "Base64")}</Radio>
             <Radio value="Hex">{t("tools.hash.hex", "Hex")}</Radio>
           </RadioGroup>
+          {format === "Hex" && <CaseSelector />}
         </div>
       </div>
 
