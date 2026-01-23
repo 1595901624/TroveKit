@@ -96,6 +96,17 @@
       "keySize": "密鑰長度",
       "text": "文字",
       "hex": "Hex",
+      "keyPlaceholder32": "32 字節 (Hex)",
+      "type": "類型",
+      "nonce": "隨機數 (Nonce)",
+      "noncePlaceholder": "12 字節 (Hex)",
+      "base64": "Base64",
+      "copy": "複製",
+      "stream": "串流",
+      "errors": {
+        "invalidHexLength": "無效的十六進制長度",
+        "invalidHex": "無效的十六進制"
+      },
       "aesInputPlaceholder": "輸入要加密/解密的文字...",
       "bit64": "64位",
       "bit128": "128位",

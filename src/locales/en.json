@@ -97,6 +97,17 @@
       "keySize": "Key Size",
       "text": "Text",
       "hex": "Hex",
+      "keyPlaceholder32": "32 bytes (Hex)",
+      "type": "Type",
+      "nonce": "Nonce",
+      "noncePlaceholder": "12 bytes (Hex)",
+      "base64": "Base64",
+      "copy": "Copy",
+      "stream": "Stream",
+      "errors": {
+        "invalidHexLength": "Invalid hex length",
+        "invalidHex": "Invalid hex"
+      },
       "aesInputPlaceholder": "Enter text to encrypt/decrypt...",
       "bit64": "64-bit",
       "bit128": "128-bit",

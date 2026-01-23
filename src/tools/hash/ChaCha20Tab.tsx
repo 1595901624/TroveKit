@@ -174,9 +174,10 @@ export function ChaCha20Tab() {
 
       setOutput(outString)
 
+      const methodLabel = `${t("tools.hash.chacha20")} ${mode === "encrypt" ? t("tools.hash.encrypt") : t("tools.hash.decrypt")}`
       addLog(
         {
-          method: `ChaCha20 ${mode === "encrypt" ? "Encrypt" : "Decrypt"}`,
+          method: methodLabel,
           input,
           output: outString,
           cryptoParams: {
@@ -184,7 +185,7 @@ export function ChaCha20Tab() {
             format,
             key: keyType === "hex" ? bytesToHex(keyBytes) : key,
             nonce: nonceType === "hex" ? bytesToHex(nonceBytes) : nonce,
-            mode: "Stream"
+            mode: t("tools.hash.stream", "Stream")
           }
         },
         "success"
@@ -192,7 +193,11 @@ export function ChaCha20Tab() {
 
     } catch (e) {
       setOutput("")
-      addLog({ method: `ChaCha20 ${mode}`, input, output: (e as Error).message }, "error")
+      let errMsg = e instanceof Error ? e.message : String(e)
+      if (errMsg === "Invalid hex length") errMsg = t("tools.hash.errors.invalidHexLength")
+      else if (errMsg === "Invalid hex") errMsg = t("tools.hash.errors.invalidHex")
+      const methodLabel = `${t("tools.hash.chacha20")} ${mode === "encrypt" ? t("tools.hash.encrypt") : t("tools.hash.decrypt")}`
+      addLog({ method: methodLabel, input, output: errMsg }, "error")
     }
   }
 
@@ -230,14 +235,14 @@ export function ChaCha20Tab() {
             <Input
               size="sm"
               label={t("tools.hash.key")}
-              placeholder="32 bytes (Hex)"
+              placeholder={t("tools.hash.keyPlaceholder32", "32 bytes (Hex)")}
               value={key}
               onValueChange={setKey}
               className="flex-1"
             />
             <Select
               size="sm"
-              label="Type"
+              label={t("tools.hash.type", "Type")}
               className="w-24"
               selectedKeys={new Set([keyType])}
               onSelectionChange={(k) => setKeyType(Array.from(k)[0] as string)}
@@ -252,15 +257,15 @@ export function ChaCha20Tab() {
           <div className="flex gap-2">
             <Input
               size="sm"
-              label="Nonce"
-              placeholder="12 bytes (Hex)"
+              label={t("tools.hash.nonce", "Nonce")}
+              placeholder={t("tools.hash.noncePlaceholder", "12 bytes (Hex)")}
               value={nonce}
               onValueChange={setNonce}
               className="flex-1"
             />
             <Select
               size="sm"
-              label="Type"
+              label={t("tools.hash.type", "Type")}
               className="w-24"
               selectedKeys={new Set([nonceType])}
               onSelectionChange={(k) => setNonceType(Array.from(k)[0] as string)}
@@ -282,8 +287,8 @@ export function ChaCha20Tab() {
             size="sm"
             className="text-tiny"
           >
-            <Radio value="Base64">Base64</Radio>
-            <Radio value="Hex">Hex</Radio>
+            <Radio value="Base64">{t("tools.hash.base64", "Base64")}</Radio>
+            <Radio value="Hex">{t("tools.hash.hex", "Hex")}</Radio>
           </RadioGroup>
         </div>
       </div>
@@ -312,7 +317,7 @@ export function ChaCha20Tab() {
           }}
         />
         <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-          <Button isIconOnly size="sm" variant="flat" onPress={() => copyToClipboard(output)}>
+          <Button isIconOnly size="sm" variant="flat" onPress={() => copyToClipboard(output)} title={t("tools.hash.copy", "Copy")}>
             <Copy className="w-4 h-4" />
           </Button>
         </div>

@@ -96,6 +96,17 @@
       "keySize": "キーサイズ",
       "text": "テキスト",
       "hex": "Hex",
+      "keyPlaceholder32": "32 バイト (Hex)",
+      "type": "タイプ",
+      "nonce": "ノンス (Nonce)",
+      "noncePlaceholder": "12 バイト (Hex)",
+      "base64": "Base64",
+      "copy": "コピー",
+      "stream": "ストリーム",
+      "errors": {
+        "invalidHexLength": "無効な16進数の長さ",
+        "invalidHex": "無効な16進数"
+      },
       "aesInputPlaceholder": "暗号化/復号化するテキストを入力...",
       "bit64": "64ビット",
       "bit128": "128ビット",

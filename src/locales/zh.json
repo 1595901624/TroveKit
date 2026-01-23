@@ -87,6 +87,17 @@
       "hmacMd5OutputLabel": "HMAC-MD5 输出",
       "keyType": "密钥类型",
       "keyPlaceholder": "密钥",
+      "keyPlaceholder32": "32 字节 (Hex)",
+      "type": "类型",
+      "nonce": "随机数 (Nonce)",
+      "noncePlaceholder": "12 字节 (Hex)",
+      "base64": "Base64",
+      "copy": "复制",
+      "stream": "流式",
+      "errors": {
+        "invalidHexLength": "无效的十六进制长度",
+        "invalidHex": "无效的十六进制"
+      },
       "tripleDes": "3DES",
       "mode": "模式",
       "padding": "填充",
