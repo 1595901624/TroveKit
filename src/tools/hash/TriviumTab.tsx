@@ -78,9 +78,9 @@ export function TriviumTab() {
   const [output, setOutput] = useState("")
 
   const [key, setKey] = useState("")
-  const [keyType, setKeyType] = useState("text")
+  const [keyType, setKeyType] = useState("hex")
   const [iv, setIv] = useState("")
-  const [ivType, setIvType] = useState("text")
+  const [ivType, setIvType] = useState("hex")
 
   const [format, setFormat] = useState("Hex")
   const [isLoaded, setIsLoaded] = useState(false)
@@ -125,15 +125,17 @@ export function TriviumTab() {
     )
   }, [input, output, key, keyType, iv, ivType, format, isLoaded])
 
-  const parseKeyIv = (value: string, type: string) => {
+  const parseKeyIv = (value: string, _type: string) => {
     if (!value) return normalize80Bit(new Uint8Array())
-    const raw = type === "hex" ? hexToBytes(value) : utf8ToBytes(value)
+    // Only Hex format is currently supported for Key/IV. Text handling is commented out for now.
+    // const raw = _type === "hex" ? hexToBytes(value) : utf8ToBytes(value)
+    const raw = hexToBytes(value)
     const fixed = normalize80Bit(raw)
     // Convention note:
     // Many Trivium toolchains treat the provided hex as a big-endian 80-bit value.
     // To match the expected results (including the user-provided known vector),
-    // we reverse the 10-byte sequence ONLY for hex inputs.
-    return type === "hex" ? reverseBytes10(fixed) : fixed
+    // we reverse the 10-byte sequence for Hex inputs.
+    return reverseBytes10(fixed)
   }
 
   const parseCipherInput = (value: string) => {
@@ -233,7 +235,10 @@ export function TriviumTab() {
     setInput("")
     setOutput("")
     setKey("")
+    setKeyType("hex")
     setIv("")
+    setIvType("hex")
+    setFormat("Hex")
     removeStoredItem(STORAGE_KEY)
   }
 
@@ -257,20 +262,21 @@ export function TriviumTab() {
             <Input
               size="sm"
               label={t("tools.hash.key")}
-              placeholder={t("tools.hash.keyPlaceholder", "Key") + " (80-bit)"}
+              placeholder={t("tools.hash.keyPlaceholder", "Key") + " (80-bit, Hex)"}
               value={key}
               onValueChange={setKey}
               className="flex-1"
             />
             <Select
               size="sm"
-              label={t("tools.hash.text")}
+              label={t("tools.hash.hex")}
               className="w-24"
-              selectedKeys={new Set([keyType])}
-              onSelectionChange={(keys) => setKeyType(Array.from(keys)[0] as string)}
+              selectedKeys={new Set(["hex"])}
+              // Text option temporarily disabled
+              // onSelectionChange={(keys) => setKeyType(Array.from(keys)[0] as string)}
               disallowEmptySelection
             >
-              <SelectItem key="text">{t("tools.hash.text")}</SelectItem>
+              {/* <SelectItem key="text">{t("tools.hash.text")}</SelectItem> */}
               <SelectItem key="hex">{t("tools.hash.hex")}</SelectItem>
             </Select>
           </div>
@@ -279,20 +285,21 @@ export function TriviumTab() {
             <Input
               size="sm"
               label={t("tools.hash.iv")}
-              placeholder={t("tools.hash.iv", "IV") + " (80-bit)"}
+              placeholder={t("tools.hash.iv", "IV") + " (80-bit, Hex)"}
               value={iv}
               onValueChange={setIv}
               className="flex-1"
             />
             <Select
               size="sm"
-              label={t("tools.hash.text")}
+              label={t("tools.hash.hex")}
               className="w-24"
-              selectedKeys={new Set([ivType])}
-              onSelectionChange={(keys) => setIvType(Array.from(keys)[0] as string)}
+              selectedKeys={new Set(["hex"])}
+              // Text option temporarily disabled
+              // onSelectionChange={(keys) => setIvType(Array.from(keys)[0] as string)}
               disallowEmptySelection
             >
-              <SelectItem key="text">{t("tools.hash.text")}</SelectItem>
+              {/* <SelectItem key="text">{t("tools.hash.text")}</SelectItem> */}
               <SelectItem key="hex">{t("tools.hash.hex")}</SelectItem>
             </Select>
           </div>
