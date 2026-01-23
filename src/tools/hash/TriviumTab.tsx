@@ -83,6 +83,7 @@ export function TriviumTab() {
   const [ivType, setIvType] = useState("hex")
 
   const [format, setFormat] = useState("Hex")
+  const [caseOption, setCaseOption] = useState("lower" as "lower" | "upper")
   const [isLoaded, setIsLoaded] = useState(false)
 
   useEffect(() => {
@@ -98,6 +99,7 @@ export function TriviumTab() {
           if (state.iv) setIv(state.iv)
           if (state.ivType) setIvType(state.ivType)
           if (state.format) setFormat(state.format)
+          if (state.caseOption === "lower" || state.caseOption === "upper") setCaseOption(state.caseOption)
         } catch (e) {
           console.error("Failed to parse TriviumTab state", e)
         }
@@ -120,10 +122,11 @@ export function TriviumTab() {
         keyType,
         iv,
         ivType,
-        format
+        format,
+        caseOption
       })
     )
-  }, [input, output, key, keyType, iv, ivType, format, isLoaded])
+  }, [input, output, key, keyType, iv, ivType, format, caseOption, isLoaded])
 
   const parseKeyIv = (value: string, _type: string) => {
     if (!value) return normalize80Bit(new Uint8Array())
@@ -144,9 +147,27 @@ export function TriviumTab() {
   }
 
   const encodeCipherOutput = (bytes: Uint8Array) => {
-    if (format === "Hex") return bytesToHex(bytes)
+    if (format === "Hex") {
+      const hex = bytesToHex(bytes)
+      return caseOption === "upper" ? hex.toUpperCase() : hex.toLowerCase()
+    }
     return bytesToBase64(bytes)
   }
+
+  // Case selector component extracted to avoid TSX parsing ambiguity when rendered inline.
+  const CaseSelector = () => (
+    <RadioGroup
+      orientation="horizontal"
+      value={caseOption}
+      onValueChange={(v) => setCaseOption(v === "upper" ? "upper" : "lower")}
+      label={t("tools.hash.case", "Case")}
+      size="sm"
+      className="text-tiny"
+    >
+      <Radio value="lower">{t("tools.hash.lowercase", "Lowercase")}</Radio>
+      <Radio value="upper">{t("tools.hash.uppercase", "Uppercase")}</Radio>
+    </RadioGroup>
+  )
 
   const handleEncrypt = async () => {
     if (!input) return
@@ -228,7 +249,8 @@ export function TriviumTab() {
 
   const copyToClipboard = (text: string) => {
     if (!text) return
-    navigator.clipboard.writeText(text)
+    const out = format === "Hex" ? (caseOption === "upper" ? text.toUpperCase() : text.toLowerCase()) : text
+    navigator.clipboard.writeText(out)
   }
 
   const clearAll = () => {
@@ -239,6 +261,7 @@ export function TriviumTab() {
     setIv("")
     setIvType("hex")
     setFormat("Hex")
+    setCaseOption("lower")
     removeStoredItem(STORAGE_KEY)
   }
 
@@ -272,8 +295,6 @@ export function TriviumTab() {
               label={t("tools.hash.hex")}
               className="w-24"
               selectedKeys={new Set(["hex"])}
-              // Text option temporarily disabled
-              // onSelectionChange={(keys) => setKeyType(Array.from(keys)[0] as string)}
               disallowEmptySelection
             >
               {/* <SelectItem key="text">{t("tools.hash.text")}</SelectItem> */}
@@ -295,8 +316,6 @@ export function TriviumTab() {
               label={t("tools.hash.hex")}
               className="w-24"
               selectedKeys={new Set(["hex"])}
-              // Text option temporarily disabled
-              // onSelectionChange={(keys) => setIvType(Array.from(keys)[0] as string)}
               disallowEmptySelection
             >
               {/* <SelectItem key="text">{t("tools.hash.text")}</SelectItem> */}
@@ -319,6 +338,7 @@ export function TriviumTab() {
             <Radio value="Hex">Hex</Radio>
           </RadioGroup>
 
+          {format === "Hex" && <CaseSelector />}
 
         </div>
       </div>
@@ -341,7 +361,7 @@ export function TriviumTab() {
           readOnly
           minRows={4}
           variant="bordered"
-          value={output}
+          value={format === "Hex" ? (caseOption === "upper" ? output.toUpperCase() : output.toLowerCase()) : output}
           classNames={{
             inputWrapper: "bg-default-100/30 group-hover:bg-default-100/50 transition-colors font-mono text-tiny"
           }}
