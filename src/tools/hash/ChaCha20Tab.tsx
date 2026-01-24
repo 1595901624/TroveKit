@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { Button, Input, Radio, RadioGroup, Select, SelectItem, Textarea } from "@heroui/react"
-import { Copy, Lock, Trash2, Unlock } from "lucide-react"
+import { Copy, Lock, Trash2, Unlock, RefreshCw } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { useLog } from "../../contexts/LogContext"
 import { getStoredItem, removeStoredItem, setStoredItem } from "../../lib/store"
@@ -156,6 +156,18 @@ export function ChaCha20Tab() {
     </RadioGroup>
   )
 
+  const handleGenerate = () => {
+    const k = new Uint8Array(32)
+    const n = new Uint8Array(12)
+    crypto.getRandomValues(k)
+    crypto.getRandomValues(n)
+
+    setKey(bytesToHex(k))
+    setKeyType("hex")
+    setNonce(bytesToHex(n))
+    setNonceType("hex")
+  }
+
   const handleProcess = (mode: "encrypt" | "decrypt") => {
     if (!input) return
     try {
@@ -298,6 +310,15 @@ export function ChaCha20Tab() {
               <SelectItem key="hex">{t("tools.hash.hex")}</SelectItem>
             </Select>
           </div>
+
+          <Button
+            size="sm"
+            variant="flat"
+            startContent={<RefreshCw className="w-4 h-4" />}
+            onPress={handleGenerate}
+          >
+            {t("tools.hash.generateRandom", "Generate Random Key & Nonce")}
+          </Button>
         </div>
 
         <div className="space-y-2">
