@@ -22,9 +22,6 @@ jobs:
           - platform: 'ubuntu-22.04' # Linux x64
             args: ''
             target: 'x86_64-unknown-linux-gnu'
-          - platform: 'ubuntu-22.04-arm' # Linux arm64 (public repos only)
-            args: ''
-            target: 'aarch64-unknown-linux-gnu'
           - platform: 'windows-latest' # Windows x64
             args: ''
             target: 'x86_64-pc-windows-msvc'
@@ -37,10 +34,16 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Install dependencies (Ubuntu)
-        if: matrix.platform == 'ubuntu-22.04' || matrix.platform == 'ubuntu-22.04-arm'
+        if: matrix.platform == 'ubuntu-22.04'
         run: |
           sudo apt-get update
           sudo apt-get install -y libwebkit2gtk-4.1-dev build-essential curl wget file libssl-dev libgtk-3-dev libayatana-appindicator3-dev librsvg2-dev
+
+      - name: Install dependencies (Ubuntu ARM64)
+        if: matrix.platform == 'ubuntu-22.04-arm'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev build-essential curl wget file libssl-dev libgtk-3-dev libayatana-appindicator3-dev librsvg2-dev xdg-utils
 
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
