@@ -289,7 +289,7 @@ export function ChaCha20Tab() {
             <Input
               size="sm"
               label={t("tools.hash.key")}
-              placeholder={t("tools.hash.keyPlaceholder32", "32 bytes")}
+              placeholder={keyType === "hex" ? `${t("tools.hash.keyPlaceholder32", "32 bytes")} (${t("tools.hash.hex", "Hex")})` : t("tools.hash.keyPlaceholder32", "32 bytes")}
               value={key}
               onValueChange={setKey}
               className="flex-1"
@@ -312,7 +312,7 @@ export function ChaCha20Tab() {
             <Input
               size="sm"
               label={t("tools.hash.nonce", "Nonce")}
-              placeholder={t("tools.hash.noncePlaceholder", "12 bytes")}
+              placeholder={nonceType === "hex" ? `${t("tools.hash.noncePlaceholder", "12 bytes")} (${t("tools.hash.hex", "Hex")})` : t("tools.hash.noncePlaceholder", "12 bytes")}
               value={nonce}
               onValueChange={setNonce}
               className="flex-1"
