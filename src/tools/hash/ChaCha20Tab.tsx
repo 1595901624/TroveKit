@@ -56,6 +56,17 @@ function base64ToBytes(base64: string): Uint8Array {
   return bytes
 }
 
+function generateRandomString(length: number): string {
+  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
+  let result = ""
+  const randomValues = new Uint8Array(length)
+  crypto.getRandomValues(randomValues)
+  for (let i = 0; i < length; i++) {
+    result += chars[randomValues[i] % chars.length]
+  }
+  return result
+}
+
 export function ChaCha20Tab() {
   const { t } = useTranslation()
   const { addLog } = useLog()
@@ -157,15 +168,23 @@ export function ChaCha20Tab() {
   )
 
   const handleGenerate = () => {
-    const k = new Uint8Array(32)
-    const n = new Uint8Array(12)
-    crypto.getRandomValues(k)
-    crypto.getRandomValues(n)
+    // Key: 32 bytes
+    if (keyType === "hex") {
+      const k = new Uint8Array(32)
+      crypto.getRandomValues(k)
+      setKey(bytesToHex(k))
+    } else {
+      setKey(generateRandomString(32))
+    }
 
-    setKey(bytesToHex(k))
-    setKeyType("hex")
-    setNonce(bytesToHex(n))
-    setNonceType("hex")
+    // Nonce: 12 bytes
+    if (nonceType === "hex") {
+      const n = new Uint8Array(12)
+      crypto.getRandomValues(n)
+      setNonce(bytesToHex(n))
+    } else {
+      setNonce(generateRandomString(12))
+    }
   }
 
   const handleProcess = (mode: "encrypt" | "decrypt") => {
