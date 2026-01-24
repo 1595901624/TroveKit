@@ -90,6 +90,7 @@ jobs:
           releaseName: 'v${{ env.APP_VERSION }}'
           releaseBody: |
             ## 中文
+            ### 我应该下载哪个安装包？
             下表列出常见安装包示例。请选择与你的操作系统和 CPU 架构匹配的文件。
 
             | 操作系统 | 架构 | 位数 | 包类型 | 示例文件名 |
@@ -107,6 +108,7 @@ jobs:
             下载时请按 OS 与 CPU 架构选择。
 
             ## English
+            ### Which installer should I download?
             The table below lists common installer examples. Please choose the file that matches your OS and CPU architecture.
 
             | OS | Arch | Bits | Package Type | Example filename |
