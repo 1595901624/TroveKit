@@ -225,6 +225,7 @@ export function ChaCha20Tab() {
       setOutput(outString)
 
       const methodLabel = `${t("tools.hash.chacha20")} ${mode === "encrypt" ? t("tools.hash.encrypt") : t("tools.hash.decrypt")}`
+      const formatLog = format === "Hex" ? `${format} (${caseOption})` : format
       addLog(
         {
           method: methodLabel,
@@ -233,6 +234,7 @@ export function ChaCha20Tab() {
           cryptoParams: {
             algorithm: "ChaCha20",
             format,
+            ...(mode === "encrypt" ? { output_format: formatLog } : { input_format: formatLog }),
             key: keyType === "hex" ? bytesToHex(keyBytes) : key,
             key_type: keyType,
             nonce: nonceType === "hex" ? bytesToHex(nonceBytes) : nonce,

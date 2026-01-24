@@ -206,6 +206,7 @@ export function TriviumTab() {
 
       const keyLog = keyType === "hex" ? bytesToHex(keyBytes) : key
       const ivLog = ivType === "hex" ? bytesToHex(ivBytes) : iv
+      const formatLog = format === "Hex" ? `${format} (${caseOption})` : format
 
       addLog(
         {
@@ -215,6 +216,7 @@ export function TriviumTab() {
           cryptoParams: {
             algorithm: "Trivium",
             format,
+            output_format: formatLog,
             key: keyLog,
             key_type: keyType,
             iv: ivLog,
@@ -248,6 +250,7 @@ export function TriviumTab() {
 
       const keyLog = keyType === "hex" ? bytesToHex(keyBytes) : key
       const ivLog = ivType === "hex" ? bytesToHex(ivBytes) : iv
+      const formatLog = format === "Hex" ? `${format} (${caseOption})` : format
 
       addLog(
         {
@@ -257,6 +260,7 @@ export function TriviumTab() {
           cryptoParams: {
             algorithm: "Trivium",
             format,
+            input_format: formatLog,
             key: keyLog,
             key_type: keyType,
             iv: ivLog,
