@@ -41,6 +41,7 @@ export interface LogEntry {
    * - padding: 填充方式 (如 "PKCS7", "PKCS5", "ZeroPadding", "NoPadding", "ISO10126", "ANSIX923" 等)
    * - format: 输出格式 (如 "hex", "base64", "utf8" 等)
    * - iv: 初始向量 (Base64 或 Hex 编码的字符串)
+   * - nonce: 随机数 (如 ChaCha20 使用的 8 或 12 字节随机数)
    * - key: 加密密钥 (Base64 或 Hex 编码的字符串)
    * - key_type: 密钥类型 (如 "public", "private", "symmetric" 等)
    * - hash: 哈希算法 (如 "MD5", "SHA1", "SHA256", "SHA512", "SM3" 等)

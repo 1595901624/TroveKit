@@ -515,10 +515,22 @@ export function LogManagementTool() {
                                                 <span className="font-mono text-default-700">{log.cryptoParams.key_type}</span>
                                             </div>
                                         )}
+                                        {log.cryptoParams.nonce_type && (
+                                            <div className="flex flex-col">
+                                                <span className="text-default-500 font-semibold">{t('tools.hash.nonceType')}</span>
+                                                <span className="font-mono text-default-700">{log.cryptoParams.nonce_type}</span>
+                                            </div>
+                                        )}
                                         {log.cryptoParams.iv && (
                                             <div className="col-span-2 flex flex-col">
                                                 <span className="text-default-500 font-semibold">{t('tools.hash.iv')}</span>
                                                 <span className="font-mono text-default-700 break-all">{log.cryptoParams.iv}</span>
+                                            </div>
+                                        )}
+                                        {log.cryptoParams.nonce && (
+                                            <div className="col-span-2 flex flex-col">
+                                                <span className="text-default-500 font-semibold">{t('tools.hash.nonce')}</span>
+                                                <span className="font-mono text-default-700 break-all">{log.cryptoParams.nonce}</span>
                                             </div>
                                         )}
                                         {log.cryptoParams.key && (

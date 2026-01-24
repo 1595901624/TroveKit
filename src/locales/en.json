@@ -100,6 +100,7 @@
       "keyPlaceholder32": "32 bytes",
       "type": "Type",
       "nonce": "Nonce",
+      "nonceType": "Nonce Type",
       "noncePlaceholder": "12 bytes",
       "generateRandom": "Generate Random Key & Nonce",
       "defaultInput": "Hello, TroveKit!",

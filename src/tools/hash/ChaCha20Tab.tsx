@@ -234,7 +234,9 @@ export function ChaCha20Tab() {
             algorithm: "ChaCha20",
             format,
             key: keyType === "hex" ? bytesToHex(keyBytes) : key,
+            key_type: keyType,
             nonce: nonceType === "hex" ? bytesToHex(nonceBytes) : nonce,
+            nonce_type: nonceType,
             mode: t("tools.hash.stream", "Stream")
           }
         },
