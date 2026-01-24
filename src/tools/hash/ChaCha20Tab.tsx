@@ -335,6 +335,7 @@ export function ChaCha20Tab() {
             variant="flat"
             startContent={<RefreshCw className="w-4 h-4" />}
             onPress={handleGenerate}
+            title={t("tools.hash.generateRandom", "Generate Random Key & Nonce")}
           >
             {t("tools.hash.generateRandom", "Generate Random Key & Nonce")}
           </Button>

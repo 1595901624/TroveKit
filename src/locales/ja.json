@@ -100,6 +100,7 @@
       "type": "タイプ",
       "nonce": "ノンス (Nonce)",
       "noncePlaceholder": "12 バイト",
+      "generateRandom": "ランダムなキーとノンスを生成",
       "defaultInput": "TroveKit へようこそ",
       "base64": "Base64",
       "copy": "コピー",

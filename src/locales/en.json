@@ -101,6 +101,7 @@
       "type": "Type",
       "nonce": "Nonce",
       "noncePlaceholder": "12 bytes",
+      "generateRandom": "Generate Random Key & Nonce",
       "defaultInput": "Hello, TroveKit!",
       "base64": "Base64",
       "copy": "Copy",
