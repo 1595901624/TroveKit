@@ -22,14 +22,14 @@ export function ClassicalTool({ activeTab }: ClassicalToolProps) {
 
   return (
     <div className="flex flex-col h-full overflow-hidden">
-      <div className="flex-none">
+      <div className="flex-none w-full overflow-x-auto [&::-webkit-scrollbar]:hidden">
         <Tabs
           aria-label={t("tools.classical.title")}
           color="primary"
           selectedKey={selectedKey}
           onSelectionChange={(key) => setSelectedKey(key as string)}
           classNames={{
-            tabList: "text-sm",
+            tabList: "text-sm w-full",
             tab: "text-xs"
           }}
         >
