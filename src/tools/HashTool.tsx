@@ -6,6 +6,7 @@ import { Md4Tab } from "./hash/Md4Tab"
 import { Md5Tab } from "./hash/Md5Tab"
 import { ShaTab } from "./hash/ShaTab"
 import { AesTab } from "./hash/AesTab"
+import { Sm2Tab } from "./hash/Sm2Tab"
 import { DesTab } from "./hash/DesTab"
 import { Rc4Tab } from "./hash/Rc4Tab"
 import { ChaCha20Tab } from "./hash/ChaCha20Tab"
@@ -46,6 +47,7 @@ export function HashTool({ activeTab }: HashToolProps) {
           <Tab key="hmacMd5" title={t("tools.hash.hmacMd5", "HMAC-MD5")} />
           <Tab key="sha" title={t("tools.hash.sha")} />
           <Tab key="aes" title={t("tools.hash.aes")} />
+          <Tab key="sm2" title={t("tools.hash.sm2")} />
           <Tab key="des" title={t("tools.hash.des", "DES")} />
           <Tab key="rc4" title={t("tools.hash.rc4", "RC4")} />
           <Tab key="chacha20" title={t("tools.hash.chacha20", "ChaCha20")} />
@@ -71,6 +73,9 @@ export function HashTool({ activeTab }: HashToolProps) {
         </div>
         <div className={selectedKey === "aes" ? "" : "hidden"}>
           <AesTab />
+        </div>
+        <div className={selectedKey === "sm2" ? "" : "hidden"}>
+          <Sm2Tab />
         </div>
         <div className={selectedKey === "des" ? "" : "hidden"}>
           <DesTab />
