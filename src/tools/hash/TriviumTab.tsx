@@ -204,6 +204,9 @@ export function TriviumTab() {
       const out = encodeCipherOutput(cipherBytes)
       setOutput(out)
 
+      const keyLog = keyType === "hex" ? bytesToHex(keyBytes) : key
+      const ivLog = ivType === "hex" ? bytesToHex(ivBytes) : iv
+
       addLog(
         {
           method: `Trivium Encrypt (${format})`,
@@ -212,9 +215,9 @@ export function TriviumTab() {
           cryptoParams: {
             algorithm: "Trivium",
             format,
-            key,
+            key: keyLog,
             key_type: keyType,
-            iv,
+            iv: ivLog,
             iv_type: ivType,
             key_size: "80-bit",
             iv_size: "80-bit"
@@ -243,6 +246,9 @@ export function TriviumTab() {
       const out = bytesToUtf8(plainBytes)
       setOutput(out)
 
+      const keyLog = keyType === "hex" ? bytesToHex(keyBytes) : key
+      const ivLog = ivType === "hex" ? bytesToHex(ivBytes) : iv
+
       addLog(
         {
           method: `Trivium Decrypt (${format})`,
@@ -251,9 +257,9 @@ export function TriviumTab() {
           cryptoParams: {
             algorithm: "Trivium",
             format,
-            key,
+            key: keyLog,
             key_type: keyType,
-            iv,
+            iv: ivLog,
             iv_type: ivType,
             key_size: "80-bit",
             iv_size: "80-bit"
