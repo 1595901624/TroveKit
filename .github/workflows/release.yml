@@ -88,7 +88,40 @@ jobs:
         with:
           tagName: v${{ env.APP_VERSION }}
           releaseName: 'v${{ env.APP_VERSION }}'
-          releaseBody: 'See the assets to download this version and install.'
+          releaseBody: |
+            ## 中文
+            下表列出常见安装包示例（示例文件名将把 `x.y.z` 替换为本次发布版本 `${{ env.APP_VERSION }}`）。请选择与你的操作系统和 CPU 架构匹配的文件。
+
+            | 操作系统 | 架构 | 位数 | 包类型 | 示例文件名 |
+            |---|---:|---:|---|---|
+            | Windows | x86_64 (x64) | 64-bit | Installer (EXE / MSI) | `TroveKit_${{ env.APP_VERSION }}_x64-setup.exe` / `TroveKit_${{ env.APP_VERSION }}_x64_en-US.msi` |
+            | Windows | x86 (32-bit) | 32-bit | Installer (EXE / MSI) | `TroveKit_${{ env.APP_VERSION }}_x86-setup.exe` / `TroveKit_${{ env.APP_VERSION }}_x86_en-US.msi` |
+            | macOS | arm64 (Apple Silicon) | 64-bit | DMG / .app.tar.gz | `TroveKit_${{ env.APP_VERSION }}_aarch64.dmg` / `TroveKit_${{ env.APP_VERSION }}_aarch64.app.tar.gz` |
+            | macOS | x86_64 (Intel) | 64-bit | DMG / .app.tar.gz | `TroveKit_${{ env.APP_VERSION }}_x64.dmg` / `TroveKit_${{ env.APP_VERSION }}_x64.app.tar.gz` |
+            | Linux (Debian/Ubuntu) | amd64 (x86_64) | 64-bit | DEB | `TroveKit_${{ env.APP_VERSION }}_amd64.deb` |
+            | Linux (Debian/Ubuntu) | arm64 | 64-bit | DEB | `TroveKit_${{ env.APP_VERSION }}_arm64.deb` |
+            | Linux (RPM distros)（例如：Fedora、CentOS/RHEL） | x86_64 | 64-bit | RPM | `TroveKit-${{ env.APP_VERSION }}-1.x86_64.rpm` |
+            | Linux (RPM distros)（例如：Fedora、CentOS/RHEL） | aarch64 | 64-bit | RPM | `TroveKit-${{ env.APP_VERSION }}-1.aarch64.rpm` |
+            | Linux (portable) | amd64 / aarch64 | 64-bit | AppImage | `TroveKit_${{ env.APP_VERSION }}_amd64.AppImage` / `TroveKit_${{ env.APP_VERSION }}_aarch64.AppImage` |
+
+            下载时请按 OS 与 CPU 架构选择。
+
+            ## English
+            The table below lists common installer examples (the `x.y.z` placeholder is replaced by the current release `${{ env.APP_VERSION }}`). Please choose the file that matches your OS and CPU architecture.
+
+            | OS | Arch | Bits | Package Type | Example filename |
+            |---|---:|---:|---|---|
+            | Windows | x86_64 (x64) | 64-bit | Installer (EXE / MSI) | `TroveKit_${{ env.APP_VERSION }}_x64-setup.exe` / `TroveKit_${{ env.APP_VERSION }}_x64_en-US.msi` |
+            | Windows | x86 (32-bit) | 32-bit | Installer (EXE / MSI) | `TroveKit_${{ env.APP_VERSION }}_x86-setup.exe` / `TroveKit_${{ env.APP_VERSION }}_x86_en-US.msi` |
+            | macOS | arm64 (Apple Silicon) | 64-bit | DMG / .app.tar.gz | `TroveKit_${{ env.APP_VERSION }}_aarch64.dmg` / `TroveKit_${{ env.APP_VERSION }}_aarch64.app.tar.gz` |
+            | macOS | x86_64 (Intel) | 64-bit | DMG / .app.tar.gz | `TroveKit_${{ env.APP_VERSION }}_x64.dmg` / `TroveKit_${{ env.APP_VERSION }}_x64.app.tar.gz` |
+            | Linux (Debian/Ubuntu) | amd64 (x86_64) | 64-bit | DEB | `TroveKit_${{ env.APP_VERSION }}_amd64.deb` |
+            | Linux (Debian/Ubuntu) | arm64 | 64-bit | DEB | `TroveKit_${{ env.APP_VERSION }}_arm64.deb` |
+            | Linux (RPM distros) — e.g., Fedora / CentOS (RHEL) | x86_64 | 64-bit | RPM | `TroveKit-${{ env.APP_VERSION }}-1.x86_64.rpm` |
+            | Linux (RPM distros) — e.g., Fedora / CentOS (RHEL) | aarch64 | 64-bit | RPM | `TroveKit-${{ env.APP_VERSION }}-1.aarch64.rpm` |
+            | Linux (portable) | amd64 / aarch64 | 64-bit | AppImage | `TroveKit_${{ env.APP_VERSION }}_amd64.AppImage` / `TroveKit_${{ env.APP_VERSION }}_aarch64.AppImage` |
+
+            When downloading, choose the file that matches your OS and CPU architecture.
           releaseDraft: false
           prerelease: false
           args: ${{ matrix.args }}
