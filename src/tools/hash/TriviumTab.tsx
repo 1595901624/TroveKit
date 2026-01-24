@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { Button, Input, Radio, RadioGroup, Select, SelectItem, Textarea } from "@heroui/react"
-import { Copy, Lock, Trash2, Unlock } from "lucide-react"
+import { Copy, Lock, Trash2, Unlock, RefreshCw } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { useLog } from "../../contexts/LogContext"
 import { getStoredItem, removeStoredItem, setStoredItem } from "../../lib/store"
@@ -169,7 +169,26 @@ export function TriviumTab() {
     </RadioGroup>
   )
 
-  const handleEncrypt = async () => {
+  const handleGenerate = () => {
+    // Generate 80-bit (10-byte) key and IV
+    if (keyType === "hex") {
+      const k = new Uint8Array(10)
+      crypto.getRandomValues(k)
+      setKey(bytesToHex(k))
+    } else {
+      // setKey(generateRandomString(10))
+    }
+
+    if (ivType === "hex") {
+      const v = new Uint8Array(10)
+      crypto.getRandomValues(v)
+      setIv(bytesToHex(v))
+    } else {
+      // setIv(generateRandomString(10))
+    }
+  }
+
+  const handleEncrypt = async () => { 
     if (!input) return
     try {
       const keyBytes = parseKeyIv(key, keyType)
@@ -322,6 +341,16 @@ export function TriviumTab() {
               <SelectItem key="hex">{t("tools.hash.hex")}</SelectItem>
             </Select>
           </div>
+
+          <Button
+            size="sm"
+            variant="flat"
+            startContent={<RefreshCw className="w-4 h-4" />}
+            onPress={handleGenerate}
+            title={t("tools.hash.generateRandom", "Generate Random Key & IV")}
+          >
+            {t("tools.hash.generateRandom", "Generate Random Key & IV")}
+          </Button>
         </div>
 
         <div className="space-y-2">
