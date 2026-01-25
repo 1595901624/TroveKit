@@ -63,16 +63,16 @@ export function Sm2Tab() {
       setPublicKey(keypair.publicKey)
       setPrivateKey(keypair.privateKey)
       addLog({
-        method: "SM2 Generate KeyPair",
-        input: "Generate",
-        output: "Success",
+        method: t("tools.hash.sm2GenerateKeyPair", "SM2 Generate KeyPair"),
+        input: t("tools.hash.generate", "Generate"),
+        output: `${t("tools.hash.publicKey", "Public Key")}: ${keypair.publicKey}\n${t("tools.hash.privateKey", "Private Key")}: ${keypair.privateKey}`,
         cryptoParams: {
             publicKey: keypair.publicKey,
             privateKey: keypair.privateKey
         }
       }, "success")
     } catch (e) {
-      addLog({ method: "SM2 Generate KeyPair", input: "Generate", output: (e as Error).message }, "error")
+      addLog({ method: t("tools.hash.sm2GenerateKeyPair", "SM2 Generate KeyPair"), input: t("tools.hash.generate", "Generate"), output: (e as Error).message }, "error")
     }
   }
 
@@ -86,19 +86,20 @@ export function Sm2Tab() {
       // encrypted is hex string usually '04' + ...
       
       setOutput(encrypted)
+      const modeStr = mode === "1" ? t("tools.hash.c1c3c2", "C1C3C2 (Standard)") : t("tools.hash.c1c2c3", "C1C2C3 (Old)")
       addLog({
-        method: `SM2 Encrypt (Mode: ${mode === "1" ? "C1C3C2" : "C1C2C3"})`,
+        method: t("tools.hash.sm2Encrypt", { mode: modeStr }),
         input: input,
         output: encrypted,
         cryptoParams: {
           algorithm: "SM2",
-          mode: mode === "1" ? "C1C3C2" : "C1C2C3",
+          mode: modeStr,
           publicKey: publicKey
         }
       }, "success")
     } catch (e) {
         // @ts-ignore
-      addLog({ method: "SM2 Encrypt", input: input, output: e.message || e }, "error")
+      addLog({ method: t("tools.hash.sm2EncryptMethod", "SM2 Encrypt"), input: input, output: e.message || e }, "error")
     }
   }
 
@@ -109,22 +110,23 @@ export function Sm2Tab() {
       const cipherMode = parseInt(mode) as CipherMode
       const decrypted = sm2.doDecrypt(input, privateKey, cipherMode)
       
-      if (!decrypted) throw new Error("Decryption failed")
+      if (!decrypted) throw new Error(t("tools.hash.decryptionFailed", "Decryption failed"))
 
       setOutput(decrypted)
+      const modeStr = mode === "1" ? t("tools.hash.c1c3c2", "C1C3C2 (Standard)") : t("tools.hash.c1c2c3", "C1C2C3 (Old)")
       addLog({
-        method: `SM2 Decrypt (Mode: ${mode === "1" ? "C1C3C2" : "C1C2C3"})`,
+        method: t("tools.hash.sm2Decrypt", { mode: modeStr }),
         input: input,
         output: decrypted,
         cryptoParams: {
           algorithm: "SM2",
-          mode: mode === "1" ? "C1C3C2" : "C1C2C3",
+          mode: modeStr,
           privateKey: privateKey
         }
       }, "success")
     } catch (e) {
         // @ts-ignore
-      addLog({ method: "SM2 Decrypt", input: input, output: e.message || e }, "error")
+      addLog({ method: t("tools.hash.sm2DecryptMethod", "SM2 Decrypt"), input: input, output: e.message || e }, "error")
     }
   }
 
@@ -177,8 +179,8 @@ export function Sm2Tab() {
                     size="sm"
                     className="text-tiny"
                   >
-                    <Radio value="1">C1C3C2 (Standard)</Radio>
-                    <Radio value="0">C1C2C3 (Old)</Radio>
+                    <Radio value="1">{t("tools.hash.c1c3c2", "C1C3C2 (Standard)")}</Radio>
+                    <Radio value="0">{t("tools.hash.c1c2c3", "C1C2C3 (Old)")}</Radio>
                   </RadioGroup>
                 </div>
 
