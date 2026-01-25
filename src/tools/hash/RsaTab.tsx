@@ -1,15 +1,14 @@
 import { useState, useEffect } from "react"
-import { Textarea, Button, RadioGroup, Radio } from "@heroui/react"
+import { Textarea, Button, Select, SelectItem } from "@heroui/react"
 import { Copy, Trash2, Lock, Unlock, KeyRound } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { useLog } from "../../contexts/LogContext"
-// @ts-ignore
-import { CipherMode, sm2 } from "sm-crypto"
+import JSEncrypt from "jsencrypt"
 import { getStoredItem, setStoredItem, removeStoredItem } from "../../lib/store"
 
-const STORAGE_KEY = "sm2-tool-state"
+const STORAGE_KEY = "rsa-tool-state"
 
-export function Sm2Tab() {
+export function RsaTab() {
   const { t } = useTranslation()
   const { addLog } = useLog()
 
@@ -17,13 +16,10 @@ export function Sm2Tab() {
   const [output, setOutput] = useState("")
   const [publicKey, setPublicKey] = useState("")
   const [privateKey, setPrivateKey] = useState("")
-  const [mode, setMode] = useState("1") // 1: C1C3C2 (default in standard, but library might use 0/1 differently)
-  // sm-crypto: cipherMode: 1 - C1C3C2, 0 - C1C2C3. 
-  // Wait, commonly 1 is C1C3C2 (GM standard) in sm-crypto docs.
-  // Let's verify documentation or comments.
-  // Actually, sm-crypto docs say: cipherMode 1 - C1C3C2 (default), 0 - C1C2C3
+  const [keySize, setKeySize] = useState("1024")
   
   const [isLoaded, setIsLoaded] = useState(false)
+  const [isGenerating, setIsGenerating] = useState(false)
 
   useEffect(() => {
     let mounted = true;
@@ -35,9 +31,9 @@ export function Sm2Tab() {
           if (state.output) setOutput(state.output);
           if (state.publicKey) setPublicKey(state.publicKey);
           if (state.privateKey) setPrivateKey(state.privateKey);
-          if (state.mode) setMode(state.mode);
+          if (state.keySize) setKeySize(state.keySize);
         } catch (e) {
-          console.error("Failed to parse Sm2Tab state", e);
+          console.error("Failed to parse RsaTab state", e);
         }
       }
       if (mounted) setIsLoaded(true);
@@ -52,81 +48,89 @@ export function Sm2Tab() {
         output,
         publicKey,
         privateKey,
-        mode
+        keySize
       }))
     }
-  }, [input, output, publicKey, privateKey, mode, isLoaded])
+  }, [input, output, publicKey, privateKey, keySize, isLoaded])
 
-  const handleGenerateKeys = () => {
-    try {
-      const keypair = sm2.generateKeyPairHex()
-      setPublicKey(keypair.publicKey)
-      setPrivateKey(keypair.privateKey)
-      addLog({
-        method: t("tools.hash.sm2GenerateKeyPair", "SM2 Generate KeyPair"),
-        input: t("tools.hash.generate", "Generate"),
-        output: t("common.success", "Success"),
-        cryptoParams: {
-            publicKey: keypair.publicKey,
-            privateKey: keypair.privateKey
+  const handleGenerateKeys = async () => {
+    setIsGenerating(true)
+    // Use setTimeout to allow UI to update (show loading state) before heavy calculation
+    setTimeout(() => {
+        try {
+            const currentKeySize = parseInt(keySize)
+            const crypt = new JSEncrypt({ default_key_size: currentKeySize.toString() });
+            crypt.getKey(); // This generates the key
+            
+            const pub = crypt.getPublicKey();
+            const priv = crypt.getPrivateKey();
+            
+            setPublicKey(pub);
+            setPrivateKey(priv);
+            
+            addLog({
+                method: t("tools.hash.rsaGenerateKeyPair", "RSA Generate KeyPair"),
+                input: `Key Size: ${keySize}`,
+                output: t("common.success", "Success"),
+                cryptoParams: {
+                    publicKey: pub,
+                    privateKey: priv,
+                    keySize: keySize
+                }
+            }, "success")
+        } catch (e) {
+            addLog({ method: t("tools.hash.rsaGenerateKeyPair", "RSA Generate KeyPair"), input: `Key Size: ${keySize}`, output: (e as Error).message }, "error")
+        } finally {
+            setIsGenerating(false)
         }
-      }, "success")
-    } catch (e) {
-      addLog({ method: t("tools.hash.sm2GenerateKeyPair", "SM2 Generate KeyPair"), input: t("tools.hash.generate", "Generate"), output: (e as Error).message }, "error")
-    }
+    }, 100)
   }
 
   const handleEncrypt = () => {
     if (!input || !publicKey) return;
     try {
-      // sm2.doEncrypt(msgString, publicKey, cipherMode)
-      // cipherMode: 1 - C1C3C2, 0 - C1C2C3
-      const cipherMode = parseInt(mode) as CipherMode
-      const encrypted = sm2.doEncrypt(input, publicKey, cipherMode)
-      // encrypted is hex string usually '04' + ...
+      const crypt = new JSEncrypt();
+      crypt.setPublicKey(publicKey);
+      const encrypted = crypt.encrypt(input);
       
-      setOutput(encrypted)
-      const modeStr = mode === "1" ? t("tools.hash.c1c3c2", "C1C3C2 (Standard)") : t("tools.hash.c1c2c3", "C1C2C3 (Old)")
+      if (!encrypted) throw new Error(t("tools.hash.encryptionFailed", "Encryption failed"));
+      
+      setOutput(encrypted);
       addLog({
-        method: t("tools.hash.sm2Encrypt", { mode: modeStr }),
+        method: t("tools.hash.rsaEncrypt", "RSA Encrypt"),
         input: input,
         output: encrypted,
         cryptoParams: {
-          algorithm: "SM2",
-          mode: modeStr,
+          algorithm: "RSA",
           publicKey: publicKey
         }
       }, "success")
     } catch (e) {
-        // @ts-ignore
-      addLog({ method: t("tools.hash.sm2EncryptMethod", "SM2 Encrypt"), input: input, output: e.message || e }, "error")
+      addLog({ method: t("tools.hash.rsaEncrypt", "RSA Encrypt"), input: input, output: (e as Error).message || "Error" }, "error")
     }
   }
 
   const handleDecrypt = () => {
     if (!input || !privateKey) return;
     try {
-      // sm2.doDecrypt(encryptData, privateKey, cipherMode)
-      const cipherMode = parseInt(mode) as CipherMode
-      const decrypted = sm2.doDecrypt(input, privateKey, cipherMode)
+      const crypt = new JSEncrypt();
+      crypt.setPrivateKey(privateKey);
+      const decrypted = crypt.decrypt(input);
       
-      if (!decrypted) throw new Error(t("tools.hash.decryptionFailed", "Decryption failed"))
+      if (!decrypted) throw new Error(t("tools.hash.decryptionFailed", "Decryption failed"));
 
-      setOutput(decrypted)
-      const modeStr = mode === "1" ? t("tools.hash.c1c3c2", "C1C3C2 (Standard)") : t("tools.hash.c1c2c3", "C1C2C3 (Old)")
+      setOutput(decrypted);
       addLog({
-        method: t("tools.hash.sm2Decrypt", { mode: modeStr }),
+        method: t("tools.hash.rsaDecrypt", "RSA Decrypt"),
         input: input,
         output: decrypted,
         cryptoParams: {
-          algorithm: "SM2",
-          mode: modeStr,
+          algorithm: "RSA",
           privateKey: privateKey
         }
       }, "success")
     } catch (e) {
-        // @ts-ignore
-      addLog({ method: t("tools.hash.sm2DecryptMethod", "SM2 Decrypt"), input: input, output: e.message || e }, "error")
+      addLog({ method: t("tools.hash.rsaDecrypt", "RSA Decrypt"), input: input, output: (e as Error).message || "Error" }, "error")
     }
   }
 
@@ -139,7 +143,7 @@ export function Sm2Tab() {
     <div className="space-y-4">
       <Textarea
         label={t("tools.hash.inputLabel", "Input Text")}
-        placeholder={t("tools.hash.aesInputPlaceholder", "Enter text...")}
+        placeholder={t("tools.hash.rsaInputPlaceholder", "Enter text...")}
         minRows={4}
         variant="bordered"
         value={input}
@@ -157,7 +161,10 @@ export function Sm2Tab() {
                 placeholder={t("tools.hash.publicKey", "Public Key")}
                 value={publicKey}
                 onValueChange={setPublicKey}
-                minRows={2}
+                minRows={4}
+                classNames={{
+                    input: "font-mono text-tiny"
+                }}
               />
               <Textarea
                 size="sm"
@@ -165,29 +172,43 @@ export function Sm2Tab() {
                 placeholder={t("tools.hash.privateKey", "Private Key")}
                 value={privateKey}
                 onValueChange={setPrivateKey}
-                minRows={2}
+                minRows={4}
+                classNames={{
+                    input: "font-mono text-tiny"
+                }}
               />
           </div>
 
           <div className="space-y-4">
-                <div className="flex gap-4">
-                  <RadioGroup
-                    orientation="horizontal"
-                    value={mode}
-                    onValueChange={setMode}
-                    label={t("tools.hash.cipherMode", "Cipher Mode")}
-                    size="sm"
-                    className="text-tiny"
-                  >
-                    <Radio value="1">{t("tools.hash.c1c3c2", "C1C3C2 (Standard)")}</Radio>
-                    <Radio value="0">{t("tools.hash.c1c2c3", "C1C2C3 (Old)")}</Radio>
-                  </RadioGroup>
-                </div>
-
-                <div className="flex flex-col gap-2">
-                    <Button size="sm" color="success" variant="flat" onPress={handleGenerateKeys} startContent={<KeyRound className="w-4 h-4" />}>
+                <div className="flex gap-4 items-center">
+                    <Select 
+                      size="sm" 
+                      label={t("tools.hash.keySize")}
+                      className="max-w-xs" 
+                      selectedKeys={new Set([keySize])}
+                      onSelectionChange={(keys) => setKeySize(Array.from(keys)[0] as string)}
+                      disallowEmptySelection
+                    >
+                      <SelectItem key="512">512-bit</SelectItem>
+                      <SelectItem key="1024">1024-bit</SelectItem>
+                      <SelectItem key="2048">2048-bit</SelectItem>
+                      <SelectItem key="4096">4096-bit (Slow)</SelectItem>
+                    </Select>
+                    
+                    <Button 
+                        size="sm" 
+                        color="success" 
+                        variant="flat" 
+                        onPress={handleGenerateKeys} 
+                        isLoading={isGenerating}
+                        startContent={!isGenerating && <KeyRound className="w-4 h-4" />}
+                    >
                         {t("tools.hash.generateKeyPair", "Generate Key Pair")}
                     </Button>
+                </div>
+                
+                <div className="text-tiny text-default-400 p-2">
+                    {t("tools.hash.rsaNote", "Note: Generating large keys (2048+) may take a few seconds and freeze the UI temporarily.")}
                 </div>
           </div>
       </div>

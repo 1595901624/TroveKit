@@ -34,6 +34,7 @@
     "js-beautify": "^1.15.4",
     "js-md2": "^0.2.2",
     "js-yaml": "^4.1.1",
+    "jsencrypt": "^3.5.4",
     "lucide-react": "^0.562.0",
     "monaco-editor": "^0.55.1",
     "postcss": "^8.5.6",
