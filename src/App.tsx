@@ -18,7 +18,17 @@ import { getStoredItem, setStoredItem } from "./lib/store"
 function App() {
   const [activeTool, setActiveTool] = useState<ToolId>("home")
   const [activeTab, setActiveTab] = useState<string | undefined>()
+  const [visitedTools, setVisitedTools] = useState<Set<ToolId>>(new Set(["home"]))
   const { t, i18n } = useTranslation()
+
+  useEffect(() => {
+    setVisitedTools(prev => {
+      if (prev.has(activeTool)) return prev
+      const newSet = new Set(prev)
+      newSet.add(activeTool)
+      return newSet
+    })
+  }, [activeTool])
 
   useEffect(() => {
     getStoredItem("i18nextLng").then((lang) => {
@@ -82,33 +92,51 @@ function App() {
         title={getTitle()}
       >
         <div className="max-w-7xl mx-auto h-full">
-          <div className={activeTool === "home" ? "block h-full" : "hidden"}>
-            <HomeView onNavigate={handleToolChange} />
-          </div>
-          <div className={activeTool === "crypto" ? "block h-full" : "hidden"}>
-            <HashTool activeTab={activeTool === "crypto" ? activeTab : undefined} isVisible={activeTool === "crypto"} />
-          </div>
-          <div className={activeTool === "encoder" ? "block h-full" : "hidden"}>
-            <EncoderTool activeTab={activeTool === "encoder" ? activeTab : undefined} isVisible={activeTool === "encoder"} />
-          </div>
-          <div className={activeTool === "classical" ? "block h-full" : "hidden"}>
-            <ClassicalTool activeTab={activeTool === "classical" ? activeTab : undefined} isVisible={activeTool === "classical"} />
-          </div>
-          <div className={activeTool === "formatters" ? "block h-full" : "hidden"}>
-            <FormatterTool activeTab={activeTool === "formatters" ? activeTab : undefined} isVisible={activeTool === "formatters"} />
-          </div>
-          <div className={activeTool === "generators" ? "block h-full" : "hidden"}>
-            <GeneratorTool activeTab={activeTool === "generators" ? activeTab : undefined} isVisible={activeTool === "generators"} />
-          </div>
-          <div className={activeTool === "converter" ? "block h-full" : "hidden"}>
-            <ConverterTool isVisible={activeTool === "converter"} activeTab={activeTool === "converter" ? activeTab : undefined} />
-          </div>
-          <div className={activeTool === "logManagement" ? "block h-full" : "hidden"}>
-            <LogManagementTool />
-          </div>
-          <div className={activeTool === "settings" ? "block h-full" : "hidden"}>
-            <Settings />
-          </div>
+          {visitedTools.has("home") && (
+            <div className={activeTool === "home" ? "block h-full" : "hidden"}>
+              <HomeView onNavigate={handleToolChange} />
+            </div>
+          )}
+          {visitedTools.has("crypto") && (
+            <div className={activeTool === "crypto" ? "block h-full" : "hidden"}>
+              <HashTool activeTab={activeTool === "crypto" ? activeTab : undefined} isVisible={activeTool === "crypto"} />
+            </div>
+          )}
+          {visitedTools.has("encoder") && (
+            <div className={activeTool === "encoder" ? "block h-full" : "hidden"}>
+              <EncoderTool activeTab={activeTool === "encoder" ? activeTab : undefined} isVisible={activeTool === "encoder"} />
+            </div>
+          )}
+          {visitedTools.has("classical") && (
+            <div className={activeTool === "classical" ? "block h-full" : "hidden"}>
+              <ClassicalTool activeTab={activeTool === "classical" ? activeTab : undefined} isVisible={activeTool === "classical"} />
+            </div>
+          )}
+          {visitedTools.has("formatters") && (
+            <div className={activeTool === "formatters" ? "block h-full" : "hidden"}>
+              <FormatterTool activeTab={activeTool === "formatters" ? activeTab : undefined} isVisible={activeTool === "formatters"} />
+            </div>
+          )}
+          {visitedTools.has("generators") && (
+            <div className={activeTool === "generators" ? "block h-full" : "hidden"}>
+              <GeneratorTool activeTab={activeTool === "generators" ? activeTab : undefined} isVisible={activeTool === "generators"} />
+            </div>
+          )}
+          {visitedTools.has("converter") && (
+            <div className={activeTool === "converter" ? "block h-full" : "hidden"}>
+              <ConverterTool isVisible={activeTool === "converter"} activeTab={activeTool === "converter" ? activeTab : undefined} />
+            </div>
+          )}
+          {visitedTools.has("logManagement") && (
+            <div className={activeTool === "logManagement" ? "block h-full" : "hidden"}>
+              <LogManagementTool />
+            </div>
+          )}
+          {visitedTools.has("settings") && (
+            <div className={activeTool === "settings" ? "block h-full" : "hidden"}>
+              <Settings />
+            </div>
+          )}
         </div>
       </Layout>
     </ThemeProvider>
