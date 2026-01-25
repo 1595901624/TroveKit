@@ -65,7 +65,7 @@ export function Sm2Tab() {
       addLog({
         method: t("tools.hash.sm2GenerateKeyPair", "SM2 Generate KeyPair"),
         input: t("tools.hash.generate", "Generate"),
-        output: `${t("tools.hash.publicKey", "Public Key")}: ${keypair.publicKey}\n${t("tools.hash.privateKey", "Private Key")}: ${keypair.privateKey}`,
+        output: t("common.success", "Success"),
         cryptoParams: {
             publicKey: keypair.publicKey,
             privateKey: keypair.privateKey

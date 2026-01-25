@@ -342,6 +342,18 @@ export function LogPanel() {
                                                         <span className="font-mono ml-1 text-default-700 break-all">{log.cryptoParams.key}</span>
                                                     </div>
                                                 )}
+                                                {log.cryptoParams.publicKey && (
+                                                    <div className="col-span-2 text-tiny">
+                                                        <span className="text-default-500 font-semibold">{t('tools.hash.publicKey')}</span>
+                                                        <span className="font-mono ml-1 text-default-700 break-all">{log.cryptoParams.publicKey}</span>
+                                                    </div>
+                                                )}
+                                                {log.cryptoParams.privateKey && (
+                                                    <div className="col-span-2 text-tiny">
+                                                        <span className="text-default-500 font-semibold">{t('tools.hash.privateKey')}</span>
+                                                        <span className="font-mono ml-1 text-default-700 break-all">{log.cryptoParams.privateKey}</span>
+                                                    </div>
+                                                )}
                                             </div>
                                         )}
                                          

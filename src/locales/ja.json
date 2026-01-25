@@ -6,6 +6,7 @@
     "loading": "読み込み中...",
     "search": "検索",
     "error": "エラー",
+    "success": "成功",
     "edit": "編集",
     "cancel": "キャンセル",
     "delete": "削除"
