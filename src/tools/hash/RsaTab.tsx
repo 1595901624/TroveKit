@@ -157,8 +157,8 @@ export function RsaTab() {
           <div className="space-y-4">
               <Textarea
                 size="sm"
-                label={t("tools.hash.publicKey", "Public Key")}
-                placeholder={t("tools.hash.publicKey", "Public Key")}
+                label={t("tools.hash.publicKey", "Public Key (Encryption)")}
+                placeholder={t("tools.hash.publicKey", "Public Key (Encryption)")}
                 value={publicKey}
                 onValueChange={setPublicKey}
                 minRows={4}
@@ -168,8 +168,8 @@ export function RsaTab() {
               />
               <Textarea
                 size="sm"
-                label={t("tools.hash.privateKey", "Private Key")}
-                placeholder={t("tools.hash.privateKey", "Private Key")}
+                label={t("tools.hash.privateKey", "Private Key (Decryption)")}
+                placeholder={t("tools.hash.privateKey", "Private Key (Decryption)")}
                 value={privateKey}
                 onValueChange={setPrivateKey}
                 minRows={4}
