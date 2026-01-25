@@ -69,9 +69,9 @@ export function RsaTab() {
             setPrivateKey(priv);
             
             addLog({
-                method: t("tools.hash.rsaGenerateKeyPair", "RSA Generate KeyPair"),
-                input: `Key Size: ${keySize}`,
-                output: t("common.success", "Success"),
+                method: t("tools.hash.rsaGenerateKeyPair"),
+                input: `${t("tools.hash.keySize")}: ${keySize}`,
+                output: t("common.success"),
                 cryptoParams: {
                     publicKey: pub,
                     privateKey: priv,
@@ -79,7 +79,7 @@ export function RsaTab() {
                 }
             }, "success")
         } catch (e) {
-            addLog({ method: t("tools.hash.rsaGenerateKeyPair", "RSA Generate KeyPair"), input: `Key Size: ${keySize}`, output: (e as Error).message }, "error")
+            addLog({ method: t("tools.hash.rsaGenerateKeyPair"), input: `${t("tools.hash.keySize")}: ${keySize}`, output: (e as Error).message }, "error")
         } finally {
             setIsGenerating(false)
         }
@@ -93,11 +93,11 @@ export function RsaTab() {
       crypt.setPublicKey(publicKey);
       const encrypted = crypt.encrypt(input);
       
-      if (!encrypted) throw new Error(t("tools.hash.encryptionFailed", "Encryption failed"));
+      if (!encrypted) throw new Error(t("tools.hash.encryptionFailed"));
       
       setOutput(encrypted);
       addLog({
-        method: t("tools.hash.rsaEncrypt", "RSA Encrypt"),
+        method: t("tools.hash.rsaEncrypt"),
         input: input,
         output: encrypted,
         cryptoParams: {
@@ -106,7 +106,7 @@ export function RsaTab() {
         }
       }, "success")
     } catch (e) {
-      addLog({ method: t("tools.hash.rsaEncrypt", "RSA Encrypt"), input: input, output: (e as Error).message || "Error" }, "error")
+      addLog({ method: t("tools.hash.rsaEncrypt"), input: input, output: (e as Error).message || "Error" }, "error")
     }
   }
 
@@ -117,11 +117,11 @@ export function RsaTab() {
       crypt.setPrivateKey(privateKey);
       const decrypted = crypt.decrypt(input);
       
-      if (!decrypted) throw new Error(t("tools.hash.decryptionFailed", "Decryption failed"));
+      if (!decrypted) throw new Error(t("tools.hash.decryptionFailed"));
 
       setOutput(decrypted);
       addLog({
-        method: t("tools.hash.rsaDecrypt", "RSA Decrypt"),
+        method: t("tools.hash.rsaDecrypt"),
         input: input,
         output: decrypted,
         cryptoParams: {
@@ -130,7 +130,7 @@ export function RsaTab() {
         }
       }, "success")
     } catch (e) {
-      addLog({ method: t("tools.hash.rsaDecrypt", "RSA Decrypt"), input: input, output: (e as Error).message || "Error" }, "error")
+      addLog({ method: t("tools.hash.rsaDecrypt"), input: input, output: (e as Error).message || "Error" }, "error")
     }
   }
 
@@ -189,10 +189,10 @@ export function RsaTab() {
                       onSelectionChange={(keys) => setKeySize(Array.from(keys)[0] as string)}
                       disallowEmptySelection
                     >
-                      <SelectItem key="512">512-bit</SelectItem>
-                      <SelectItem key="1024">1024-bit</SelectItem>
-                      <SelectItem key="2048">2048-bit</SelectItem>
-                      <SelectItem key="4096">4096-bit (Slow)</SelectItem>
+                      <SelectItem key="512">{t("tools.hash.bit512")}</SelectItem>
+                      <SelectItem key="1024">{t("tools.hash.bit1024")}</SelectItem>
+                      <SelectItem key="2048">{t("tools.hash.bit2048")}</SelectItem>
+                      <SelectItem key="4096">{t("tools.hash.bit4096")}</SelectItem>
                     </Select>
                     
                     <Button 
