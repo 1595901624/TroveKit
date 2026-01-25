@@ -108,6 +108,7 @@
       "encrypt": "暗号化",
       "decrypt": "復号化",
       "keySize": "キーサイズ",
+      "ivSize": "IV サイズ",
       "text": "テキスト",
       "hex": "Hex",
       "keyPlaceholder32": "32 バイト",

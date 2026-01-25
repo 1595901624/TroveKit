@@ -123,6 +123,7 @@
       "encrypt": "加密",
       "decrypt": "解密",
       "keySize": "密钥长度",
+      "ivSize": "IV 长度",
       "text": "文本",
       "hex": "Hex",
       "aesInputPlaceholder": "输入要加密/解密的文本...",

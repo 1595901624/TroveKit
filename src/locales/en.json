@@ -109,6 +109,7 @@
       "encrypt": "Encrypt",
       "decrypt": "Decrypt",
       "keySize": "Key Size",
+      "ivSize": "IV Size",
       "text": "Text",
       "hex": "Hex",
       "keyPlaceholder32": "32 bytes",

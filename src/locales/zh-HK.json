@@ -108,6 +108,7 @@
       "encrypt": "加密",
       "decrypt": "解密",
       "keySize": "密鑰長度",
+      "ivSize": "IV 長度",
       "text": "文字",
       "hex": "Hex",
       "keyPlaceholder32": "32 字節",

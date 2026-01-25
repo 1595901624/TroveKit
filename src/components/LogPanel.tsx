@@ -300,6 +300,12 @@ export function LogPanel() {
                                                         <span className="font-mono ml-1 text-default-700">{log.cryptoParams.key_size}</span>
                                                     </div>
                                                 )}
+                                                {log.cryptoParams.iv_size && (
+                                                    <div className="text-tiny">
+                                                        <span className="text-default-500 font-semibold">{t('tools.hash.ivSize', 'IV Size')}</span>
+                                                        <span className="font-mono ml-1 text-default-700">{log.cryptoParams.iv_size}</span>
+                                                    </div>
+                                                )}
                                                 {log.cryptoParams.format && (
                                                     <div className="text-tiny">
                                                         <span className="text-default-500 font-semibold">{t('tools.hash.format')}</span>

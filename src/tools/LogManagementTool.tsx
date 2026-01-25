@@ -497,6 +497,12 @@ export function LogManagementTool() {
                                                 <span className="font-mono text-default-700">{log.cryptoParams.key_size}</span>
                                             </div>
                                         )}
+                                        {log.cryptoParams.iv_size && (
+                                            <div className="flex flex-col">
+                                                <span className="text-default-500 font-semibold">{t('tools.hash.ivSize', 'IV Size')}</span>
+                                                <span className="font-mono text-default-700">{log.cryptoParams.iv_size}</span>
+                                            </div>
+                                        )}
                                         {log.cryptoParams.format && (
                                             <div className="flex flex-col">
                                                 <span className="text-default-500 font-semibold">{t('tools.hash.format')}</span>
@@ -537,6 +543,18 @@ export function LogManagementTool() {
                                             <div className="col-span-2 flex flex-col">
                                                 <span className="text-default-500 font-semibold">{t('tools.hash.key')}</span>
                                                 <span className="font-mono text-default-700 break-all">{log.cryptoParams.key}</span>
+                                            </div>
+                                        )}
+                                        {log.cryptoParams.publicKey && (
+                                            <div className="col-span-2 flex flex-col">
+                                                <span className="text-default-500 font-semibold">{t('tools.hash.publicKey')}</span>
+                                                <span className="font-mono text-default-700 break-all">{log.cryptoParams.publicKey}</span>
+                                            </div>
+                                        )}
+                                        {log.cryptoParams.privateKey && (
+                                            <div className="col-span-2 flex flex-col">
+                                                <span className="text-default-500 font-semibold">{t('tools.hash.privateKey')}</span>
+                                                <span className="font-mono text-default-700 break-all">{log.cryptoParams.privateKey}</span>
                                             </div>
                                         )}
                                     </div>
