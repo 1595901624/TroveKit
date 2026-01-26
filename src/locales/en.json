@@ -172,6 +172,7 @@
       "base64": "Base64",
       "base32": "Base32",
       "baseX": "BaseX",
+      "brainfuck": "Brainfuck / Ook",
       "jwtToken": "JWT Token",
       "encodeJwt": "Encode Token",
       "verify": "Verify Signature",

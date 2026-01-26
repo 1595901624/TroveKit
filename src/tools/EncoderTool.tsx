@@ -6,6 +6,7 @@ import { Base64Tab } from "./encoder/Base64Tab"
 import { Base32Tab } from "./encoder/Base32Tab"
 import { BaseXTab } from "./encoder/BaseXTab"
 import { HexTab } from "./encoder/HexTab"
+import { BrainfuckTab } from "./encoder/BrainfuckTab"
 import { JwtTab } from "./encoder/JwtTab"
 
 interface EncoderToolProps {
@@ -41,6 +42,7 @@ export function EncoderTool({ activeTab }: EncoderToolProps) {
           <Tab key="base64" title={t("tools.encoder.base64")} />
           <Tab key="base32" title={t("tools.encoder.base32")} />
           <Tab key="basex" title={t("tools.encoder.baseX")} />
+          <Tab key="brainfuck" title={t("tools.encoder.brainfuck")} />
           <Tab key="jwt" title={t("tools.encoder.jwtToken")} />
         </Tabs>
       </div>
@@ -60,6 +62,9 @@ export function EncoderTool({ activeTab }: EncoderToolProps) {
         </div>
         <div className={selectedKey === "basex" ? "" : "hidden"}>
           <BaseXTab />
+        </div>
+        <div className={selectedKey === "brainfuck" ? "" : "hidden"}>
+          <BrainfuckTab />
         </div>
         <div className={selectedKey === "jwt" ? "h-full" : "hidden"}>
           <JwtTab />

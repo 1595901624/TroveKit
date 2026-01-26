@@ -172,6 +172,7 @@
       "base64": "Base64",
       "base32": "Base32",
       "baseX": "BaseX",
+      "brainfuck": "Brainfuck / Ook",
       "base": "Base 算法",
       "alphabet": "字母表",
       "useCustomAlphabet": "使用自定义字母表",
