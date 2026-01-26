@@ -22,6 +22,44 @@ const BF_TO_OOK: Record<string, string> = Object.fromEntries(
   Object.entries(OOK_TO_BF).map(([k, v]) => [v, k])
 )
 
+function generateDeltaCode(signedDiff: number) {
+  const sign = signedDiff >= 0 ? 1 : -1
+  const d = Math.abs(signedDiff)
+  if (d === 0) return ""
+  // small changes: do direct repeats
+  if (d <= 12) return (sign > 0 ? "+" : "-").repeat(d)
+
+  // try loop-based schemes and pick the shortest generated code
+  let best = (sign > 0 ? "+" : "-").repeat(d)
+
+  for (let k = 2; k <= 20; k++) {
+    const q = Math.floor(d / k)
+    const r = d - q * k
+    if (q <= 0) continue
+
+    // Build pattern that uses two temp cells (cell+1 and cell+2):
+    // >[-] +++... (q) >[-] < [> +++... (k) < -] > +++... (r) [<< (+|-) >> -] <<
+    // Final copy loop uses + to add or - to subtract depending on sign
+    const addK = "+".repeat(k)
+    const addR = "+".repeat(r)
+    const copyOp = sign > 0 ? "+" : "-"
+
+    const code = 
+      ">[-]" +            // clear cell+1
+      "+".repeat(q) +    // set cell+1 = q
+      ">[-]" +            // clear cell+2
+      "<" +               // back to cell+1
+      "[>" + addK + "<-]" + // loop: add k to cell+2 q times
+      ">" + addR +        // add remainder to cell+2
+      "[<<" + copyOp + ">>-]" + // move cell+2 value to cell (add or sub)
+      "<<"                // return to original cell
+
+    if (code.length < best.length) best = code
+  }
+
+  return best
+}
+
 function bfEncodePlain(text: string) {
   const encoder = new TextEncoder()
   const bytes = encoder.encode(text)
@@ -29,12 +67,12 @@ function bfEncodePlain(text: string) {
   let out = ""
   for (let i = 0; i < bytes.length; i++) {
     const b = bytes[i]
-    const diff = (b - cur + 256) % 256
-    // choose the shorter direction to reach target byte
-    if (diff <= 128) {
-      if (diff > 0) out += "+".repeat(diff)
+    const signed = ((b - cur + 128) % 256) - 128
+    if (Math.abs(signed) <= 12) {
+      if (signed > 0) out += "+".repeat(signed)
+      else if (signed < 0) out += "-".repeat(-signed)
     } else {
-      out += "-".repeat(256 - diff)
+      out += generateDeltaCode(signed)
     }
     out += "."
     cur = b
