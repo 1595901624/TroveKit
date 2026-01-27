@@ -150,12 +150,13 @@ function bfInterpret(code: string, maxSteps = 5_000_000) {
 }
 
 function ookToBrainfuck(input: string) {
-  const tokens = input.match(/Ook[.!?]/g)
+  const tokens = input.match(/Ook[.!?]/gi)
   if (!tokens) return ""
   if (tokens.length % 2 !== 0) throw new Error("Invalid Ook sequence")
   let bf = ""
   for (let i = 0; i < tokens.length; i += 2) {
-    const pair = tokens[i] + " " + tokens[i + 1]
+    const normalize = (t: string) => "Ook" + t.slice(3)
+    const pair = normalize(tokens[i]) + " " + normalize(tokens[i + 1])
     const cmd = OOK_TO_BF[pair]
     if (!cmd) throw new Error(`Invalid Ook pair: ${pair}`)
     bf += cmd
@@ -217,7 +218,7 @@ export function BrainfuckTab() {
     try {
       // Detect Ook
       let code = bfInput.trim()
-      if (/Ook[.!?]/.test(code)) {
+      if (/Ook[.!?]/i.test(code)) {
         code = ookToBrainfuck(code)
       }
       const result = bfInterpret(code)
