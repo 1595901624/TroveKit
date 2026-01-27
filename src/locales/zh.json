@@ -92,6 +92,7 @@
       "bit2048": "2048位",
       "bit4096": "4096位 (较慢)",
       "sm2": "SM2",
+      "sm3": "SM3",
       "generateKeyPair": "生成密钥对",
       "publicKey": "公钥（加密）",
       "privateKey": "私钥（解密）",

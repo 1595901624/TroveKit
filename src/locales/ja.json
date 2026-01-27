@@ -92,6 +92,7 @@
       "bit2048": "2048ビット",
       "bit4096": "4096ビット (低速)",
       "sm2": "SM2",
+      "sm3": "SM3",
       "generateKeyPair": "鍵ペア生成",
       "publicKey": "公開鍵 (暗号化)",
       "privateKey": "秘密鍵 (復号化)",
