@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useCallback, useEffect } from "react"
+import React, { createContext, useContext, useState, useCallback, useEffect, useMemo } from "react"
 import { addToast } from "@heroui/react"
 import { invoke } from "@tauri-apps/api/core"
 import { useTranslation } from "react-i18next"
@@ -78,7 +78,11 @@ interface LogContextType {
   switchToSession: (sessionId: string) => Promise<void>
 }
 
-const LogContext = createContext<LogContextType | undefined>(undefined)
+type LogUIContextType = Pick<LogContextType, "isOpen" | "setIsOpen" | "togglePanel">
+type LogDataContextType = Omit<LogContextType, "isOpen" | "setIsOpen" | "togglePanel">
+
+const LogUIContext = createContext<LogUIContextType | undefined>(undefined)
+const LogDataContext = createContext<LogDataContextType | undefined>(undefined)
 
 export function LogProvider({ children }: { children: React.ReactNode }) {
   const { t } = useTranslation()
@@ -233,17 +237,69 @@ export function LogProvider({ children }: { children: React.ReactNode }) {
       }
     }, [])
 
+  // IMPORTANT: Split UI state from log data so toggling the panel doesn't re-render
+  // every component that only needs addLog/refresh/etc (e.g., Monaco editors).
+  const uiValue = useMemo<LogUIContextType>(() => ({
+    isOpen,
+    setIsOpen,
+    togglePanel,
+  }), [isOpen, setIsOpen, togglePanel])
+
+  const dataValue = useMemo<LogDataContextType>(() => ({
+    logs,
+    addLog,
+    clearLogs,
+    createNewLog,
+    addNote,
+    removeNote,
+    sessionNote,
+    updateSessionNote,
+    removeSessionNote,
+    refresh,
+    currentSessionId,
+    switchToSession,
+  }), [
+    logs,
+    addLog,
+    clearLogs,
+    createNewLog,
+    addNote,
+    removeNote,
+    sessionNote,
+    updateSessionNote,
+    removeSessionNote,
+    refresh,
+    currentSessionId,
+    switchToSession,
+  ])
+
   return (
-    <LogContext.Provider value={{ logs, addLog, clearLogs, createNewLog, isOpen, setIsOpen, togglePanel, addNote, removeNote, sessionNote, updateSessionNote, removeSessionNote, refresh, currentSessionId, switchToSession }}>
-      {children}
-    </LogContext.Provider>
+    <LogUIContext.Provider value={uiValue}>
+      <LogDataContext.Provider value={dataValue}>
+        {children}
+      </LogDataContext.Provider>
+    </LogUIContext.Provider>
   )
 }
 
-export function useLog() {
-  const context = useContext(LogContext)
+export function useLogUI() {
+  const context = useContext(LogUIContext)
   if (context === undefined) {
-    throw new Error("useLog must be used within a LogProvider")
+    throw new Error("useLogUI must be used within a LogProvider")
   }
   return context
+}
+
+export function useLogData() {
+  const context = useContext(LogDataContext)
+  if (context === undefined) {
+    throw new Error("useLogData must be used within a LogProvider")
+  }
+  return context
+}
+
+export function useLog() {
+  // Backward compatible combined hook.
+  // Note: this hook will re-render when either UI or data changes.
+  return { ...useLogData(), ...useLogUI() }
 }

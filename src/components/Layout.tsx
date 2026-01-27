@@ -3,7 +3,7 @@ import { Sidebar, ToolId } from "./Sidebar"
 import TitleBar from "./TitleBar"
 import { ThemeToggle } from "./ThemeToggle"
 import { LogPanel } from "./LogPanel"
-import { useLog } from "../contexts/LogContext"
+import { useLogUI } from "../contexts/LogContext"
 import { Button, Tooltip } from "@heroui/react"
 import { Terminal } from "lucide-react"
 import { useTranslation } from "react-i18next"
@@ -17,7 +17,7 @@ interface LayoutProps {
 }
 
 export function Layout({ children, activeTool, onToolChange, onNavigate, title }: LayoutProps) {
-  const { togglePanel, isOpen } = useLog()
+  const { togglePanel, isOpen } = useLogUI()
   const { t } = useTranslation()
 
   return (
@@ -25,7 +25,12 @@ export function Layout({ children, activeTool, onToolChange, onNavigate, title }
       {/* Global TitleBar (Window Controls) */}
       <TitleBar onNavigate={onNavigate} />
       
-      <div className="flex-1 flex overflow-hidden">
+      <div
+        className="flex-1 flex overflow-hidden relative"
+        // 为覆盖式 LogPanel 预留空间：避免遮挡主内容。
+        // 注意：这里是一次性 resize（开/关时各一次），不会像 width 动画那样每帧触发布局重排。
+        style={{ paddingRight: isOpen ? 320 : 0 }}
+      >
         {/* Sidebar Navigation */}
         <Sidebar activeTool={activeTool} onToolChange={onToolChange} />
         

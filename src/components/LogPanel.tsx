@@ -1,6 +1,6 @@
 // 导入必要的依赖
-import { motion, AnimatePresence } from "framer-motion" // 用于动画效果
-import { useLog, LogEntry } from "../contexts/LogContext" // 日志上下文
+import { motion } from "framer-motion" // 用于动画效果
+import { useLogData, useLogUI, LogEntry } from "../contexts/LogContext" // 日志上下文
 import { Trash2, X, Terminal, Info, CheckCircle, AlertTriangle, AlertCircle, Copy, Plus, Edit, Check, MessageSquare } from "lucide-react" // 图标
 import { Button, ScrollShadow, Tooltip, Input } from "@heroui/react" // UI 组件
 import { useTranslation } from "react-i18next" // 国际化
@@ -12,7 +12,8 @@ type FilterType = LogEntry['type'] | 'all'
 // 日志面板组件
 export function LogPanel() {
   // 从日志上下文中获取数据和方法
-  const { logs, isOpen, setIsOpen, clearLogs, createNewLog, addNote, removeNote, sessionNote, updateSessionNote, removeSessionNote } = useLog()
+    const { isOpen, setIsOpen } = useLogUI()
+    const { logs, clearLogs, createNewLog, addNote, removeNote, sessionNote, updateSessionNote, removeSessionNote } = useLogData()
   // 国际化钩子
   const { t } = useTranslation()
   // 过滤器状态，默认显示全部
@@ -23,6 +24,8 @@ export function LogPanel() {
   // 会话备注编辑状态
   const [editingSessionNote, setEditingSessionNote] = useState(false)
   const [sessionNoteInput, setSessionNoteInput] = useState('')
+    // 动画状态：用于在动画期间关闭昂贵效果（如 backdrop blur）
+    const [isAnimating, setIsAnimating] = useState(false)
 
   // 使用 useMemo 优化性能，根据过滤器筛选日志
   const filteredLogs = useMemo(() => {
@@ -132,18 +135,26 @@ export function LogPanel() {
   }
 
   return (
-    // 动画容器，控制面板的进入和退出动画
-    <AnimatePresence>
-      {/* 仅在面板打开时显示 */}
-      {isOpen && (
-        // 动画 div，实现滑入滑出效果
+        // 性能优化：避免在 flex 布局里做 width 动画（会迫使主内容/Monaco 每帧重排）
+        // 改为覆盖式侧栏 + transform 动画（GPU 友好），并在动画期间禁用 backdrop blur（非常耗性能）。
         <motion.div
-          initial={{ width: 0, opacity: 0 }} // 初始状态：宽度为0，透明
-          animate={{ width: 320, opacity: 1 }} // 动画状态：宽度320px，不透明
-          exit={{ width: 0, opacity: 0 }} // 退出状态：宽度为0，透明
-          transition={{ duration: 0.3, ease: "easeInOut" }} // 动画时长和缓动函数
-          className="h-full border-l border-divider bg-background/60 backdrop-blur-md flex flex-col shrink-0 overflow-hidden" // 样式：全高、左边框、半透明背景、毛玻璃效果
+            initial={false}
+            animate={{ x: isOpen ? 0 : 320, opacity: isOpen ? 1 : 0 }}
+            transition={{ duration: 0.25, ease: "easeInOut" }}
+            onAnimationStart={() => setIsAnimating(true)}
+            onAnimationComplete={() => setIsAnimating(false)}
+            className={
+                `absolute right-0 top-0 h-full w-[320px] z-50 border-l border-divider ` +
+                (isOpen && !isAnimating ? "bg-background/60 backdrop-blur-md" : "bg-background")
+            }
+            style={{
+                pointerEvents: isOpen ? "auto" : "none",
+                willChange: "transform, opacity",
+                contain: "layout paint style",
+            }}
+            aria-hidden={!isOpen}
         >
+            <div className="h-full flex flex-col">
             {/* 面板头部：标题和操作按钮 */}
             <div className="h-14 border-b border-divider flex items-center justify-between px-4 shrink-0 bg-background/40">
                 {/* 标题区域 */}
@@ -504,8 +515,7 @@ export function LogPanel() {
                     )}
                 </div>
             </ScrollShadow>
+            </div>
         </motion.div>
-      )}
-    </AnimatePresence>
   )
 }
