@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Optimized startup speed to reduce application cold-start time and improve perceived responsiveness.
+- Optimized sidebar log rendering to prevent UI jank when the sidebar contains a large number of logs.
 
 ### Added
 - **RSA encryption/decryption**: Added RSA public-key encryption/decryption tool (supports 512, 1024, 2048, and 4096-bit key sizes).
