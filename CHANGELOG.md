@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - **RSA encryption/decryption**: Added RSA public-key encryption/decryption tool (supports 512, 1024, 2048, and 4096-bit key sizes).
 - **SM2 encryption/decryption**: Added SM2 public-key encryption/decryption tool (supports Hex input/output).
+- **SM4 encryption/decryption**: Added SM4 symmetric encryption/decryption tool (CBC mode, 128-bit key, supports PKCS7/Zero/None padding).
 - **Brainfuck / Ook encoding/decoding**: Added Brainfuck and Ook encoder/decoder tools.
 - **SM3 hash**: Added SM3 hash algorithm support.
 
