@@ -93,6 +93,8 @@
       "bit4096": "4096ビット (低速)",
       "sm2": "SM2",
       "sm3": "SM3",
+      "sm4": "SM4",
+      "sm4InputPlaceholder": "暗号化/復号化するテキストを入力...",
       "generateKeyPair": "鍵ペア生成",
       "publicKey": "公開鍵 (暗号化)",
       "privateKey": "秘密鍵 (復号化)",

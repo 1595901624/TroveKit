@@ -93,6 +93,8 @@
       "bit4096": "4096-bit (Slow)",
       "sm2": "SM2",
       "sm3": "SM3",
+      "sm4": "SM4",
+      "sm4InputPlaceholder": "Enter text to encrypt/decrypt...",
       "generateKeyPair": "Generate Key Pair",
       "publicKey": "Public Key (Encryption)",
       "privateKey": "Private Key (Decryption)",

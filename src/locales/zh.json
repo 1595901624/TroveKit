@@ -93,6 +93,8 @@
       "bit4096": "4096位 (较慢)",
       "sm2": "SM2",
       "sm3": "SM3",
+      "sm4": "SM4",
+      "sm4InputPlaceholder": "输入要加密/解密的文本...",
       "generateKeyPair": "生成密钥对",
       "publicKey": "公钥（加密）",
       "privateKey": "私钥（解密）",
