@@ -77,7 +77,7 @@ export function getIpv4AddressMeta(ip: string | number): Ipv4AddressMeta {
   const first = (u32 >>> 24) & 255
 
   const ipv4Class: Ipv4AddressClass =
-    first >= 1 && first <= 126 ? "A" :
+    first >= 1 && first <= 127 ? "A" :
     first >= 128 && first <= 191 ? "B" :
     first >= 192 && first <= 223 ? "C" :
     first >= 224 && first <= 239 ? "D" :
@@ -85,12 +85,12 @@ export function getIpv4AddressMeta(ip: string | number): Ipv4AddressMeta {
 
   // RFC1918 private ranges
   const isPrivate =
-    (u32 & 0xff000000) === 0x0a000000 || // 10.0.0.0/8
-    (u32 & 0xfff00000) === 0xac100000 || // 172.16.0.0/12
-    (u32 & 0xffff0000) === 0xc0a80000 // 192.168.0.0/16
+    ((u32 & 0xff000000) >>> 0) === 0x0a000000 || // 10.0.0.0/8
+    ((u32 & 0xfff00000) >>> 0) === 0xac100000 || // 172.16.0.0/12
+    ((u32 & 0xffff0000) >>> 0) === 0xc0a80000 // 192.168.0.0/16
 
-  const isLoopback = (u32 & 0xff000000) === 0x7f000000 // 127.0.0.0/8
-  const isLinkLocal = (u32 & 0xffff0000) === 0xa9fe0000 // 169.254.0.0/16
+  const isLoopback = ((u32 & 0xff000000) >>> 0) === 0x7f000000 // 127.0.0.0/8
+  const isLinkLocal = ((u32 & 0xffff0000) >>> 0) === 0xa9fe0000 // 169.254.0.0/16
   const isMulticast = first >= 224 && first <= 239
   const isExperimental = first >= 240 && first <= 255
 
