@@ -8,7 +8,7 @@ English | [简体中文](README.zh-CN.md) | [繁體中文（香港）](README.zh
 </div>
 
 <div align="center">
-<a href="https://github.com/1595901624/trovekit/releases"><img src="https://img.shields.io/badge/version-v0.1.12-blue" alt="Version"></a>
+<a href="https://github.com/1595901624/trovekit/releases"><img src="https://img.shields.io/badge/version-v0.2.0-blue" alt="Version"></a>
 <a href="https://github.com/1595901624/trovekit/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-green" alt="License"></a>
 <img src="https://img.shields.io/badge/Windows-Supported-blue" alt="Windows">
 <img src="https://img.shields.io/badge/macOS-Supported-blue" alt="macOS">
@@ -78,6 +78,7 @@ Built with [Tauri v2](https://v2.tauri.app/) + [React](https://react.dev/), Trov
 ### 🔄 Converters
 
 - **Timestamp**: Bidirectional conversion between Date and Timestamp (s/ms/μs/ns) with real-time high-precision system clock.
+- **Subnet calculator**: Supports IPv4 CIDR and subnet mask conversion; calculates network address, broadcast address, host range and number of hosts.
 - **JSON ↔ XML**: Bidirectional conversion with real-time processing
 - **JSON ↔ YAML**: Bidirectional conversion with real-time processing
 - Syntax highlighting for all formats
@@ -101,6 +102,9 @@ Built with [Tauri v2](https://v2.tauri.app/) + [React](https://react.dev/), Trov
 
 - Formatters: YAML
 - Generators: Lorem Ipsum / random passwords, etc.
+- Regex tester: Real-time regular expression testing with syntax highlighting and match groups.
+- Text diff/compare: Side-by-side and inline text comparison with ignore-whitespace and word-diff options.
+- Common utilities: Handy text tools (case conversion, line ending normalization, trim/cleanup, etc.)
 
 ## 🎨 UI / UX
 

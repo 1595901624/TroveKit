@@ -8,7 +8,7 @@
 </div>
 
 <div align="center">
-<a href="https://github.com/1595901624/trovekit/releases"><img src="https://img.shields.io/badge/version-v0.1.12-blue" alt="Version"></a>
+<a href="https://github.com/1595901624/trovekit/releases"><img src="https://img.shields.io/badge/version-v0.2.0-blue" alt="Version"></a>
 <a href="https://github.com/1595901624/trovekit/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-green" alt="License"></a>
 <img src="https://img.shields.io/badge/Windows-Supported-blue" alt="Windows">
 <img src="https://img.shields.io/badge/macOS-Supported-blue" alt="macOS">
@@ -78,6 +78,7 @@ TroveKit は [Tauri v2](https://v2.tauri.app/) + [React](https://react.dev/) で
 ### 🔄 Converters
 
 - **タイムスタンプ変換**：日付とタイムスタンプ（秒/ミリ秒/マイクロ秒/ナノ秒）の双方向変換をサポート、リアルタイムの高精度システムクロックを表示。
+- **サブネット計算**：IPv4 の CIDR とサブネットマスクの変換をサポートし、ネットワークアドレス、ブロードキャストアドレス、ホスト範囲、ホスト数を計算します。
 - **JSON ↔ XML**：双方向変換、リアルタイム処理
 - **JSON ↔ YAML**：双方向変換、リアルタイム処理
 - 全フォーマットの構文強調表示
@@ -101,6 +102,9 @@ TroveKit は [Tauri v2](https://v2.tauri.app/) + [React](https://react.dev/) で
 
 - Formatters：YAML
 - Generators：Lorem Ipsum / ランダムパスワードなど
+- 正規表現テスター：リアルタイムな正規表現テスト、構文ハイライトとマッチグループ表示。
+- テキスト比較：並列表示とインライン差分、空白無視やワード差分オプションをサポート。
+- よく使うツール：大文字小文字変換、改行コード正規化、空白除去などの便利ツール。
 
 ## 📸 Screenshots
 

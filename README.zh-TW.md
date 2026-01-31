@@ -8,7 +8,7 @@
 </div>
 
 <div align="center">
-<a href="https://github.com/1595901624/trovekit/releases"><img src="https://img.shields.io/badge/version-v0.1.12-blue" alt="Version"></a>
+<a href="https://github.com/1595901624/trovekit/releases"><img src="https://img.shields.io/badge/version-v0.2.0-blue" alt="Version"></a>
 <a href="https://github.com/1595901624/trovekit/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-green" alt="License"></a>
 <img src="https://img.shields.io/badge/Windows-Supported-blue" alt="Windows">
 <img src="https://img.shields.io/badge/macOS-Supported-blue" alt="macOS">
@@ -78,6 +78,7 @@ TroveKit 基於 [Tauri v2](https://v2.tauri.app/) + [React](https://react.dev/) 
 ### 🔄 Converters（轉換器）
 
 - **時間戳轉換**：支援日期與時間戳（秒/毫秒/微秒/納秒）雙向轉換，提供即時高精度系統時鐘。
+- **網段計算**：支援 IPv4 CIDR 與子網掩碼轉換，計算網路位址、廣播位址、主機範圍和主機數量。
 - **JSON ↔ XML**：雙向轉換，即時處理
 - **JSON ↔ YAML**：雙向轉換，即時處理
 - 多種格式語法高亮
@@ -101,6 +102,9 @@ TroveKit 基於 [Tauri v2](https://v2.tauri.app/) + [React](https://react.dev/) 
 
 - Formatters：YAML
 - Generators：Lorem Ipsum / 隨機密碼等
+- 正則測試器：實時正則表達式測試，支援語法高亮與匹配組顯示。
+- 文本對比：並排與內聯文本差異比較，支援忽略空白與詞級差異。
+- 常用工具：文本常用工具（大小寫轉換、換行符規範、空白清理等）。
 
 ## 📸 Screenshots
 
