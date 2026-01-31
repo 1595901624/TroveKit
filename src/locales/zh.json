@@ -9,7 +9,9 @@
     "success": "成功",
     "edit": "编辑",
     "cancel": "取消",
-    "delete": "删除"
+    "delete": "删除",
+    "yes": "是",
+    "no": "否"
   },
   "nav": {
     "home": "首页",
@@ -364,10 +366,34 @@
       "rfc3021Mode": "RFC3021（/31 点到点）",
       "showBinary": "显示二进制",
       "preferIpv6Expanded": "优先 IPv6 展开格式",
+      "random": "随机生成",
+      "addToLog": "添加到日志",
+      "addedToLog": "已添加到日志",
+      "exportCsv": "导出 CSV",
+      "exportJson": "导出 JSON",
+      "exported": "已导出",
+      "export": {
+        "key": "属性",
+        "value": "值"
+      },
       "networkAddress": "网络地址",
       "broadcastAddress": "广播地址",
       "firstHost": "首个可用主机",
       "lastHost": "最后可用主机",
+      "hostTotal": "主机总数",
+      "usableHosts": "可用主机数",
+      "ipv4Class": "地址类别",
+      "ipv4AddressType": "地址类型",
+      "isPrivate": "是否私有",
+      "ipv4Type": {
+        "public": "公网",
+        "private": "私有",
+        "loopback": "回环",
+        "linkLocal": "链路本地",
+        "multicast": "组播",
+        "experimental": "实验",
+        "other": "其他"
+      },
       "totalAddresses": "总地址数",
       "usableAddresses": "可用地址数",
       "networkPrefix": "网络前缀",

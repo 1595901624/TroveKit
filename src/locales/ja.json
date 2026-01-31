@@ -9,7 +9,9 @@
     "success": "成功",
     "edit": "編集",
     "cancel": "キャンセル",
-    "delete": "削除"
+    "delete": "削除",
+    "yes": "はい",
+    "no": "いいえ"
   },
   "nav": {
     "home": "ホーム",
@@ -362,10 +364,34 @@
       "rfc3021Mode": "RFC3021（/31 P2P）",
       "showBinary": "2進数を表示",
       "preferIpv6Expanded": "IPv6 を展開形式優先",
+      "random": "ランダム",
+      "addToLog": "ログに追加",
+      "addedToLog": "ログに追加しました",
+      "exportCsv": "CSV 書き出し",
+      "exportJson": "JSON 書き出し",
+      "exported": "書き出しました",
+      "export": {
+        "key": "項目",
+        "value": "値"
+      },
       "networkAddress": "ネットワークアドレス",
       "broadcastAddress": "ブロードキャストアドレス",
       "firstHost": "最初のホスト",
       "lastHost": "最後のホスト",
+      "hostTotal": "ホスト総数",
+      "usableHosts": "利用可能ホスト数",
+      "ipv4Class": "アドレスクラス",
+      "ipv4AddressType": "アドレスタイプ",
+      "isPrivate": "プライベート",
+      "ipv4Type": {
+        "public": "パブリック",
+        "private": "プライベート",
+        "loopback": "ループバック",
+        "linkLocal": "リンクローカル",
+        "multicast": "マルチキャスト",
+        "experimental": "実験",
+        "other": "その他"
+      },
       "totalAddresses": "総アドレス数",
       "usableAddresses": "利用可能アドレス数",
       "networkPrefix": "ネットワークプレフィックス",

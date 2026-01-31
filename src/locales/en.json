@@ -9,7 +9,9 @@
     "success": "Success",
     "edit": "Edit",
     "cancel": "Cancel",
-    "delete": "Delete"
+    "delete": "Delete",
+    "yes": "Yes",
+    "no": "No"
   },
   "nav": {
     "home": "Home",
@@ -364,10 +366,34 @@
       "rfc3021Mode": "RFC3021 (/31 point-to-point)",
       "showBinary": "Show binary",
       "preferIpv6Expanded": "Prefer IPv6 expanded",
+      "random": "Random",
+      "addToLog": "Add to log",
+      "addedToLog": "Added to log",
+      "exportCsv": "Export CSV",
+      "exportJson": "Export JSON",
+      "exported": "Exported",
+      "export": {
+        "key": "Property",
+        "value": "Value"
+      },
       "networkAddress": "Network Address",
       "broadcastAddress": "Broadcast Address",
       "firstHost": "First Host",
       "lastHost": "Last Host",
+      "hostTotal": "Total Hosts",
+      "usableHosts": "Usable Hosts",
+      "ipv4Class": "IPv4 Class",
+      "ipv4AddressType": "Address Type",
+      "isPrivate": "Private",
+      "ipv4Type": {
+        "public": "Public",
+        "private": "Private",
+        "loopback": "Loopback",
+        "linkLocal": "Link-local",
+        "multicast": "Multicast",
+        "experimental": "Experimental",
+        "other": "Other"
+      },
       "totalAddresses": "Total Addresses",
       "usableAddresses": "Usable Addresses",
       "networkPrefix": "Network Prefix",

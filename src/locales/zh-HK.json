@@ -9,7 +9,9 @@
     "success": "成功",
     "edit": "編輯",
     "cancel": "取消",
-    "delete": "刪除"
+    "delete": "刪除",
+    "yes": "是",
+    "no": "否"
   },
   "nav": {
     "home": "首頁",
@@ -362,10 +364,34 @@
       "rfc3021Mode": "RFC3021（/31 點對點）",
       "showBinary": "顯示二進位",
       "preferIpv6Expanded": "優先 IPv6 展開格式",
+      "random": "隨機生成",
+      "addToLog": "加入到日誌",
+      "addedToLog": "已加入到日誌",
+      "exportCsv": "匯出 CSV",
+      "exportJson": "匯出 JSON",
+      "exported": "已匯出",
+      "export": {
+        "key": "屬性",
+        "value": "值"
+      },
       "networkAddress": "網路位址",
       "broadcastAddress": "廣播位址",
       "firstHost": "第一個可用主機",
       "lastHost": "最後可用主機",
+      "hostTotal": "主機總數",
+      "usableHosts": "可用主機數",
+      "ipv4Class": "位址類別",
+      "ipv4AddressType": "位址類型",
+      "isPrivate": "是否私有",
+      "ipv4Type": {
+        "public": "公網",
+        "private": "私有",
+        "loopback": "回環",
+        "linkLocal": "鏈路本地",
+        "multicast": "組播",
+        "experimental": "實驗",
+        "other": "其他"
+      },
       "totalAddresses": "總位址數",
       "usableAddresses": "可用位址數",
       "networkPrefix": "網路前綴",

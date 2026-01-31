@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest"
-import { SubnetError, calcFromCidr, calcFromIpv4Netmask } from "./ip_subnet"
+import { SubnetError, calcFromCidr, calcFromIpv4Netmask, getIpv4AddressMeta } from "./ip_subnet"
 
 describe("ip_subnet", () => {
   it("calculates IPv4 /24 correctly", () => {
@@ -60,5 +60,15 @@ describe("ip_subnet", () => {
 
   it("throws SubnetError for missing prefix", () => {
     expect(() => calcFromCidr("192.168.1.1")).toThrow(SubnetError)
+  })
+
+  it("classifies IPv4 address meta correctly", () => {
+    expect(getIpv4AddressMeta("10.1.2.3")).toMatchObject({ ipv4Class: "A", isPrivate: true, addressType: "private" })
+    expect(getIpv4AddressMeta("172.16.0.1")).toMatchObject({ ipv4Class: "B", isPrivate: true, addressType: "private" })
+    expect(getIpv4AddressMeta("192.168.1.1")).toMatchObject({ ipv4Class: "C", isPrivate: true, addressType: "private" })
+    expect(getIpv4AddressMeta("127.0.0.1")).toMatchObject({ ipv4Class: "A", isPrivate: false, addressType: "loopback" })
+    expect(getIpv4AddressMeta("169.254.1.1")).toMatchObject({ ipv4Class: "B", isPrivate: false, addressType: "linkLocal" })
+    expect(getIpv4AddressMeta("224.0.0.1")).toMatchObject({ ipv4Class: "D", isPrivate: false, addressType: "multicast" })
+    expect(getIpv4AddressMeta("240.0.0.1")).toMatchObject({ ipv4Class: "E", isPrivate: false, addressType: "experimental" })
   })
 })

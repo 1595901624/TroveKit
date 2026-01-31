@@ -63,6 +63,54 @@ export interface Ipv6SubnetResult {
 
 export type SubnetResult = Ipv4SubnetResult | Ipv6SubnetResult
 
+export type Ipv4AddressClass = "A" | "B" | "C" | "D" | "E"
+export type Ipv4AddressType = "public" | "private" | "loopback" | "linkLocal" | "multicast" | "experimental" | "other"
+
+export interface Ipv4AddressMeta {
+  ipv4Class: Ipv4AddressClass
+  addressType: Ipv4AddressType
+  isPrivate: boolean
+}
+
+export function getIpv4AddressMeta(ip: string | number): Ipv4AddressMeta {
+  const u32 = typeof ip === "number" ? (ip >>> 0) : parseIpv4ToU32(ip)
+  const first = (u32 >>> 24) & 255
+
+  const ipv4Class: Ipv4AddressClass =
+    first >= 1 && first <= 126 ? "A" :
+    first >= 128 && first <= 191 ? "B" :
+    first >= 192 && first <= 223 ? "C" :
+    first >= 224 && first <= 239 ? "D" :
+    "E"
+
+  // RFC1918 private ranges
+  const isPrivate =
+    (u32 & 0xff000000) === 0x0a000000 || // 10.0.0.0/8
+    (u32 & 0xfff00000) === 0xac100000 || // 172.16.0.0/12
+    (u32 & 0xffff0000) === 0xc0a80000 // 192.168.0.0/16
+
+  const isLoopback = (u32 & 0xff000000) === 0x7f000000 // 127.0.0.0/8
+  const isLinkLocal = (u32 & 0xffff0000) === 0xa9fe0000 // 169.254.0.0/16
+  const isMulticast = first >= 224 && first <= 239
+  const isExperimental = first >= 240 && first <= 255
+
+  const addressType: Ipv4AddressType =
+    isPrivate ? "private" :
+    isLoopback ? "loopback" :
+    isLinkLocal ? "linkLocal" :
+    isMulticast ? "multicast" :
+    isExperimental ? "experimental" :
+    (first >= 1 && first <= 223) ? "public" :
+    "other"
+
+  return { ipv4Class, addressType, isPrivate }
+}
+
+export function ipv4PrefixToMaskString(prefix: number): string {
+  if (!Number.isInteger(prefix) || prefix < 0 || prefix > 32) throw new SubnetError("invalid_prefix")
+  return formatIpv4(prefixToIpv4Mask(prefix))
+}
+
 export function calcFromCidr(input: string, options: SubnetCalcOptions = {}): SubnetResult {
   const s = (input || "").trim()
   if (!s) throw new SubnetError("invalid_input")

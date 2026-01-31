@@ -10,12 +10,14 @@ import {
   Textarea,
   addToast,
 } from "@heroui/react"
-import { Copy, Network, Settings2 } from "lucide-react"
+import { Copy, Network, Settings2, FileDown, FileJson, ListPlus, Dices } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { useLog } from "../../contexts/LogContext"
 import { getStoredItem, setStoredItem } from "../../lib/store"
 import type { Ipv4HostRule, SubnetResult } from "../../lib/ip_subnet"
-import { SubnetError, calcFromCidr, calcFromIpv4Netmask } from "../../lib/ip_subnet"
+import { SubnetError, calcFromCidr, calcFromIpv4Netmask, getIpv4AddressMeta, ipv4PrefixToMaskString } from "../../lib/ip_subnet"
+import { save } from "@tauri-apps/plugin-dialog"
+import { writeFile } from "@tauri-apps/plugin-fs"
 
 type InputMode = "cidr" | "ipv4Netmask"
 
@@ -139,6 +141,162 @@ export function SubnetTab() {
     return `${result.ip}/${result.prefix} → ${result.networkPrefixCompressed}`
   }, [result])
 
+  const ipv4Meta = useMemo(() => {
+    if (!result || result.version !== 4) return null
+    return getIpv4AddressMeta(result.ip)
+  }, [result])
+
+  const exportRows = useMemo(() => {
+    if (!result) return [] as Array<{ key: string; value: string }>
+    if (result.version === 4) {
+      const meta = ipv4Meta
+      return [
+        { key: t("tools.converter.export.key"), value: t("tools.converter.export.value") },
+        { key: t("tools.converter.ipAddress"), value: result.ip },
+        { key: t("tools.converter.cidr"), value: `/${result.prefix}` },
+        { key: t("tools.converter.networkAddress"), value: result.networkAddress },
+        { key: t("tools.converter.broadcastAddress"), value: result.broadcastAddress },
+        { key: t("tools.converter.subnetMask"), value: result.subnetMask },
+        { key: t("tools.converter.wildcardMask"), value: result.wildcardMask },
+        { key: t("tools.converter.firstHost"), value: result.firstHost ?? "-" },
+        { key: t("tools.converter.lastHost"), value: result.lastHost ?? "-" },
+        { key: t("tools.converter.hostTotal"), value: result.totalAddresses },
+        { key: t("tools.converter.usableHosts"), value: result.usableAddresses },
+        { key: t("tools.converter.ipv4Class"), value: meta ? meta.ipv4Class : "-" },
+        { key: t("tools.converter.ipv4AddressType"), value: meta ? t(`tools.converter.ipv4Type.${meta.addressType}`) : "-" },
+        { key: t("tools.converter.isPrivate"), value: meta ? (meta.isPrivate ? t("common.yes", "Yes") : t("common.no", "No")) : "-" },
+      ]
+    }
+
+    return [
+      { key: t("tools.converter.export.key"), value: t("tools.converter.export.value") },
+      { key: t("tools.converter.ipAddress"), value: result.ip },
+      { key: t("tools.converter.cidr"), value: `/${result.prefix}` },
+      { key: t("tools.converter.networkPrefix"), value: preferIpv6Expanded ? result.networkPrefixExpanded : result.networkPrefixCompressed },
+      { key: t("tools.converter.networkAddress"), value: preferIpv6Expanded ? result.networkAddressExpanded : result.networkAddressCompressed },
+      { key: t("tools.converter.lastAddress"), value: preferIpv6Expanded ? result.lastAddressExpanded : result.lastAddressCompressed },
+      { key: t("tools.converter.totalAddresses"), value: result.totalAddresses },
+      { key: t("tools.converter.usableAddresses"), value: result.usableAddresses },
+    ]
+  }, [result, ipv4Meta, preferIpv6Expanded, t])
+
+  const toCsv = (rows: Array<{ key: string; value: string }>) => {
+    const esc = (v: string) => {
+      const s = String(v ?? "")
+      if (/[\n\r,\"]/g.test(s)) return `"${s.replace(/\"/g, '""')}"`
+      return s
+    }
+
+    // rows[0] is header
+    return rows.map((r) => `${esc(r.key)},${esc(r.value)}`).join("\n")
+  }
+
+  const toJson = (rows: Array<{ key: string; value: string }>) => {
+    const obj: Record<string, string> = {}
+    for (const r of rows.slice(1)) {
+      obj[r.key] = r.value
+    }
+    return JSON.stringify(obj, null, 2)
+  }
+
+  const buildExportBaseName = () => {
+    if (!result) return "net-ip"
+    const ipStr = (result.version === 4 ? result.ip : result.ip).toString()
+    const sanitized = ipStr
+      .replaceAll(".", "-")
+      .replaceAll(":", "-")
+      .replaceAll("/", "-")
+      .replace(/[^0-9A-Za-z_-]+/g, "-")
+      .replace(/-+/g, "-")
+      .replace(/^-|-$/g, "")
+    return `net-${sanitized}-${result.prefix}`
+  }
+
+  const handleAddToLog = () => {
+    if (!result) return
+    const text = toCsv(exportRows)
+    const inputText = mode === "cidr" ? cidr : `${ipv4} ${netmask}`
+    addLog(
+      {
+        method: t("tools.converter.subnet"),
+        input: inputText || "-",
+        output: text,
+      },
+      "success",
+    )
+    addToast({ title: t("tools.converter.addedToLog"), severity: "success" })
+  }
+
+  const handleCopyTable = () => {
+    if (!result) return
+    const text = toCsv(exportRows)
+    copyToClipboard(text, { method: "Copy Subnet Table", input: summary || undefined })
+  }
+
+  const handleExportCsv = async () => {
+    if (!result) return
+    try {
+      const filePath = await save({
+        defaultPath: `${buildExportBaseName()}.csv`,
+        filters: [{ name: "CSV", extensions: ["csv"] }],
+      })
+      if (!filePath) return
+      const text = toCsv(exportRows)
+      const bytes = new TextEncoder().encode(text)
+      await writeFile(filePath, bytes)
+      addToast({ title: t("tools.converter.exported"), severity: "success" })
+    } catch (e) {
+      console.error(e)
+      addToast({ title: t("common.error"), severity: "danger" })
+    }
+  }
+
+  const handleExportJson = async () => {
+    if (!result) return
+    try {
+      const filePath = await save({
+        defaultPath: `${buildExportBaseName()}.json`,
+        filters: [{ name: "JSON", extensions: ["json"] }],
+      })
+      if (!filePath) return
+      const text = toJson(exportRows)
+      const bytes = new TextEncoder().encode(text)
+      await writeFile(filePath, bytes)
+      addToast({ title: t("tools.converter.exported"), severity: "success" })
+    } catch (e) {
+      console.error(e)
+      addToast({ title: t("common.error"), severity: "danger" })
+    }
+  }
+
+  const handleRandom = () => {
+    if (mode === "ipv4Netmask") {
+      const ip = randomIpv4()
+      const prefix = randomInt(8, 30)
+      setIpv4(ip)
+      setNetmask(ipv4PrefixToMaskString(prefix))
+      return
+    }
+
+    const cur = cidr.trim()
+    const wantsIpv6 = cur.includes(":")
+    const keepPrefix = (() => {
+      const m = cur.match(/\/(\d+)\s*$/)
+      if (!m) return null
+      const n = Number(m[1])
+      if (!Number.isInteger(n)) return null
+      return n
+    })()
+
+    if (wantsIpv6) {
+      const prefix = keepPrefix ?? 64
+      setCidr(`${randomIpv6Expanded()}/${prefix}`)
+    } else {
+      const prefix = keepPrefix ?? 24
+      setCidr(`${randomIpv4()}/${prefix}`)
+    }
+  }
+
   const ResultRow = ({
     label,
     value,
@@ -196,13 +354,25 @@ export function SubnetTab() {
               </Select>
 
               {mode === "cidr" ? (
-                <Input
-                  label={t("tools.converter.cidr")}
-                  placeholder={t("tools.converter.cidrPlaceholder")}
-                  value={cidr}
-                  onValueChange={setCidr}
-                  classNames={{ inputWrapper: "bg-default-100" }}
-                />
+                <div className="flex gap-2">
+                  <Input
+                    label={t("tools.converter.cidr")}
+                    placeholder={t("tools.converter.cidrPlaceholder")}
+                    value={cidr}
+                    onValueChange={setCidr}
+                    classNames={{ inputWrapper: "bg-default-100" }}
+                    className="flex-1"
+                  />
+                  <Button
+                    size="sm"
+                    variant="flat"
+                    className="self-end"
+                    startContent={<Dices className="w-4 h-4" />}
+                    onPress={handleRandom}
+                  >
+                    {t("tools.converter.random")}
+                  </Button>
+                </div>
               ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <Input
@@ -212,13 +382,25 @@ export function SubnetTab() {
                     onValueChange={setIpv4}
                     classNames={{ inputWrapper: "bg-default-100" }}
                   />
-                  <Input
-                    label={t("tools.converter.subnetMask")}
-                    placeholder={t("tools.converter.subnetMaskPlaceholder")}
-                    value={netmask}
-                    onValueChange={setNetmask}
-                    classNames={{ inputWrapper: "bg-default-100" }}
-                  />
+                  <div className="flex gap-2">
+                    <Input
+                      label={t("tools.converter.subnetMask")}
+                      placeholder={t("tools.converter.subnetMaskPlaceholder")}
+                      value={netmask}
+                      onValueChange={setNetmask}
+                      classNames={{ inputWrapper: "bg-default-100" }}
+                      className="flex-1"
+                    />
+                    <Button
+                      size="sm"
+                      variant="flat"
+                      className="self-end"
+                      startContent={<Dices className="w-4 h-4" />}
+                      onPress={handleRandom}
+                    >
+                      {t("tools.converter.random")}
+                    </Button>
+                  </div>
                 </div>
               )}
 
@@ -258,18 +440,37 @@ export function SubnetTab() {
           <CardBody className="p-4 sm:p-6 space-y-4">
             <div className="flex items-center justify-between gap-3">
               <h3 className="font-semibold text-lg">{t("tools.converter.output")}</h3>
+              <div className="flex items-center gap-2 flex-wrap justify-end">
+                <Button size="sm" variant="flat" startContent={<ListPlus className="w-4 h-4" />} onPress={handleAddToLog}>
+                  {t("tools.converter.addToLog")}
+                </Button>
+                <Button size="sm" variant="flat" startContent={<Copy className="w-4 h-4" />} onPress={handleCopyTable}>
+                  {t("tools.converter.copy")}
+                </Button>
+                <Button size="sm" variant="flat" startContent={<FileDown className="w-4 h-4" />} onPress={handleExportCsv}>
+                  {t("tools.converter.exportCsv")}
+                </Button>
+                <Button size="sm" variant="flat" startContent={<FileJson className="w-4 h-4" />} onPress={handleExportJson}>
+                  {t("tools.converter.exportJson")}
+                </Button>
+              </div>
             </div>
 
             {result.version === 4 ? (
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+                <ResultRow label={t("tools.converter.ipAddress")} value={result.ip} copyLabel="Copy IP Address" />
+                <ResultRow label={t("tools.converter.cidr")} value={`/${result.prefix}`} copyLabel="Copy CIDR" />
                 <ResultRow label={t("tools.converter.networkAddress")} value={result.networkAddress} copyLabel="Copy Network Address" />
                 <ResultRow label={t("tools.converter.broadcastAddress")} value={result.broadcastAddress} copyLabel="Copy Broadcast Address" />
                 <ResultRow label={t("tools.converter.firstHost")} value={result.firstHost ?? "-"} copyLabel="Copy First Host" />
                 <ResultRow label={t("tools.converter.lastHost")} value={result.lastHost ?? "-"} copyLabel="Copy Last Host" />
                 <ResultRow label={t("tools.converter.subnetMask")} value={result.subnetMask} copyLabel="Copy Subnet Mask" />
                 <ResultRow label={t("tools.converter.wildcardMask")} value={result.wildcardMask} copyLabel="Copy Wildcard Mask" />
-                <ResultRow label={t("tools.converter.totalAddresses")} value={result.totalAddresses} copyLabel="Copy Total Addresses" />
-                <ResultRow label={t("tools.converter.usableAddresses")} value={result.usableAddresses} copyLabel="Copy Usable Addresses" />
+                <ResultRow label={t("tools.converter.hostTotal")} value={result.totalAddresses} copyLabel="Copy Total Addresses" />
+                <ResultRow label={t("tools.converter.usableHosts")} value={result.usableAddresses} copyLabel="Copy Usable Addresses" />
+                <ResultRow label={t("tools.converter.ipv4Class")} value={ipv4Meta ? ipv4Meta.ipv4Class : "-"} copyLabel="Copy IPv4 Class" />
+                <ResultRow label={t("tools.converter.ipv4AddressType")} value={ipv4Meta ? t(`tools.converter.ipv4Type.${ipv4Meta.addressType}`) : "-"} copyLabel="Copy IPv4 Type" />
+                <ResultRow label={t("tools.converter.isPrivate")} value={ipv4Meta ? (ipv4Meta.isPrivate ? t("common.yes", "Yes") : t("common.no", "No")) : "-"} copyLabel="Copy Is Private" />
               </div>
             ) : (
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
@@ -278,6 +479,7 @@ export function SubnetTab() {
                   value={preferIpv6Expanded ? result.ipExpanded : result.ip}
                   copyLabel="Copy IP Address"
                 />
+                <ResultRow label={t("tools.converter.cidr")} value={`/${result.prefix}`} copyLabel="Copy CIDR" />
                 <ResultRow
                   label={t("tools.converter.networkPrefix")}
                   value={preferIpv6Expanded ? result.networkPrefixExpanded : result.networkPrefixCompressed}
@@ -387,4 +589,30 @@ function subnetErrorToMessage(e: unknown, t: (key: string) => string): string {
     }
   }
   return t("tools.converter.invalidInput")
+}
+
+function randomInt(min: number, max: number): number {
+  const lo = Math.ceil(min)
+  const hi = Math.floor(max)
+  return Math.floor(Math.random() * (hi - lo + 1)) + lo
+}
+
+function randomIpv4(): string {
+  // Prefer unicast ranges; avoid 0.x.x.x and 127.x.x.x by default.
+  const a = (() => {
+    while (true) {
+      const v = randomInt(1, 223)
+      if (v === 127) continue
+      return v
+    }
+  })()
+  const b = randomInt(0, 255)
+  const c = randomInt(0, 255)
+  const d = randomInt(0, 255)
+  return `${a}.${b}.${c}.${d}`
+}
+
+function randomIpv6Expanded(): string {
+  const hextet = () => randomInt(0, 0xffff).toString(16).padStart(4, "0")
+  return `${hextet()}:${hextet()}:${hextet()}:${hextet()}:${hextet()}:${hextet()}:${hextet()}:${hextet()}`
 }
