@@ -66,6 +66,7 @@ export function CommandMenu({ isOpen, onClose, onNavigate }: CommandMenuProps) {
     { id: 'conv-jsonxml', toolId: 'converter', tabId: 'jsonXml', label: t('tools.converter.jsonXml'), category: t('nav.converter') },
     { id: 'conv-jsonyaml', toolId: 'converter', tabId: 'jsonYaml', label: t('tools.converter.jsonYaml'), category: t('nav.converter') },
     { id: 'conv-timestamp', toolId: 'converter', tabId: 'timestamp', label: t('tools.converter.timestamp'), category: t('nav.converter') },
+    { id: 'conv-subnet', toolId: 'converter', tabId: 'subnet', label: t('tools.converter.subnet'), category: t('nav.converter') },
 
     // Main Tools
     { id: 'tool-logs', toolId: 'logManagement', label: t('nav.logManagement'), category: t('nav.home') },

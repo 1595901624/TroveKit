@@ -3,6 +3,7 @@ import { Tabs, Tab } from "@heroui/react"
 import { useTranslation } from "react-i18next"
 import { JsonXmlTab } from "./converter/JsonXmlTab"
 import { JsonYamlTab } from "./converter/JsonYamlTab"
+import { SubnetTab } from "./converter/SubnetTab"
 import { TimestampTab } from "./converter/TimestampTab"
 
 export function ConverterTool({ isVisible = true, activeTab }: { isVisible?: boolean; activeTab?: string }) {
@@ -29,6 +30,7 @@ export function ConverterTool({ isVisible = true, activeTab }: { isVisible?: boo
           }}
         >
           <Tab key="timestamp" title={t("tools.converter.timestamp")} />
+          <Tab key="subnet" title={t("tools.converter.subnet")} />
           <Tab key="jsonXml" title={t("tools.converter.jsonXml")} />
           <Tab key="jsonYaml" title={t("tools.converter.jsonYaml")} />
         </Tabs>
@@ -37,6 +39,9 @@ export function ConverterTool({ isVisible = true, activeTab }: { isVisible?: boo
       <div className="flex-1 overflow-y-auto min-h-0 pt-4 pb-2">
         <div className={selectedKey === "timestamp" ? "h-full" : "hidden h-full"}>
           <TimestampTab isVisible={isVisible && selectedKey === "timestamp"} />
+        </div>
+        <div className={selectedKey === "subnet" ? "h-full" : "hidden h-full"}>
+          <SubnetTab />
         </div>
         <div className={selectedKey === "jsonXml" ? "h-full" : "hidden h-full"}>
           <JsonXmlTab />
