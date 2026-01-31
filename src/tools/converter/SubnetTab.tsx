@@ -121,16 +121,16 @@ export function SubnetTab() {
     navigator.clipboard.writeText(text)
     addToast({ title: t("tools.converter.copiedToClipboard"), severity: "success" })
 
-    if (context) {
-      addLog(
-        {
-          method: context.method,
-          input: context.input || "-",
-          output: text,
-        },
-        "success",
-      )
-    }
+    // if (context) {
+    //   addLog(
+    //     {
+    //       method: context.method,
+    //       input: context.input || "-",
+    //       output: text,
+    //     },
+    //     "success",
+    //   )
+    // }
   }
 
   const summary = useMemo(() => {
