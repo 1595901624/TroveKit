@@ -9,13 +9,12 @@
     "success": "成功",
     "edit": "編輯",
     "cancel": "取消",
-    "delete": "刪除"
+    "delete": "刪除",
+    "yes": "是",
+    "no": "否"
   },
   "nav": {
     "home": "首頁",
-      "delete": "刪除",
-      "yes": "是",
-      "no": "否",
     "crypto": "雜湊 & 加密",
     "classical": "古典密碼",
     "qr": "QR 碼生成",
@@ -35,34 +34,10 @@
         "title": "雜湊 & 加密",
         "desc": "生成 MD2, MD5, SHA 雜湊等。"
       },
-        "random": "隨機產生",
-        "addToLog": "加入到日誌",
-        "addedToLog": "已加入到日誌",
-        "exportCsv": "匯出 CSV",
-        "exportJson": "匯出 JSON",
-        "exported": "已匯出",
-        "export": {
-          "key": "屬性",
-          "value": "值"
-        },
       "classical": {
         "title": "古典密碼",
         "desc": "體驗凱撒密碼等歷史悠久的加密方法。"
       },
-        "hostTotal": "主機總數",
-        "usableHosts": "可用主機數",
-        "ipv4Class": "位址類別",
-        "ipv4AddressType": "位址類型",
-        "isPrivate": "是否私有",
-        "ipv4Type": {
-          "public": "公網",
-          "private": "私有",
-          "loopback": "回環",
-          "linkLocal": "鏈路本地",
-          "multicast": "組播",
-          "experimental": "實驗",
-          "other": "其他"
-        },
       "qr": {
         "title": "QR 碼生成器",
         "desc": "生成支援自訂樣式和 Logo 的文字或 WiFi QR 碼。"
@@ -389,6 +364,8 @@
       "showBinary": "顯示二進位",
       "preferIpv6Expanded": "優先 IPv6 展開格式",
       "random": "隨機產生",
+      "randomIpv4": "隨機產生 IPv4",
+      "randomIpv6": "隨機產生 IPv6",
       "addToLog": "加入到日誌",
       "addedToLog": "已加入到日誌",
       "exportCsv": "匯出 CSV",

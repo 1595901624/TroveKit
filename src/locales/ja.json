@@ -365,6 +365,8 @@
       "showBinary": "2進数を表示",
       "preferIpv6Expanded": "IPv6 を展開形式優先",
       "random": "ランダム",
+      "randomIpv4": "IPv4 をランダム生成",
+      "randomIpv6": "IPv6 をランダム生成",
       "addToLog": "ログに追加",
       "addedToLog": "ログに追加しました",
       "exportCsv": "CSV 書き出し",

@@ -367,6 +367,8 @@
       "showBinary": "显示二进制",
       "preferIpv6Expanded": "优先 IPv6 展开格式",
       "random": "随机生成",
+      "randomIpv4": "随机生成 IPv4",
+      "randomIpv6": "随机生成 IPv6",
       "addToLog": "添加到日志",
       "addedToLog": "已添加到日志",
       "exportCsv": "导出 CSV",

@@ -367,6 +367,8 @@
       "showBinary": "Show binary",
       "preferIpv6Expanded": "Prefer IPv6 expanded",
       "random": "Random",
+      "randomIpv4": "Random IPv4",
+      "randomIpv6": "Random IPv6",
       "addToLog": "Add to log",
       "addedToLog": "Added to log",
       "exportCsv": "Export CSV",

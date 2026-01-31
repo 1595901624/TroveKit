@@ -118,6 +118,9 @@ export function SubnetTab() {
 
   const copyToClipboard = (text: string, context?: { method: string; input?: string }) => {
     if (!text) return
+    // Keep for potential future logging integration.
+    void context?.method
+    void context?.input
     navigator.clipboard.writeText(text)
     addToast({ title: t("tools.converter.copiedToClipboard"), severity: "success" })
 
@@ -269,32 +272,32 @@ export function SubnetTab() {
     }
   }
 
-  const handleRandom = () => {
-    if (mode === "ipv4Netmask") {
-      const ip = randomIpv4()
-      const prefix = randomInt(8, 30)
-      setIpv4(ip)
-      setNetmask(ipv4PrefixToMaskString(prefix))
-      return
-    }
-
+  const getKeepPrefixFromCidr = () => {
     const cur = cidr.trim()
-    const wantsIpv6 = cur.includes(":")
-    const keepPrefix = (() => {
-      const m = cur.match(/\/(\d+)\s*$/)
-      if (!m) return null
-      const n = Number(m[1])
-      if (!Number.isInteger(n)) return null
-      return n
-    })()
+    const m = cur.match(/\/(\d+)\s*$/)
+    if (!m) return null
+    const n = Number(m[1])
+    if (!Number.isInteger(n)) return null
+    return n
+  }
 
-    if (wantsIpv6) {
-      const prefix = keepPrefix ?? 64
-      setCidr(`${randomIpv6Expanded()}/${prefix}`)
-    } else {
-      const prefix = keepPrefix ?? 24
-      setCidr(`${randomIpv4()}/${prefix}`)
-    }
+  const handleRandomIpv4Netmask = () => {
+    const ip = randomIpv4()
+    const prefix = randomInt(8, 30)
+    setIpv4(ip)
+    setNetmask(ipv4PrefixToMaskString(prefix))
+  }
+
+  const handleRandomCidrIpv4 = () => {
+    const keepPrefix = getKeepPrefixFromCidr()
+    const prefix = keepPrefix !== null && keepPrefix >= 0 && keepPrefix <= 32 ? keepPrefix : 24
+    setCidr(`${randomIpv4()}/${prefix}`)
+  }
+
+  const handleRandomCidrIpv6 = () => {
+    const keepPrefix = getKeepPrefixFromCidr()
+    const prefix = keepPrefix !== null && keepPrefix >= 0 && keepPrefix <= 128 ? keepPrefix : 64
+    setCidr(`${randomIpv6Expanded()}/${prefix}`)
   }
 
   const ResultRow = ({
@@ -363,15 +366,6 @@ export function SubnetTab() {
                     classNames={{ inputWrapper: "bg-default-100" }}
                     className="flex-1"
                   />
-                  <Button
-                    size="sm"
-                    variant="flat"
-                    className="self-end"
-                    startContent={<Dices className="w-4 h-4" />}
-                    onPress={handleRandom}
-                  >
-                    {t("tools.converter.random")}
-                  </Button>
                 </div>
               ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -391,15 +385,6 @@ export function SubnetTab() {
                       classNames={{ inputWrapper: "bg-default-100" }}
                       className="flex-1"
                     />
-                    <Button
-                      size="sm"
-                      variant="flat"
-                      className="self-end"
-                      startContent={<Dices className="w-4 h-4" />}
-                      onPress={handleRandom}
-                    >
-                      {t("tools.converter.random")}
-                    </Button>
                   </div>
                 </div>
               )}
@@ -416,6 +401,37 @@ export function SubnetTab() {
               </div>
 
               <div className="flex flex-col gap-2">
+                {mode === "cidr" ? (
+                  <div className="flex flex-wrap gap-2">
+                    <Button
+                      size="sm"
+                      variant="flat"
+                      startContent={<Dices className="w-4 h-4" />}
+                      onPress={handleRandomCidrIpv4}
+                    >
+                      {t("tools.converter.randomIpv4")}
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="flat"
+                      startContent={<Dices className="w-4 h-4" />}
+                      onPress={handleRandomCidrIpv6}
+                    >
+                      {t("tools.converter.randomIpv6")}
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="flex flex-wrap gap-2">
+                    <Button
+                      size="sm"
+                      variant="flat"
+                      startContent={<Dices className="w-4 h-4" />}
+                      onPress={handleRandomIpv4Netmask}
+                    >
+                      {t("tools.converter.randomIpv4")}
+                    </Button>
+                  </div>
+                )}
                 <Switch
                   size="sm"
                   isSelected={ipv4HostRule === "rfc3021"}
