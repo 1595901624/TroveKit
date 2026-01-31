@@ -203,7 +203,7 @@ export function SubnetTab() {
   }
 
   const buildExportBaseName = () => {
-    if (!result) return "net-ip"
+    if (!result) return "subnet-ip"
     const ipStr = (result.version === 4 ? result.ip : result.ip).toString()
     const sanitized = ipStr
       .replaceAll(".", "-")
@@ -212,7 +212,7 @@ export function SubnetTab() {
       .replace(/[^0-9A-Za-z_-]+/g, "-")
       .replace(/-+/g, "-")
       .replace(/^-|-$/g, "")
-    return `net-${sanitized}-${result.prefix}`
+    return `subnet-${sanitized}-${result.prefix}`
   }
 
   const handleAddToLog = () => {
