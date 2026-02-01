@@ -3,8 +3,7 @@ import { Textarea, Button, RadioGroup, Radio, Input, Select, SelectItem } from "
 import { Copy, Trash2, Lock, Unlock } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { useLog } from "../../contexts/LogContext"
-// @ts-ignore
-import { sm4 } from "sm-crypto"
+import { invoke } from "@tauri-apps/api/core"
 import { getStoredItem, setStoredItem, removeStoredItem } from "../../lib/store"
 
 const STORAGE_KEY = "sm4-tool-state"
@@ -19,7 +18,7 @@ export function Sm4Tab() {
   const [sm4KeyType, setSm4KeyType] = useState("text")
   const [sm4Iv, setSm4Iv] = useState("")
   const [sm4IvType, setSm4IvType] = useState("text")
-  const [sm4Mode, setSm4Mode] = useState<"cbc">("cbc")
+  const [sm4Mode, setSm4Mode] = useState<"ecb" | "cbc" | "cfb" | "ofb" | "ctr">("cbc")
   const [sm4Padding, setSm4Padding] = useState("pkcs7")
   const [sm4Format, setSm4Format] = useState("base64")
   const [isLoaded, setIsLoaded] = useState(false)
@@ -36,6 +35,7 @@ export function Sm4Tab() {
           if (state.sm4KeyType) setSm4KeyType(state.sm4KeyType);
           if (state.sm4Iv) setSm4Iv(state.sm4Iv);
           if (state.sm4IvType) setSm4IvType(state.sm4IvType);
+          if (state.sm4Mode) setSm4Mode(state.sm4Mode);
           if (state.sm4Padding) setSm4Padding(state.sm4Padding);
           if (state.sm4Format) setSm4Format(state.sm4Format);
         } catch (e) {
@@ -56,130 +56,27 @@ export function Sm4Tab() {
         sm4KeyType,
         sm4Iv,
         sm4IvType,
+        sm4Mode,
         sm4Padding,
         sm4Format
       }))
     }
-  }, [sm4Input, sm4Output, sm4Key, sm4KeyType, sm4Iv, sm4IvType, sm4Padding, sm4Format, isLoaded])
+  }, [sm4Input, sm4Output, sm4Key, sm4KeyType, sm4Iv, sm4IvType, sm4Mode, sm4Padding, sm4Format, isLoaded])
 
-  // 解析密钥，SM4 密钥固定为 128 位 (16 字节)
-  const parseKey = (value: string, type: string): string => {
-    if (type === "hex") {
-      // 如果是 hex，确保是 32 个字符 (16 字节)
-      let hex = value.replace(/\s/g, '');
-      if (hex.length < 32) {
-        hex = hex.padEnd(32, '0');
-      } else if (hex.length > 32) {
-        hex = hex.substring(0, 32);
-      }
-      return hex;
-    } else {
-      // 如果是文本，转换为 hex，然后确保 32 个字符
-      const encoder = new TextEncoder();
-      const bytes = encoder.encode(value);
-      let hex = Array.from(bytes).map(b => b.toString(16).padStart(2, '0')).join('');
-      if (hex.length < 32) {
-        hex = hex.padEnd(32, '0');
-      } else if (hex.length > 32) {
-        hex = hex.substring(0, 32);
-      }
-      return hex;
-    }
-  }
-
-  // 解析 IV，SM4 IV 固定为 128 位 (16 字节)
-  const parseIv = (value: string, type: string): string => {
-    if (type === "hex") {
-      let hex = value.replace(/\s/g, '');
-      if (hex.length < 32) {
-        hex = hex.padEnd(32, '0');
-      } else if (hex.length > 32) {
-        hex = hex.substring(0, 32);
-      }
-      return hex;
-    } else {
-      const encoder = new TextEncoder();
-      const bytes = encoder.encode(value);
-      let hex = Array.from(bytes).map(b => b.toString(16).padStart(2, '0')).join('');
-      if (hex.length < 32) {
-        hex = hex.padEnd(32, '0');
-      } else if (hex.length > 32) {
-        hex = hex.substring(0, 32);
-      }
-      return hex;
-    }
-  }
-
-  // 填充模式处理
-  const applyPadding = (data: Uint8Array, padding: string): Uint8Array => {
-    const blockSize = 16;
-    const padLen = blockSize - (data.length % blockSize);
-    
-    switch (padding) {
-      case "pkcs7": {
-        const pkcs7Result = new Uint8Array(data.length + padLen);
-        pkcs7Result.set(data);
-        pkcs7Result.fill(padLen, data.length);
-        return pkcs7Result;
-      }
-      case "zero":
-        if (padLen === blockSize) return data;
-        return new Uint8Array([...data, ...new Array(padLen).fill(0)]);
-      case "none":
-        if (data.length % blockSize !== 0) {
-          throw new Error("Data length must be multiple of block size when using NoPadding");
-        }
-        return data;
-      default:
-        return data;
-    }
-  }
-
-  // 去除填充
-  const removePadding = (data: Uint8Array, padding: string): Uint8Array => {
-    if (padding === "none") return data;
-    if (padding === "zero") {
-      let i = data.length - 1;
-      while (i >= 0 && data[i] === 0) i--;
-      return data.slice(0, i + 1);
-    }
-    if (padding === "pkcs7") {
-      const padLen = data[data.length - 1];
-      if (padLen > 16 || padLen === 0) return data;
-      // 验证填充
-      for (let i = 0; i < padLen; i++) {
-        if (data[data.length - 1 - i] !== padLen) return data;
-      }
-      return data.slice(0, data.length - padLen);
-    }
-    return data;
-  }
-
-  const handleSm4Encrypt = () => {
+  const handleSm4Encrypt = async () => {
     if (!sm4Input) return;
     try {
-      const keyHex = parseKey(sm4Key, sm4KeyType);
-      const ivHex = parseIv(sm4Iv, sm4IvType);
-
-      // 将输入转换为 hex
-      const encoder = new TextEncoder();
-      const inputBytes = applyPadding(encoder.encode(sm4Input), sm4Padding);
-      const inputHex = Array.from(inputBytes).map(b => b.toString(16).padStart(2, '0')).join('');
-
-      const encryptedHex = sm4.encrypt(inputHex, keyHex, { 
+      const request: any = {
+        input: sm4Input,
         mode: sm4Mode,
-        iv: ivHex
-      });
+        padding: sm4Padding,
+        format: sm4Format,
+        key: sm4Key,
+        keyType: sm4KeyType,
+        ...(sm4Mode !== "ecb" ? { iv: sm4Iv, ivType: sm4IvType } : {})
+      };
 
-      let output = "";
-      if (sm4Format === "hex") {
-        output = encryptedHex;
-      } else {
-        // hex to base64
-        const bytes = encryptedHex.match(/.{2}/g)?.map((byte: string) => parseInt(byte, 16)) || [];
-        const binary = bytes.map((b: number) => String.fromCharCode(b)).join('');
-        output = btoa(binary);
-      }
+      const output = await invoke<string>("sm4_encrypt", { request });
 
       setSm4Output(output);
       addLog({
@@ -197,40 +94,26 @@ export function Sm4Tab() {
         }
       }, "success");
     } catch (e) {
-      addLog({ method: "SM4 Encrypt", input: sm4Input, output: (e as Error).message }, "error");
+      const msg = (e as Error).message || String(e);
+      setSm4Output(msg);
+      addLog({ method: "SM4 Encrypt", input: sm4Input, output: msg }, "error");
     }
   }
 
-  const handleSm4Decrypt = () => {
+  const handleSm4Decrypt = async () => {
     if (!sm4Input) return;
     try {
-      const keyHex = parseKey(sm4Key, sm4KeyType);
-      const ivHex = parseIv(sm4Iv, sm4IvType);
-
-      // 将输入转换为 hex
-      let inputHex: string;
-      if (sm4Format === "hex") {
-        inputHex = sm4Input.replace(/\s/g, '');
-      } else {
-        // base64 to hex
-        const binary = atob(sm4Input);
-        inputHex = binary.split('').map(c => c.charCodeAt(0).toString(16).padStart(2, '0')).join('');
-      }
-
-      const decryptedHex = sm4.decrypt(inputHex, keyHex, { 
+      const request: any = {
+        input: sm4Input,
         mode: sm4Mode,
-        iv: ivHex
-      });
+        padding: sm4Padding,
+        format: sm4Format,
+        key: sm4Key,
+        keyType: sm4KeyType,
+        ...(sm4Mode !== "ecb" ? { iv: sm4Iv, ivType: sm4IvType } : {})
+      };
 
-      // hex to bytes
-      const bytes = decryptedHex.match(/.{2}/g)?.map((byte: string) => parseInt(byte, 16)) || [];
-      const outputBytes = removePadding(new Uint8Array(bytes), sm4Padding);
-      
-      // bytes to string
-      const decoder = new TextDecoder('utf-8', { fatal: true });
-      const output = decoder.decode(outputBytes);
-
-      if (!output) throw new Error("Decryption failed or invalid key/iv/mode");
+      const output = await invoke<string>("sm4_decrypt", { request });
 
       setSm4Output(output);
       addLog({
@@ -248,7 +131,9 @@ export function Sm4Tab() {
         }
       }, "success");
     } catch (e) {
-      addLog({ method: "SM4 Decrypt", input: sm4Input, output: (e as Error).message }, "error");
+      const msg = (e as Error).message || String(e);
+      setSm4Output(msg);
+      addLog({ method: "SM4 Decrypt", input: sm4Input, output: msg }, "error");
     }
   }
 
@@ -302,6 +187,7 @@ export function Sm4Tab() {
                       placeholder="IV (16 bytes)"
                       value={sm4Iv}
                       onValueChange={setSm4Iv}
+                      isDisabled={sm4Mode === "ecb"}
                       className="flex-1"
                     />
                     <Select 
@@ -310,6 +196,7 @@ export function Sm4Tab() {
                       className="w-24" 
                       selectedKeys={new Set([sm4IvType])}
                       onSelectionChange={(keys) => setSm4IvType(Array.from(keys)[0] as string)}
+                      isDisabled={sm4Mode === "ecb"}
                       disallowEmptySelection
                     >
                       <SelectItem key="text">{t("tools.hash.text")}</SelectItem>
@@ -322,12 +209,16 @@ export function Sm4Tab() {
                 <RadioGroup
                   orientation="horizontal"
                   value={sm4Mode}
-                  onValueChange={(value) => setSm4Mode(value as "cbc")}
+                  onValueChange={(value) => setSm4Mode(value as any)}
                   label={t("tools.hash.mode")}
                   size="sm"
                   className="text-tiny"
                 >
+                  <Radio value="ecb">{t("tools.hash.ecb", "ECB")}</Radio>
                   <Radio value="cbc">{t("tools.hash.cbc", "CBC")}</Radio>
+                  <Radio value="cfb">{t("tools.hash.cfb", "CFB")}</Radio>
+                  <Radio value="ofb">{t("tools.hash.ofb", "OFB")}</Radio>
+                  <Radio value="ctr">{t("tools.hash.ctr", "CTR")}</Radio>
                 </RadioGroup>
 
                 <div className="flex gap-4">

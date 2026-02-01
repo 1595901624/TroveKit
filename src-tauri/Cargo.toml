@@ -35,3 +35,12 @@ tauri-plugin-store = "2.4.2"
 
 trivium = "0.1.0"
 
+# SM4 (RustCrypto) + common block/stream modes
+sm4 = "0.5"
+cipher = "0.4"
+ecb = "0.1"
+cbc = "0.1"
+cfb-mode = "0.8"
+ofb = "0.6"
+ctr = "0.9"
+

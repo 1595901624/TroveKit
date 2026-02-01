@@ -5,6 +5,7 @@ mod basex;
 mod log_manager;
 mod time_utils;
 mod command;
+mod crypto;
 
 #[tauri::command]
 fn greet(name: &str) -> String {
@@ -29,6 +30,8 @@ pub fn run() {
         .invoke_handler(tauri::generate_handler![
             greet,
             command::trivium_xor,
+            crypto::sm4::sm4_encrypt,
+            crypto::sm4::sm4_decrypt,
             basex::basex_encode,
             basex::basex_decode,
             log_manager::append_log,
