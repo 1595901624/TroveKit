@@ -84,6 +84,15 @@ export function BlakeTab() {
     navigator.clipboard.writeText(text)
   }
 
+  // Keep the displayed hash output in sync with the selected case in real-time
+  useEffect(() => {
+    if (!blakeOutput) return
+    const converted = blakeCase === "upper" ? blakeOutput.toUpperCase() : blakeOutput.toLowerCase()
+    if (converted !== blakeOutput) {
+      setBlakeOutput(converted)
+    }
+  }, [blakeCase, blakeOutput])
+
   useEffect(() => {
     if (isLoaded) {
       setStoredItem(STORAGE_KEY, JSON.stringify({
