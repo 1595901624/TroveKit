@@ -23,6 +23,9 @@ importers:
       '@noble/ciphers':
         specifier: ^2.1.1
         version: 2.1.1
+      '@noble/hashes':
+        specifier: ^1.5.0
+        version: 1.8.0
       '@tauri-apps/api':
         specifier: ^2
         version: 2.9.1
@@ -1008,6 +1011,10 @@ packages:
   '@noble/ciphers@2.1.1':
     resolution: {integrity: sha512-bysYuiVfhxNJuldNXlFEitTVdNnYUc+XNJZd7Qm2a5j1vZHgY+fazadNFWFaMK/2vye0JVlxV3gHmC0WDfAOQw==}
     engines: {node: '>= 20.19.0'}
+
+  '@noble/hashes@1.8.0':
+    resolution: {integrity: sha512-jCs9ldd7NwzpgXDIf6P3+NrHh9/sD6CQdxHyjQI+h/6rDNo88ypBxxz45UDuZHz9r3tNz7N/VInSVoVdtXEI4A==}
+    engines: {node: ^14.21.3 || >=16}
 
   '@nodelib/fs.scandir@2.1.5':
     resolution: {integrity: sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g==}
@@ -4497,6 +4504,8 @@ snapshots:
       react-dom: 19.2.3(react@19.2.3)
 
   '@noble/ciphers@2.1.1': {}
+
+  '@noble/hashes@1.8.0': {}
 
   '@nodelib/fs.scandir@2.1.5':
     dependencies:
