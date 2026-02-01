@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - **BLAKE hash**: Added Blake hashing tool with BLAKE2b-512, BLAKE2s-256, and BLAKE3-256.
+- **SM4 modes**: Added SM4 support for **ECB**, **CFB**, **OFB**, and **CTR** modes (in addition to existing CBC), with Hex/Base64 I/O and configurable padding.
+
+### Fixed
+- **SM4**: Fixed incorrect SM4 encryption/decryption results by implementing SM4 in the Tauri Rust backend and verifying against official test vectors.
 
 ## [0.2.0] - 2026-01-31
 
