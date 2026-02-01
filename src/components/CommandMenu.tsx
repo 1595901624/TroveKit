@@ -34,6 +34,8 @@ export function CommandMenu({ isOpen, onClose, onNavigate }: CommandMenuProps) {
     { id: 'crypto-sha', toolId: 'crypto', tabId: 'sha', label: t('tools.hash.sha'), category: t('nav.crypto') },
     { id: 'crypto-aes', toolId: 'crypto', tabId: 'aes', label: t('tools.hash.aes'), category: t('nav.crypto') },
     { id: 'crypto-sm2', toolId: 'crypto', tabId: 'sm2', label: t('tools.hash.sm2'), category: t('nav.crypto') },
+    { id: 'crypto-sm3', toolId: 'crypto', tabId: 'sm3', label: t('tools.hash.sm3', 'SM3'), category: t('nav.crypto') },
+    { id: 'crypto-sm4', toolId: 'crypto', tabId: 'sm4', label: t('tools.hash.sm4', 'SM4'), category: t('nav.crypto') },
     { id: 'crypto-des', toolId: 'crypto', tabId: 'des', label: t('tools.hash.des', 'DES'), category: t('nav.crypto') },
     { id: 'crypto-rc4', toolId: 'crypto', tabId: 'rc4', label: t('tools.hash.rc4', 'RC4'), category: t('nav.crypto') },
     { id: 'crypto-chacha20', toolId: 'crypto', tabId: 'chacha20', label: t('tools.hash.chacha20'), category: t('nav.crypto') },
