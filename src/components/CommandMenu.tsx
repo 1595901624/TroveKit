@@ -38,6 +38,7 @@ export function CommandMenu({ isOpen, onClose, onNavigate }: CommandMenuProps) {
     { id: 'crypto-rc4', toolId: 'crypto', tabId: 'rc4', label: t('tools.hash.rc4', 'RC4'), category: t('nav.crypto') },
     { id: 'crypto-chacha20', toolId: 'crypto', tabId: 'chacha20', label: t('tools.hash.chacha20'), category: t('nav.crypto') },
     { id: 'crypto-trivium', toolId: 'crypto', tabId: 'trivium', label: t('tools.hash.trivium'), category: t('nav.crypto') },
+    { id: 'crypto-blake', toolId: 'crypto', tabId: 'blake', label: t('tools.hash.blake'), category: t('nav.crypto') },
 
     // Encoder
     { id: 'encoder-url', toolId: 'encoder', tabId: 'url', label: t('tools.encoder.url'), category: t('nav.encoder') },
