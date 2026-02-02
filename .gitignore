@@ -12,6 +12,7 @@ dist
 dist-ssr
 *.local
 plan
+.trae
 
 # Editor directories and files
 .vscode/*
