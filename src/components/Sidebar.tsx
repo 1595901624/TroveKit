@@ -10,13 +10,14 @@ import {
   ChevronLeft,
   ChevronRight,
   FileText,
+  Regex,
 } from "lucide-react"
 import { Button, Tooltip } from "@heroui/react"
 import { cn } from "../lib/utils"
 import { useTranslation } from "react-i18next"
 import { usePersistentState } from "../hooks/usePersistentState"
 
-export type ToolId = "home" | "encoder" | "crypto" | "classical" | "formatters" | "generators" | "converter" | "logManagement" | "settings"
+export type ToolId = "home" | "encoder" | "crypto" | "classical" | "formatters" | "generators" | "converter" | "regex" | "logManagement" | "settings"
 
 interface SidebarProps {
   activeTool: ToolId
@@ -32,7 +33,7 @@ export function Sidebar({ activeTool, onToolChange }: SidebarProps) {
   //   getVersion().then(setVersion).catch(() => setVersion("v0.1.0"))
   // }, [])
 
-  const menuItems = [
+  const mainItems = [
     { id: "home", label: t("nav.home"), icon: Home },
     { id: "encoder", label: t("nav.encoder"), icon: Binary },
     { id: "crypto", label: t("nav.crypto"), icon: Lock },
@@ -41,6 +42,15 @@ export function Sidebar({ activeTool, onToolChange }: SidebarProps) {
     { id: "generators", label: t("nav.generators"), icon: Wand2 },
     { id: "converter", label: t("nav.converter"), icon: ArrowRightLeft },
     { id: "logManagement", label: t("nav.logManagement", "日志管理"), icon: FileText },
+  ] as const
+
+  const otherItems = [
+    { id: "regex", label: t("nav.regex"), icon: Regex },
+  ] as const
+
+  const sections = [
+    { id: "main", title: null, items: mainItems },
+    { id: "others", title: t("nav.others"), items: otherItems },
   ] as const
 
   return (
@@ -60,37 +70,53 @@ export function Sidebar({ activeTool, onToolChange }: SidebarProps) {
         )}
       </div>
 
-      <nav className="flex-1 px-3 py-2 space-y-1 overflow-y-auto scrollbar-hide">
-        {menuItems.map((item) => {
-          const isActive = activeTool === item.id
-          const button = (
-            <Button
-              key={item.id}
-              isIconOnly={isCollapsed}
-              variant={isActive ? "flat" : "light"}
-              color={isActive ? "primary" : "default"}
-              className={cn(
-                "w-full h-10 text-sm font-medium transition-all duration-200",
-                isActive ? "bg-primary/10 text-primary" : "text-default-500 hover:text-foreground",
-                isCollapsed ? "justify-center min-w-0" : "justify-start px-3"
-              )}
-              startContent={!isCollapsed && <item.icon className={cn("w-4 h-4 shrink-0", isActive ? "text-primary" : "text-default-400")} />}
-              onPress={() => onToolChange(item.id as ToolId)}
-            >
-              {isCollapsed ? (
-                <item.icon className={cn("w-5 h-5", isActive ? "text-primary" : "text-default-400")} />
-              ) : (
-                <span className="whitespace-nowrap overflow-hidden text-ellipsis">{item.label}</span>
-              )}
-            </Button>
-          )
+      <nav className="flex-1 px-3 py-2 space-y-3 overflow-y-auto scrollbar-hide">
+        {sections.map((section) => (
+          <div
+            key={section.id}
+            className={cn(
+              "space-y-1",
+              section.id === "others" ? "mt-2 pt-2 border-t border-divider" : undefined
+            )}
+          >
+            {!isCollapsed && section.title && (
+              <div className="px-3 pt-2 pb-1 text-[10px] font-semibold text-default-400 uppercase tracking-wider">
+                {section.title}
+              </div>
+            )}
 
-          return isCollapsed ? (
-            <Tooltip key={item.id} content={item.label} placement="right" delay={500}>
-              {button}
-            </Tooltip>
-          ) : button
-        })}
+            {section.items.map((item) => {
+              const isActive = activeTool === item.id
+              const button = (
+                <Button
+                  key={item.id}
+                  isIconOnly={isCollapsed}
+                  variant={isActive ? "flat" : "light"}
+                  color={isActive ? "primary" : "default"}
+                  className={cn(
+                    "w-full h-10 text-sm font-medium transition-all duration-200",
+                    isActive ? "bg-primary/10 text-primary" : "text-default-500 hover:text-foreground",
+                    isCollapsed ? "justify-center min-w-0" : "justify-start px-3"
+                  )}
+                  startContent={!isCollapsed && <item.icon className={cn("w-4 h-4 shrink-0", isActive ? "text-primary" : "text-default-400")} />}
+                  onPress={() => onToolChange(item.id as ToolId)}
+                >
+                  {isCollapsed ? (
+                    <item.icon className={cn("w-5 h-5", isActive ? "text-primary" : "text-default-400")} />
+                  ) : (
+                    <span className="whitespace-nowrap overflow-hidden text-ellipsis">{item.label}</span>
+                  )}
+                </Button>
+              )
+
+              return isCollapsed ? (
+                <Tooltip key={item.id} content={item.label} placement="right" delay={500}>
+                  {button}
+                </Tooltip>
+              ) : button
+            })}
+          </div>
+        ))}
       </nav>
 
       <div className={cn(

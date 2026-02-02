@@ -22,6 +22,8 @@
     "formatters": "Formatters",
     "generators": "Generators",
     "converter": "Converter",
+    "others": "Others",
+    "regex": "Regex",
     "logManagement": "Log Management",
     "logs": "Operation Logs",
     "settings": "Settings"
@@ -467,6 +469,34 @@
       "actions": "Actions",
       "view": "View",
       "confirmDelete": "Are you sure you want to delete this log?"
+    },
+    "regex": {
+      "title": "Regex",
+      "pattern": "Pattern",
+      "patternPlaceholder": "Enter pattern like (\\w+) or /foo.*/gi",
+      "flags": "Flags",
+      "testString": "Test String",
+      "matchInfo": "Match Info",
+      "replaceWith": "Replace With",
+      "replacePlaceholder": "Replacement text (supports $1, $&, etc.)",
+      "replaceResult": "Replace Result",
+      "match": "Match",
+      "replace": "Replace",
+      "replaceAll": "Replace All",
+      "matches": "Matches",
+      "replacements": "Replacements",
+      "copy": "Copy",
+      "copyMatches": "Copy match info",
+      "copyOutput": "Copy output",
+      "export": "Export",
+      "exportMatchesJson": "Export match info (JSON)",
+      "exportMatchesCsv": "Export match info (CSV)",
+      "exportOutput": "Export output (TXT)",
+      "clear": "Clear",
+      "example": "Example",
+      "noMatches": "No matches",
+      "invalidRegex": "Invalid regular expression",
+      "copiedToClipboard": "Copied to clipboard"
     }
   },
   "settings": {

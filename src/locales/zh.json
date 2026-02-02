@@ -22,6 +22,8 @@
     "formatters": "格式化工具",
     "generators": "生成器",
     "converter": "转换器",
+    "others": "其它",
+    "regex": "正则",
     "logManagement": "日志管理",
     "logs": "操作日志",
     "settings": "设置"
@@ -467,6 +469,34 @@
       "actions": "操作",
       "view": "查看",
       "confirmDelete": "确定要删除此日志吗？"
+    },
+    "regex": {
+      "title": "正则",
+      "pattern": "正则表达式",
+      "patternPlaceholder": "输入正则，如 (\\w+) 或 /foo.*/gi",
+      "flags": "标志",
+      "testString": "测试文本",
+      "matchInfo": "匹配信息",
+      "replaceWith": "替换为",
+      "replacePlaceholder": "替换文本（支持 $1、$& 等）",
+      "replaceResult": "替换结果",
+      "match": "匹配",
+      "replace": "替换",
+      "replaceAll": "全部替换",
+      "matches": "匹配数",
+      "replacements": "替换次数",
+      "copy": "复制",
+      "copyMatches": "复制匹配信息",
+      "copyOutput": "复制输出",
+      "export": "导出",
+      "exportMatchesJson": "导出匹配信息（JSON）",
+      "exportMatchesCsv": "导出匹配信息（CSV）",
+      "exportOutput": "导出输出（TXT）",
+      "clear": "清空",
+      "example": "示例",
+      "noMatches": "未找到匹配",
+      "invalidRegex": "正则表达式无效",
+      "copiedToClipboard": "已复制到剪贴板"
     }
   },
   "settings": {

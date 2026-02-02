@@ -71,6 +71,9 @@ export function CommandMenu({ isOpen, onClose, onNavigate }: CommandMenuProps) {
     { id: 'conv-timestamp', toolId: 'converter', tabId: 'timestamp', label: t('tools.converter.timestamp'), category: t('nav.converter') },
     { id: 'conv-subnet', toolId: 'converter', tabId: 'subnet', label: t('tools.converter.subnet'), category: t('nav.converter') },
 
+    // Others
+    { id: 'tool-regex', toolId: 'regex', label: t('nav.regex'), category: t('nav.others') },
+
     // Main Tools
     { id: 'tool-logs', toolId: 'logManagement', label: t('nav.logManagement'), category: t('nav.home') },
     { id: 'tool-settings', toolId: 'settings', label: t('nav.settings'), category: t('nav.home') },

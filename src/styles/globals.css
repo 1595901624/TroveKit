@@ -10,3 +10,13 @@ html,
 body {
     overscroll-behavior: none;
 }
+
+.regex-match-decoration {
+    background-color: rgba(59, 130, 246, 0.18);
+    border-bottom: 1px solid rgba(59, 130, 246, 0.55);
+}
+
+.regex-match-decoration-active {
+    background-color: rgba(245, 158, 11, 0.22);
+    border-bottom: 1px solid rgba(245, 158, 11, 0.75);
+}
