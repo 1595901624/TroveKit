@@ -4,12 +4,13 @@ import {
   ButtonGroup,
   Card,
   CardBody,
+  Checkbox,
   Dropdown,
   DropdownItem,
   DropdownMenu,
   DropdownTrigger,
   Input,
-  Switch,
+  Tooltip,
   Tabs,
   Tab,
   Textarea,
@@ -105,6 +106,17 @@ export function RegexTool() {
   }, [pattern, flags, input, replacement, panelTab])
 
   const flagsLabel = useMemo(() => normalizeFlags(flags), [flags])
+  const flagTooltips = useMemo<Record<string, string>>(
+    () => ({
+      g: t("tools.regex.flagHelp.g", "全局匹配：查找所有匹配项"),
+      i: t("tools.regex.flagHelp.i", "忽略大小写"),
+      m: t("tools.regex.flagHelp.m", "^/$ 匹配每一行（多行模式）"),
+      s: t("tools.regex.flagHelp.s", ". 也匹配换行（dotAll）"),
+      u: t("tools.regex.flagHelp.u", "Unicode 模式"),
+      y: t("tools.regex.flagHelp.y", "粘连匹配：从 lastIndex 处开始（sticky）"),
+    }),
+    [t]
+  )
 
   useEffect(() => {
     const id = window.setTimeout(() => {
@@ -291,27 +303,33 @@ export function RegexTool() {
     <div className="flex flex-col h-full gap-4">
       <div className="flex flex-col gap-3">
         <div className="flex flex-col md:flex-row gap-3 items-stretch md:items-end">
-          <Input
-            label={t("tools.regex.pattern")}
-            placeholder={t("tools.regex.patternPlaceholder")}
-            value={pattern}
-            onValueChange={setPattern}
-            onBlur={handlePatternBlur}
-            classNames={{ input: "font-mono text-xs" }}
-          />
+          <div className="flex-1 min-w-0">
+            <Input
+              label={t("tools.regex.pattern")}
+              placeholder={t("tools.regex.patternPlaceholder")}
+              value={pattern}
+              onValueChange={setPattern}
+              onBlur={handlePatternBlur}
+              classNames={{ input: "font-mono text-xs" }}
+            />
 
-          <div className="flex flex-wrap gap-2 items-center">
-            <span className="text-xs font-semibold text-default-500">{t("tools.regex.flags")}</span>
-            {FLAG_ORDER.map((f) => (
-              <Switch
-                key={f}
-                size="sm"
-                isSelected={flagsLabel.includes(f)}
-                onValueChange={(v) => setFlagEnabled(f, v)}
-              >
-                <span className="font-mono text-xs">{f}</span>
-              </Switch>
-            ))}
+            <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-2">
+              <span className="text-xs font-semibold text-default-500">{t("tools.regex.flags")}</span>
+              {FLAG_ORDER.map((f) => (
+                <Tooltip key={f} content={flagTooltips[f]} placement="top" delay={400}>
+                  <span className="inline-flex">
+                    <Checkbox
+                      size="sm"
+                      isSelected={flagsLabel.includes(f)}
+                      onValueChange={(v) => setFlagEnabled(f, v)}
+                      classNames={{ label: "ml-1" }}
+                    >
+                      <span className="font-mono text-xs">{f}</span>
+                    </Checkbox>
+                  </span>
+                </Tooltip>
+              ))}
+            </div>
           </div>
 
           <div className="flex gap-2 md:ml-auto">
@@ -521,4 +539,3 @@ export function RegexTool() {
     </div>
   )
 }
-

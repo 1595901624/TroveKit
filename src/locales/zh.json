@@ -475,6 +475,14 @@
       "pattern": "正则表达式",
       "patternPlaceholder": "输入正则，如 (\\w+) 或 /foo.*/gi",
       "flags": "标志",
+      "flagHelp": {
+        "g": "全局匹配：查找所有匹配项",
+        "i": "忽略大小写",
+        "m": "^/$ 匹配每一行（多行模式）",
+        "s": ". 也匹配换行（dotAll）",
+        "u": "Unicode 模式",
+        "y": "粘连匹配：从 lastIndex 处开始（sticky）"
+      },
       "testString": "测试文本",
       "matchInfo": "匹配信息",
       "replaceWith": "替换为",

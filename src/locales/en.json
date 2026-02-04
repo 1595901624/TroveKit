@@ -475,6 +475,14 @@
       "pattern": "Pattern",
       "patternPlaceholder": "Enter pattern like (\\w+) or /foo.*/gi",
       "flags": "Flags",
+      "flagHelp": {
+        "g": "Global: find all matches",
+        "i": "Ignore case",
+        "m": "Multiline: ^/$ match line boundaries",
+        "s": "DotAll: . matches newlines",
+        "u": "Unicode mode",
+        "y": "Sticky: match from lastIndex"
+      },
       "testString": "Test String",
       "matchInfo": "Match Info",
       "replaceWith": "Replace With",
