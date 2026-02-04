@@ -8,7 +8,7 @@ import { GeneratorTool } from "./tools/GeneratorTool"
 import { Settings } from "./tools/Settings"
 import { FormatterTool } from "./tools/FormatterTool"
 import { ConverterTool } from "./tools/ConverterTool"
-import { RegexTool } from "./tools/regex/RegexTool"
+import { OthersTool } from "./tools/OthersTool"
 import { LogManagementTool } from "./tools/LogManagementTool"
 import { ToolId } from "./components/Sidebar"
 import { Card, CardBody } from "@heroui/react"
@@ -78,7 +78,7 @@ function App() {
       case "formatters": return t("nav.formatters")
       case "generators": return t("nav.generators")
       case "converter": return t("nav.converter")
-      case "regex": return t("nav.regex")
+      case "others": return t("nav.others")
       case "logManagement": return t("nav.logManagement")
       case "settings": return t("settings.title")
       default: return "TroveKit"
@@ -129,9 +129,9 @@ function App() {
               <ConverterTool isVisible={activeTool === "converter"} activeTab={activeTool === "converter" ? activeTab : undefined} />
             </div>
           )}
-          {visitedTools.has("regex") && (
-            <div className={activeTool === "regex" ? "block h-full" : "hidden"}>
-              <RegexTool />
+          {visitedTools.has("others") && (
+            <div className={activeTool === "others" ? "block h-full" : "hidden"}>
+              <OthersTool activeTab={activeTool === "others" ? activeTab : undefined} isVisible={activeTool === "others"} />
             </div>
           )}
           {visitedTools.has("logManagement") && (

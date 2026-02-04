@@ -72,7 +72,7 @@ export function CommandMenu({ isOpen, onClose, onNavigate }: CommandMenuProps) {
     { id: 'conv-subnet', toolId: 'converter', tabId: 'subnet', label: t('tools.converter.subnet'), category: t('nav.converter') },
 
     // Others
-    { id: 'tool-regex', toolId: 'regex', label: t('nav.regex'), category: t('nav.others') },
+    { id: 'others-regex', toolId: 'others', tabId: 'regex', label: t('nav.regex'), category: t('nav.others') },
 
     // Main Tools
     { id: 'tool-logs', toolId: 'logManagement', label: t('nav.logManagement'), category: t('nav.home') },

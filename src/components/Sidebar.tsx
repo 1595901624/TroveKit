@@ -10,14 +10,14 @@ import {
   ChevronLeft,
   ChevronRight,
   FileText,
-  Regex,
+  MoreHorizontal,
 } from "lucide-react"
 import { Button, Tooltip } from "@heroui/react"
 import { cn } from "../lib/utils"
 import { useTranslation } from "react-i18next"
 import { usePersistentState } from "../hooks/usePersistentState"
 
-export type ToolId = "home" | "encoder" | "crypto" | "classical" | "formatters" | "generators" | "converter" | "regex" | "logManagement" | "settings"
+export type ToolId = "home" | "encoder" | "crypto" | "classical" | "formatters" | "generators" | "converter" | "others" | "logManagement" | "settings"
 
 interface SidebarProps {
   activeTool: ToolId
@@ -41,16 +41,20 @@ export function Sidebar({ activeTool, onToolChange }: SidebarProps) {
     { id: "formatters", label: t("nav.formatters"), icon: FileJson },
     { id: "generators", label: t("nav.generators"), icon: Wand2 },
     { id: "converter", label: t("nav.converter"), icon: ArrowRightLeft },
-    { id: "logManagement", label: t("nav.logManagement", "日志管理"), icon: FileText },
   ] as const
 
-  const otherItems = [
-    { id: "regex", label: t("nav.regex"), icon: Regex },
+  const otherToolItems = [
+    { id: "others", label: t("nav.others"), icon: MoreHorizontal },
+  ] as const
+
+  const logItems = [
+    { id: "logManagement", label: t("nav.logManagement", "日志管理"), icon: FileText },
   ] as const
 
   const sections = [
     { id: "main", title: null, items: mainItems },
-    { id: "others", title: t("nav.others"), items: otherItems },
+    { id: "others", title: null, items: otherToolItems },
+    { id: "log", title: null, items: logItems },
   ] as const
 
   return (
@@ -76,7 +80,7 @@ export function Sidebar({ activeTool, onToolChange }: SidebarProps) {
             key={section.id}
             className={cn(
               "space-y-1",
-              section.id === "others" ? "mt-2 pt-2 border-t border-divider" : undefined
+              section.id === "log" ? "mt-2 pt-2 border-t border-divider" : undefined
             )}
           >
             {!isCollapsed && section.title && (
