@@ -475,6 +475,41 @@
       "pattern": "正则表达式",
       "patternPlaceholder": "输入正则，如 (\\w+) 或 /foo.*/gi",
       "flags": "标志",
+      "presets": {
+        "title": "常用正则",
+        "searchPlaceholder": "搜索常用正则...",
+        "noResults": "无匹配结果",
+        "groupCommon": "常用",
+        "groupCN": "中国",
+        "groupHK": "香港",
+        "groupTW": "台湾",
+        "groupJP": "日本",
+        "common": {
+          "number": "匹配数字",
+          "email": "匹配邮箱地址",
+          "url": "匹配网址URL",
+          "ipv4": "匹配IP地址"
+        },
+        "cn": {
+          "mobile": "手机号",
+          "idcard": "身份证号",
+          "hanzi": "汉字(简体+繁体)"
+        },
+        "hk": {
+          "hanzi": "汉字(简体+繁体)"
+        },
+        "tw": {
+          "hanzi": "汉字(简体+繁体)"
+        },
+        "jp": {
+          "kanji": "汉字",
+          "hiragana": "平假名",
+          "katakana": "片假名",
+          "hiraganaKatakana": "平假名 + 片假名",
+          "allJapanese": "所有日文字符(平假名 + 片假名 + 半角片假名)",
+          "japanesePlusKanji": "日文字符+日文汉字"
+        }
+      },
       "flagHelp": {
         "g": "全局匹配：查找所有匹配项",
         "i": "忽略大小写",

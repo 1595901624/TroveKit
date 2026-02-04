@@ -475,6 +475,41 @@
       "pattern": "Pattern",
       "patternPlaceholder": "Enter pattern like (\\w+) or /foo.*/gi",
       "flags": "Flags",
+      "presets": {
+        "title": "Common Regex",
+        "searchPlaceholder": "Search presets...",
+        "noResults": "No results",
+        "groupCommon": "Common",
+        "groupCN": "China",
+        "groupHK": "Hong Kong",
+        "groupTW": "Taiwan",
+        "groupJP": "Japan",
+        "common": {
+          "number": "Match numbers",
+          "email": "Match email address",
+          "url": "Match URL",
+          "ipv4": "Match IPv4 address"
+        },
+        "cn": {
+          "mobile": "Mobile number",
+          "idcard": "ID card number",
+          "hanzi": "Han characters (Simplified+Traditional)"
+        },
+        "hk": {
+          "hanzi": "Han characters (Simplified+Traditional)"
+        },
+        "tw": {
+          "hanzi": "Han characters (Simplified+Traditional)"
+        },
+        "jp": {
+          "kanji": "Kanji",
+          "hiragana": "Hiragana",
+          "katakana": "Katakana",
+          "hiraganaKatakana": "Hiragana + Katakana",
+          "allJapanese": "All Japanese chars (Hiragana+Katakana+Halfwidth)",
+          "japanesePlusKanji": "Japanese chars + Kanji"
+        }
+      },
       "flagHelp": {
         "g": "Global: find all matches",
         "i": "Ignore case",

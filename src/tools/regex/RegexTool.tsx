@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react"
 import {
   Button,
-  ButtonGroup,
   Card,
   CardBody,
   Checkbox,
@@ -17,7 +16,7 @@ import {
   addToast,
 } from "@heroui/react"
 import Editor, { OnMount } from "@monaco-editor/react"
-import { AlertCircle, BookOpen, Copy, FileDown, Search, Trash2, ArrowRightLeft } from "lucide-react"
+import { AlertCircle, Copy, FileDown, Trash2, ListPlus } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { useTheme } from "../../components/theme-provider"
 import { getStoredItem, removeStoredItem, setStoredItem } from "../../lib/store"
@@ -54,7 +53,7 @@ const FLAG_ORDER = ["g", "i", "m", "s", "u", "y"] as const // 正则表达式标
  * 支持 Monaco 编辑器集成和结果导出
  */
 export function RegexTool() {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const { theme } = useTheme()
 
   const [pattern, setPattern] = useState("")
@@ -71,9 +70,13 @@ export function RegexTool() {
   const [output, setOutput] = useState("")
   const [replaceCount, setReplaceCount] = useState(0)
 
+  const [isPresetOpen, setIsPresetOpen] = useState(false)
+  const [presetQuery, setPresetQuery] = useState("")
+
   const editorRef = useRef<any>(null)
   const monacoRef = useRef<any>(null)
   const decorationIdsRef = useRef<string[]>([])
+  const presetPopoverRef = useRef<HTMLDivElement | null>(null)
 
   useEffect(() => {
     let alive = true
@@ -122,6 +125,98 @@ export function RegexTool() {
     }),
     [t]
   )
+
+  const preferredRegion = useMemo<"cn" | "hk" | "tw" | "jp" | null>(() => {
+    const lang = (i18n.language || "").toLowerCase()
+    if (lang.startsWith("zh-hk")) return "hk"
+    if (lang.startsWith("zh-tw")) return "tw"
+    if (lang === "zh" || lang.startsWith("zh-")) return "cn"
+    if (lang.startsWith("ja")) return "jp"
+    return null
+  }, [i18n.language])
+
+  const presetGroups = useMemo(() => {
+    const common = {
+      id: "common",
+      title: t("tools.regex.presets.groupCommon", "常用"),
+      items: [
+        { id: "num", label: t("tools.regex.presets.common.number", "匹配数字"), pattern: "[0-9]+" },
+        { id: "email", label: t("tools.regex.presets.common.email", "匹配邮箱地址"), pattern: "\\w+([-+.]\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*" },
+        { id: "url", label: t("tools.regex.presets.common.url", "匹配网址URL"), pattern: "https?://([\\w-]+\\.)+[\\w-]+(/[\\w-./?%&=]*)?" },
+        { id: "ip", label: t("tools.regex.presets.common.ipv4", "匹配IP地址"), pattern: "(\\d{1,3}\\.){3}\\d{1,3}" },
+      ],
+    }
+
+    const cn = {
+      id: "cn",
+      title: t("tools.regex.presets.groupCN", "中国"),
+      items: [
+        { id: "cn-mobile", label: t("tools.regex.presets.cn.mobile", "手机号"), pattern: "1[3-9]\\d{9}" },
+        { id: "cn-id", label: t("tools.regex.presets.cn.idcard", "身份证号"), pattern: "\\d{17}[0-9Xx]|\\d{15}" },
+        { id: "cn-hanzi", label: t("tools.regex.presets.cn.hanzi", "汉字(简体+繁体)"), pattern: "[\\u4e00-\\u9fff]+" },
+      ],
+    }
+
+    const hk = {
+      id: "hk",
+      title: t("tools.regex.presets.groupHK", "香港"),
+      items: [
+        { id: "hk-hanzi", label: t("tools.regex.presets.hk.hanzi", "汉字(简体+繁体)"), pattern: "[\\u4e00-\\u9fff]+" },
+      ],
+    }
+
+    const tw = {
+      id: "tw",
+      title: t("tools.regex.presets.groupTW", "台湾"),
+      items: [
+        { id: "tw-hanzi", label: t("tools.regex.presets.tw.hanzi", "汉字(简体+繁体)"), pattern: "[\\u4e00-\\u9fff]+" },
+      ],
+    }
+
+    const jp = {
+      id: "jp",
+      title: t("tools.regex.presets.groupJP", "日本"),
+      items: [
+        { id: "jp-kanji", label: t("tools.regex.presets.jp.kanji", "汉字"), pattern: "[\\u4e00-\\u9fff]+" },
+        { id: "jp-hira", label: t("tools.regex.presets.jp.hiragana", "平假名"), pattern: "[\\u3040-\\u309F]+" },
+        { id: "jp-kata", label: t("tools.regex.presets.jp.katakana", "片假名"), pattern: "[\\u30A0-\\u30FF]+" },
+        { id: "jp-hira-kata", label: t("tools.regex.presets.jp.hiraganaKatakana", "平假名 + 片假名"), pattern: "[\\u3040-\\u309F\\u30A0-\\u30FF]+" },
+        { id: "jp-all-jp", label: t("tools.regex.presets.jp.allJapanese", "所有日文字符(平假名 + 片假名 + 半角片假名)"), pattern: "[\\u3040-\\u309F\\u30A0-\\u30FF\\uFF65-\\uFF9F]+" },
+        { id: "jp-jp-kanji", label: t("tools.regex.presets.jp.japanesePlusKanji", "日文字符+日文汉字"), pattern: "[\\u3040-\\u309F\\u30A0-\\u30FF\\uFF65-\\uFF9F\\u4E00-\\u9FFF]+" },
+      ],
+    }
+
+    const regionGroups = [cn, hk, tw, jp]
+    const preferred = preferredRegion ? regionGroups.find((g) => g.id === preferredRegion) : undefined
+    const rest = regionGroups.filter((g) => g.id !== preferred?.id)
+    return [common, ...(preferred ? [preferred] : []), ...rest]
+  }, [t, preferredRegion])
+
+  const presetItemsFiltered = useMemo(() => {
+    const q = presetQuery.trim().toLowerCase()
+    if (!q) return presetGroups
+    return presetGroups
+      .map((g) => {
+        const items = g.items.filter((it) => {
+          const hay = `${it.label} ${it.pattern} ${g.title}`.toLowerCase()
+          return hay.includes(q)
+        })
+        return { ...g, items }
+      })
+      .filter((g) => g.items.length > 0)
+  }, [presetGroups, presetQuery])
+
+  useEffect(() => {
+    if (!isPresetOpen) return
+    const onPointerDown = (e: MouseEvent) => {
+      const el = presetPopoverRef.current
+      if (!el) return
+      if (el.contains(e.target as Node)) return
+      setIsPresetOpen(false)
+    }
+    window.addEventListener("mousedown", onPointerDown)
+    return () => window.removeEventListener("mousedown", onPointerDown)
+  }, [isPresetOpen])
 
   useEffect(() => {
     const id = window.setTimeout(() => {
@@ -268,14 +363,6 @@ export function RegexTool() {
     await removeStoredItem(STORAGE_KEY)
   }
 
-  const handleLoadExample = () => {
-    setPattern("(\\\\w+)@(\\\\w+\\\\.\\\\w+)")
-    setFlags("g")
-    setInput("Contact: alice@example.com\\nBackup: bob@test.org\\n")
-    setReplacement("$1 at $2")
-    setPanelTab("matchInfo")
-  }
-
   const handleReplace = () => {
     const r = replaceOnce(input, pattern, flagsLabel, replacement)
     if ("error" in r) {
@@ -337,21 +424,65 @@ export function RegexTool() {
             </div>
           </div>
 
-          <div className="flex gap-2 md:ml-auto">
-            <ButtonGroup variant="flat">
-              <Button color="primary" startContent={<Search className="w-4 h-4" />} onPress={() => setPanelTab("matchInfo")}>
-                {t("tools.regex.match")}
+          <div className="flex gap-2 md:ml-auto items-start">
+            <div className="relative" ref={presetPopoverRef}>
+              <Button
+                variant="flat"
+                color="primary"
+                startContent={<ListPlus className="w-4 h-4" />}
+                onPress={() => {
+                  setIsPresetOpen((v) => !v)
+                  setPresetQuery("")
+                }}
+              >
+                {t("tools.regex.presets.title", "常用正则")}
               </Button>
-              <Button color="secondary" startContent={<ArrowRightLeft className="w-4 h-4" />} onPress={handleReplace}>
-                {t("tools.regex.replace")}
-              </Button>
-              <Button color="secondary" variant="flat" onPress={handleReplaceAll}>
-                {t("tools.regex.replaceAll")}
-              </Button>
-              <Button color="warning" startContent={<BookOpen className="w-4 h-4" />} onPress={handleLoadExample}>
-                {t("tools.regex.example")}
-              </Button>
-            </ButtonGroup>
+
+              {isPresetOpen && (
+                <div className="absolute right-0 mt-2 w-[360px] max-w-[calc(100vw-2rem)] z-50 border border-divider rounded-xl bg-background shadow-2xl overflow-hidden">
+                  <div className="p-2 border-b border-divider">
+                    <Input
+                      size="sm"
+                      placeholder={t("tools.regex.presets.searchPlaceholder", "搜索常用正则...")}
+                      value={presetQuery}
+                      onValueChange={setPresetQuery}
+                      classNames={{ input: "text-xs" }}
+                    />
+                  </div>
+                  <div className="max-h-[340px] overflow-auto p-2 space-y-2">
+                    {presetItemsFiltered.length === 0 ? (
+                      <div className="p-6 text-center text-default-400 text-sm">
+                        {t("tools.regex.presets.noResults", "无匹配结果")}
+                      </div>
+                    ) : (
+                      presetItemsFiltered.map((group) => (
+                        <div key={group.id} className="space-y-1">
+                          <div className="px-2 pt-2 pb-1 text-[10px] font-semibold text-default-400 uppercase tracking-wider">
+                            {group.title}
+                          </div>
+                          {group.items.map((it) => (
+                            <button
+                              key={it.id}
+                              className="w-full text-left px-3 py-2 rounded-lg hover:bg-default-100 transition-colors"
+                              onClick={() => {
+                                setPattern(it.pattern)
+                                setPanelTab("matchInfo")
+                                setIsPresetOpen(false)
+                              }}
+                            >
+                              <div className="text-xs font-medium text-foreground">{it.label}</div>
+                              <div className="mt-0.5 font-mono text-[11px] text-default-600 whitespace-pre-wrap break-words">
+                                {it.pattern}
+                              </div>
+                            </button>
+                          ))}
+                        </div>
+                      ))
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
 
             <Button isIconOnly variant="light" onPress={() => handleCopy(matchInfoJson)} title={t("tools.regex.copyMatches")}>
               <Copy className="w-4 h-4" />
