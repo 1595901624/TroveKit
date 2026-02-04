@@ -35,6 +35,7 @@ import {
   type RegexMatch,
 } from "./regex"
 
+// 类型定义
 type PanelTab = "matchInfo" | "replaceResult"
 
 interface RegexToolState {
@@ -45,9 +46,13 @@ interface RegexToolState {
   panelTab: PanelTab
 }
 
-const STORAGE_KEY = "regex-tool-state"
-const FLAG_ORDER = ["g", "i", "m", "s", "u", "y"] as const
-
+const STORAGE_KEY = "regex-tool-state" // 本地存储键名，用于保存工具状态
+const FLAG_ORDER = ["g", "i", "m", "s", "u", "y"] as const // 正则表达式标志的显示顺序
+/**
+ * RegexTool 组件 - 正则表达式测试和替换工具
+ * 提供正则表达式模式匹配、标志设置、文本替换等功能
+ * 支持 Monaco 编辑器集成和结果导出
+ */
 export function RegexTool() {
   const { t } = useTranslation()
   const { theme } = useTheme()
@@ -89,7 +94,7 @@ export function RegexTool() {
     return () => {
       alive = false
     }
-  }, [])
+  }, []) // 从本地存储恢复工具状态
 
   useEffect(() => {
     const state: RegexToolState = {
@@ -103,7 +108,7 @@ export function RegexTool() {
       setStoredItem(STORAGE_KEY, JSON.stringify(state)).catch((e) => console.error(e))
     }, 300)
     return () => clearTimeout(id)
-  }, [pattern, flags, input, replacement, panelTab])
+  }, [pattern, flags, input, replacement, panelTab]) // 延迟保存工具状态到本地存储
 
   const flagsLabel = useMemo(() => normalizeFlags(flags), [flags])
   const flagTooltips = useMemo<Record<string, string>>(
@@ -142,7 +147,7 @@ export function RegexTool() {
       })
     }, 150)
     return () => clearTimeout(id)
-  }, [pattern, flagsLabel, input])
+  }, [pattern, flagsLabel, input]) // 延迟执行正则表达式匹配，计算匹配结果和性能
 
   useEffect(() => {
     applyDecorations(matches, selectedMatchIndex)
@@ -193,7 +198,7 @@ export function RegexTool() {
     })
 
     decorationIdsRef.current = editor.deltaDecorations(decorationIdsRef.current, decorations)
-  }
+  } // 在 Monaco 编辑器中应用匹配高亮装饰
 
   const jumpToMatch = (idx: number) => {
     setSelectedMatchIndex(idx)
@@ -209,7 +214,7 @@ export function RegexTool() {
     editor.revealRangeInCenter(range)
     editor.setSelection(range)
     editor.focus()
-  }
+  } // 跳转到指定的匹配位置并选中
 
   const handleCopy = async (text: string) => {
     if (!text) return
@@ -283,7 +288,7 @@ export function RegexTool() {
     setPanelTab("replaceResult")
     setOutput(r.output)
     setReplaceCount(r.count)
-  }
+  } // 执行单次替换操作
 
   const handleReplaceAll = () => {
     const r = replaceAll(input, pattern, ensureGlobal(flagsLabel), replacement)
@@ -297,7 +302,7 @@ export function RegexTool() {
     setPanelTab("replaceResult")
     setOutput(r.output)
     setReplaceCount(r.count)
-  }
+  } // 执行全局替换操作
 
   return (
     <div className="flex flex-col h-full gap-4">
