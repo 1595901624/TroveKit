@@ -302,7 +302,7 @@ export function RegexTool() {
   return (
     <div className="flex flex-col h-full gap-4">
       <div className="flex flex-col gap-3">
-        <div className="flex flex-col md:flex-row gap-3 items-stretch md:items-end">
+        <div className="flex flex-col md:flex-row gap-3 items-stretch md:items-start">
           <div className="flex-1 min-w-0">
             <Input
               label={t("tools.regex.pattern")}
