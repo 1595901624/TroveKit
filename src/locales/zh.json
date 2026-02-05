@@ -539,6 +539,10 @@
       "example": "示例",
       "noMatches": "未找到匹配",
       "invalidRegex": "正则表达式无效",
+      "panelsAria": "正则面板",
+      "exportMenu": "导出匹配",
+      "groupsLabel": "分组",
+      "namedLabel": "命名分组",
       "copiedToClipboard": "已复制到剪贴板"
     }
   },

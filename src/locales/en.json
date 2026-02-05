@@ -539,6 +539,10 @@
       "example": "Example",
       "noMatches": "No matches",
       "invalidRegex": "Invalid regular expression",
+      "panelsAria": "Regex panels",
+      "exportMenu": "Export matches",
+      "groupsLabel": "Groups",
+      "namedLabel": "Named groups",
       "copiedToClipboard": "Copied to clipboard"
     }
   },

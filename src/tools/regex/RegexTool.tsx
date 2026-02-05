@@ -523,7 +523,7 @@ export function RegexTool() {
 
         <div className="lg:w-[420px] flex flex-col gap-3 min-h-[260px]">
           <Tabs
-            aria-label="regex-panels"
+            aria-label={t("tools.regex.panelsAria", "Regex panels")}
             color="primary"
             selectedKey={panelTab}
             onSelectionChange={(k) => setPanelTab(k as PanelTab)}
@@ -564,7 +564,7 @@ export function RegexTool() {
                           {t("tools.regex.export")}
                         </Button>
                       </DropdownTrigger>
-                      <DropdownMenu aria-label="Export matches">
+                      <DropdownMenu aria-label={t("tools.regex.exportMenu", "Export matches")}>
                         <DropdownItem key="json" onPress={() => handleExportMatches("json")}>
                           {t("tools.regex.exportMatchesJson")}
                         </DropdownItem>
@@ -601,9 +601,9 @@ export function RegexTool() {
                         </div>
                         {(m.groups.length > 0 || (m.namedGroups && Object.keys(m.namedGroups).length > 0)) && (
                           <div className="mt-1 text-[10px] text-default-500">
-                            {m.groups.length > 0 && <div>groups: {JSON.stringify(m.groups)}</div>}
+                            {m.groups.length > 0 && <div>{t("tools.regex.groupsLabel", "groups")}: {JSON.stringify(m.groups)}</div>}
                             {m.namedGroups && Object.keys(m.namedGroups).length > 0 && (
-                              <div>named: {JSON.stringify(m.namedGroups)}</div>
+                              <div>{t("tools.regex.namedLabel", "named groups")}: {JSON.stringify(m.namedGroups)}</div>
                             )}
                           </div>
                         )}
