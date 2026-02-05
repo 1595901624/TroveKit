@@ -465,6 +465,12 @@
       "actions": "操作",
       "view": "表示",
       "confirmDelete": "このログを削除しますか？"
+    },
+    "regex": {
+      "panelsAria": "正規表現パネル",
+      "exportMenu": "マッチをエクスポート",
+      "groupsLabel": "グループ",
+      "namedLabel": "名前付きグループ"
     }
   },
   "settings": {

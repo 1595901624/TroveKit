@@ -465,6 +465,12 @@
       "actions": "操作",
       "view": "查看",
       "confirmDelete": "確定要刪除此日誌嗎？"
+    },
+    "regex": {
+      "panelsAria": "正則面板",
+      "exportMenu": "匯出匹配",
+      "groupsLabel": "分組",
+      "namedLabel": "命名分組"
     }
   },
   "settings": {
