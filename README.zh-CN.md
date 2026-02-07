@@ -8,7 +8,7 @@
 </div>
 
 <div align="center">
-<a href="https://github.com/1595901624/trovekit/releases"><img src="https://img.shields.io/badge/version-v0.2.1-blue" alt="Version"></a>
+<a href="https://github.com/1595901624/trovekit/releases"><img src="https://img.shields.io/badge/version-v0.2.2-blue" alt="Version"></a>
 <a href="https://github.com/1595901624/trovekit/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-green" alt="License"></a>
 <img src="https://img.shields.io/badge/Windows-Supported-blue" alt="Windows">
 <img src="https://img.shields.io/badge/macOS-Supported-blue" alt="macOS">
@@ -38,6 +38,7 @@ TroveKit 基于 [Tauri v2](https://v2.tauri.app/) + [React](https://react.dev/) 
 - **增强国际化**：English / 简体中文 / 繁體中文（HK/TW）/ 日本語，优化文字大小与翻译质量
 - 日志与提示：操作记录、错误提示、复制按钮，支持**备注功能**
 - **状态持久化**：自动保存工具配置与内容（防止误触丢失）
+- **正则工具**：新增实时正则测试，支持语法高亮、匹配组显示与标志（flags）设置（已在 v0.2.2 中加入）。
 
 ## 🧰 内置工具
 
@@ -102,7 +103,7 @@ TroveKit 基于 [Tauri v2](https://v2.tauri.app/) + [React](https://react.dev/) 
 
 - Formatters：YAML
 - Generators：Lorem Ipsum / 随机密码等
-- 正则测试器：实时正则表达式测试，支持语法高亮与匹配组显示。
+
 - 文本对比：并排与内联文本差异比较，支持忽略空白与按词差异。
 - 常用工具：文本常用工具（大小写转换、换行符规范化、空白清理等）。
 

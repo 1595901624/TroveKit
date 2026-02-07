@@ -8,7 +8,7 @@ English | [简体中文](README.zh-CN.md) | [繁體中文（香港）](README.zh
 </div>
 
 <div align="center">
-<a href="https://github.com/1595901624/trovekit/releases"><img src="https://img.shields.io/badge/version-v0.2.1-blue" alt="Version"></a>
+<a href="https://github.com/1595901624/trovekit/releases"><img src="https://img.shields.io/badge/version-v0.2.2-blue" alt="Version"></a>
 <a href="https://github.com/1595901624/trovekit/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-green" alt="License"></a>
 <img src="https://img.shields.io/badge/Windows-Supported-blue" alt="Windows">
 <img src="https://img.shields.io/badge/macOS-Supported-blue" alt="macOS">
@@ -38,6 +38,7 @@ Built with [Tauri v2](https://v2.tauri.app/) + [React](https://react.dev/), Trov
 - **Enhanced i18n**: English / 简体中文 / 繁體中文（HK/TW）/ 日本語 with optimized text sizing and translation quality
 - Logs & toasts: history, error feedback, copy buttons with **note functionality**
 - **State Persistence**: auto-save tool states (never lose your input)
+- **Regex Tool**: Real-time regular expression testing with syntax highlighting, match groups, highlighting and flag support (added in v0.2.2).
 
 ## 🧰 Utilities
 
@@ -102,7 +103,7 @@ Built with [Tauri v2](https://v2.tauri.app/) + [React](https://react.dev/), Trov
 
 - Formatters: YAML
 - Generators: Lorem Ipsum / random passwords, etc.
-- Regex tester: Real-time regular expression testing with syntax highlighting and match groups.
+
 - Text diff/compare: Side-by-side and inline text comparison with ignore-whitespace and word-diff options.
 - Common utilities: Handy text tools (case conversion, line ending normalization, trim/cleanup, etc.)
 
