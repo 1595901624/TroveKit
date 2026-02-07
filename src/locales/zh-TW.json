@@ -15,6 +15,7 @@
   },
   "nav": {
     "home": "首頁",
+    "encoder": "編碼工具",
     "crypto": "雜湊 & 加密",
     "classical": "古典密碼",
     "qr": "QR 碼生成",
@@ -112,6 +113,7 @@
       "sm2DecryptMethod": "SM2 解密",
       "des": "DES",
       "rc4": "RC4",
+      "chacha20": "ChaCha20",
       "trivium": "Trivium",
       "hmacMd5": "HMAC-MD5",
       "hmacMd5OutputLabel": "HMAC-MD5 輸出",
@@ -135,6 +137,7 @@
       "keyPlaceholder32": "32 字節",
       "type": "類型",
       "nonce": "隨機數 (Nonce)",
+      "nonceType": "隨機數類型",
       "noncePlaceholder": "12 字節",
       "generateRandom": "生成隨機金鑰與隨機數",
       "defaultInput": "歡迎使用 TroveKit",
