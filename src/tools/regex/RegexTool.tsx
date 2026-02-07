@@ -396,39 +396,51 @@ export function RegexTool() {
               classNames={{ input: "font-mono text-xs" }}
               startContent={<span className="font-mono text-xs text-default-500">/</span>}
               endContent={
-                <Dropdown isOpen={isFlagsOpen} onOpenChange={setIsFlagsOpen}>
-                  <DropdownTrigger>
-                    <Button
-                      size="sm"
-                      variant="bordered"
-                      color="secondary"
-                      className="min-w-0 px-2 font-mono text-xs"
-                      endContent={<ChevronDown className="w-3.5 h-3.5" />}
+                <div className="flex items-center gap-1">
+                  <Dropdown isOpen={isFlagsOpen} onOpenChange={setIsFlagsOpen}>
+                    <DropdownTrigger>
+                      <Button
+                        size="sm"
+                        variant="bordered"
+                        color="secondary"
+                        className="min-w-0 px-2 font-mono text-xs"
+                        endContent={<ChevronDown className="w-3.5 h-3.5" />}
+                      >
+                        {flagsLabel || "flags"}
+                      </Button>
+                    </DropdownTrigger>
+                    <DropdownMenu
+                      aria-label={t("tools.regex.flags")}
+                      selectionMode="multiple"
+                      selectedKeys={new Set(flagsLabel.split(""))}
+                      closeOnSelect={false as any}
+                      onSelectionChange={(keys) => {
+                        const selected = Array.from(keys as Set<string>)
+                        setFlags(normalizeFlags(selected.join("")))
+                        window.setTimeout(() => setIsFlagsOpen(true), 0)
+                      }}
                     >
-                      {flagsLabel || "flags"}
-                    </Button>
-                  </DropdownTrigger>
-                  <DropdownMenu
-                    aria-label={t("tools.regex.flags")}
-                    selectionMode="multiple"
-                    selectedKeys={new Set(flagsLabel.split(""))}
-                    closeOnSelect={false as any}
-                    onSelectionChange={(keys) => {
-                      const selected = Array.from(keys as Set<string>)
-                      setFlags(normalizeFlags(selected.join("")))
-                      window.setTimeout(() => setIsFlagsOpen(true), 0)
-                    }}
+                      {FLAG_ORDER.map((f) => (
+                        <DropdownItem key={f} textValue={`${f} ${flagTooltips[f]}`}>
+                          <div className="flex flex-col gap-0.5">
+                            <div className="font-mono text-xs">{f}</div>
+                            <div className="text-[10px] text-default-500">{flagTooltips[f]}</div>
+                          </div>
+                        </DropdownItem>
+                      ))}
+                    </DropdownMenu>
+                  </Dropdown>
+
+                  <Button
+                    isIconOnly
+                    size="sm"
+                    variant="light"
+                    onPress={() => handleCopy(`/${pattern}/${flagsLabel}`)}
+                    title={t("tools.regex.copyPattern", "复制正则")}
                   >
-                    {FLAG_ORDER.map((f) => (
-                      <DropdownItem key={f} textValue={`${f} ${flagTooltips[f]}`}>
-                        <div className="flex flex-col gap-0.5">
-                          <div className="font-mono text-xs">{f}</div>
-                          <div className="text-[10px] text-default-500">{flagTooltips[f]}</div>
-                        </div>
-                      </DropdownItem>
-                    ))}
-                  </DropdownMenu>
-                </Dropdown>
+                    <Copy className="w-4 h-4" />
+                  </Button>
+                </div>
               }
             />
           </div>
@@ -493,9 +505,6 @@ export function RegexTool() {
               )}
             </div>
 
-            <Button isIconOnly variant="light" onPress={() => handleCopy(matchInfoJson)} title={t("tools.regex.copyMatches")}>
-              <Copy className="w-4 h-4" />
-            </Button>
             <Button isIconOnly variant="light" color="danger" onPress={handleClearAll} title={t("tools.regex.clear")}>
               <Trash2 className="w-4 h-4" />
             </Button>

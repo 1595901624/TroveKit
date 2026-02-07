@@ -529,6 +529,7 @@
       "matches": "匹配数",
       "replacements": "替换次数",
       "copy": "复制",
+      "copyPattern": "复制正则",
       "copyMatches": "复制匹配信息",
       "copyOutput": "复制输出",
       "export": "导出",

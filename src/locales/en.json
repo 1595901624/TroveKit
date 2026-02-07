@@ -529,6 +529,7 @@
       "matches": "Matches",
       "replacements": "Replacements",
       "copy": "Copy",
+      "copyPattern": "Copy regex",
       "copyMatches": "Copy match info",
       "copyOutput": "Copy output",
       "export": "Export",
