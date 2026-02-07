@@ -3,20 +3,18 @@ import {
   Button,
   Card,
   CardBody,
-  Checkbox,
   Dropdown,
   DropdownItem,
   DropdownMenu,
   DropdownTrigger,
   Input,
-  Tooltip,
   Tabs,
   Tab,
   Textarea,
   addToast,
 } from "@heroui/react"
 import Editor, { OnMount } from "@monaco-editor/react"
-import { AlertCircle, Copy, FileDown, Trash2, ListPlus } from "lucide-react"
+import { AlertCircle, Copy, FileDown, Trash2, ListPlus, ChevronDown } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { useTheme } from "../../components/theme-provider"
 import { getStoredItem, removeStoredItem, setStoredItem } from "../../lib/store"
@@ -72,6 +70,7 @@ export function RegexTool() {
 
   const [isPresetOpen, setIsPresetOpen] = useState(false)
   const [presetQuery, setPresetQuery] = useState("")
+  const [isFlagsOpen, setIsFlagsOpen] = useState(false)
 
   const editorRef = useRef<any>(null)
   const monacoRef = useRef<any>(null)
@@ -253,14 +252,6 @@ export function RegexTool() {
     monacoRef.current = monaco
   }
 
-  const setFlagEnabled = (flag: string, enabled: boolean) => {
-    setFlags((prev) => {
-      const cur = normalizeFlags(prev)
-      if (enabled) return normalizeFlags(cur + flag)
-      return normalizeFlags(cur.replaceAll(flag, ""))
-    })
-  }
-
   const handlePatternBlur = () => {
     const parsed = parseRegexLiteral(pattern)
     if (!parsed) return
@@ -403,25 +394,43 @@ export function RegexTool() {
               onValueChange={setPattern}
               onBlur={handlePatternBlur}
               classNames={{ input: "font-mono text-xs" }}
-            />
-
-            <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-2">
-              <span className="text-xs font-semibold text-default-500">{t("tools.regex.flags")}</span>
-              {FLAG_ORDER.map((f) => (
-                <Tooltip key={f} content={flagTooltips[f]} placement="top" delay={400}>
-                  <span className="inline-flex">
-                    <Checkbox
+              startContent={<span className="font-mono text-xs text-default-500">/</span>}
+              endContent={
+                <Dropdown isOpen={isFlagsOpen} onOpenChange={setIsFlagsOpen}>
+                  <DropdownTrigger>
+                    <Button
                       size="sm"
-                      isSelected={flagsLabel.includes(f)}
-                      onValueChange={(v) => setFlagEnabled(f, v)}
-                      classNames={{ label: "ml-1" }}
+                      variant="bordered"
+                      color="secondary"
+                      className="min-w-0 px-2 font-mono text-xs"
+                      endContent={<ChevronDown className="w-3.5 h-3.5" />}
                     >
-                      <span className="font-mono text-xs">{f}</span>
-                    </Checkbox>
-                  </span>
-                </Tooltip>
-              ))}
-            </div>
+                      {flagsLabel || "flags"}
+                    </Button>
+                  </DropdownTrigger>
+                  <DropdownMenu
+                    aria-label={t("tools.regex.flags")}
+                    selectionMode="multiple"
+                    selectedKeys={new Set(flagsLabel.split(""))}
+                    closeOnSelect={false as any}
+                    onSelectionChange={(keys) => {
+                      const selected = Array.from(keys as Set<string>)
+                      setFlags(normalizeFlags(selected.join("")))
+                      window.setTimeout(() => setIsFlagsOpen(true), 0)
+                    }}
+                  >
+                    {FLAG_ORDER.map((f) => (
+                      <DropdownItem key={f} textValue={`${f} ${flagTooltips[f]}`}>
+                        <div className="flex flex-col gap-0.5">
+                          <div className="font-mono text-xs">{f}</div>
+                          <div className="text-[10px] text-default-500">{flagTooltips[f]}</div>
+                        </div>
+                      </DropdownItem>
+                    ))}
+                  </DropdownMenu>
+                </Dropdown>
+              }
+            />
           </div>
 
           <div className="flex gap-2 md:ml-auto items-start">
