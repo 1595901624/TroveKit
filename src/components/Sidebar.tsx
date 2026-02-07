@@ -41,11 +41,9 @@ export function Sidebar({ activeTool, onToolChange }: SidebarProps) {
     { id: "formatters", label: t("nav.formatters"), icon: FileJson },
     { id: "generators", label: t("nav.generators"), icon: Wand2 },
     { id: "converter", label: t("nav.converter"), icon: ArrowRightLeft },
-  ] as const
-
-  const otherToolItems = [
     { id: "others", label: t("nav.others"), icon: MoreHorizontal },
   ] as const
+
 
   const logItems = [
     { id: "logManagement", label: t("nav.logManagement", "日志管理"), icon: FileText },
@@ -53,7 +51,6 @@ export function Sidebar({ activeTool, onToolChange }: SidebarProps) {
 
   const sections = [
     { id: "main", title: null, items: mainItems },
-    { id: "others", title: null, items: otherToolItems },
     { id: "log", title: null, items: logItems },
   ] as const
 
