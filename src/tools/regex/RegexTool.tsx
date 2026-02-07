@@ -134,6 +134,11 @@ export function RegexTool() {
     return null
   }, [i18n.language])
 
+  const isEnglish = useMemo(() => {
+    const lang = (i18n.language || "").toLowerCase()
+    return lang.startsWith("en")
+  }, [i18n.language])
+
   const presetGroups = useMemo(() => {
     const common = {
       id: "common",
@@ -553,7 +558,8 @@ export function RegexTool() {
           </div>
         </div>
 
-        <div className="lg:w-[420px] flex flex-col gap-3 min-h-[260px]">
+        {/* 如果语言是英文 lg:w-[530px], 其他语言 lg:w-[420px] */}
+        <div className={`${isEnglish ? 'lg:w-[530px]' : 'lg:w-[420px]'} flex flex-col gap-3 min-h-[260px]`}>
           <Tabs
             aria-label={t("tools.regex.panelsAria", "Regex panels")}
             color="primary"
