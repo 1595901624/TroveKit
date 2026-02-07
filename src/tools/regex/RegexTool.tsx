@@ -331,6 +331,10 @@ export function RegexTool() {
     )
   }, [pattern, flagsLabel, input, matches])
 
+  const matchResultsText = useMemo(() => {
+    return matches.map((m) => m.text).join("\n")
+  }, [matches])
+
   const handleExportMatches = async (format: "json" | "csv") => {
     if (format === "json") {
       await writeTextFile("regex-matches.json", "json", matchInfoJson)
@@ -573,6 +577,17 @@ export function RegexTool() {
                     <span className="text-[10px] text-default-400">{elapsedMs.toFixed(2)} ms</span>
                   </div>
                   <div className="flex gap-2">
+                    <Button size="sm" variant="flat" onPress={() => handleCopy(matchResultsText)}>
+                      {t("tools.regex.copyResultsOnly", "仅复制结果")}
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="flat"
+                      startContent={<FileDown className="w-4 h-4" />}
+                      onPress={() => writeTextFile("regex-results.txt", "txt", matchResultsText)}
+                    >
+                      {t("tools.regex.exportResultsOnly", "仅导出结果")}
+                    </Button>
                     <Button size="sm" variant="flat" onPress={() => handleCopy(matchInfoJson)}>
                       {t("tools.regex.copyMatches")}
                     </Button>
