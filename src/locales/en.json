@@ -473,7 +473,7 @@
     "regex": {
       "title": "Regex",
       "pattern": "Pattern",
-      "patternPlaceholder": "Enter pattern like (\\w+) or /foo.*/gi",
+      "patternPlaceholder": "Enter pattern like (\\w+)",
       "flags": "Flags",
       "presets": {
         "title": "Common Regex",

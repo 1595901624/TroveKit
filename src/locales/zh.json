@@ -473,7 +473,7 @@
     "regex": {
       "title": "正则",
       "pattern": "正则表达式",
-      "patternPlaceholder": "输入正则，如 (\\w+) 或 /foo.*/gi",
+      "patternPlaceholder": "输入正则，如 (\\w+) ",
       "flags": "标志",
       "presets": {
         "title": "常用正则",
