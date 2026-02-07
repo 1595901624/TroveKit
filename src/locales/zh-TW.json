@@ -21,6 +21,8 @@
     "formatters": "格式化工具",
     "generators": "生成器",
     "converter": "轉換器",
+    "others": "其他",
+    "regex": "正則",
     "logManagement": "日誌管理",
     "logs": "操作紀錄",
     "settings": "設定"
@@ -466,10 +468,88 @@
       "confirmDelete": "確定要刪除此日誌嗎？"
     },
     "regex": {
-      "panelsAria": "正則面板",
-      "exportMenu": "匯出匹配",
-      "groupsLabel": "分組",
-      "namedLabel": "命名分組"
+      "title": "正則",
+      "pattern": "Pattern",
+      "patternPlaceholder": "Enter pattern like (\\w+)",
+      "flags": "Flags",
+      "presets": {
+        "title": "Common Regex",
+        "searchPlaceholder": "Search presets...",
+        "noResults": "No results",
+        "groupCommon": "Common",
+        "groupCN": "China",
+        "groupHK": "Hong Kong",
+        "groupMO": "Macau",
+        "groupTW": "Taiwan",
+        "groupJP": "Japan",
+        "common": {
+          "number": "Match numbers",
+          "email": "Match email address",
+          "url": "Match URL",
+          "ipv4": "Match IPv4 address"
+        },
+        "cn": {
+          "mobile": "Mobile number",
+          "idcard": "ID card number",
+          "hanzi": "Han characters (Simplified+Traditional)"
+        },
+        "hk": {
+          "mobile": "Mobile number",
+          "hanzi": "Han characters (Simplified+Traditional)"
+        },
+        "mo": {
+          "mobile": "Mobile number"
+        },
+        "tw": {
+          "hanzi": "Han characters (Simplified+Traditional)"
+        },
+        "jp": {
+          "mobile": "Mobile number",
+          "kanji": "Kanji",
+          "hiragana": "Hiragana",
+          "katakana": "Katakana",
+          "hiraganaKatakana": "Hiragana + Katakana",
+          "allJapanese": "All Japanese chars (Hiragana+Katakana+Halfwidth)",
+          "japanesePlusKanji": "Japanese chars + Kanji"
+        }
+      },
+      "flagHelp": {
+        "g": "Global: find all matches",
+        "i": "Ignore case",
+        "m": "Multiline: ^/$ match line boundaries",
+        "s": "DotAll: . matches newlines",
+        "u": "Unicode mode",
+        "y": "Sticky: match from lastIndex"
+      },
+      "testString": "Test String",
+      "matchInfo": "Match Info",
+      "replaceWith": "Replace With",
+      "replacePlaceholder": "Replacement text (supports $1, $&, etc.)",
+      "replaceResult": "Replace Result",
+      "match": "Match",
+      "replace": "Replace",
+      "replaceAll": "Replace All",
+      "matches": "Matches",
+      "replacements": "Replacements",
+      "copy": "Copy",
+      "copyPattern": "Copy regex",
+      "copyMatches": "Copy match info",
+      "copyResultsOnly": "Copy results only",
+      "copyOutput": "Copy output",
+      "export": "Export",
+      "exportResultsOnly": "Export results only",
+      "exportMatchesJson": "Export match info (JSON)",
+      "exportMatchesCsv": "Export match info (CSV)",
+      "exportOutput": "Export output (TXT)",
+      "clear": "Clear",
+      "example": "Example",
+      "noMatches": "No matches",
+      "invalidRegex": "Invalid regular expression",
+      "panelsAria": "Regex panels",
+      "exportMenu": "Export matches",
+      "groupsLabel": "Groups",
+      "namedLabel": "Named groups",
+      "copiedToClipboard": "Copied to clipboard"
     }
   },
   "settings": {
