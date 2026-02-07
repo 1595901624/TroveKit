@@ -97,6 +97,12 @@ export function HashTool({ activeTab }: HashToolProps) {
         <div className={selectedKey === "sm4" ? "" : "hidden"}>
           <Sm4Tab />
         </div>
+        <div className={selectedKey === "des" ? "" : "hidden"}>
+          <DesTab />
+        </div>
+        <div className={selectedKey === "rc4" ? "" : "hidden"}>
+          <Rc4Tab />
+        </div>
         <div className={selectedKey === "chacha20" ? "" : "hidden"}>
           <ChaCha20Tab />
         </div>
