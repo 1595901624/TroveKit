@@ -482,6 +482,7 @@
         "groupCommon": "Common",
         "groupCN": "China",
         "groupHK": "Hong Kong",
+        "groupMO": "Macau",
         "groupTW": "Taiwan",
         "groupJP": "Japan",
         "common": {
@@ -496,12 +497,17 @@
           "hanzi": "Han characters (Simplified+Traditional)"
         },
         "hk": {
+          "mobile": "Mobile number",
           "hanzi": "Han characters (Simplified+Traditional)"
+        },
+        "mo": {
+          "mobile": "Mobile number"
         },
         "tw": {
           "hanzi": "Han characters (Simplified+Traditional)"
         },
         "jp": {
+          "mobile": "Mobile number",
           "kanji": "Kanji",
           "hiragana": "Hiragana",
           "katakana": "Katakana",

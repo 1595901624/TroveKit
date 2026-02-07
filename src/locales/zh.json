@@ -480,9 +480,10 @@
         "searchPlaceholder": "搜索常用正则...",
         "noResults": "无匹配结果",
         "groupCommon": "常用",
-        "groupCN": "中国",
-        "groupHK": "香港",
-        "groupTW": "台湾",
+        "groupCN": "中国大陆",
+        "groupHK": "中国香港",
+        "groupMO": "中国澳门",
+        "groupTW": "中国台湾",
         "groupJP": "日本",
         "common": {
           "number": "匹配数字",
@@ -496,12 +497,17 @@
           "hanzi": "汉字(简体+繁体)"
         },
         "hk": {
+          "mobile": "手机号",
           "hanzi": "汉字(简体+繁体)"
+        },
+        "mo": {
+          "mobile": "手机号"
         },
         "tw": {
           "hanzi": "汉字(简体+繁体)"
         },
         "jp": {
+          "mobile": "手机号",
           "kanji": "汉字",
           "hiragana": "平假名",
           "katakana": "片假名",

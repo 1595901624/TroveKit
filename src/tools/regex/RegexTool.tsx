@@ -44,7 +44,7 @@ interface RegexToolState {
 }
 
 const STORAGE_KEY = "regex-tool-state" // 本地存储键名，用于保存工具状态
-const FLAG_ORDER = ["g", "i", "m", "s", "u", "y"] as const // 正则表达式标志的显示顺序
+const FLAG_ORDER = ["g", "i", "m", "s", "u"] as const // 正则表达式标志的显示顺序
 /**
  * RegexTool 组件 - 正则表达式测试和替换工具
  * 提供正则表达式模式匹配、标志设置、文本替换等功能
@@ -148,7 +148,7 @@ export function RegexTool() {
 
     const cn = {
       id: "cn",
-      title: t("tools.regex.presets.groupCN", "中国"),
+      title: t("tools.regex.presets.groupCN", "中国大陆"),
       items: [
         { id: "cn-mobile", label: t("tools.regex.presets.cn.mobile", "手机号"), pattern: "1[3-9]\\d{9}" },
         { id: "cn-id", label: t("tools.regex.presets.cn.idcard", "身份证号"), pattern: "\\d{17}[0-9Xx]|\\d{15}" },
@@ -158,15 +158,24 @@ export function RegexTool() {
 
     const hk = {
       id: "hk",
-      title: t("tools.regex.presets.groupHK", "香港"),
+      title: t("tools.regex.presets.groupHK", "中国香港"),
       items: [
+        { id: "hk-mobile", label: t("tools.regex.presets.hk.mobile", "手机号"), pattern: "[569]\\d{7}" },
         { id: "hk-hanzi", label: t("tools.regex.presets.hk.hanzi", "汉字(简体+繁体)"), pattern: "[\\u4e00-\\u9fff]+" },
+      ],
+    }
+
+    const mo = {
+      id: "mo",
+      title: t("tools.regex.presets.groupMO", "中国澳门"),
+      items: [
+        { id: "mo-mobile", label: t("tools.regex.presets.mo.mobile", "手机号"), pattern: "[569]\\d{7}" },
       ],
     }
 
     const tw = {
       id: "tw",
-      title: t("tools.regex.presets.groupTW", "台湾"),
+      title: t("tools.regex.presets.groupTW", "中国台湾"),
       items: [
         { id: "tw-hanzi", label: t("tools.regex.presets.tw.hanzi", "汉字(简体+繁体)"), pattern: "[\\u4e00-\\u9fff]+" },
       ],
@@ -176,6 +185,7 @@ export function RegexTool() {
       id: "jp",
       title: t("tools.regex.presets.groupJP", "日本"),
       items: [
+        { id: "jp-mobile", label: t("tools.regex.presets.jp.mobile", "手机号"), pattern: "(?:070|080|090|050|020)\\d{8}" },
         { id: "jp-kanji", label: t("tools.regex.presets.jp.kanji", "汉字"), pattern: "[\\u4e00-\\u9fff]+" },
         { id: "jp-hira", label: t("tools.regex.presets.jp.hiragana", "平假名"), pattern: "[\\u3040-\\u309F]+" },
         { id: "jp-kata", label: t("tools.regex.presets.jp.katakana", "片假名"), pattern: "[\\u30A0-\\u30FF]+" },
@@ -185,7 +195,7 @@ export function RegexTool() {
       ],
     }
 
-    const regionGroups = [cn, hk, tw, jp]
+    const regionGroups = [cn, hk, mo, tw, jp]
     const preferred = preferredRegion ? regionGroups.find((g) => g.id === preferredRegion) : undefined
     const rest = regionGroups.filter((g) => g.id !== preferred?.id)
     return [common, ...(preferred ? [preferred] : []), ...rest]
