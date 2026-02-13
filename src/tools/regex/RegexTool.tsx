@@ -429,9 +429,9 @@ export function RegexTool() {
 
   return (
     <div className="flex flex-col h-full gap-4">
-      <div className="flex flex-col gap-3">
-        <div className="flex flex-col md:flex-row gap-3 items-stretch md:items-start">
-          <div className="flex-1 min-w-0">
+      <div className="flex-1 min-h-0 flex flex-col lg:flex-row gap-4">
+        <div className="flex-1 min-h-0 flex flex-col gap-4 min-w-0">
+          <div className="flex flex-col gap-3">
             <Input
               label={t("tools.regex.pattern")}
               placeholder={t("tools.regex.patternPlaceholder")}
@@ -490,109 +490,106 @@ export function RegexTool() {
             />
           </div>
 
-        </div>
-      </div>
-
-      <div className="flex-1 min-h-0 flex flex-col lg:flex-row gap-4">
-        <div className="flex-1 flex flex-col gap-2 min-w-0 min-h-[260px]">
-          <div className="flex justify-between items-center px-1">
-            <span className="text-sm font-medium text-default-600">{t("tools.regex.testString")}</span>
-            <div className="flex items-center gap-1">
-              <Button isIconOnly size="sm" variant="light" onPress={() => handleCopy(input)} title={t("tools.regex.copy")}>
-                <Copy className="w-3.5 h-3.5" />
-              </Button>
-              <Button
-                isIconOnly
-                size="sm"
-                variant="light"
-                color="danger"
-                onPress={handleClearAll}
-                title={t("tools.regex.clear")}
-              >
-                <Trash2 className="w-3.5 h-3.5" />
-              </Button>
-              <div className="relative" ref={presetPopoverRef}>
-                <Button
-                  size="sm"
-                  variant="flat"
-                  color="primary"
-                  startContent={<ListPlus className="w-4 h-4" />}
-                  onPress={() => {
-                    setIsPresetOpen((v) => !v)
-                    setPresetQuery("")
-                  }}
-                >
-                  {t("tools.regex.presets.title", "常用正则")}
+          <div className="flex-1 min-h-0 flex flex-col gap-2 min-w-0">
+            <div className="flex justify-between items-center px-1">
+              <span className="text-sm font-medium text-default-600">{t("tools.regex.testString")}</span>
+              <div className="flex items-center gap-1">
+                <Button isIconOnly size="sm" variant="light" onPress={() => handleCopy(input)} title={t("tools.regex.copy")}>
+                  <Copy className="w-3.5 h-3.5" />
                 </Button>
+                <Button
+                  isIconOnly
+                  size="sm"
+                  variant="light"
+                  color="danger"
+                  onPress={handleClearAll}
+                  title={t("tools.regex.clear")}
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                </Button>
+                <div className="relative" ref={presetPopoverRef}>
+                  <Button
+                    size="sm"
+                    variant="flat"
+                    color="primary"
+                    startContent={<ListPlus className="w-4 h-4" />}
+                    onPress={() => {
+                      setIsPresetOpen((v) => !v)
+                      setPresetQuery("")
+                    }}
+                  >
+                    {t("tools.regex.presets.title", "常用正则")}
+                  </Button>
 
-                {isPresetOpen && (
-                  <div className="absolute right-0 mt-2 w-[360px] max-w-[calc(100vw-2rem)] z-50 border border-divider rounded-xl bg-background shadow-2xl overflow-hidden">
-                    <div className="p-2 border-b border-divider">
-                      <Input
-                        size="sm"
-                        placeholder={t("tools.regex.presets.searchPlaceholder", "搜索常用正则...")}
-                        value={presetQuery}
-                        onValueChange={setPresetQuery}
-                        classNames={{ input: "text-xs" }}
-                      />
-                    </div>
-                    <div className="max-h-[340px] overflow-auto p-2 space-y-2">
-                      {presetItemsFiltered.length === 0 ? (
-                        <div className="p-6 text-center text-default-400 text-sm">
-                          {t("tools.regex.presets.noResults", "无匹配结果")}
-                        </div>
-                      ) : (
-                        presetItemsFiltered.map((group) => (
-                          <div key={group.id} className="space-y-1">
-                            <div className="px-2 pt-2 pb-1 text-[10px] font-semibold text-default-400 uppercase tracking-wider">
-                              {group.title}
-                            </div>
-                            {group.items.map((it) => (
-                              <button
-                                key={it.id}
-                                className="w-full text-left px-3 py-2 rounded-lg hover:bg-default-100 transition-colors"
-                                onClick={() => {
-                                  setPattern(it.pattern)
-                                  setPanelTab("matchInfo")
-                                  setIsPresetOpen(false)
-                                }}
-                              >
-                                <div className="text-xs font-medium text-foreground">{it.label}</div>
-                                <div className="mt-0.5 font-mono text-[11px] text-default-600 whitespace-pre-wrap break-words">
-                                  {it.pattern}
-                                </div>
-                              </button>
-                            ))}
+                  {isPresetOpen && (
+                    <div className="absolute right-0 mt-2 w-[360px] max-w-[calc(100vw-2rem)] z-50 border border-divider rounded-xl bg-background shadow-2xl overflow-hidden">
+                      <div className="p-2 border-b border-divider">
+                        <Input
+                          size="sm"
+                          placeholder={t("tools.regex.presets.searchPlaceholder", "搜索常用正则...")}
+                          value={presetQuery}
+                          onValueChange={setPresetQuery}
+                          classNames={{ input: "text-xs" }}
+                        />
+                      </div>
+                      <div className="max-h-[340px] overflow-auto p-2 space-y-2">
+                        {presetItemsFiltered.length === 0 ? (
+                          <div className="p-6 text-center text-default-400 text-sm">
+                            {t("tools.regex.presets.noResults", "无匹配结果")}
                           </div>
-                        ))
-                      )}
+                        ) : (
+                          presetItemsFiltered.map((group) => (
+                            <div key={group.id} className="space-y-1">
+                              <div className="px-2 pt-2 pb-1 text-[10px] font-semibold text-default-400 uppercase tracking-wider">
+                                {group.title}
+                              </div>
+                              {group.items.map((it) => (
+                                <button
+                                  key={it.id}
+                                  className="w-full text-left px-3 py-2 rounded-lg hover:bg-default-100 transition-colors"
+                                  onClick={() => {
+                                    setPattern(it.pattern)
+                                    setPanelTab("matchInfo")
+                                    setIsPresetOpen(false)
+                                  }}
+                                >
+                                  <div className="text-xs font-medium text-foreground">{it.label}</div>
+                                  <div className="mt-0.5 font-mono text-[11px] text-default-600 whitespace-pre-wrap break-words">
+                                    {it.pattern}
+                                  </div>
+                                </button>
+                              ))}
+                            </div>
+                          ))
+                        )}
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
+                </div>
               </div>
             </div>
-          </div>
-          <div className="flex-1 border border-default-200 rounded-xl overflow-hidden shadow-sm bg-content1">
-            <Editor
-              height="100%"
-              defaultLanguage="plaintext"
-              value={input}
-              onChange={(value) => setInput(value || "")}
-              onMount={handleEditorDidMount}
-              theme={theme === "dark" ? "vs-dark" : "light"}
-              options={{
-                minimap: { enabled: false },
-                fontSize: 13,
-                wordWrap: "on",
-                scrollBeyondLastLine: false,
-                padding: { top: 12, bottom: 12 },
-              }}
-            />
+            <div className="flex-1 min-h-0 border border-default-200 rounded-xl overflow-hidden shadow-sm bg-content1">
+              <Editor
+                height="100%"
+                defaultLanguage="plaintext"
+                value={input}
+                onChange={(value) => setInput(value || "")}
+                onMount={handleEditorDidMount}
+                theme={theme === "dark" ? "vs-dark" : "light"}
+                options={{
+                  minimap: { enabled: false },
+                  fontSize: 13,
+                  wordWrap: "on",
+                  scrollBeyondLastLine: false,
+                  padding: { top: 12, bottom: 12 },
+                }}
+              />
+            </div>
           </div>
         </div>
 
         {/* 如果语言是英文 lg:w-[530px], 其他语言 lg:w-[420px] */}
-        <div className={`${isEnglish ? 'lg:w-[530px]' : 'lg:w-[420px]'} flex flex-col gap-3 min-h-[260px]`}>
+        <div className={`${isEnglish ? "lg:w-[530px]" : "lg:w-[420px]"} w-full flex flex-col gap-3 min-h-0 min-w-0`}>
           <Tabs
             aria-label={t("tools.regex.panelsAria", "Regex panels")}
             color="primary"
