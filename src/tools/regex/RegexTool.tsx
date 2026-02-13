@@ -81,21 +81,21 @@ export function RegexTool() {
 
   useEffect(() => {
     let alive = true
-    ;(async () => {
-      const raw = await getStoredItem(STORAGE_KEY)
-      if (!alive || !raw) return
-      try {
-        const parsed = JSON.parse(raw) as Partial<RegexToolState>
-        if (typeof parsed.pattern === "string") setPattern(parsed.pattern)
-        if (typeof parsed.flags === "string") setFlags(normalizeFlags(parsed.flags))
-        if (typeof parsed.input === "string") setInput(parsed.input)
-        if (typeof parsed.replacement === "string") setReplacement(parsed.replacement)
-        if (typeof parsed.extractExpr === "string") setExtractExpr(parsed.extractExpr)
-        if (parsed.panelTab === "matchInfo" || parsed.panelTab === "replaceResult") setPanelTab(parsed.panelTab)
-      } catch (e) {
-        console.warn("Failed to restore regex tool state", e)
-      }
-    })()
+      ; (async () => {
+        const raw = await getStoredItem(STORAGE_KEY)
+        if (!alive || !raw) return
+        try {
+          const parsed = JSON.parse(raw) as Partial<RegexToolState>
+          if (typeof parsed.pattern === "string") setPattern(parsed.pattern)
+          if (typeof parsed.flags === "string") setFlags(normalizeFlags(parsed.flags))
+          if (typeof parsed.input === "string") setInput(parsed.input)
+          if (typeof parsed.replacement === "string") setReplacement(parsed.replacement)
+          if (typeof parsed.extractExpr === "string") setExtractExpr(parsed.extractExpr)
+          if (parsed.panelTab === "matchInfo" || parsed.panelTab === "replaceResult") setPanelTab(parsed.panelTab)
+        } catch (e) {
+          console.warn("Failed to restore regex tool state", e)
+        }
+      })()
     return () => {
       alive = false
     }
@@ -655,6 +655,40 @@ export function RegexTool() {
                   </div>
                 </CardBody>
               </Card>
+              <div className="flex-1 min-h-0 border border-default-200 rounded-xl bg-content1 overflow-hidden">
+                <div className="h-full overflow-auto p-2 space-y-1">
+                  {matches.length === 0 ? (
+                    <div className="p-6 text-center text-default-400 text-sm">{t("tools.regex.noMatches")}</div>
+                  ) : (
+                    matches.map((m) => (
+                      <button
+                        key={`${m.matchIndex}-${m.start}-${m.end}`}
+                        className={`w-full text-left px-3 py-2 rounded-lg transition-colors ${selectedMatchIndex === m.matchIndex ? "bg-primary/10 text-primary" : "hover:bg-default-100"
+                          }`}
+                        onClick={() => jumpToMatch(m.matchIndex)}
+                      >
+                        <div className="flex items-center justify-between gap-3">
+                          <span className="text-xs font-semibold">#{m.matchIndex}</span>
+                          <span className="text-[10px] text-default-400">
+                            {m.start}–{m.end}
+                          </span>
+                        </div>
+                        <div className="mt-1 font-mono text-[11px] whitespace-pre-wrap break-words text-default-700">
+                          {m.text.length > 120 ? `${m.text.slice(0, 120)}…` : m.text}
+                        </div>
+                        {(m.groups.length > 0 || (m.namedGroups && Object.keys(m.namedGroups).length > 0)) && (
+                          <div className="mt-1 text-[10px] text-default-500">
+                            {m.groups.length > 0 && <div>{t("tools.regex.groupsLabel", "groups")}: {JSON.stringify(m.groups)}</div>}
+                            {m.namedGroups && Object.keys(m.namedGroups).length > 0 && (
+                              <div>{t("tools.regex.namedLabel", "named groups")}: {JSON.stringify(m.namedGroups)}</div>
+                            )}
+                          </div>
+                        )}
+                      </button>
+                    ))
+                  )}
+                </div>
+              </div>
 
               <Card shadow="sm" className="border border-default-200">
                 <CardBody className="flex flex-col gap-2">
@@ -700,42 +734,6 @@ export function RegexTool() {
                   />
                 </CardBody>
               </Card>
-
-              <div className="flex-1 min-h-0 border border-default-200 rounded-xl bg-content1 overflow-hidden">
-                <div className="h-full overflow-auto p-2 space-y-1">
-                  {matches.length === 0 ? (
-                    <div className="p-6 text-center text-default-400 text-sm">{t("tools.regex.noMatches")}</div>
-                  ) : (
-                    matches.map((m) => (
-                      <button
-                        key={`${m.matchIndex}-${m.start}-${m.end}`}
-                        className={`w-full text-left px-3 py-2 rounded-lg transition-colors ${
-                          selectedMatchIndex === m.matchIndex ? "bg-primary/10 text-primary" : "hover:bg-default-100"
-                        }`}
-                        onClick={() => jumpToMatch(m.matchIndex)}
-                      >
-                        <div className="flex items-center justify-between gap-3">
-                          <span className="text-xs font-semibold">#{m.matchIndex}</span>
-                          <span className="text-[10px] text-default-400">
-                            {m.start}–{m.end}
-                          </span>
-                        </div>
-                        <div className="mt-1 font-mono text-[11px] whitespace-pre-wrap break-words text-default-700">
-                          {m.text.length > 120 ? `${m.text.slice(0, 120)}…` : m.text}
-                        </div>
-                        {(m.groups.length > 0 || (m.namedGroups && Object.keys(m.namedGroups).length > 0)) && (
-                          <div className="mt-1 text-[10px] text-default-500">
-                            {m.groups.length > 0 && <div>{t("tools.regex.groupsLabel", "groups")}: {JSON.stringify(m.groups)}</div>}
-                            {m.namedGroups && Object.keys(m.namedGroups).length > 0 && (
-                              <div>{t("tools.regex.namedLabel", "named groups")}: {JSON.stringify(m.namedGroups)}</div>
-                            )}
-                          </div>
-                        )}
-                      </button>
-                    ))
-                  )}
-                </div>
-              </div>
             </div>
           )}
 
