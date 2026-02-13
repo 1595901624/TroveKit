@@ -549,10 +549,6 @@ export function RegexTool() {
                 </div>
               )}
             </div>
-
-            <Button isIconOnly variant="light" color="danger" onPress={handleClearAll} title={t("tools.regex.clear")}>
-              <Trash2 className="w-4 h-4" />
-            </Button>
           </div>
         </div>
       </div>
@@ -561,9 +557,21 @@ export function RegexTool() {
         <div className="flex-1 flex flex-col gap-2 min-w-0 min-h-[260px]">
           <div className="flex justify-between items-center px-1">
             <span className="text-sm font-medium text-default-600">{t("tools.regex.testString")}</span>
-            <Button isIconOnly size="sm" variant="light" onPress={() => handleCopy(input)} title={t("tools.regex.copy")}>
-              <Copy className="w-3.5 h-3.5" />
-            </Button>
+            <div className="flex items-center gap-1">
+              <Button isIconOnly size="sm" variant="light" onPress={() => handleCopy(input)} title={t("tools.regex.copy")}>
+                <Copy className="w-3.5 h-3.5" />
+              </Button>
+              <Button
+                isIconOnly
+                size="sm"
+                variant="light"
+                color="danger"
+                onPress={handleClearAll}
+                title={t("tools.regex.clear")}
+              >
+                <Trash2 className="w-3.5 h-3.5" />
+              </Button>
+            </div>
           </div>
           <div className="flex-1 border border-default-200 rounded-xl overflow-hidden shadow-sm bg-content1">
             <Editor
