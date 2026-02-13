@@ -490,66 +490,6 @@ export function RegexTool() {
             />
           </div>
 
-          <div className="flex gap-2 md:ml-auto items-start">
-            <div className="relative" ref={presetPopoverRef}>
-              <Button
-                variant="flat"
-                color="primary"
-                startContent={<ListPlus className="w-4 h-4" />}
-                onPress={() => {
-                  setIsPresetOpen((v) => !v)
-                  setPresetQuery("")
-                }}
-              >
-                {t("tools.regex.presets.title", "常用正则")}
-              </Button>
-
-              {isPresetOpen && (
-                <div className="absolute right-0 mt-2 w-[360px] max-w-[calc(100vw-2rem)] z-50 border border-divider rounded-xl bg-background shadow-2xl overflow-hidden">
-                  <div className="p-2 border-b border-divider">
-                    <Input
-                      size="sm"
-                      placeholder={t("tools.regex.presets.searchPlaceholder", "搜索常用正则...")}
-                      value={presetQuery}
-                      onValueChange={setPresetQuery}
-                      classNames={{ input: "text-xs" }}
-                    />
-                  </div>
-                  <div className="max-h-[340px] overflow-auto p-2 space-y-2">
-                    {presetItemsFiltered.length === 0 ? (
-                      <div className="p-6 text-center text-default-400 text-sm">
-                        {t("tools.regex.presets.noResults", "无匹配结果")}
-                      </div>
-                    ) : (
-                      presetItemsFiltered.map((group) => (
-                        <div key={group.id} className="space-y-1">
-                          <div className="px-2 pt-2 pb-1 text-[10px] font-semibold text-default-400 uppercase tracking-wider">
-                            {group.title}
-                          </div>
-                          {group.items.map((it) => (
-                            <button
-                              key={it.id}
-                              className="w-full text-left px-3 py-2 rounded-lg hover:bg-default-100 transition-colors"
-                              onClick={() => {
-                                setPattern(it.pattern)
-                                setPanelTab("matchInfo")
-                                setIsPresetOpen(false)
-                              }}
-                            >
-                              <div className="text-xs font-medium text-foreground">{it.label}</div>
-                              <div className="mt-0.5 font-mono text-[11px] text-default-600 whitespace-pre-wrap break-words">
-                                {it.pattern}
-                              </div>
-                            </button>
-                          ))}
-                        </div>
-                      ))
-                    )}
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
         </div>
       </div>
 
@@ -571,6 +511,65 @@ export function RegexTool() {
               >
                 <Trash2 className="w-3.5 h-3.5" />
               </Button>
+              <div className="relative" ref={presetPopoverRef}>
+                <Button
+                  size="sm"
+                  variant="flat"
+                  color="primary"
+                  startContent={<ListPlus className="w-4 h-4" />}
+                  onPress={() => {
+                    setIsPresetOpen((v) => !v)
+                    setPresetQuery("")
+                  }}
+                >
+                  {t("tools.regex.presets.title", "常用正则")}
+                </Button>
+
+                {isPresetOpen && (
+                  <div className="absolute right-0 mt-2 w-[360px] max-w-[calc(100vw-2rem)] z-50 border border-divider rounded-xl bg-background shadow-2xl overflow-hidden">
+                    <div className="p-2 border-b border-divider">
+                      <Input
+                        size="sm"
+                        placeholder={t("tools.regex.presets.searchPlaceholder", "搜索常用正则...")}
+                        value={presetQuery}
+                        onValueChange={setPresetQuery}
+                        classNames={{ input: "text-xs" }}
+                      />
+                    </div>
+                    <div className="max-h-[340px] overflow-auto p-2 space-y-2">
+                      {presetItemsFiltered.length === 0 ? (
+                        <div className="p-6 text-center text-default-400 text-sm">
+                          {t("tools.regex.presets.noResults", "无匹配结果")}
+                        </div>
+                      ) : (
+                        presetItemsFiltered.map((group) => (
+                          <div key={group.id} className="space-y-1">
+                            <div className="px-2 pt-2 pb-1 text-[10px] font-semibold text-default-400 uppercase tracking-wider">
+                              {group.title}
+                            </div>
+                            {group.items.map((it) => (
+                              <button
+                                key={it.id}
+                                className="w-full text-left px-3 py-2 rounded-lg hover:bg-default-100 transition-colors"
+                                onClick={() => {
+                                  setPattern(it.pattern)
+                                  setPanelTab("matchInfo")
+                                  setIsPresetOpen(false)
+                                }}
+                              >
+                                <div className="text-xs font-medium text-foreground">{it.label}</div>
+                                <div className="mt-0.5 font-mono text-[11px] text-default-600 whitespace-pre-wrap break-words">
+                                  {it.pattern}
+                                </div>
+                              </button>
+                            ))}
+                          </div>
+                        ))
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
           <div className="flex-1 border border-default-200 rounded-xl overflow-hidden shadow-sm bg-content1">
