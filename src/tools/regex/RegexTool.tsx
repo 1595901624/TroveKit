@@ -33,7 +33,7 @@ import {
 } from "./regex"
 
 // 类型定义
-type PanelTab = "matchInfo" | "replaceResult"
+type PanelTab = "matchInfo" | "extract" | "replaceResult"
 
 interface RegexToolState {
   pattern: string
@@ -91,7 +91,7 @@ export function RegexTool() {
           if (typeof parsed.input === "string") setInput(parsed.input)
           if (typeof parsed.replacement === "string") setReplacement(parsed.replacement)
           if (typeof parsed.extractExpr === "string") setExtractExpr(parsed.extractExpr)
-          if (parsed.panelTab === "matchInfo" || parsed.panelTab === "replaceResult") setPanelTab(parsed.panelTab)
+          if (parsed.panelTab === "matchInfo" || parsed.panelTab === "extract" || parsed.panelTab === "replaceResult") setPanelTab(parsed.panelTab)
         } catch (e) {
           console.warn("Failed to restore regex tool state", e)
         }
@@ -598,6 +598,7 @@ export function RegexTool() {
             classNames={{ tabList: "text-sm w-full", tab: "text-xs" }}
           >
             <Tab key="matchInfo" title={t("tools.regex.matchInfo")} />
+            <Tab key="extract" title={t("tools.regex.extractExpr", "分组提取")} />
             <Tab key="replaceResult" title={t("tools.regex.replaceResult")} />
           </Tabs>
 
@@ -689,6 +690,21 @@ export function RegexTool() {
                   )}
                 </div>
               </div>
+            </div>
+          )}
+
+          {panelTab === "extract" && (
+            <div className="flex-1 min-h-0 flex flex-col gap-3">
+              {regexError && (
+                <Card className="border-danger bg-danger-50 dark:bg-danger-900/20" shadow="sm">
+                  <CardBody className="flex flex-row items-center gap-3 py-2">
+                    <AlertCircle className="w-5 h-5 text-danger" />
+                    <p className="text-danger font-medium text-xs">
+                      {t("tools.regex.invalidRegex")}: {regexError}
+                    </p>
+                  </CardBody>
+                </Card>
+              )}
 
               <Card shadow="sm" className="border border-default-200">
                 <CardBody className="flex flex-col gap-2">
@@ -730,7 +746,7 @@ export function RegexTool() {
                     isReadOnly
                     minRows={4}
                     placeholder={t("tools.regex.extractEmpty", "输入表达式后，这里会显示提取结果")}
-                    classNames={{ input: "font-mono text-xs", inputWrapper: "bg-default-50/50" }}
+                    classNames={{ input: "font-mono text-xs", inputWrapper: "bg-default-50/50"}}
                   />
                 </CardBody>
               </Card>
