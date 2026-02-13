@@ -552,6 +552,13 @@
       "exportMenu": "一致をエクスポート",
       "groupsLabel": "グループ",
       "namedLabel": "名前付きグループ",
+      "extractExpr": "グループ抽出",
+      "extractExprPlaceholder": "例: $0 / $1 / ${name}",
+      "extractExprHelp": "対応: $0（全体一致）, $1…$99, ${name} / $<name>（名前付きグループ）, $$（文字の$）",
+      "extractLines": "行数",
+      "copyExtracted": "抽出結果をコピー",
+      "exportExtracted": "抽出結果をエクスポート",
+      "extractEmpty": "式を入力すると、ここに抽出結果が表示されます",
       "copiedToClipboard": "クリップボードにコピーされました"
     }
   },

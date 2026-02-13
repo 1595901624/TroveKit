@@ -552,6 +552,13 @@
       "exportMenu": "匯出匹配",
       "groupsLabel": "分組",
       "namedLabel": "命名分組",
+      "extractExpr": "分組擷取",
+      "extractExprPlaceholder": "例如 $0 / $1 / ${name}",
+      "extractExprHelp": "支援 $0（完整匹配）、$1…$99、${name} / $<name>（命名分組）、$$（字面 $）",
+      "extractLines": "行數",
+      "copyExtracted": "複製擷取結果",
+      "exportExtracted": "匯出擷取結果",
+      "extractEmpty": "輸入表達式後，這裡會顯示擷取結果",
       "copiedToClipboard": "已複製到剪貼簿"
     }
   },

@@ -552,6 +552,13 @@
       "exportMenu": "Export matches",
       "groupsLabel": "Groups",
       "namedLabel": "Named groups",
+      "extractExpr": "Group Extract",
+      "extractExprPlaceholder": "e.g. $0 / $1 / ${name}",
+      "extractExprHelp": "Supports $0 (full match), $1…$99, ${name} / $<name> (named groups), $$ (literal $)",
+      "extractLines": "Lines",
+      "copyExtracted": "Copy extracted",
+      "exportExtracted": "Export extracted",
+      "extractEmpty": "Enter an expression to see extracted results here",
       "copiedToClipboard": "Copied to clipboard"
     }
   },

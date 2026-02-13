@@ -40,6 +40,7 @@ interface RegexToolState {
   flags: string
   input: string
   replacement: string
+  extractExpr: string
   panelTab: PanelTab
 }
 
@@ -58,6 +59,7 @@ export function RegexTool() {
   const [flags, setFlags] = useState("g")
   const [input, setInput] = useState("")
   const [replacement, setReplacement] = useState("")
+  const [extractExpr, setExtractExpr] = useState("$0")
   const [panelTab, setPanelTab] = useState<PanelTab>("matchInfo")
 
   const [regexError, setRegexError] = useState<string | null>(null)
@@ -88,6 +90,7 @@ export function RegexTool() {
         if (typeof parsed.flags === "string") setFlags(normalizeFlags(parsed.flags))
         if (typeof parsed.input === "string") setInput(parsed.input)
         if (typeof parsed.replacement === "string") setReplacement(parsed.replacement)
+        if (typeof parsed.extractExpr === "string") setExtractExpr(parsed.extractExpr)
         if (parsed.panelTab === "matchInfo" || parsed.panelTab === "replaceResult") setPanelTab(parsed.panelTab)
       } catch (e) {
         console.warn("Failed to restore regex tool state", e)
@@ -104,13 +107,14 @@ export function RegexTool() {
       flags,
       input,
       replacement,
+      extractExpr,
       panelTab,
     }
     const id = window.setTimeout(() => {
       setStoredItem(STORAGE_KEY, JSON.stringify(state)).catch((e) => console.error(e))
     }, 300)
     return () => clearTimeout(id)
-  }, [pattern, flags, input, replacement, panelTab]) // 延迟保存工具状态到本地存储
+  }, [pattern, flags, input, replacement, extractExpr, panelTab]) // 延迟保存工具状态到本地存储
 
   const flagsLabel = useMemo(() => normalizeFlags(flags), [flags])
   const flagTooltips = useMemo<Record<string, string>>(
@@ -350,6 +354,27 @@ export function RegexTool() {
     return matches.map((m) => m.text).join("\n")
   }, [matches])
 
+  const extractedResultsText = useMemo(() => {
+    const expr = extractExpr.trim()
+    if (!expr) return ""
+    const applyExpr = (template: string, m: RegexMatch) => {
+      return template.replace(/\$\$|\$(\d+)|\$\{([A-Za-z_][\w]*)\}|\$<([^>]+)>/g, (token, index, braced, angled) => {
+        if (token === "$$") return "$"
+        if (typeof index === "string" && index.length > 0) {
+          const n = Number.parseInt(index, 10)
+          if (Number.isNaN(n)) return ""
+          if (n === 0) return m.text ?? ""
+          const v = m.groups?.[n - 1]
+          return v ?? ""
+        }
+        const name = (braced ?? angled) as string | undefined
+        if (!name) return ""
+        return m.namedGroups?.[name] ?? ""
+      })
+    }
+    return matches.map((m) => applyExpr(expr, m)).join("\n")
+  }, [matches, extractExpr])
+
   const handleExportMatches = async (format: "json" | "csv") => {
     if (format === "json") {
       await writeTextFile("regex-matches.json", "json", matchInfoJson)
@@ -363,6 +388,7 @@ export function RegexTool() {
     setFlags("g")
     setInput("")
     setReplacement("")
+    setExtractExpr("$0")
     setOutput("")
     setReplaceCount(0)
     setSelectedMatchIndex(null)
@@ -623,6 +649,51 @@ export function RegexTool() {
                       </DropdownMenu>
                     </Dropdown>
                   </div>
+                </CardBody>
+              </Card>
+
+              <Card shadow="sm" className="border border-default-200">
+                <CardBody className="flex flex-col gap-2">
+                  <Input
+                    size="sm"
+                    label={t("tools.regex.extractExpr", "分组提取")}
+                    placeholder={t("tools.regex.extractExprPlaceholder", "如 $0 / $1 / ${name}")}
+                    value={extractExpr}
+                    onValueChange={setExtractExpr}
+                    description={t(
+                      "tools.regex.extractExprHelp",
+                      "支持 $0（整段匹配）、$1…$99、${name} / $<name>（命名分组）、$$（字面 $）"
+                    )}
+                    classNames={{ input: "font-mono text-xs", description: "text-[10px]" }}
+                  />
+
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-[10px] text-default-400">
+                      {t("tools.regex.extractLines", "行数")}: {matches.length}
+                    </span>
+                    <div className="flex gap-2">
+                      <Button size="sm" variant="flat" onPress={() => handleCopy(extractedResultsText)} isDisabled={!extractedResultsText}>
+                        {t("tools.regex.copyExtracted", "复制提取结果")}
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="flat"
+                        startContent={<FileDown className="w-4 h-4" />}
+                        onPress={() => writeTextFile("regex-extract.txt", "txt", extractedResultsText)}
+                        isDisabled={!extractedResultsText}
+                      >
+                        {t("tools.regex.exportExtracted", "导出提取结果")}
+                      </Button>
+                    </div>
+                  </div>
+
+                  <Textarea
+                    value={extractedResultsText}
+                    isReadOnly
+                    minRows={4}
+                    placeholder={t("tools.regex.extractEmpty", "输入表达式后，这里会显示提取结果")}
+                    classNames={{ input: "font-mono text-xs", inputWrapper: "bg-default-50/50" }}
+                  />
                 </CardBody>
               </Card>
 
