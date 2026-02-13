@@ -706,8 +706,8 @@ export function RegexTool() {
                 </Card>
               )}
 
-              <Card shadow="sm" className="border border-default-200">
-                <CardBody className="flex flex-col gap-2">
+              <Card shadow="sm" className="border border-default-200 flex-1 min-h-0">
+                <CardBody className="flex flex-col gap-2 flex-1 min-h-0">
                   <Input
                     size="sm"
                     label={t("tools.regex.extractExpr", "分组提取")}
@@ -741,13 +741,21 @@ export function RegexTool() {
                     </div>
                   </div>
 
-                  <Textarea
-                    value={extractedResultsText}
-                    isReadOnly
-                    minRows={4}
-                    placeholder={t("tools.regex.extractEmpty", "输入表达式后，这里会显示提取结果")}
-                    classNames={{ input: "font-mono text-xs", inputWrapper: "bg-default-50/50"}}
-                  />
+                  <div className="flex-1 min-h-0">
+                    <Textarea
+                      value={extractedResultsText}
+                      isReadOnly
+                      disableAutosize
+                      minRows={4}
+                      placeholder={t("tools.regex.extractEmpty", "输入表达式后，这里会显示提取结果")}
+                      className="h-full"
+                      classNames={{
+                        base: "h-full flex flex-col",
+                        inputWrapper: "flex-1 min-h-0 bg-default-50/50",
+                        input: "h-full font-mono text-xs",
+                      }}
+                    />
+                  </div>
                 </CardBody>
               </Card>
             </div>
