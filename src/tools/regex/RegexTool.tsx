@@ -55,6 +55,7 @@ export function RegexTool() {
   const { t, i18n } = useTranslation()
   const { theme } = useTheme()
 
+  // 正则表达式三要素：pattern + flags + input（测试文本）
   const [pattern, setPattern] = useState("")
   const [flags, setFlags] = useState("g")
   const [input, setInput] = useState("")
@@ -62,24 +63,29 @@ export function RegexTool() {
   const [extractExpr, setExtractExpr] = useState("$0")
   const [panelTab, setPanelTab] = useState<PanelTab>("matchInfo")
 
+  // 匹配状态：错误信息 / 匹配列表 / 选中项 / 执行耗时
   const [regexError, setRegexError] = useState<string | null>(null)
   const [matches, setMatches] = useState<RegexMatch[]>([])
   const [elapsedMs, setElapsedMs] = useState<number>(0)
   const [selectedMatchIndex, setSelectedMatchIndex] = useState<number | null>(null)
 
+  // 替换结果状态：输出文本与替换次数
   const [output, setOutput] = useState("")
   const [replaceCount, setReplaceCount] = useState(0)
 
+  // 常用正则（预设）弹层与过滤关键字
   const [isPresetOpen, setIsPresetOpen] = useState(false)
   const [presetQuery, setPresetQuery] = useState("")
   const [isFlagsOpen, setIsFlagsOpen] = useState(false)
 
+  // Monaco 编辑器相关引用：用于高亮匹配区间、跳转定位
   const editorRef = useRef<any>(null)
   const monacoRef = useRef<any>(null)
   const decorationIdsRef = useRef<string[]>([])
   const presetPopoverRef = useRef<HTMLDivElement | null>(null)
 
   useEffect(() => {
+    // 初始化：从本地存储恢复上一次输入的状态
     let alive = true
       ; (async () => {
         const raw = await getStoredItem(STORAGE_KEY)
@@ -102,6 +108,7 @@ export function RegexTool() {
   }, []) // 从本地存储恢复工具状态
 
   useEffect(() => {
+    // 持久化：对输入做轻量 debounce，避免频繁写入存储
     const state: RegexToolState = {
       pattern,
       flags,
@@ -211,6 +218,7 @@ export function RegexTool() {
   }, [t, preferredRegion])
 
   const presetItemsFiltered = useMemo(() => {
+    // 预设搜索：同时匹配 label / pattern / 分组标题
     const q = presetQuery.trim().toLowerCase()
     if (!q) return presetGroups
     return presetGroups
@@ -225,6 +233,7 @@ export function RegexTool() {
   }, [presetGroups, presetQuery])
 
   useEffect(() => {
+    // 点击弹层外部自动关闭（用 mousedown 比 click 更早触发，交互更跟手）
     if (!isPresetOpen) return
     const onPointerDown = (e: MouseEvent) => {
       const el = presetPopoverRef.current
@@ -237,6 +246,7 @@ export function RegexTool() {
   }, [isPresetOpen])
 
   useEffect(() => {
+    // 核心：构建 RegExp + 扫描 input，得到匹配列表与耗时（同样使用 debounce 降低编辑时开销）
     const id = window.setTimeout(() => {
       const built = buildRegExp(pattern, flagsLabel)
       if ("error" in built) {
@@ -263,6 +273,7 @@ export function RegexTool() {
   }, [pattern, flagsLabel, input]) // 延迟执行正则表达式匹配，计算匹配结果和性能
 
   useEffect(() => {
+    // 将 matches 同步到 Monaco 高亮（选中项用不同样式区分）
     applyDecorations(matches, selectedMatchIndex)
   }, [matches, selectedMatchIndex, theme])
 
@@ -279,12 +290,14 @@ export function RegexTool() {
   }
 
   const clearDecorations = () => {
+    // 清空 Monaco 中的高亮装饰（避免残留）
     const editor = editorRef.current
     if (!editor) return
     decorationIdsRef.current = editor.deltaDecorations(decorationIdsRef.current, [])
   }
 
   const applyDecorations = (list: RegexMatch[], selected: number | null) => {
+    // 根据字符偏移 -> Monaco Range，生成 decoration 并批量应用
     const editor = editorRef.current
     const monaco = monacoRef.current
     const model = editor?.getModel?.()
@@ -306,6 +319,7 @@ export function RegexTool() {
   } // 在 Monaco 编辑器中应用匹配高亮装饰
 
   const jumpToMatch = (idx: number) => {
+    // 点击某条匹配：滚动到对应位置并选中，方便定位上下文
     setSelectedMatchIndex(idx)
     const editor = editorRef.current
     const monaco = monacoRef.current
@@ -322,12 +336,14 @@ export function RegexTool() {
   } // 跳转到指定的匹配位置并选中
 
   const handleCopy = async (text: string) => {
+    // 复制到剪贴板：空字符串直接忽略
     if (!text) return
     await navigator.clipboard.writeText(text)
     addToast({ title: t("tools.regex.copiedToClipboard"), severity: "success" })
   }
 
   const writeTextFile = async (defaultPath: string, ext: string, text: string) => {
+    // Tauri 导出：弹出保存对话框并写入文件
     const filePath = await save({
       defaultPath,
       filters: [{ name: ext.toUpperCase(), extensions: [ext] }],
@@ -355,6 +371,7 @@ export function RegexTool() {
   }, [matches])
 
   const extractedResultsText = useMemo(() => {
+    // 分组提取：支持 $0 / $1..$99 / ${name} / $<name> / $$（字面 $）
     const expr = extractExpr.trim()
     if (!expr) return ""
     const applyExpr = (template: string, m: RegexMatch) => {
@@ -384,6 +401,7 @@ export function RegexTool() {
   }
 
   const handleClearAll = async () => {
+    // 一键清空：同时清理本地持久化与 Monaco 高亮
     setPattern("")
     setFlags("g")
     setInput("")
@@ -428,6 +446,7 @@ export function RegexTool() {
   } // 执行全局替换操作
 
   return (
+    // 布局约定：使用 flex-1 + min-h-0 让右侧 Tab 内容、Monaco Editor 能正确撑满剩余高度
     <div className="flex flex-col h-full gap-4">
       <div className="flex-1 min-h-0 flex flex-col lg:flex-row gap-4">
         <div className="flex-1 min-h-0 flex flex-col gap-4 min-w-0">
@@ -508,6 +527,7 @@ export function RegexTool() {
                   <Trash2 className="w-3.5 h-3.5" />
                 </Button>
                 <div className="relative" ref={presetPopoverRef}>
+                  {/* 常用正则：按钮位于测试文本右侧，弹层右对齐按钮 */}
                   <Button
                     size="sm"
                     variant="flat"
@@ -742,6 +762,7 @@ export function RegexTool() {
                   </div>
 
                   <div className="flex-1 min-h-0">
+                    {/* 注意：HeroUI Textarea 默认会 autosize（按内容行数计算高度），需 disableAutosize 才能与 flex 布局一起撑满 */}
                     <Textarea
                       value={extractedResultsText}
                       isReadOnly
