@@ -126,12 +126,12 @@ export function RegexTool() {
   const flagsLabel = useMemo(() => normalizeFlags(flags), [flags])
   const flagTooltips = useMemo<Record<string, string>>(
     () => ({
-      g: t("tools.regex.flagHelp.g", "全局匹配：查找所有匹配项"),
-      i: t("tools.regex.flagHelp.i", "忽略大小写"),
-      m: t("tools.regex.flagHelp.m", "^/$ 匹配每一行（多行模式）"),
-      s: t("tools.regex.flagHelp.s", ". 也匹配换行（dotAll）"),
-      u: t("tools.regex.flagHelp.u", "Unicode 模式"),
-      y: t("tools.regex.flagHelp.y", "粘连匹配：从 lastIndex 处开始（sticky）"),
+      g: t("tools.regex.flagHelp.g"),
+      i: t("tools.regex.flagHelp.i"),
+      m: t("tools.regex.flagHelp.m"),
+      s: t("tools.regex.flagHelp.s"),
+      u: t("tools.regex.flagHelp.u"),
+      y: t("tools.regex.flagHelp.y"),
     }),
     [t]
   )
@@ -153,61 +153,61 @@ export function RegexTool() {
   const presetGroups = useMemo(() => {
     const common = {
       id: "common",
-      title: t("tools.regex.presets.groupCommon", "常用"),
+      title: t("tools.regex.presets.groupCommon"),
       items: [
-        { id: "num", label: t("tools.regex.presets.common.number", "匹配数字"), pattern: "[0-9]+" },
-        { id: "email", label: t("tools.regex.presets.common.email", "匹配邮箱地址"), pattern: "\\w+([-+.]\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*" },
-        { id: "url", label: t("tools.regex.presets.common.url", "匹配网址URL"), pattern: "https?://([\\w-]+\\.)+[\\w-]+(/[\\w-./?%&=]*)?" },
-        { id: "ip", label: t("tools.regex.presets.common.ipv4", "匹配IP地址"), pattern: "(\\d{1,3}\\.){3}\\d{1,3}" },
+        { id: "num", label: t("tools.regex.presets.common.number"), pattern: "[0-9]+" },
+        { id: "email", label: t("tools.regex.presets.common.email"), pattern: "\\w+([-+.]\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*" },
+        { id: "url", label: t("tools.regex.presets.common.url"), pattern: "https?://([\\w-]+\\.)+[\\w-]+(/[\\w-./?%&=]*)?" },
+        { id: "ip", label: t("tools.regex.presets.common.ipv4"), pattern: "(\\d{1,3}\\.){3}\\d{1,3}" },
       ],
     }
 
     const cn = {
       id: "cn",
-      title: t("tools.regex.presets.groupCN", "中国大陆"),
+      title: t("tools.regex.presets.groupCN"),
       items: [
-        { id: "cn-mobile", label: t("tools.regex.presets.cn.mobile", "手机号"), pattern: "1[3-9]\\d{9}" },
-        { id: "cn-id", label: t("tools.regex.presets.cn.idcard", "身份证号"), pattern: "\\d{17}[0-9Xx]|\\d{15}" },
-        { id: "cn-hanzi", label: t("tools.regex.presets.cn.hanzi", "汉字(简体+繁体)"), pattern: "[\\u4e00-\\u9fff]+" },
+        { id: "cn-mobile", label: t("tools.regex.presets.cn.mobile"), pattern: "1[3-9]\\d{9}" },
+        { id: "cn-id", label: t("tools.regex.presets.cn.idcard"), pattern: "\\d{17}[0-9Xx]|\\d{15}" },
+        { id: "cn-hanzi", label: t("tools.regex.presets.cn.hanzi"), pattern: "[\\u4e00-\\u9fff]+" },
       ],
     }
 
     const hk = {
       id: "hk",
-      title: t("tools.regex.presets.groupHK", "中国香港"),
+      title: t("tools.regex.presets.groupHK"),
       items: [
-        { id: "hk-mobile", label: t("tools.regex.presets.hk.mobile", "手机号"), pattern: "[569]\\d{7}" },
-        { id: "hk-hanzi", label: t("tools.regex.presets.hk.hanzi", "汉字(简体+繁体)"), pattern: "[\\u4e00-\\u9fff]+" },
+        { id: "hk-mobile", label: t("tools.regex.presets.hk.mobile"), pattern: "[569]\\d{7}" },
+        { id: "hk-hanzi", label: t("tools.regex.presets.hk.hanzi"), pattern: "[\\u4e00-\\u9fff]+" },
       ],
     }
 
     const mo = {
       id: "mo",
-      title: t("tools.regex.presets.groupMO", "中国澳门"),
+      title: t("tools.regex.presets.groupMO"),
       items: [
-        { id: "mo-mobile", label: t("tools.regex.presets.mo.mobile", "手机号"), pattern: "[569]\\d{7}" },
+        { id: "mo-mobile", label: t("tools.regex.presets.mo.mobile"), pattern: "[569]\\d{7}" },
       ],
     }
 
     const tw = {
       id: "tw",
-      title: t("tools.regex.presets.groupTW", "中国台湾"),
+      title: t("tools.regex.presets.groupTW"),
       items: [
-        { id: "tw-hanzi", label: t("tools.regex.presets.tw.hanzi", "汉字(简体+繁体)"), pattern: "[\\u4e00-\\u9fff]+" },
+        { id: "tw-hanzi", label: t("tools.regex.presets.tw.hanzi"), pattern: "[\\u4e00-\\u9fff]+" },
       ],
     }
 
     const jp = {
       id: "jp",
-      title: t("tools.regex.presets.groupJP", "日本"),
+      title: t("tools.regex.presets.groupJP"),
       items: [
-        { id: "jp-mobile", label: t("tools.regex.presets.jp.mobile", "手机号"), pattern: "(?:070|080|090|050|020)\\d{8}" },
-        { id: "jp-kanji", label: t("tools.regex.presets.jp.kanji", "汉字"), pattern: "[\\u4e00-\\u9fff]+" },
-        { id: "jp-hira", label: t("tools.regex.presets.jp.hiragana", "平假名"), pattern: "[\\u3040-\\u309F]+" },
-        { id: "jp-kata", label: t("tools.regex.presets.jp.katakana", "片假名"), pattern: "[\\u30A0-\\u30FF]+" },
-        { id: "jp-hira-kata", label: t("tools.regex.presets.jp.hiraganaKatakana", "平假名 + 片假名"), pattern: "[\\u3040-\\u309F\\u30A0-\\u30FF]+" },
-        { id: "jp-all-jp", label: t("tools.regex.presets.jp.allJapanese", "所有日文字符(平假名 + 片假名 + 半角片假名)"), pattern: "[\\u3040-\\u309F\\u30A0-\\u30FF\\uFF65-\\uFF9F]+" },
-        { id: "jp-jp-kanji", label: t("tools.regex.presets.jp.japanesePlusKanji", "日文字符+日文汉字"), pattern: "[\\u3040-\\u309F\\u30A0-\\u30FF\\uFF65-\\uFF9F\\u4E00-\\u9FFF]+" },
+        { id: "jp-mobile", label: t("tools.regex.presets.jp.mobile"), pattern: "(?:070|080|090|050|020)\\d{8}" },
+        { id: "jp-kanji", label: t("tools.regex.presets.jp.kanji"), pattern: "[\\u4e00-\\u9fff]+" },
+        { id: "jp-hira", label: t("tools.regex.presets.jp.hiragana"), pattern: "[\\u3040-\\u309F]+" },
+        { id: "jp-kata", label: t("tools.regex.presets.jp.katakana"), pattern: "[\\u30A0-\\u30FF]+" },
+        { id: "jp-hira-kata", label: t("tools.regex.presets.jp.hiraganaKatakana"), pattern: "[\\u3040-\\u309F\\u30A0-\\u30FF]+" },
+        { id: "jp-all-jp", label: t("tools.regex.presets.jp.allJapanese"), pattern: "[\\u3040-\\u309F\\u30A0-\\u30FF\\uFF65-\\uFF9F]+" },
+        { id: "jp-jp-kanji", label: t("tools.regex.presets.jp.japanesePlusKanji"), pattern: "[\\u3040-\\u309F\\u30A0-\\u30FF\\uFF65-\\uFF9F\\u4E00-\\u9FFF]+" },
       ],
     }
 
@@ -500,7 +500,7 @@ export function RegexTool() {
                     size="sm"
                     variant="light"
                     onPress={() => handleCopy(`/${pattern}/${flagsLabel}`)}
-                    title={t("tools.regex.copyPattern", "复制正则")}
+                    title={t("tools.regex.copyPattern")}
                   >
                     <Copy className="w-4 h-4" />
                   </Button>
@@ -538,7 +538,7 @@ export function RegexTool() {
                       setPresetQuery("")
                     }}
                   >
-                    {t("tools.regex.presets.title", "常用正则")}
+                    {t("tools.regex.presets.title")}
                   </Button>
 
                   {isPresetOpen && (
@@ -546,7 +546,7 @@ export function RegexTool() {
                       <div className="p-2 border-b border-divider">
                         <Input
                           size="sm"
-                          placeholder={t("tools.regex.presets.searchPlaceholder", "搜索常用正则...")}
+                          placeholder={t("tools.regex.presets.searchPlaceholder")}
                           value={presetQuery}
                           onValueChange={setPresetQuery}
                           classNames={{ input: "text-xs" }}
@@ -555,7 +555,7 @@ export function RegexTool() {
                       <div className="max-h-[340px] overflow-auto p-2 space-y-2">
                         {presetItemsFiltered.length === 0 ? (
                           <div className="p-6 text-center text-default-400 text-sm">
-                            {t("tools.regex.presets.noResults", "无匹配结果")}
+                            {t("tools.regex.presets.noResults")}
                           </div>
                         ) : (
                           presetItemsFiltered.map((group) => (
@@ -611,14 +611,14 @@ export function RegexTool() {
         {/* 如果语言是英文 lg:w-[530px], 其他语言 lg:w-[420px] */}
         <div className={`${isEnglish ? "lg:w-[530px]" : "lg:w-[420px]"} w-full flex flex-col gap-3 min-h-0 min-w-0`}>
           <Tabs
-            aria-label={t("tools.regex.panelsAria", "Regex panels")}
+            aria-label={t("tools.regex.panelsAria")}
             color="primary"
             selectedKey={panelTab}
             onSelectionChange={(k) => setPanelTab(k as PanelTab)}
             classNames={{ tabList: "text-sm w-full", tab: "text-xs" }}
           >
             <Tab key="matchInfo" title={t("tools.regex.matchInfo")} />
-            <Tab key="extract" title={t("tools.regex.extractExpr", "分组提取")} />
+            <Tab key="extract" title={t("tools.regex.extractExpr")} />
             <Tab key="replaceResult" title={t("tools.regex.replaceResult")} />
           </Tabs>
 
@@ -645,7 +645,7 @@ export function RegexTool() {
                   </div>
                   <div className="flex gap-2">
                     <Button size="sm" variant="flat" onPress={() => handleCopy(matchResultsText)}>
-                      {t("tools.regex.copyResultsOnly", "仅复制结果")}
+                      {t("tools.regex.copyResultsOnly")}
                     </Button>
                     <Button
                       size="sm"
@@ -653,7 +653,7 @@ export function RegexTool() {
                       startContent={<FileDown className="w-4 h-4" />}
                       onPress={() => writeTextFile("regex-results.txt", "txt", matchResultsText)}
                     >
-                      {t("tools.regex.exportResultsOnly", "仅导出结果")}
+                      {t("tools.regex.exportResultsOnly")}
                     </Button>
                     <Button size="sm" variant="flat" onPress={() => handleCopy(matchInfoJson)}>
                       {t("tools.regex.copyMatches")}
@@ -664,7 +664,7 @@ export function RegexTool() {
                           {t("tools.regex.export")}
                         </Button>
                       </DropdownTrigger>
-                      <DropdownMenu aria-label={t("tools.regex.exportMenu", "Export matches")}>
+                      <DropdownMenu aria-label={t("tools.regex.exportMenu")}>
                         <DropdownItem key="json" onPress={() => handleExportMatches("json")}>
                           {t("tools.regex.exportMatchesJson")}
                         </DropdownItem>
@@ -699,9 +699,9 @@ export function RegexTool() {
                         </div>
                         {(m.groups.length > 0 || (m.namedGroups && Object.keys(m.namedGroups).length > 0)) && (
                           <div className="mt-1 text-[10px] text-default-500">
-                            {m.groups.length > 0 && <div>{t("tools.regex.groupsLabel", "groups")}: {JSON.stringify(m.groups)}</div>}
+                            {m.groups.length > 0 && <div>{t("tools.regex.groupsLabel")}: {JSON.stringify(m.groups)}</div>}
                             {m.namedGroups && Object.keys(m.namedGroups).length > 0 && (
-                              <div>{t("tools.regex.namedLabel", "named groups")}: {JSON.stringify(m.namedGroups)}</div>
+                              <div>{t("tools.regex.namedLabel")}: {JSON.stringify(m.namedGroups)}</div>
                             )}
                           </div>
                         )}
@@ -730,8 +730,8 @@ export function RegexTool() {
                 <CardBody className="flex flex-col gap-2 flex-1 min-h-0">
                   <Input
                     size="sm"
-                    label={t("tools.regex.extractExpr", "分组提取")}
-                    placeholder={t("tools.regex.extractExprPlaceholder", "如 $0 / $1 / ${name}")}
+                    label={t("tools.regex.extractExpr")}
+                    placeholder={t("tools.regex.extractExprPlaceholder")}
                     value={extractExpr}
                     onValueChange={setExtractExpr}
                     description={t(
@@ -743,11 +743,11 @@ export function RegexTool() {
 
                   <div className="flex items-center justify-between gap-2">
                     <span className="text-[10px] text-default-400">
-                      {t("tools.regex.extractLines", "行数")}: {matches.length}
+                      {t("tools.regex.extractLines")}: {matches.length}
                     </span>
                     <div className="flex gap-2">
                       <Button size="sm" variant="flat" onPress={() => handleCopy(extractedResultsText)} isDisabled={!extractedResultsText}>
-                        {t("tools.regex.copyExtracted", "复制提取结果")}
+                        {t("tools.regex.copyExtracted")}
                       </Button>
                       <Button
                         size="sm"
@@ -756,7 +756,7 @@ export function RegexTool() {
                         onPress={() => writeTextFile("regex-extract.txt", "txt", extractedResultsText)}
                         isDisabled={!extractedResultsText}
                       >
-                        {t("tools.regex.exportExtracted", "导出提取结果")}
+                        {t("tools.regex.exportExtracted")}
                       </Button>
                     </div>
                   </div>
@@ -768,7 +768,7 @@ export function RegexTool() {
                       isReadOnly
                       disableAutosize
                       minRows={4}
-                      placeholder={t("tools.regex.extractEmpty", "输入表达式后，这里会显示提取结果")}
+                      placeholder={t("tools.regex.extractEmpty")}
                       className="h-full"
                       classNames={{
                         base: "h-full flex flex-col",
