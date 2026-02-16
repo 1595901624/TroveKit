@@ -29,9 +29,9 @@ export function LogManagementTool() {
   const [sessionNoteInput, setSessionNoteInput] = useState("")
 
   const getTrailingDescription = (trailing: string) => {
-    if (trailing.includes('\n') || trailing.includes('\r')) return t('log.trailingNewline', 'Trailing newline')
-    if (trailing.includes('\t')) return t('log.trailingTab', 'Trailing tab')
-    return t('log.trailingSpaces', 'Trailing spaces')
+    if (trailing.includes('\n') || trailing.includes('\r')) return t('log.trailingNewline')
+    if (trailing.includes('\t')) return t('log.trailingTab')
+    return t('log.trailingSpaces')
   }
 
   const renderHighlightedText = (text?: string) => {
@@ -271,7 +271,7 @@ export function LogManagementTool() {
         <div className="p-3 border-b border-divider flex items-center justify-between bg-content1/50 backdrop-blur-md">
           <div className="text-sm font-semibold flex items-center gap-2">
             <Archive className="w-4 h-4" />
-            {t("logManagement.sessions", "Sessions")}
+            {t("logManagement.sessions")}
           </div>
           <Button isIconOnly size="sm" variant="light" onPress={() => reloadSessions(true)} isLoading={loadingSessions}>
             <RefreshCw className="w-4 h-4" />
@@ -281,7 +281,7 @@ export function LogManagementTool() {
         <ScrollShadow className="flex-1 p-2 space-y-1">
           {sessions.length === 0 && !loadingSessions && (
              <div className="text-center text-default-400 text-xs py-4">
-               {t("logManagement.noSessions", "No sessions found")}
+               {t("logManagement.noSessions")}
              </div>
           )}
           
@@ -304,7 +304,7 @@ export function LogManagementTool() {
                         size="sm"
                         value={sessionNoteInput}
                         onValueChange={setSessionNoteInput}
-                        placeholder={t("logManagement.sessionNotePlaceholder", "Enter session note...")}
+                        placeholder={t("logManagement.sessionNotePlaceholder")}
                         className="text-xs"
                         autoFocus
                         maxLength={100}
@@ -341,7 +341,7 @@ export function LogManagementTool() {
                   )}
                 </div>
                 <div className="flex gap-0.5 shrink-0">
-                  <Tooltip content={t("logManagement.switchToSession", "Switch to this session")}>
+                  <Tooltip content={t("logManagement.switchToSession")}>
                     <Button
                         isIconOnly
                         size="sm"
@@ -353,7 +353,7 @@ export function LogManagementTool() {
                         <Eye className="w-3 h-3" />
                     </Button>
                   </Tooltip>
-                  <Tooltip content={t("logManagement.editSessionNote", "Edit Note")}>
+                  <Tooltip content={t("logManagement.editSessionNote")}>
                     <Button
                         isIconOnly
                         size="sm"
@@ -400,7 +400,7 @@ export function LogManagementTool() {
              <Input
                 size="sm"
                 startContent={<Search className="w-4 h-4 text-default-400" />}
-                placeholder={t("logManagement.searchPlaceholder", "Search logs...")}
+                placeholder={t("logManagement.searchPlaceholder")}
                 value={query}
                 onValueChange={setQuery}
                 className="max-w-md"
@@ -419,12 +419,12 @@ export function LogManagementTool() {
         <ScrollShadow className="flex-1 p-4">
            {loadingLogs ? (
              <div className="flex justify-center py-10">
-                <Spinner label={t("common.loading", "Loading...")} />
+                <Spinner label={t("common.loading")} />
              </div>
            ) : filteredLogs.length === 0 ? (
              <div className="text-center text-default-400 py-20 flex flex-col items-center gap-2">
                 <Search className="w-10 h-10 opacity-20" />
-                <p>{t("logManagement.empty", "No logs found")}</p>
+                <p>{t("logManagement.empty")}</p>
              </div>
            ) : (
             <div className="space-y-3">
@@ -499,7 +499,7 @@ export function LogManagementTool() {
                                         )}
                                         {log.cryptoParams.iv_size && (
                                             <div className="flex flex-col">
-                                                <span className="text-default-500 font-semibold">{t('tools.hash.ivSize', 'IV Size')}</span>
+                                                <span className="text-default-500 font-semibold">{t('tools.hash.ivSize')}</span>
                                                 <span className="font-mono text-default-700">{log.cryptoParams.iv_size}</span>
                                             </div>
                                         )}
@@ -562,7 +562,7 @@ export function LogManagementTool() {
 
                                 {/* Input */}
                                 <div className="group/input relative p-3 rounded bg-default-100/50 hover:bg-default-100 transition-colors">
-                                    <div className="text-xs text-default-400 font-semibold mb-1 select-none">{t('log.input', 'Input')}</div>
+                                    <div className="text-xs text-default-400 font-semibold mb-1 select-none">{t('log.input')}</div>
                                     <div className="text-sm font-mono text-default-600 break-all pr-8 whitespace-pre-wrap">
                                         {renderHighlightedText(log.input)}
                                     </div>
@@ -579,7 +579,7 @@ export function LogManagementTool() {
 
                                 {/* Output */}
                                 <div className="group/output relative p-3 rounded bg-default-100/50 hover:bg-default-100 transition-colors">
-                                    <div className="text-xs text-success/80 font-semibold mb-1 select-none">{t('log.output', 'Output')}</div>
+                                    <div className="text-xs text-success/80 font-semibold mb-1 select-none">{t('log.output')}</div>
                                     <div className="text-sm font-mono text-foreground break-all pr-8 whitespace-pre-wrap">
                                         {renderHighlightedText(log.output)}
                                     </div>
@@ -610,7 +610,7 @@ export function LogManagementTool() {
                         {/* Note */}
                         {log.note && (
                             <div className="mt-2 flex items-start gap-2 text-xs bg-warning/10 text-warning-700 dark:text-warning-400 p-2 rounded">
-                                <span className="font-semibold select-none">💡 {t('log.note', 'Note')}:</span>
+                                <span className="font-semibold select-none">💡 {t('log.note')}:</span>
                                 <span className="font-mono whitespace-pre-wrap">{log.note}</span>
                             </div>
                         )}
@@ -628,22 +628,22 @@ export function LogManagementTool() {
             <>
               <ModalHeader className="flex flex-col gap-1">
                 {deleteTarget?.type === 'session' 
-                  ? t("logManagement.deleteSessionTitle", "Delete Session") 
-                  : t("logManagement.deleteLogTitle", "Delete Log")}
+                  ? t("logManagement.deleteSessionTitle") 
+                  : t("logManagement.deleteLogTitle")}
               </ModalHeader>
               <ModalBody>
                 <p>
                   {deleteTarget?.type === 'session'
-                    ? t("logManagement.confirmDeleteSession", "Are you sure you want to delete this entire session?")
-                    : t("logManagement.confirmDeleteLog", "Are you sure you want to delete this log?")}
+                    ? t("logManagement.confirmDeleteSession")
+                    : t("logManagement.confirmDeleteLog")}
                 </p>
               </ModalBody>
               <ModalFooter>
                 <Button color="default" variant="light" onPress={onClose}>
-                  {t("common.cancel", "Cancel")}
+                  {t("common.cancel")}
                 </Button>
                 <Button color="danger" onPress={confirmDelete}>
-                  {t("common.delete", "Delete")}
+                  {t("common.delete")}
                 </Button>
               </ModalFooter>
             </>
