@@ -48,17 +48,17 @@ export function HashTool({ activeTab }: HashToolProps) {
           <Tab key="md2" title={t("tools.hash.md2")} />
           <Tab key="md4" title={t("tools.hash.md4")} />
           <Tab key="md5" title={t("tools.hash.md5")} />
-          <Tab key="hmacMd5" title={t("tools.hash.hmacMd5", "HMAC-MD5")} />
+          <Tab key="hmacMd5" title={t("tools.hash.hmacMd5")} />
           <Tab key="sha" title={t("tools.hash.sha")} />
           <Tab key="aes" title={t("tools.hash.aes")} />
-          <Tab key="des" title={t("tools.hash.des", "DES")} />
-          <Tab key="rsa" title={t("tools.hash.rsa", "RSA")} />
-          <Tab key="rc4" title={t("tools.hash.rc4", "RC4")} />
+          <Tab key="des" title={t("tools.hash.des")} />
+          <Tab key="rsa" title={t("tools.hash.rsa")} />
+          <Tab key="rc4" title={t("tools.hash.rc4")} />
           <Tab key="sm2" title={t("tools.hash.sm2")} />
-          <Tab key="sm3" title={t("tools.hash.sm3", "SM3")} />
-          <Tab key="sm4" title={t("tools.hash.sm4", "SM4")} />
-          <Tab key="chacha20" title={t("tools.hash.chacha20", "ChaCha20")} />
-          <Tab key="trivium" title={t("tools.hash.trivium", "Trivium")} />
+          <Tab key="sm3" title={t("tools.hash.sm3")} />
+          <Tab key="sm4" title={t("tools.hash.sm4")} />
+          <Tab key="chacha20" title={t("tools.hash.chacha20")} />
+          <Tab key="trivium" title={t("tools.hash.trivium")} />
           <Tab key="blake" title={t("tools.hash.blake")} />
         </Tabs>
       </div>
