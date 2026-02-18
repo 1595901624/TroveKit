@@ -160,12 +160,12 @@ export function TriviumTab() {
       orientation="horizontal"
       value={caseOption}
       onValueChange={(v) => setCaseOption(v === "upper" ? "upper" : "lower")}
-      label={t("tools.hash.case", "Case")}
+      label={t("tools.hash.case")}
       size="sm"
       className="text-tiny"
     >
-      <Radio value="lower">{t("tools.hash.lowercase", "Lowercase")}</Radio>
-      <Radio value="upper">{t("tools.hash.uppercase", "Uppercase")}</Radio>
+      <Radio value="lower">{t("tools.hash.lowercase")}</Radio>
+      <Radio value="upper">{t("tools.hash.uppercase")}</Radio>
     </RadioGroup>
   )
 
@@ -297,8 +297,8 @@ export function TriviumTab() {
   return (
     <div className="space-y-4">
       <Textarea
-        label={t("tools.hash.inputLabel", "Input Text")}
-        placeholder={t("tools.hash.aesInputPlaceholder", "Enter text to encrypt/decrypt...")}
+        label={t("tools.hash.inputLabel")}
+        placeholder={t("tools.hash.aesInputPlaceholder")}
         minRows={4}
         variant="bordered"
         value={input}
@@ -314,7 +314,7 @@ export function TriviumTab() {
             <Input
               size="sm"
               label={t("tools.hash.key")}
-              placeholder={t("tools.hash.keyPlaceholder", "Key") + " (80-bit, Hex)"}
+              placeholder={t("tools.hash.keyPlaceholder") + " (80-bit, Hex)"}
               value={key}
               onValueChange={setKey}
               className="flex-1"
@@ -335,7 +335,7 @@ export function TriviumTab() {
             <Input
               size="sm"
               label={t("tools.hash.iv")}
-              placeholder={t("tools.hash.iv", "IV") + " (80-bit, Hex)"}
+              placeholder={t("tools.hash.iv") + " (80-bit, Hex)"}
               value={iv}
               onValueChange={setIv}
               className="flex-1"
@@ -357,9 +357,9 @@ export function TriviumTab() {
             variant="flat"
             startContent={<RefreshCw className="w-4 h-4" />}
             onPress={handleGenerate}
-            title={t("tools.hash.generateRandom", "Generate Random Key & IV")}
+            title={t("tools.hash.generateRandom")}
           >
-            {t("tools.hash.generateRandom", "Generate Random Key & IV")}
+            {t("tools.hash.generateRandom")}
           </Button>
         </div>
 
@@ -368,8 +368,8 @@ export function TriviumTab() {
             orientation="horizontal"
             value={format}
             onValueChange={setFormat}
-            label={t("tools.hash.format", "Format")}
-            description={t("tools.hash.formatNote", "Encrypt: Output Format / Decrypt: Input Format")}
+            label={t("tools.hash.format")}
+            description={t("tools.hash.formatNote")}
             size="sm"
             className="text-tiny"
           >
@@ -396,7 +396,7 @@ export function TriviumTab() {
 
       <div className="relative group">
         <Textarea
-          label={t("tools.hash.outputLabel", "Output")}
+          label={t("tools.hash.outputLabel")}
           readOnly
           minRows={4}
           variant="bordered"
