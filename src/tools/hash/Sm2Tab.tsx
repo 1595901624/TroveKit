@@ -63,16 +63,16 @@ export function Sm2Tab() {
       setPublicKey(keypair.publicKey)
       setPrivateKey(keypair.privateKey)
       addLog({
-        method: t("tools.hash.sm2GenerateKeyPair", "SM2 Generate KeyPair"),
-        input: t("tools.hash.generate", "Generate"),
-        output: t("common.success", "Success"),
+        method: t("tools.hash.sm2GenerateKeyPair"),
+        input: t("tools.hash.generate"),
+        output: t("common.success"),
         cryptoParams: {
             publicKey: keypair.publicKey,
             privateKey: keypair.privateKey
         }
       }, "success")
     } catch (e) {
-      addLog({ method: t("tools.hash.sm2GenerateKeyPair", "SM2 Generate KeyPair"), input: t("tools.hash.generate", "Generate"), output: (e as Error).message }, "error")
+      addLog({ method: t("tools.hash.sm2GenerateKeyPair"), input: t("tools.hash.generate"), output: (e as Error).message }, "error")
     }
   }
 
@@ -86,7 +86,7 @@ export function Sm2Tab() {
       // encrypted is hex string usually '04' + ...
       
       setOutput(encrypted)
-      const modeStr = mode === "1" ? t("tools.hash.c1c3c2", "C1C3C2 (Standard)") : t("tools.hash.c1c2c3", "C1C2C3 (Old)")
+      const modeStr = mode === "1" ? t("tools.hash.c1c3c2") : t("tools.hash.c1c2c3")
       addLog({
         method: t("tools.hash.sm2Encrypt", { mode: modeStr }),
         input: input,
@@ -99,7 +99,7 @@ export function Sm2Tab() {
       }, "success")
     } catch (e) {
         // @ts-ignore
-      addLog({ method: t("tools.hash.sm2EncryptMethod", "SM2 Encrypt"), input: input, output: e.message || e }, "error")
+      addLog({ method: t("tools.hash.sm2EncryptMethod"), input: input, output: e.message || e }, "error")
     }
   }
 
@@ -110,10 +110,10 @@ export function Sm2Tab() {
       const cipherMode = parseInt(mode) as CipherMode
       const decrypted = sm2.doDecrypt(input, privateKey, cipherMode)
       
-      if (!decrypted) throw new Error(t("tools.hash.decryptionFailed", "Decryption failed"))
+      if (!decrypted) throw new Error(t("tools.hash.decryptionFailed"))
 
       setOutput(decrypted)
-      const modeStr = mode === "1" ? t("tools.hash.c1c3c2", "C1C3C2 (Standard)") : t("tools.hash.c1c2c3", "C1C2C3 (Old)")
+      const modeStr = mode === "1" ? t("tools.hash.c1c3c2") : t("tools.hash.c1c2c3")
       addLog({
         method: t("tools.hash.sm2Decrypt", { mode: modeStr }),
         input: input,
@@ -126,7 +126,7 @@ export function Sm2Tab() {
       }, "success")
     } catch (e) {
         // @ts-ignore
-      addLog({ method: t("tools.hash.sm2DecryptMethod", "SM2 Decrypt"), input: input, output: e.message || e }, "error")
+      addLog({ method: t("tools.hash.sm2DecryptMethod"), input: input, output: e.message || e }, "error")
     }
   }
 
@@ -138,8 +138,8 @@ export function Sm2Tab() {
   return (
     <div className="space-y-4">
       <Textarea
-        label={t("tools.hash.inputLabel", "Input Text")}
-        placeholder={t("tools.hash.aesInputPlaceholder", "Enter text...")}
+        label={t("tools.hash.inputLabel")}
+        placeholder={t("tools.hash.aesInputPlaceholder")}
         minRows={4}
         variant="bordered"
         value={input}
@@ -153,16 +153,16 @@ export function Sm2Tab() {
           <div className="space-y-4">
               <Textarea
                 size="sm"
-                label={t("tools.hash.publicKey", "Public Key (Encryption)")}
-                placeholder={t("tools.hash.publicKey", "Public Key (Encryption)")}
+                label={t("tools.hash.publicKey")}
+                placeholder={t("tools.hash.publicKey")}
                 value={publicKey}
                 onValueChange={setPublicKey}
                 minRows={2}
               />
               <Textarea
                 size="sm"
-                label={t("tools.hash.privateKey", "Private Key (Decryption)")}
-                placeholder={t("tools.hash.privateKey", "Private Key (Decryption)")}
+                label={t("tools.hash.privateKey")}
+                placeholder={t("tools.hash.privateKey")}
                 value={privateKey}
                 onValueChange={setPrivateKey}
                 minRows={2}
@@ -175,18 +175,18 @@ export function Sm2Tab() {
                     orientation="horizontal"
                     value={mode}
                     onValueChange={setMode}
-                    label={t("tools.hash.cipherMode", "Cipher Mode")}
+                    label={t("tools.hash.cipherMode")}
                     size="sm"
                     className="text-tiny"
                   >
-                    <Radio value="1">{t("tools.hash.c1c3c2", "C1C3C2 (Standard)")}</Radio>
-                    <Radio value="0">{t("tools.hash.c1c2c3", "C1C2C3 (Old)")}</Radio>
+                    <Radio value="1">{t("tools.hash.c1c3c2")}</Radio>
+                    <Radio value="0">{t("tools.hash.c1c2c3")}</Radio>
                   </RadioGroup>
                 </div>
 
                 <div className="flex flex-col gap-2">
                     <Button size="sm" color="success" variant="flat" onPress={handleGenerateKeys} startContent={<KeyRound className="w-4 h-4" />}>
-                        {t("tools.hash.generateKeyPair", "Generate Key Pair")}
+                        {t("tools.hash.generateKeyPair")}
                     </Button>
                 </div>
           </div>
@@ -206,7 +206,7 @@ export function Sm2Tab() {
 
       <div className="relative group">
         <Textarea
-          label={t("tools.hash.outputLabel", "Output")}
+          label={t("tools.hash.outputLabel")}
           readOnly
           minRows={4}
           variant="bordered"

@@ -76,8 +76,8 @@ export function Sm3Tab() {
   return (
     <div className="space-y-4">
       <Textarea
-        label={t("tools.hash.inputLabel", "Input Text")}
-        placeholder={t("tools.hash.inputPlaceholder", "Enter text to hash...")}
+        label={t("tools.hash.inputLabel")}
+        placeholder={t("tools.hash.inputPlaceholder")}
         minRows={6}
         variant="bordered"
         value={input}
@@ -113,7 +113,7 @@ export function Sm3Tab() {
 
       <div className="relative group">
         <Textarea
-          label={t("tools.hash.outputLabel", "Hash Output")}
+          label={t("tools.hash.outputLabel")}
           readOnly
           minRows={4}
           variant="bordered"

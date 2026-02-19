@@ -145,8 +145,8 @@ export function Sm4Tab() {
   return (
     <div className="space-y-4">
       <Textarea
-        label={t("tools.hash.inputLabel", "Input Text")}
-        placeholder={t("tools.hash.sm4InputPlaceholder", "Enter text to encrypt/decrypt...")}
+        label={t("tools.hash.inputLabel")}
+        placeholder={t("tools.hash.sm4InputPlaceholder")}
         minRows={4}
         variant="bordered"
         value={sm4Input}
@@ -214,11 +214,11 @@ export function Sm4Tab() {
                   size="sm"
                   className="text-tiny"
                 >
-                  <Radio value="ecb">{t("tools.hash.ecb", "ECB")}</Radio>
-                  <Radio value="cbc">{t("tools.hash.cbc", "CBC")}</Radio>
-                  <Radio value="cfb">{t("tools.hash.cfb", "CFB")}</Radio>
-                  <Radio value="ofb">{t("tools.hash.ofb", "OFB")}</Radio>
-                  <Radio value="ctr">{t("tools.hash.ctr", "CTR")}</Radio>
+                  <Radio value="ecb">{t("tools.hash.ecb")}</Radio>
+                  <Radio value="cbc">{t("tools.hash.cbc")}</Radio>
+                  <Radio value="cfb">{t("tools.hash.cfb")}</Radio>
+                  <Radio value="ofb">{t("tools.hash.ofb")}</Radio>
+                  <Radio value="ctr">{t("tools.hash.ctr")}</Radio>
                 </RadioGroup>
 
                 <div className="flex gap-4">
@@ -230,9 +230,9 @@ export function Sm4Tab() {
                     size="sm"
                     className="text-tiny"
                   >
-                    <Radio value="pkcs7">{t("tools.hash.pkcs7", "PKCS7")}</Radio>
-                    <Radio value="zero">{t("tools.hash.zeroPadding", "Zeros")}</Radio>
-                    <Radio value="none">{t("tools.hash.noPadding", "None")}</Radio>
+                    <Radio value="pkcs7">{t("tools.hash.pkcs7")}</Radio>
+                    <Radio value="zero">{t("tools.hash.zeroPadding")}</Radio>
+                    <Radio value="none">{t("tools.hash.noPadding")}</Radio>
                   </RadioGroup>
                 </div>
 
@@ -240,8 +240,8 @@ export function Sm4Tab() {
                   orientation="horizontal"
                   value={sm4Format}
                   onValueChange={setSm4Format}
-                  label={t("tools.hash.format", "Format")}
-                  description={t("tools.hash.formatNote", "Encrypt: Output Format / Decrypt: Input Format")}
+                  label={t("tools.hash.format")}
+                  description={t("tools.hash.formatNote")}
                   size="sm"
                   className="text-tiny"
                 >
@@ -265,7 +265,7 @@ export function Sm4Tab() {
 
       <div className="relative group">
         <Textarea
-          label={t("tools.hash.outputLabel", "Output")}
+          label={t("tools.hash.outputLabel")}
           readOnly
           minRows={4}
           variant="bordered"
