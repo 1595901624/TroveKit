@@ -137,8 +137,8 @@ export function Rc4Tab() {
   return (
     <div className="space-y-4">
       <Textarea
-        label={t("tools.hash.inputLabel", "Input Text")}
-        placeholder={t("tools.hash.aesInputPlaceholder", "Enter text to encrypt/decrypt...")}
+        label={t("tools.hash.inputLabel")}
+        placeholder={t("tools.hash.aesInputPlaceholder")}
         minRows={4}
         variant="bordered"
         value={rc4Input}
@@ -178,8 +178,8 @@ export function Rc4Tab() {
                   orientation="horizontal"
                   value={rc4Format}
                   onValueChange={setRc4Format}
-                  label={t("tools.hash.format", "Format")}
-                  description={t("tools.hash.formatNote", "Encrypt: Output Format / Decrypt: Input Format")}
+                  label={t("tools.hash.format")}
+                  description={t("tools.hash.formatNote")}
                   size="sm"
                   className="text-tiny"
                 >
@@ -203,7 +203,7 @@ export function Rc4Tab() {
 
       <div className="relative group">
         <Textarea
-          label={t("tools.hash.outputLabel", "Output")}
+          label={t("tools.hash.outputLabel")}
           readOnly
           minRows={4}
           variant="bordered"
