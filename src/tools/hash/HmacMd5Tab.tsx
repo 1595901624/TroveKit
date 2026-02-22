@@ -110,8 +110,8 @@ export function HmacMd5Tab() {
   return (
     <div className="space-y-4">
       <Textarea
-        label={t("tools.hash.inputLabel", "Input Text")}
-        placeholder={t("tools.hash.inputPlaceholder", "Enter text to hash...")}
+        label={t("tools.hash.inputLabel")}
+        placeholder={t("tools.hash.inputPlaceholder")}
         minRows={4}
         variant="bordered"
         value={input}
@@ -126,14 +126,14 @@ export function HmacMd5Tab() {
           <Input
             size="sm"
             label={t("tools.hash.key")}
-            placeholder={t("tools.hash.keyPlaceholder", "Key")}
+            placeholder={t("tools.hash.keyPlaceholder")}
             value={key}
             onValueChange={setKey}
             className="flex-1"
           />
           <Select
             size="sm"
-            label={t("tools.hash.keyType", "Key Type")}
+            label={t("tools.hash.keyType")}
             className="w-24"
             selectedKeys={new Set([keyType])}
             onSelectionChange={(keys) => setKeyType(Array.from(keys)[0] as string)}
@@ -168,7 +168,7 @@ export function HmacMd5Tab() {
 
       <div className="relative group">
         <Textarea
-          label={t("tools.hash.hmacMd5OutputLabel", "HMAC-MD5 Output")}
+          label={t("tools.hash.hmacMd5OutputLabel")}
           readOnly
           minRows={4}
           variant="bordered"
