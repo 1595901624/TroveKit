@@ -5,7 +5,7 @@ import { Md2Tab } from "./hash/Md2Tab"
 import { Md4Tab } from "./hash/Md4Tab"
 import { Md5Tab } from "./hash/Md5Tab"
 import { ShaTab } from "./hash/ShaTab"
-import { AesTab } from "./hash/AesTab"
+import { AesTab2 } from "./hash/AesTab2"
 import { RsaTab } from "./hash/RsaTab"
 import { Sm2Tab } from "./hash/Sm2Tab"
 import { Sm3Tab } from "./hash/Sm3Tab"
@@ -83,7 +83,7 @@ export function HashTool({ activeTab }: HashToolProps) {
           <ShaTab />
         </div>
         <div className={selectedKey === "aes" ? "" : "hidden"}>
-          <AesTab />
+          <AesTab2 />
         </div>
         <div className={selectedKey === "rsa" ? "" : "hidden"}>
           <RsaTab />
