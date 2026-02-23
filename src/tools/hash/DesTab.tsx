@@ -216,8 +216,8 @@ export function DesTab() {
   return (
     <div className="space-y-4">
       <Textarea
-        label={t("tools.hash.inputLabel", "Input Text")}
-        placeholder={t("tools.hash.aesInputPlaceholder", "Enter text to encrypt/decrypt...")}
+        label={t("tools.hash.inputLabel")}
+        placeholder={t("tools.hash.aesInputPlaceholder")}
         minRows={4}
         variant="bordered"
         value={desInput}
@@ -299,11 +299,11 @@ export function DesTab() {
                     size="sm"
                     className="text-tiny"
                   >
-                    <Radio value="CBC">{t("tools.hash.cbc", "CBC")}</Radio>
-                    <Radio value="ECB">{t("tools.hash.ecb", "ECB")}</Radio>
-                    <Radio value="CTR">{t("tools.hash.ctr", "CTR")}</Radio>
-                    <Radio value="OFB">{t("tools.hash.ofb", "OFB")}</Radio>
-                    <Radio value="CFB">{t("tools.hash.cfb", "CFB")}</Radio>
+                    <Radio value="CBC">{t("tools.hash.cbc")}</Radio>
+                    <Radio value="ECB">{t("tools.hash.ecb")}</Radio>
+                    <Radio value="CTR">{t("tools.hash.ctr")}</Radio>
+                    <Radio value="OFB">{t("tools.hash.ofb")}</Radio>
+                    <Radio value="CFB">{t("tools.hash.cfb")}</Radio>
                   </RadioGroup>
                 </div>
 
@@ -316,11 +316,11 @@ export function DesTab() {
                     size="sm"
                     className="text-tiny"
                   >
-                    <Radio value="Pkcs7">{t("tools.hash.pkcs7", "PKCS7")}</Radio>
-                    <Radio value="ZeroPadding">{t("tools.hash.zeroPadding", "Zeros")}</Radio>
-                    <Radio value="AnsiX923">{t("tools.hash.ansiX923", "ANSI")}</Radio>
-                    <Radio value="Iso10126">{t("tools.hash.iso10126", "ISO")}</Radio>
-                    <Radio value="NoPadding">{t("tools.hash.noPadding", "None")}</Radio>
+                    <Radio value="Pkcs7">{t("tools.hash.pkcs7")}</Radio>
+                    <Radio value="ZeroPadding">{t("tools.hash.zeroPadding")}</Radio>
+                    <Radio value="AnsiX923">{t("tools.hash.ansiX923")}</Radio>
+                    <Radio value="Iso10126">{t("tools.hash.iso10126")}</Radio>
+                    <Radio value="NoPadding">{t("tools.hash.noPadding")}</Radio>
                   </RadioGroup>
                 </div>
 
@@ -328,8 +328,8 @@ export function DesTab() {
                   orientation="horizontal"
                   value={desFormat}
                   onValueChange={setDesFormat}
-                  label={t("tools.hash.format", "Format")}
-                  description={t("tools.hash.formatNote", "Encrypt: Output Format / Decrypt: Input Format")}
+                  label={t("tools.hash.format")}
+                  description={t("tools.hash.formatNote")}
                   size="sm"
                   className="text-tiny"
                 >
@@ -353,7 +353,7 @@ export function DesTab() {
 
       <div className="relative group">
         <Textarea
-          label={t("tools.hash.outputLabel", "Output")}
+          label={t("tools.hash.outputLabel")}
           readOnly
           minRows={4}
           variant="bordered"

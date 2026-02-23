@@ -71,7 +71,7 @@ export function ChaCha20Tab() {
   const { t } = useTranslation()
   const { addLog } = useLog()
 
-  const [input, setInput] = useState<string>(() => t("tools.hash.defaultInput", "Hello, TroveKit"))
+  const [input, setInput] = useState<string>(() => t("tools.hash.defaultInput"))
   const [output, setOutput] = useState("")
 
   const [key, setKey] = useState("")
@@ -158,12 +158,12 @@ export function ChaCha20Tab() {
       orientation="horizontal"
       value={caseOption}
       onValueChange={(v) => setCaseOption(v === "upper" ? "upper" : "lower")}
-      label={t("tools.hash.case", "Case")}
+      label={t("tools.hash.case")}
       size="sm"
       className="text-tiny"
     >
-      <Radio value="lower">{t("tools.hash.lowercase", "Lowercase")}</Radio>
-      <Radio value="upper">{t("tools.hash.uppercase", "Uppercase")}</Radio>
+      <Radio value="lower">{t("tools.hash.lowercase")}</Radio>
+      <Radio value="upper">{t("tools.hash.uppercase")}</Radio>
     </RadioGroup>
   )
 
@@ -239,7 +239,7 @@ export function ChaCha20Tab() {
             key_type: keyType,
             nonce: nonceType === "hex" ? bytesToHex(nonceBytes) : nonce,
             nonce_type: nonceType,
-            mode: t("tools.hash.stream", "Stream")
+            mode: t("tools.hash.stream")
           }
         },
         "success"
@@ -275,8 +275,8 @@ export function ChaCha20Tab() {
   return (
     <div className="space-y-4">
       <Textarea
-        label={t("tools.hash.inputLabel", "Input Text")}
-        placeholder={t("tools.hash.aesInputPlaceholder", "Enter text...")}
+        label={t("tools.hash.inputLabel")}
+        placeholder={t("tools.hash.aesInputPlaceholder")}
         minRows={4}
         variant="bordered"
         value={input}
@@ -293,14 +293,14 @@ export function ChaCha20Tab() {
             <Input
               size="sm"
               label={t("tools.hash.key")}
-              placeholder={keyType === "hex" ? `${t("tools.hash.keyPlaceholder32", "32 bytes")} (${t("tools.hash.hex", "Hex")})` : t("tools.hash.keyPlaceholder32", "32 bytes")}
+              placeholder={keyType === "hex" ? `${t("tools.hash.keyPlaceholder32")} (${t("tools.hash.hex")})` : t("tools.hash.keyPlaceholder32")}
               value={key}
               onValueChange={setKey}
               className="flex-1"
             />
             <Select
               size="sm"
-              label={t("tools.hash.type", "Type")}
+              label={t("tools.hash.type")}
               className="w-24"
               selectedKeys={new Set([keyType])}
               onSelectionChange={(k) => setKeyType(Array.from(k)[0] as string)}
@@ -315,15 +315,15 @@ export function ChaCha20Tab() {
           <div className="flex gap-2">
             <Input
               size="sm"
-              label={t("tools.hash.nonce", "Nonce")}
-              placeholder={nonceType === "hex" ? `${t("tools.hash.noncePlaceholder", "12 bytes")} (${t("tools.hash.hex", "Hex")})` : t("tools.hash.noncePlaceholder", "12 bytes")}
+              label={t("tools.hash.nonce")}
+              placeholder={nonceType === "hex" ? `${t("tools.hash.noncePlaceholder")} (${t("tools.hash.hex")})` : t("tools.hash.noncePlaceholder")}
               value={nonce}
               onValueChange={setNonce}
               className="flex-1"
             />
             <Select
               size="sm"
-              label={t("tools.hash.type", "Type")}
+              label={t("tools.hash.type")}
               className="w-24"
               selectedKeys={new Set([nonceType])}
               onSelectionChange={(k) => setNonceType(Array.from(k)[0] as string)}
@@ -339,9 +339,9 @@ export function ChaCha20Tab() {
             variant="flat"
             startContent={<RefreshCw className="w-4 h-4" />}
             onPress={handleGenerate}
-            title={t("tools.hash.generateRandom", "Generate Random Key & Nonce")}
+            title={t("tools.hash.generateRandom")}
           >
-            {t("tools.hash.generateRandom", "Generate Random Key & Nonce")}
+            {t("tools.hash.generateRandom")}
           </Button>
         </div>
 
@@ -350,13 +350,13 @@ export function ChaCha20Tab() {
             orientation="horizontal"
             value={format}
             onValueChange={setFormat}
-            label={t("tools.hash.format", "Format")}
+            label={t("tools.hash.format")}
             description={t("tools.hash.formatNote")}
             size="sm"
             className="text-tiny"
           >
-            <Radio value="Base64">{t("tools.hash.base64", "Base64")}</Radio>
-            <Radio value="Hex">{t("tools.hash.hex", "Hex")}</Radio>
+            <Radio value="Base64">{t("tools.hash.base64")}</Radio>
+            <Radio value="Hex">{t("tools.hash.hex")}</Radio>
           </RadioGroup>
           {format === "Hex" && <CaseSelector />}
         </div>
@@ -376,7 +376,7 @@ export function ChaCha20Tab() {
 
       <div className="relative group">
         <Textarea
-          label={t("tools.hash.outputLabel", "Output")}
+          label={t("tools.hash.outputLabel")}
           readOnly
           minRows={4}
           variant="bordered"
@@ -386,7 +386,7 @@ export function ChaCha20Tab() {
           }}
         />
         <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-          <Button isIconOnly size="sm" variant="flat" onPress={() => copyToClipboard(output)} title={t("tools.hash.copy", "Copy")}>
+          <Button isIconOnly size="sm" variant="flat" onPress={() => copyToClipboard(output)} title={t("tools.hash.copy")}>
             <Copy className="w-4 h-4" />
           </Button>
         </div>
