@@ -164,7 +164,9 @@
       "iso10126": "ISO",
       "noPadding": "None",
       "format": "Format",
-      "formatNote": "Encrypt: Output Format / Decrypt: Input Format"
+      "formatNote": "Encrypt: Output Format / Decrypt: Input Format",
+      "inputFormat": "Input Format",
+      "outputFormat": "Output Format"
     },
     "encoder": {
       "input": "Input",

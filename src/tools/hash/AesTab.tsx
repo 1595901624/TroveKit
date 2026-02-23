@@ -21,7 +21,8 @@ export function AesTab() {
   const [aesIvType, setAesIvType] = useState("text") 
   const [aesMode, setAesMode] = useState("CBC") 
   const [aesPadding, setAesPadding] = useState("Pkcs7") 
-  const [aesFormat, setAesFormat] = useState("Base64") 
+  const [aesInputFormat, setAesInputFormat] = useState("String")
+  const [aesOutputFormat, setAesOutputFormat] = useState("Base64")
   const [isLoaded, setIsLoaded] = useState(false)
 
   useEffect(() => {
@@ -39,7 +40,12 @@ export function AesTab() {
           if (state.aesIvType) setAesIvType(state.aesIvType);
           if (state.aesMode) setAesMode(state.aesMode);
           if (state.aesPadding) setAesPadding(state.aesPadding);
-          if (state.aesFormat) setAesFormat(state.aesFormat);
+          if (state.aesInputFormat) setAesInputFormat(state.aesInputFormat);
+          if (state.aesOutputFormat) setAesOutputFormat(state.aesOutputFormat);
+          if (state.aesFormat && !state.aesInputFormat && !state.aesOutputFormat) {
+            setAesInputFormat(state.aesFormat);
+            setAesOutputFormat(state.aesFormat);
+          }
         } catch (e) {
           console.error("Failed to parse AesTab state", e);
         }
@@ -61,10 +67,11 @@ export function AesTab() {
         aesIvType,
         aesMode,
         aesPadding,
-        aesFormat
+        aesInputFormat,
+        aesOutputFormat
       }))
     }
-  }, [aesInput, aesOutput, aesKey, aesKeyType, aesKeySize, aesIv, aesIvType, aesMode, aesPadding, aesFormat, isLoaded])
+  }, [aesInput, aesOutput, aesKey, aesKeyType, aesKeySize, aesIv, aesIvType, aesMode, aesPadding, aesInputFormat, aesOutputFormat, isLoaded])
 
   const parseKeyIv = (value: string, type: string, lengthBits?: number) => {
     let wordArr;
@@ -89,6 +96,23 @@ export function AesTab() {
       return CryptoJS.enc.Hex.parse(hex);
     }
     return wordArr;
+  }
+
+  const parseInputData = (value: string, format: string) => {
+    switch (format) {
+      case "Hex":
+        return CryptoJS.enc.Hex.parse(value)
+      case "Base64":
+        return CryptoJS.enc.Base64.parse(value)
+      default:
+        return CryptoJS.enc.Utf8.parse(value)
+    }
+  }
+
+  const encodeOutputData = (data: CryptoJS.lib.WordArray, format: string) => {
+    if (format === "String") return data.toString(CryptoJS.enc.Utf8)
+    if (format === "Hex") return data.toString(CryptoJS.enc.Hex)
+    return data.toString(CryptoJS.enc.Base64)
   }
 
   const getMode = (modeStr: string) => {
@@ -119,34 +143,31 @@ export function AesTab() {
   const handleAesEncrypt = () => {
     if (!aesInput) return;
     try {
+      const inputData = parseInputData(aesInput, aesInputFormat)
       const key = parseKeyIv(aesKey, aesKeyType, parseInt(aesKeySize));
       // IV is always 128-bit (16 bytes) for AES block size, regardless of key size
       // Except ECB which doesn't use IV, but passing it doesn't hurt usually, though we can skip it.
       const iv = aesMode === "ECB" ? undefined : parseKeyIv(aesIv, aesIvType, 128); 
       
-      const encrypted = CryptoJS.AES.encrypt(aesInput, key, {
+      const encrypted = CryptoJS.AES.encrypt(inputData, key, {
         mode: getMode(aesMode),
         padding: getPadding(aesPadding),
         iv: iv
       });
 
-      let output = "";
-      if (aesFormat === "Hex") {
-        output = encrypted.ciphertext.toString(CryptoJS.enc.Hex);
-      } else {
-        output = encrypted.ciphertext.toString(CryptoJS.enc.Base64);
-      }
+      const output = encodeOutputData(encrypted.ciphertext, aesOutputFormat)
 
       setAesOutput(output);
       addLog({
-        method: `AES Encrypt (${aesMode}, ${aesKeySize}-bit, ${aesFormat})`,
+        method: `AES Encrypt (${aesMode}, ${aesKeySize}-bit, ${aesInputFormat}→${aesOutputFormat})`,
         input: aesInput,
         output: output,
         cryptoParams: {
           algorithm: "AES",
           mode: aesMode,
           key_size: `${aesKeySize}-bit`,
-          format: aesFormat,
+          input_format: aesInputFormat,
+          output_format: aesOutputFormat,
           key: aesKey,
           key_type: aesKeyType,
           iv: aesIv,
@@ -164,12 +185,7 @@ export function AesTab() {
       const key = parseKeyIv(aesKey, aesKeyType, parseInt(aesKeySize));
       const iv = aesMode === "ECB" ? undefined : parseKeyIv(aesIv, aesIvType, 128);
       
-      let cipherParams;
-      if (aesFormat === "Hex") {
-        cipherParams = { ciphertext: CryptoJS.enc.Hex.parse(aesInput) };
-      } else {
-        cipherParams = { ciphertext: CryptoJS.enc.Base64.parse(aesInput) };
-      }
+      const cipherParams = { ciphertext: parseInputData(aesInput, aesInputFormat) }
 
       const decrypted = CryptoJS.AES.decrypt(cipherParams as any, key, {
         mode: getMode(aesMode),
@@ -177,19 +193,22 @@ export function AesTab() {
         iv: iv
       });
 
-      const output = decrypted.toString(CryptoJS.enc.Utf8);
-      if (!output) throw new Error("Decryption failed or invalid key/iv/mode");
+      const utf8Preview = decrypted.toString(CryptoJS.enc.Utf8)
+      if (decrypted.sigBytes > 0 && !utf8Preview) throw new Error("Decryption failed or invalid key/iv/mode")
+
+      const output = encodeOutputData(decrypted, aesOutputFormat)
 
       setAesOutput(output);
       addLog({
-        method: `AES Decrypt (${aesMode}, ${aesKeySize}-bit, ${aesFormat})`,
+        method: `AES Decrypt (${aesMode}, ${aesKeySize}-bit, ${aesInputFormat}→${aesOutputFormat})`,
         input: aesInput,
         output: output,
         cryptoParams: {
           algorithm: "AES",
           mode: aesMode,
           key_size: `${aesKeySize}-bit`,
-          format: aesFormat,
+          input_format: aesInputFormat,
+          output_format: aesOutputFormat,
           key: aesKey,
           key_type: aesKeyType,
           iv: aesIv,
@@ -318,13 +337,26 @@ export function AesTab() {
 
                 <RadioGroup
                   orientation="horizontal"
-                  value={aesFormat}
-                  onValueChange={setAesFormat}
-                  label={t("tools.hash.format")}
-                  description={t("tools.hash.formatNote")}
+                  value={aesInputFormat}
+                  onValueChange={setAesInputFormat}
+                  label={t("tools.hash.inputFormat")}
                   size="sm"
                   className="text-tiny"
                 >
+                  <Radio value="String">{t("tools.hash.text")}</Radio>
+                  <Radio value="Base64">Base64</Radio>
+                  <Radio value="Hex">Hex</Radio>
+                </RadioGroup>
+
+                <RadioGroup
+                  orientation="horizontal"
+                  value={aesOutputFormat}
+                  onValueChange={setAesOutputFormat}
+                  label={t("tools.hash.outputFormat")}
+                  size="sm"
+                  className="text-tiny"
+                >
+                  <Radio value="String">{t("tools.hash.text")}</Radio>
                   <Radio value="Base64">Base64</Radio>
                   <Radio value="Hex">Hex</Radio>
                 </RadioGroup>

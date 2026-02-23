@@ -164,7 +164,9 @@
       "iso10126": "ISO",
       "noPadding": "None",
       "format": "フォーマット",
-      "formatNote": "暗号化：出力形式 / 復号化：入力形式"
+      "formatNote": "暗号化：出力形式 / 復号化：入力形式",
+      "inputFormat": "入力形式",
+      "outputFormat": "出力形式"
     },
     "encoder": {
       "input": "入力",

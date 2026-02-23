@@ -164,7 +164,9 @@
       "iso10126": "ISO",
       "noPadding": "None",
       "format": "格式",
-      "formatNote": "加密時為輸出格式，解密時為輸入格式"
+      "formatNote": "加密時為輸出格式，解密時為輸入格式",
+      "inputFormat": "輸入格式",
+      "outputFormat": "輸出格式"
     },
     "encoder": {
       "input": "輸入",
