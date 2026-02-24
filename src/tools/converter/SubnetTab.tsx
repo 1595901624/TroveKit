@@ -167,7 +167,7 @@ export function SubnetTab() {
         { key: t("tools.converter.usableHosts"), value: result.usableAddresses },
         { key: t("tools.converter.ipv4Class"), value: meta ? meta.ipv4Class : "-" },
         { key: t("tools.converter.ipv4AddressType"), value: meta ? t(`tools.converter.ipv4Type.${meta.addressType}`) : "-" },
-        { key: t("tools.converter.isPrivate"), value: meta ? (meta.isPrivate ? t("common.yes", "Yes") : t("common.no", "No")) : "-" },
+        { key: t("tools.converter.isPrivate"), value: meta ? (meta.isPrivate ? t("common.yes") : t("common.no")) : "-" },
       ]
     }
 
