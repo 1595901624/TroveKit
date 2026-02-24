@@ -16,7 +16,6 @@ export function DesTab() {
   const [desOutput, setDesOutput] = useState("")
   const [desKey, setDesKey] = useState("")
   const [desKeyType, setDesKeyType] = useState("text") // "text" | "hex"
-  const [desAlgorithm, setDesAlgorithm] = useState("DES") // "DES" | "TripleDES"
   const [desIv, setDesIv] = useState("")
   const [desIvType, setDesIvType] = useState("text") // "text" | "hex"
   const [desMode, setDesMode] = useState("CBC") // CBC, ECB, OFB, CFB, CTR, CTS
@@ -34,7 +33,6 @@ export function DesTab() {
           if (state.desOutput) setDesOutput(state.desOutput);
           if (state.desKey) setDesKey(state.desKey);
           if (state.desKeyType) setDesKeyType(state.desKeyType);
-          if (state.desAlgorithm) setDesAlgorithm(state.desAlgorithm);
           if (state.desIv) setDesIv(state.desIv);
           if (state.desIvType) setDesIvType(state.desIvType);
           if (state.desMode) setDesMode(state.desMode);
@@ -56,7 +54,6 @@ export function DesTab() {
         desOutput,
         desKey,
         desKeyType,
-        desAlgorithm,
         desIv,
         desIvType,
         desMode,
@@ -64,7 +61,7 @@ export function DesTab() {
         desFormat
       }))
     }
-  }, [desInput, desOutput, desKey, desKeyType, desAlgorithm, desIv, desIvType, desMode, desPadding, desFormat, isLoaded])
+  }, [desInput, desOutput, desKey, desKeyType, desIv, desIvType, desMode, desPadding, desFormat, isLoaded])
 
   const parseKeyIv = (value: string, type: string, lengthBits?: number) => {
     let wordArr;
@@ -113,24 +110,14 @@ export function DesTab() {
       }
   }
 
-  const getAlgo = (algo: string) => {
-      return algo === "TripleDES" ? CryptoJS.TripleDES : CryptoJS.DES;
-  }
-
-  const getKeySize = (algo: string) => {
-      return algo === "TripleDES" ? 192 : 64;
-  }
-
   const handleDesEncrypt = () => {
     if (!desInput) return;
     try {
-      const keySize = getKeySize(desAlgorithm);
-      const key = parseKeyIv(desKey, desKeyType, keySize);
+      const key = parseKeyIv(desKey, desKeyType, 64);
       // IV is always 64-bit (8 bytes) for DES/3DES block size
       const iv = desMode === "ECB" ? undefined : parseKeyIv(desIv, desIvType, 64); 
       
-      const cipher = getAlgo(desAlgorithm);
-      const encrypted = cipher.encrypt(desInput, key, {
+      const encrypted = CryptoJS.DES.encrypt(desInput, key, {
         mode: getMode(desMode),
         padding: getPadding(desPadding),
         iv: iv
@@ -145,11 +132,11 @@ export function DesTab() {
 
       setDesOutput(output);
       addLog({
-        method: `${desAlgorithm} Encrypt (${desMode}, ${desFormat})`,
+        method: `DES Encrypt (${desMode}, ${desFormat})`,
         input: desInput,
         output: output,
         cryptoParams: {
-          algorithm: desAlgorithm,
+          algorithm: "DES",
           mode: desMode,
           format: desFormat,
           key: desKey,
@@ -159,15 +146,14 @@ export function DesTab() {
         }
       }, "success");
     } catch (e) {
-      addLog({ method: `${desAlgorithm} Encrypt`, input: desInput, output: (e as Error).message }, "error");
+      addLog({ method: "DES Encrypt", input: desInput, output: (e as Error).message }, "error");
     }
   }
 
   const handleDesDecrypt = () => {
     if (!desInput) return;
     try {
-      const keySize = getKeySize(desAlgorithm);
-      const key = parseKeyIv(desKey, desKeyType, keySize);
+      const key = parseKeyIv(desKey, desKeyType, 64);
       const iv = desMode === "ECB" ? undefined : parseKeyIv(desIv, desIvType, 64);
       
       let cipherParams;
@@ -177,8 +163,7 @@ export function DesTab() {
         cipherParams = { ciphertext: CryptoJS.enc.Base64.parse(desInput) };
       }
 
-      const cipher = getAlgo(desAlgorithm);
-      const decrypted = cipher.decrypt(cipherParams as any, key, {
+      const decrypted = CryptoJS.DES.decrypt(cipherParams as any, key, {
         mode: getMode(desMode),
         padding: getPadding(desPadding),
         iv: iv
@@ -190,11 +175,11 @@ export function DesTab() {
       
       setDesOutput(output);
       addLog({
-        method: `${desAlgorithm} Decrypt (${desMode}, ${desFormat})`,
+        method: `DES Decrypt (${desMode}, ${desFormat})`,
         input: desInput,
         output: output,
         cryptoParams: {
-          algorithm: desAlgorithm,
+          algorithm: "DES",
           mode: desMode,
           format: desFormat,
           key: desKey,
@@ -204,7 +189,7 @@ export function DesTab() {
         }
       }, "success");
     } catch (e) {
-      addLog({ method: `${desAlgorithm} Decrypt`, input: desInput, output: (e as Error).message }, "error");
+      addLog({ method: "DES Decrypt", input: desInput, output: (e as Error).message }, "error");
     }
   }
 
@@ -238,19 +223,6 @@ export function DesTab() {
                       onValueChange={setDesKey}
                       className="flex-1"
                     />
-                    <Select 
-                      size="sm" 
-                      label={t("tools.hash.algorithm")}
-                      className="w-40" 
-                      selectedKeys={new Set([desAlgorithm])}
-                      onSelectionChange={(keys) => setDesAlgorithm(Array.from(keys)[0] as string)}
-                      disallowEmptySelection
-                    >
-                      <SelectItem key="DES">DES(64 Bit)</SelectItem>
-                      <SelectItem key="TripleDES">3DES(192 Bit)</SelectItem>
-                      {/* <SelectItem key="DES">{t("tools.hash.des")} ({t("tools.hash.bit64")})</SelectItem> */}
-                      {/* <SelectItem key="TripleDES">{t("tools.hash.tripleDes")} ({t("tools.hash.bit192")})</SelectItem> */}
-                    </Select>
                     <Select 
                       size="sm" 
                       label={t("tools.hash.text")}
