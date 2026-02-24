@@ -100,7 +100,7 @@ export function CaesarTab() {
   return (
     <div className="space-y-4">
       <Textarea
-        label={t("tools.classical.inputPlaceholder", "Input Text")}
+        label={t("tools.classical.inputPlaceholder")}
         placeholder={t("tools.classical.inputPlaceholder")}
         minRows={5}
         variant="bordered"
