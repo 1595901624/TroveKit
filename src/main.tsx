@@ -11,8 +11,9 @@ import tsWorker from 'monaco-editor/esm/vs/language/typescript/ts.worker?worker'
 
 import App from "./App";
 import "./styles/globals.css";
-import "./lib/i18n";
+import i18n from "./lib/i18n";
 import { LogProvider } from "./contexts/LogContext";
+import { getStoredItem, setStoredItem } from "./lib/store";
 
 self.MonacoEnvironment = {
   getWorker(_, label) {
@@ -33,6 +34,29 @@ self.MonacoEnvironment = {
 };
 
 loader.config({ monaco });
+
+// Initialize language before first render to avoid flash of wrong language
+const storedLang = await getStoredItem("i18nextLng");
+if (storedLang) {
+  await i18n.changeLanguage(storedLang);
+} else {
+  const systemLang = navigator.language;
+  let targetLang = "en";
+  if (systemLang.startsWith("zh")) {
+    const lower = systemLang.toLowerCase();
+    if (lower.includes("tw") || lower.includes("hant")) {
+      targetLang = "zh-TW";
+    } else if (lower.includes("hk")) {
+      targetLang = "zh-HK";
+    } else {
+      targetLang = "zh";
+    }
+  } else if (systemLang.startsWith("ja")) {
+    targetLang = "ja";
+  }
+  await i18n.changeLanguage(targetLang);
+  await setStoredItem("i18nextLng", targetLang);
+}
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>

@@ -14,13 +14,12 @@ import { ToolId } from "./components/Sidebar"
 import { Card, CardBody } from "@heroui/react"
 import { ArrowRight, Lock, Code2, FileCode2, Shield, Wand2, ArrowRightLeft } from "lucide-react"
 import { useTranslation } from "react-i18next"
-import { getStoredItem, setStoredItem } from "./lib/store"
 
 function App() {
   const [activeTool, setActiveTool] = useState<ToolId>("home")
   const [activeTab, setActiveTab] = useState<string | undefined>()
   const [visitedTools, setVisitedTools] = useState<Set<ToolId>>(new Set(["home"]))
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
 
   useEffect(() => {
     setVisitedTools(prev => {
@@ -30,34 +29,6 @@ function App() {
       return newSet
     })
   }, [activeTool])
-
-  useEffect(() => {
-    getStoredItem("i18nextLng").then((lang) => {
-      if (lang) {
-        i18n.changeLanguage(lang)
-      } else {
-        const systemLang = navigator.language
-        let targetLang = "en"
-
-        if (systemLang.startsWith("zh")) {
-          const lower = systemLang.toLowerCase()
-          if (lower.includes("tw") || lower.includes("hant")) {
-            targetLang = "zh-TW"
-          } else if (lower.includes("hk")) {
-            targetLang = "zh-HK"
-          } else {
-            targetLang = "zh"
-          }
-        } else if (systemLang.startsWith("ja")) {
-          targetLang = "ja"
-        }
-
-        i18n.changeLanguage(targetLang)
-        // Store the detected language
-        setStoredItem("i18nextLng", targetLang)
-      }
-    })
-  }, [i18n])
 
   const handleToolChange = (id: ToolId) => {
     setActiveTool(id)
