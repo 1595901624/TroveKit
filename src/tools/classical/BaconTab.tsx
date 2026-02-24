@@ -156,7 +156,7 @@ export function BaconTab() {
   return (
     <div className="space-y-4">
       <Textarea
-        label={t("tools.classical.inputPlaceholder", "Input Text")}
+        label={t("tools.classical.inputPlaceholder")}
         placeholder={t("tools.classical.inputPlaceholder")}
         minRows={5}
         variant="bordered"
@@ -170,18 +170,18 @@ export function BaconTab() {
       <div className="flex flex-col gap-4 p-4 bg-default-50 rounded-lg border border-default-100">
         <div className="flex flex-wrap items-end gap-6">
           <RadioGroup
-            label={t("tools.classical.bacon.alphabet", "Alphabet")}
+            label={t("tools.classical.bacon.alphabet")}
             value={alphabetType}
             onValueChange={(v) => setAlphabetType(v as "26" | "24")}
             orientation="horizontal"
             size="sm"
           >
-            <Radio value="26">{t("tools.classical.bacon.standard", "Standard (26)")}</Radio>
-            <Radio value="24">{t("tools.classical.bacon.traditional", "Traditional (24)")}</Radio>
+            <Radio value="26">{t("tools.classical.bacon.standard")}</Radio>
+            <Radio value="24">{t("tools.classical.bacon.traditional")}</Radio>
           </RadioGroup>
 
           <RadioGroup
-            label={t("tools.classical.bacon.mode", "Mode")}
+            label={t("tools.classical.bacon.mode")}
             value={mode}
             onValueChange={(v) => setMode(v as any)}
             orientation="horizontal"
@@ -190,7 +190,7 @@ export function BaconTab() {
             <Radio value="AB">A/B</Radio>
             <Radio value="ab">a/b</Radio>
             <Radio value="01">0/1</Radio>
-            <Radio value="custom">{t("tools.classical.bacon.custom", "Custom")}</Radio>
+            <Radio value="custom">{t("tools.classical.bacon.custom")}</Radio>
           </RadioGroup>
 
           {mode === "custom" && (
