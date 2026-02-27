@@ -67,7 +67,7 @@ function App() {
         <div className="max-w-7xl mx-auto h-full">
           {visitedTools.has("home") && (
             <div className={activeTool === "home" ? "block h-full" : "hidden"}>
-              <HomeView onNavigate={handleToolChange} />
+              <HomeView onNavigate={handleNavigate} />
             </div>
           )}
           {visitedTools.has("crypto") && (
@@ -121,8 +121,15 @@ function App() {
   )
 }
 
-function HomeView({ onNavigate }: { onNavigate: (id: ToolId) => void }) {
+import { useFeaturePreferences } from "./contexts/FeaturePreferencesContext"
+import { useFeatures } from "./hooks/useFeatures"
+
+function HomeView({ onNavigate }: { onNavigate: (toolId: ToolId, tabId?: string) => void }) {
   const { t } = useTranslation()
+  const { preferences } = useFeaturePreferences()
+  const features = useFeatures()
+
+  const favoriteFeatures = features.filter(f => f.tabId && preferences[f.id]?.isFavorite && preferences[f.id]?.visible !== false)
 
   const tools = [
     {
@@ -215,6 +222,33 @@ function HomeView({ onNavigate }: { onNavigate: (id: ToolId) => void }) {
           </Card>
         ))}
       </div>
+
+      {favoriteFeatures.length > 0 && (
+        <div className="space-y-6 pt-8 border-t border-default-200/50">
+          <h3 className="text-xl font-bold tracking-tight">{t("home.frequentlyUsed", "常用功能")}</h3>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {favoriteFeatures.map(f => (
+              <Card
+                key={f.id}
+                isPressable
+                onPress={() => onNavigate(f.toolId, f.tabId)}
+                className="group border border-default-200/50 bg-background/60 backdrop-blur-sm hover:bg-default-100/50 transition-all duration-300 hover:-translate-y-1"
+                shadow="none"
+              >
+                <CardBody className="p-4 flex flex-row items-center gap-3">
+                  <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
+                    <ArrowRightLeft className="w-4 h-4" />
+                  </div>
+                  <div className="flex-1 text-left">
+                    <div className="text-sm font-medium group-hover:text-primary transition-colors truncate">{f.label}</div>
+                    <div className="text-xs text-default-400 truncate">{f.category}</div>
+                  </div>
+                </CardBody>
+              </Card>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   )
 }

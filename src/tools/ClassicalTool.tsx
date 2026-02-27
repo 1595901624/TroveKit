@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next"
 import { CaesarTab } from "./classical/CaesarTab"
 import { MorseTab } from "./classical/MorseTab"
 import { BaconTab } from "./classical/BaconTab"
+import { useFeaturePreferences } from "../contexts/FeaturePreferencesContext"
 
 interface ClassicalToolProps {
   activeTab?: string
@@ -13,12 +14,27 @@ interface ClassicalToolProps {
 export function ClassicalTool({ activeTab }: ClassicalToolProps) {
   const { t } = useTranslation()
   const [selectedKey, setSelectedKey] = useState<string>("caesar")
+  const { getPreference } = useFeaturePreferences()
+
+  const tabs = [
+    { id: "caesar", title: t("tools.classical.caesar"), component: <CaesarTab />, featureId: "classical-caesar" },
+    { id: "morse", title: t("tools.classical.morse.title"), component: <MorseTab />, featureId: "classical-morse" },
+    { id: "bacon", title: t("tools.classical.bacon.title"), component: <BaconTab />, featureId: "classical-bacon" },
+  ]
+
+  const visibleTabs = tabs.filter(tab => getPreference(tab.featureId).visible)
 
   useEffect(() => {
-    if (activeTab) {
+    if (activeTab && visibleTabs.some(t => t.id === activeTab)) {
       setSelectedKey(activeTab)
+    } else if (visibleTabs.length > 0 && !visibleTabs.some(t => t.id === selectedKey)) {
+      setSelectedKey(visibleTabs[0].id)
     }
-  }, [activeTab])
+  }, [activeTab, visibleTabs, selectedKey])
+
+  if (visibleTabs.length === 0) {
+    return <div className="flex items-center justify-center h-full text-default-500">{t("common.noFeatures")}</div>
+  }
 
   return (
     <div className="flex flex-col h-full overflow-hidden">
@@ -33,16 +49,18 @@ export function ClassicalTool({ activeTab }: ClassicalToolProps) {
             tab: "text-xs"
           }}
         >
-          <Tab key="caesar" title={t("tools.classical.caesar")} />
-          <Tab key="morse" title={t("tools.classical.morse.title")} />
-          <Tab key="bacon" title={t("tools.classical.bacon.title")} />
+          {visibleTabs.map(tab => (
+            <Tab key={tab.id} title={tab.title} />
+          ))}
         </Tabs>
       </div>
 
       <div className="flex-1 overflow-y-auto min-h-0 pt-4 pb-2">
-        <div className={selectedKey === "caesar" ? "" : "hidden"}><CaesarTab /></div>
-        <div className={selectedKey === "morse" ? "" : "hidden"}><MorseTab /></div>
-        <div className={selectedKey === "bacon" ? "" : "hidden"}><BaconTab /></div>
+        {visibleTabs.map(tab => (
+          <div key={tab.id} className={selectedKey === tab.id ? "" : "hidden"}>
+            {tab.component}
+          </div>
+        ))}
       </div>
     </div>
   )

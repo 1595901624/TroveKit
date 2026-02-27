@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import { Tabs, Tab } from "@heroui/react"
 import { useTranslation } from "react-i18next"
 import { RegexTool } from "./regex/RegexTool"
+import { useFeaturePreferences } from "../contexts/FeaturePreferencesContext"
 
 interface OthersToolProps {
   activeTab?: string
@@ -11,12 +12,25 @@ interface OthersToolProps {
 export function OthersTool({ activeTab }: OthersToolProps) {
   const { t } = useTranslation()
   const [selectedKey, setSelectedKey] = useState<string>("regex")
+  const { getPreference } = useFeaturePreferences()
+
+  const tabs = [
+    { id: "regex", title: t("nav.regex"), component: <RegexTool />, featureId: "others-regex" },
+  ]
+
+  const visibleTabs = tabs.filter(tab => getPreference(tab.featureId).visible)
 
   useEffect(() => {
-    if (activeTab) {
+    if (activeTab && visibleTabs.some(t => t.id === activeTab)) {
       setSelectedKey(activeTab)
+    } else if (visibleTabs.length > 0 && !visibleTabs.some(t => t.id === selectedKey)) {
+      setSelectedKey(visibleTabs[0].id)
     }
-  }, [activeTab])
+  }, [activeTab, visibleTabs, selectedKey])
+
+  if (visibleTabs.length === 0) {
+    return <div className="flex items-center justify-center h-full text-default-500">{t("common.noFeatures")}</div>
+  }
 
   return (
     <div className="flex flex-col h-full overflow-hidden">
@@ -31,14 +45,18 @@ export function OthersTool({ activeTab }: OthersToolProps) {
             tab: "text-xs",
           }}
         >
-          <Tab key="regex" title={t("nav.regex")} />
+          {visibleTabs.map(tab => (
+            <Tab key={tab.id} title={tab.title} />
+          ))}
         </Tabs>
       </div>
 
       <div className="flex-1 overflow-y-auto min-h-0 pt-4 pb-2">
-        <div className={selectedKey === "regex" ? "h-full" : "hidden h-full"}>
-          <RegexTool />
-        </div>
+        {visibleTabs.map(tab => (
+          <div key={tab.id} className={selectedKey === tab.id ? "h-full" : "hidden h-full"}>
+            {tab.component}
+          </div>
+        ))}
       </div>
     </div>
   )

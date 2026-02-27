@@ -13,6 +13,7 @@ import App from "./App";
 import "./styles/globals.css";
 import i18n from "./lib/i18n";
 import { LogProvider } from "./contexts/LogContext";
+import { FeaturePreferencesProvider } from "./contexts/FeaturePreferencesContext";
 import { getStoredItem, setStoredItem } from "./lib/store";
 
 self.MonacoEnvironment = {
@@ -63,9 +64,11 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
     <HeroUIProvider>
       <ToastProvider placement="bottom-right" />
       <LogProvider>
-        <main className="text-foreground bg-background">
-          <App />
-        </main>
+        <FeaturePreferencesProvider>
+          <main className="text-foreground bg-background">
+            <App />
+          </main>
+        </FeaturePreferencesProvider>
       </LogProvider>
     </HeroUIProvider>
   </React.StrictMode>,

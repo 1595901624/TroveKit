@@ -17,6 +17,7 @@ import { ChaCha20Tab } from "./hash/ChaCha20Tab"
 import { HmacMd5Tab } from "./hash/HmacMd5Tab"
 import { BlakeTab } from "./hash/BlakeTab"
 import { TriviumTab } from "./hash/TriviumTab"
+import { useFeaturePreferences } from "../contexts/FeaturePreferencesContext"
 
 interface HashToolProps {
   activeTab?: string
@@ -26,12 +27,40 @@ interface HashToolProps {
 export function HashTool({ activeTab }: HashToolProps) {
   const { t } = useTranslation()
   const [selectedKey, setSelectedKey] = useState<string>("md2")
+  const { getPreference } = useFeaturePreferences()
+
+  const tabs = [
+    { id: "md2", title: t("tools.hash.md2"), component: <Md2Tab />, featureId: "crypto-md2" },
+    { id: "md4", title: t("tools.hash.md4"), component: <Md4Tab />, featureId: "crypto-md4" },
+    { id: "md5", title: t("tools.hash.md5"), component: <Md5Tab />, featureId: "crypto-md5" },
+    { id: "hmacMd5", title: t("tools.hash.hmacMd5"), component: <HmacMd5Tab />, featureId: "crypto-hmac" },
+    { id: "sha", title: t("tools.hash.sha"), component: <ShaTab />, featureId: "crypto-sha" },
+    { id: "aes", title: t("tools.hash.aes"), component: <AesTab2 />, featureId: "crypto-aes" },
+    { id: "des", title: t("tools.hash.des"), component: <DesTab />, featureId: "crypto-des" },
+    { id: "tripleDes", title: t("tools.hash.tripleDes"), component: <TripleDesTab />, featureId: "crypto-triple-des" },
+    { id: "rsa", title: t("tools.hash.rsa"), component: <RsaTab />, featureId: "crypto-rsa" },
+    { id: "rc4", title: t("tools.hash.rc4"), component: <Rc4Tab />, featureId: "crypto-rc4" },
+    { id: "sm2", title: t("tools.hash.sm2"), component: <Sm2Tab />, featureId: "crypto-sm2" },
+    { id: "sm3", title: t("tools.hash.sm3"), component: <Sm3Tab />, featureId: "crypto-sm3" },
+    { id: "sm4", title: t("tools.hash.sm4"), component: <Sm4Tab />, featureId: "crypto-sm4" },
+    { id: "chacha20", title: t("tools.hash.chacha20"), component: <ChaCha20Tab />, featureId: "crypto-chacha20" },
+    { id: "trivium", title: t("tools.hash.trivium"), component: <TriviumTab />, featureId: "crypto-trivium" },
+    { id: "blake", title: t("tools.hash.blake"), component: <BlakeTab />, featureId: "crypto-blake" },
+  ]
+
+  const visibleTabs = tabs.filter(tab => getPreference(tab.featureId).visible)
 
   useEffect(() => {
-    if (activeTab) {
+    if (activeTab && visibleTabs.some(t => t.id === activeTab)) {
       setSelectedKey(activeTab)
+    } else if (visibleTabs.length > 0 && !visibleTabs.some(t => t.id === selectedKey)) {
+      setSelectedKey(visibleTabs[0].id)
     }
-  }, [activeTab])
+  }, [activeTab, visibleTabs, selectedKey])
+
+  if (visibleTabs.length === 0) {
+    return <div className="flex items-center justify-center h-full text-default-500">{t("common.noFeatures")}</div>
+  }
 
   return (
     <div className="flex flex-col h-full overflow-hidden">
@@ -46,74 +75,18 @@ export function HashTool({ activeTab }: HashToolProps) {
             tab: "text-xs"
           }}
         >
-          <Tab key="md2" title={t("tools.hash.md2")} />
-          <Tab key="md4" title={t("tools.hash.md4")} />
-          <Tab key="md5" title={t("tools.hash.md5")} />
-          <Tab key="hmacMd5" title={t("tools.hash.hmacMd5")} />
-          <Tab key="sha" title={t("tools.hash.sha")} />
-          <Tab key="aes" title={t("tools.hash.aes")} />
-          <Tab key="des" title={t("tools.hash.des")} />
-          <Tab key="tripleDes" title={t("tools.hash.tripleDes")} />
-          <Tab key="rsa" title={t("tools.hash.rsa")} />
-          <Tab key="rc4" title={t("tools.hash.rc4")} />
-          <Tab key="sm2" title={t("tools.hash.sm2")} />
-          <Tab key="sm3" title={t("tools.hash.sm3")} />
-          <Tab key="sm4" title={t("tools.hash.sm4")} />
-          <Tab key="chacha20" title={t("tools.hash.chacha20")} />
-          <Tab key="trivium" title={t("tools.hash.trivium")} />
-          <Tab key="blake" title={t("tools.hash.blake")} />
+          {visibleTabs.map(tab => (
+            <Tab key={tab.id} title={tab.title} />
+          ))}
         </Tabs>
       </div>
 
       <div className="flex-1 overflow-y-auto min-h-0 pt-4 pb-2">
-        <div className={selectedKey === "md2" ? "" : "hidden"}>
-          <Md2Tab />
-        </div>
-        <div className={selectedKey === "md4" ? "" : "hidden"}>
-          <Md4Tab />
-        </div>
-        <div className={selectedKey === "md5" ? "" : "hidden"}>
-          <Md5Tab />
-        </div>
-        <div className={selectedKey === "hmacMd5" ? "" : "hidden"}>
-          <HmacMd5Tab />
-        </div>
-        <div className={selectedKey === "blake" ? "" : "hidden"}>
-          <BlakeTab />
-        </div>
-        <div className={selectedKey === "sha" ? "" : "hidden"}>
-          <ShaTab />
-        </div>
-        <div className={selectedKey === "aes" ? "" : "hidden"}>
-          <AesTab2 />
-        </div>
-        <div className={selectedKey === "rsa" ? "" : "hidden"}>
-          <RsaTab />
-        </div>
-        <div className={selectedKey === "sm2" ? "" : "hidden"}>
-          <Sm2Tab />
-        </div>
-        <div className={selectedKey === "sm3" ? "" : "hidden"}>
-          <Sm3Tab />
-        </div>
-        <div className={selectedKey === "sm4" ? "" : "hidden"}>
-          <Sm4Tab />
-        </div>
-        <div className={selectedKey === "des" ? "" : "hidden"}>
-          <DesTab />
-        </div>
-        <div className={selectedKey === "tripleDes" ? "" : "hidden"}>
-          <TripleDesTab />
-        </div>
-        <div className={selectedKey === "rc4" ? "" : "hidden"}>
-          <Rc4Tab />
-        </div>
-        <div className={selectedKey === "chacha20" ? "" : "hidden"}>
-          <ChaCha20Tab />
-        </div>
-        <div className={selectedKey === "trivium" ? "" : "hidden"}>
-          <TriviumTab />
-        </div>
+        {visibleTabs.map(tab => (
+          <div key={tab.id} className={selectedKey === tab.id ? "" : "hidden"}>
+            {tab.component}
+          </div>
+        ))}
       </div>
     </div>
   )

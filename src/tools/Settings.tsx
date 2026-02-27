@@ -8,6 +8,7 @@ import { useTranslation } from "react-i18next"
 import { LanguageSelector } from "../components/LanguageSelector"
 import { ThemeToggle } from "../components/ThemeToggle"
 import { useLog } from "../contexts/LogContext"
+import { FeatureManagement } from "./settings/FeatureManagement"
 
 export function Settings() {
   const { t } = useTranslation()
@@ -131,6 +132,8 @@ export function Settings() {
           </Card>
         </div>
       </div>
+
+      <FeatureManagement />
 
       <div className="text-center text-xs text-default-400 mt-8 flex items-center justify-center gap-2">
         <span>TroveKit v{version} © Cloris 2026</span>
