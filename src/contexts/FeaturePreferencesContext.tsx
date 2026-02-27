@@ -19,6 +19,23 @@ const defaultPreference: FeaturePreference = {
   isFavorite: false,
 };
 
+const hiddenByDefaultFeatureIds = new Set<string>([
+  'crypto-md2',
+  'crypto-md4',
+  'crypto-triple-des',
+  'crypto-chacha20',
+  'crypto-trivium',
+  'crypto-blake',
+  'encoder-base32',
+  'encoder-basex',
+  'conv-timestamp',
+]);
+
+const getDefaultPreference = (id: string): FeaturePreference => ({
+  ...defaultPreference,
+  visible: !hiddenByDefaultFeatureIds.has(id),
+});
+
 const FeaturePreferencesContext = createContext<FeaturePreferencesContextType | undefined>(undefined);
 
 export function FeaturePreferencesProvider({ children }: { children: ReactNode }) {
@@ -26,7 +43,7 @@ export function FeaturePreferencesProvider({ children }: { children: ReactNode }
 
   const updatePreference = (id: string, updates: Partial<FeaturePreference>) => {
     setPreferences((prev) => {
-      const current = prev[id] || defaultPreference;
+      const current = prev[id] || getDefaultPreference(id);
       return {
         ...prev,
         [id]: { ...current, ...updates },
@@ -35,7 +52,7 @@ export function FeaturePreferencesProvider({ children }: { children: ReactNode }
   };
 
   const getPreference = (id: string) => {
-    return preferences[id] || defaultPreference;
+    return preferences[id] || getDefaultPreference(id);
   };
 
   return (
