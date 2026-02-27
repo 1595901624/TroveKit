@@ -65,8 +65,16 @@ export function useFeatures() {
     { id: 'others-regex', toolId: 'others', tabId: 'regex', label: t('nav.regex'), category: t('nav.others') },
 
     // Main Tools
-    { id: 'tool-logs', toolId: 'logManagement', label: t('nav.logManagement'), category: t('nav.home') },
-    { id: 'tool-settings', toolId: 'settings', label: t('nav.settings'), category: t('nav.home') },
+    { id: 'tool-home', toolId: 'home', label: t('nav.home'), category: t('nav.home') },
+    { id: 'tool-crypto', toolId: 'crypto', label: t('nav.crypto'), category: t('nav.crypto') },
+    { id: 'tool-encoder', toolId: 'encoder', label: t('nav.encoder'), category: t('nav.encoder') },
+    { id: 'tool-classical', toolId: 'classical', label: t('nav.classical'), category: t('nav.classical') },
+    { id: 'tool-formatters', toolId: 'formatters', label: t('nav.formatters'), category: t('nav.formatters') },
+    { id: 'tool-generators', toolId: 'generators', label: t('nav.generators'), category: t('nav.generators') },
+    { id: 'tool-converter', toolId: 'converter', label: t('nav.converter'), category: t('nav.converter') },
+    { id: 'tool-others', toolId: 'others', label: t('nav.others'), category: t('nav.others') },
+    { id: 'tool-logs', toolId: 'logManagement', label: t('nav.logManagement'), category: t('nav.logManagement') },
+    { id: 'tool-settings', toolId: 'settings', label: t('nav.settings'), category: t('nav.settings') },
   ], [t]);
 
   return items;

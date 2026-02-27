@@ -2,7 +2,7 @@ import { Button, Card, CardBody, CardHeader, Modal, ModalBody, ModalContent, Mod
 import { getVersion } from "@tauri-apps/api/app"
 import { openUrl } from "@tauri-apps/plugin-opener"
 import { Store } from "@tauri-apps/plugin-store"
-import { Github, RefreshCw } from "lucide-react"
+import { Github, RefreshCw, Settings2 } from "lucide-react"
 import { useEffect, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { LanguageSelector } from "../components/LanguageSelector"
@@ -16,6 +16,7 @@ export function Settings() {
   const [version, setVersion] = useState("v0.1.0")
   
   const cacheModal = useDisclosure()
+  const featureModal = useDisclosure()
   // const logsModal = useDisclosure()
 
   useEffect(() => {
@@ -95,6 +96,29 @@ export function Settings() {
         <div className="space-y-6">
           <Card className="shadow-sm border border-default-200">
             <CardHeader className="flex flex-col items-start px-6 pt-6 pb-0">
+              <h2 className="text-lg font-bold">{t("settings.features", "功能设置")}</h2>
+              <p className="text-default-500 text-small mt-1">{t("settings.featuresDesc", "管理工具的显示与隐藏")}</p>
+            </CardHeader>
+            <CardBody className="px-6 py-6 gap-6">
+              <div className="flex items-center justify-between">
+                <div className="flex flex-col">
+                  <span className="text-medium font-medium">{t("settings.featureManagement", "功能管理")}</span>
+                  <span className="text-tiny text-default-400">{t("settings.featureManagementDesc", "管理算法的显示/隐藏及常用状态")}</span>
+                </div>
+                <Button
+                  color="primary"
+                  variant="flat"
+                  startContent={<Settings2 size={18} />}
+                  onPress={featureModal.onOpen}
+                >
+                  {t("settings.manage", "管理")}
+                </Button>
+              </div>
+            </CardBody>
+          </Card>
+
+          <Card className="shadow-sm border border-default-200">
+            <CardHeader className="flex flex-col items-start px-6 pt-6 pb-0">
               <h2 className="text-lg font-bold">{t("settings.dataManagement")}</h2>
               <p className="text-default-500 text-small mt-1">{t("settings.dataManagementDesc")}</p>
             </CardHeader>
@@ -133,8 +157,6 @@ export function Settings() {
         </div>
       </div>
 
-      <FeatureManagement />
-
       <div className="text-center text-xs text-default-400 mt-8 flex items-center justify-center gap-2">
         <span>TroveKit v{version} © Cloris 2026</span>
         <Button
@@ -148,6 +170,31 @@ export function Settings() {
           <Github size={14} />
         </Button>
       </div>
+
+      {/* Feature Management Modal */}
+      <Modal 
+        isOpen={featureModal.isOpen} 
+        onClose={featureModal.onClose}
+        size="3xl"
+        scrollBehavior="inside"
+        classNames={{
+          base: "h-[80vh]",
+          body: "p-0"
+        }}
+      >
+        <ModalContent>
+          {() => (
+            <>
+              <ModalHeader className="flex flex-col gap-1">
+                {t("settings.featureManagement", "功能管理")}
+              </ModalHeader>
+              <ModalBody>
+                <FeatureManagement />
+              </ModalBody>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
 
       {/* Clear Cache Modal */}
       <Modal isOpen={cacheModal.isOpen} onClose={cacheModal.onClose}>

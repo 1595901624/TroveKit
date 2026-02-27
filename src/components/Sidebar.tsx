@@ -16,6 +16,9 @@ import { Button, Tooltip } from "@heroui/react"
 import { cn } from "../lib/utils"
 import { useTranslation } from "react-i18next"
 import { usePersistentState } from "../hooks/usePersistentState"
+import { useFeaturePreferences } from "../contexts/FeaturePreferencesContext"
+import { useFeatures } from "../hooks/useFeatures"
+import { useMemo } from "react"
 
 export type ToolId = "home" | "encoder" | "crypto" | "classical" | "formatters" | "generators" | "converter" | "others" | "logManagement" | "settings"
 
@@ -28,22 +31,44 @@ export function Sidebar({ activeTool, onToolChange }: SidebarProps) {
   const { t } = useTranslation()
   // const [version, setVersion] = useState("v0.1.0")
   const [isCollapsed, setIsCollapsed] = usePersistentState<boolean>("sidebar-collapsed", false)
+  const { getPreference } = useFeaturePreferences()
+  const features = useFeatures()
 
   // useEffect(() => {
   //   getVersion().then(setVersion).catch(() => setVersion("v0.1.0"))
   // }, [])
 
-  const mainItems = [
-    { id: "home", label: t("nav.home"), icon: Home },
-    { id: "encoder", label: t("nav.encoder"), icon: Binary },
-    { id: "crypto", label: t("nav.crypto"), icon: Lock },
-    { id: "classical", label: t("nav.classical"), icon: Shield },
-    { id: "formatters", label: t("nav.formatters"), icon: FileJson },
-    { id: "generators", label: t("nav.generators"), icon: Wand2 },
-    { id: "converter", label: t("nav.converter"), icon: ArrowRightLeft },
-    { id: "others", label: t("nav.others"), icon: MoreHorizontal },
-  ] as const
+  const mainItems = useMemo(() => {
+    const items = [
+      { id: "home", label: t("nav.home"), icon: Home },
+      { id: "encoder", label: t("nav.encoder"), icon: Binary },
+      { id: "crypto", label: t("nav.crypto"), icon: Lock },
+      { id: "classical", label: t("nav.classical"), icon: Shield },
+      { id: "formatters", label: t("nav.formatters"), icon: FileJson },
+      { id: "generators", label: t("nav.generators"), icon: Wand2 },
+      { id: "converter", label: t("nav.converter"), icon: ArrowRightLeft },
+      { id: "others", label: t("nav.others"), icon: MoreHorizontal },
+    ] as const
 
+    return items.filter(item => {
+      if (item.id === "home") return true;
+      
+      const topLevelFeature = features.find(f => f.toolId === item.id && !f.tabId);
+      if (topLevelFeature) {
+        const pref = getPreference(topLevelFeature.id);
+        if (!pref.visible) return false;
+      }
+
+      // Check if all sub-items are hidden
+      const subItems = features.filter(f => f.toolId === item.id && f.tabId);
+      if (subItems.length > 0) {
+        const allHidden = subItems.every(f => !getPreference(f.id).visible);
+        if (allHidden) return false;
+      }
+
+      return true;
+    });
+  }, [t, features, getPreference])
 
   const logItems = [
     { id: "logManagement", label: t("nav.logManagement", "日志管理"), icon: FileText },

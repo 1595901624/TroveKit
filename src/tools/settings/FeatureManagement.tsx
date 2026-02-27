@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react"
-import { Card, CardBody, CardHeader, Input, Button } from "@heroui/react"
+import { Input, Button } from "@heroui/react"
 import { useTranslation } from "react-i18next"
 import { Search, Star, Eye, EyeOff } from "lucide-react"
 import { useFeatures } from "../../hooks/useFeatures"
@@ -16,23 +16,37 @@ export function FeatureManagement() {
     return features.filter(f => f.tabId)
   }, [features])
 
+  // 过滤出一级功能项（排除首页、设置、日志等）
+  const topLevelFeatures = useMemo(() => {
+    return features.filter(f => !f.tabId && !['home', 'settings', 'logManagement'].includes(f.toolId))
+  }, [features])
+
   // 按分类分组
   const groupedFeatures = useMemo(() => {
-    const groups: Record<string, typeof algorithmFeatures> = {}
+    const groups: Record<string, { topLevel?: typeof features[0], items: typeof algorithmFeatures }> = {}
     
-    const filtered = algorithmFeatures.filter(f => 
+    const filteredAlgorithms = algorithmFeatures.filter(f => 
       f.label.toLowerCase().includes(searchQuery.toLowerCase()) ||
       f.category.toLowerCase().includes(searchQuery.toLowerCase())
     )
 
-    filtered.forEach(f => {
+    filteredAlgorithms.forEach(f => {
       if (!groups[f.category]) {
-        groups[f.category] = []
+        groups[f.category] = { items: [] }
       }
-      groups[f.category].push(f)
+      groups[f.category].items.push(f)
     })
+
+    topLevelFeatures.forEach(f => {
+      if (groups[f.category]) {
+        groups[f.category].topLevel = f
+      } else if (f.label.toLowerCase().includes(searchQuery.toLowerCase()) || f.category.toLowerCase().includes(searchQuery.toLowerCase())) {
+        groups[f.category] = { topLevel: f, items: [] }
+      }
+    })
+
     return groups
-  }, [algorithmFeatures, searchQuery])
+  }, [algorithmFeatures, topLevelFeatures, searchQuery])
 
   const toggleVisibility = (id: string) => {
     const current = getPreference(id)
@@ -45,36 +59,41 @@ export function FeatureManagement() {
   }
 
   return (
-    <Card className="shadow-sm border border-default-200 mt-6">
-      <CardHeader className="flex flex-col items-start px-6 pt-6 pb-0">
-        <div className="flex justify-between w-full items-center">
-          <div>
-            <h2 className="text-lg font-bold">{t("settings.featureManagement", "功能管理")}</h2>
-            <p className="text-default-500 text-small mt-1">
-              {t("settings.featureManagementDesc", "管理算法的显示/隐藏及常用状态")}
-            </p>
-          </div>
-        </div>
-        <div className="w-full mt-4">
-          <Input
-            placeholder={t("common.search", "搜索...")}
-            value={searchQuery}
-            onValueChange={setSearchQuery}
-            startContent={<Search className="w-4 h-4 text-default-400" />}
-            size="sm"
-            variant="faded"
-          />
-        </div>
-      </CardHeader>
-      <CardBody className="px-6 py-6">
-        <div className="space-y-6 max-h-[400px] overflow-y-auto pr-2 scrollbar-hide">
-          {Object.entries(groupedFeatures).map(([category, items]) => (
+    <div className="flex flex-col h-full">
+      <div className="px-6 py-4 border-b border-default-200 shrink-0">
+        <Input
+          placeholder={t("common.search", "搜索...")}
+          value={searchQuery}
+          onValueChange={setSearchQuery}
+          startContent={<Search className="w-4 h-4 text-default-400" />}
+          size="sm"
+          variant="faded"
+        />
+      </div>
+      <div className="flex-1 overflow-y-auto px-6 py-4">
+        <div className="space-y-6">
+          {Object.entries(groupedFeatures).map(([category, group]) => {
+            const topLevelPref = group.topLevel ? getPreference(group.topLevel.id) : null;
+            return (
             <div key={category} className="space-y-3">
-              <h3 className="text-sm font-semibold text-default-500 sticky top-0 bg-background/90 backdrop-blur-sm py-1 z-10">
-                {category}
-              </h3>
+              <div className="flex items-center justify-between sticky top-0 bg-background/90 backdrop-blur-sm py-1 z-10">
+                <h3 className="text-sm font-semibold text-default-500">
+                  {category}
+                </h3>
+                {group.topLevel && (
+                  <Button
+                    size="sm"
+                    variant="flat"
+                    color={topLevelPref?.visible ? "primary" : "default"}
+                    onPress={() => toggleVisibility(group.topLevel!.id)}
+                    startContent={topLevelPref?.visible ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
+                  >
+                    {topLevelPref?.visible ? t("settings.visible", "显示") : t("settings.hidden", "隐藏")}
+                  </Button>
+                )}
+              </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {items.map(item => {
+                {group.items.map(item => {
                   const pref = getPreference(item.id)
                   return (
                     <div 
@@ -111,14 +130,15 @@ export function FeatureManagement() {
                 })}
               </div>
             </div>
-          ))}
+            )
+          })}
           {Object.keys(groupedFeatures).length === 0 && (
             <div className="text-center text-default-400 py-8">
               {t("common.noResults", "没有找到匹配的功能")}
             </div>
           )}
         </div>
-      </CardBody>
-    </Card>
+      </div>
+    </div>
   )
 }

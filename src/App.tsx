@@ -126,7 +126,7 @@ import { useFeatures } from "./hooks/useFeatures"
 
 function HomeView({ onNavigate }: { onNavigate: (toolId: ToolId, tabId?: string) => void }) {
   const { t } = useTranslation()
-  const { preferences } = useFeaturePreferences()
+  const { preferences, getPreference } = useFeaturePreferences()
   const features = useFeatures()
 
   const favoriteFeatures = features.filter(f => f.tabId && preferences[f.id]?.isFavorite && preferences[f.id]?.visible !== false)
@@ -180,7 +180,21 @@ function HomeView({ onNavigate }: { onNavigate: (toolId: ToolId, tabId?: string)
       gradient: "from-cyan-500/20 to-blue-500/20",
       iconColor: "text-cyan-600 dark:text-cyan-400"
     },
-  ]
+  ].filter(tool => {
+    const topLevelFeature = features.find(f => f.toolId === tool.id && !f.tabId);
+    if (topLevelFeature) {
+      const pref = getPreference(topLevelFeature.id);
+      if (!pref.visible) return false;
+    }
+
+    const subItems = features.filter(f => f.toolId === tool.id && f.tabId);
+    if (subItems.length > 0) {
+      const allHidden = subItems.every(f => !getPreference(f.id).visible);
+      if (allHidden) return false;
+    }
+
+    return true;
+  })
 
   return (
     <div className="space-y-12 py-8 animate-in fade-in duration-500">
