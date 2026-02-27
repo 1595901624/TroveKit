@@ -584,8 +584,8 @@ export function AesTab2() {
       >
         <Tab key="encrypt" title={t("tools.hash.encrypt")} />
         <Tab key="decrypt" title={t("tools.hash.decrypt")} />
-        <Tab key="fileEncrypt" title={t("tools.hash.fileEncrypt")} />
-        <Tab key="fileDecrypt" title={t("tools.hash.fileDecrypt")} />
+        {/* <Tab key="fileEncrypt" title={t("tools.hash.fileEncrypt")} /> */}
+        {/* <Tab key="fileDecrypt" title={t("tools.hash.fileDecrypt")} /> */}
       </Tabs>
 
       {(activeTab === "encrypt" || activeTab === "decrypt") && (
