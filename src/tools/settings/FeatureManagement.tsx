@@ -122,7 +122,7 @@ export function FeatureManagement() {
                           variant="light"
                           color={pref.isFavorite ? "warning" : "default"}
                           onPress={() => toggleFavorite(item.id)}
-                          title={t("settings.toggleFavorite", "切换常用")}
+                          title={t("settings.toggleFavorite")}
                         >
                           {/* 常用开关 */}
                           <Star className={`w-4 h-4 ${pref.isFavorite ? "fill-current" : ""}`} />
