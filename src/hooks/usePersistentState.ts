@@ -1,15 +1,28 @@
 import { useState, useEffect, Dispatch, SetStateAction } from 'react';
 import { getStoredItem, setStoredItem, removeStoredItem } from '../lib/store';
 
+function getInitialValueFromLocalStorage<T>(key: string, fallback: T): T {
+  if (typeof window === "undefined") return fallback;
+
+  try {
+    const localValue = window.localStorage.getItem(key);
+    if (localValue === null) return fallback;
+    return JSON.parse(localValue) as T;
+  } catch (e) {
+    console.error(`Failed to parse localStorage state for key "${key}"`, e);
+    return fallback;
+  }
+}
+
 export function usePersistentState<T>(key: string, initialState: T): [T, Dispatch<SetStateAction<T>>, () => void, boolean] {
-  const [state, setState] = useState<T>(initialState);
+  const [state, setState] = useState<T>(() => getInitialValueFromLocalStorage(key, initialState));
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
     let mounted = true;
     getStoredItem(key).then((stored) => {
       if (mounted) {
-        if (stored) {
+        if (stored !== null) {
           try {
             const parsed = JSON.parse(stored);
             setState(parsed);

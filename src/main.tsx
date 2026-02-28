@@ -36,7 +36,10 @@ self.MonacoEnvironment = {
 
 loader.config({ monaco });
 
-// Initialize language before first render to avoid flash of wrong language
+// 在首次渲染前预加载侧边栏持久化状态，避免启动时先展开再折叠的闪烁。
+await getStoredItem("sidebar-collapsed");
+
+// 在首次渲染前初始化语言，避免先显示错误语言再切换的闪烁。
 const storedLang = await getStoredItem("i18nextLng");
 if (storedLang) {
   await i18n.changeLanguage(storedLang);
