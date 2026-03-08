@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react"
 import { Input, Button } from "@heroui/react"
 import { useTranslation } from "react-i18next"
-import { Search, Star, Eye, EyeOff } from "lucide-react"
+import { Search, Eye, EyeOff } from "lucide-react"
 import { useFeatures } from "../../hooks/useFeatures"
 import { useFeaturePreferences } from "../../contexts/FeaturePreferencesContext"
 
@@ -61,10 +61,10 @@ export function FeatureManagement() {
   }
 
   // 切换是否加入常用
-  const toggleFavorite = (id: string) => {
-    const current = getPreference(id)
-    updatePreference(id, { isFavorite: !current.isFavorite })
-  }
+  // const toggleFavorite = (id: string) => {
+  //   const current = getPreference(id)
+  //   updatePreference(id, { isFavorite: !current.isFavorite })
+  // }
 
   return (
     <div className="flex flex-col h-full">
