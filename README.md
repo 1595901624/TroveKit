@@ -25,7 +25,7 @@ TroveKit bundles them into a fast desktop app, aiming for:
 - **Pure offline**: all data processing is local
 - **Fast workflow**: instant results (real-time updates supported)
 - **Traceable**: operation logs + one-click copy
-- **Cross-platform**: Windows / macOS / Linux
+- **Cross-platform**: Windows 10/11 (32‑bit & 64‑bit), macOS 10.13+ (Intel & Apple Silicon), Linux desktop (Ubuntu 24.04 x64/arm recommended, requires WebKit2GTK ≥4.1).
 
 Built with [Tauri v2](https://v2.tauri.app/) + [React](https://react.dev/), TroveKit focuses on a pure offline workflow.
 
@@ -144,10 +144,10 @@ Built with [Tauri v2](https://v2.tauri.app/) + [React](https://react.dev/), Trov
 
 ### Prerequisites
 
-- Node.js 18+
+- Node.js 18+
 - pnpm
 - Rust (stable)
-- Tauri v2 system dependencies (vary by OS; see Tauri docs if your first build fails)
+- Tauri v2 system dependencies (vary by OS; see Tauri docs if your first build fails). On Linux you must have WebKit2GTK 4.1 or newer installed (Ubuntu 24.04+ packages are compatible).
 
 ### Install
 

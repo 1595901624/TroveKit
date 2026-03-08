@@ -25,7 +25,7 @@ TroveKit 把它們集中到一個桌面應用裡，盡量做到：
 - **純離線**：所有資料處理都在本地
 - **操作快**：輸入即見結果（支援即時更新）
 - **可追溯**：帶操作日誌與一鍵複製
-- **跨平台**：Windows / macOS / Linux
+- **跨平台**：Windows 10/11（32 位和 64 位）、macOS 10.13+（Intel 與 Apple Silicon）、Linux 桌面（推薦 Ubuntu 24.04 x64/arm，需 WebKit2GTK ≥4.1）。
 
 TroveKit 基於 [Tauri v2](https://v2.tauri.app/) + [React](https://react.dev/) 建構，主打純離線與高效體驗。
 
@@ -143,7 +143,7 @@ TroveKit 基於 [Tauri v2](https://v2.tauri.app/) + [React](https://react.dev/) 
 - Node.js 18+
 - pnpm
 - Rust（stable）
-- Tauri v2 依賴（不同系統要求略有差異；若首次建構失敗，請按 Tauri 官方文件安裝系統依賴）
+- Tauri v2 依賴（不同系統要求略有差異；若首次建構失敗，請按 Tauri 官方文件安裝系統依賴）。Linux 需要安裝 WebKit2GTK 4.1 或更高版本（Ubuntu 24.04 內建）。
 
 ### 安裝
 
