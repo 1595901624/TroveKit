@@ -87,7 +87,7 @@ export function FeatureManagement() {
             return (
             <div key={category} className="space-y-3">
               {/* 分类标题 + 一级功能显示开关 */}
-              <div className="flex items-center justify-between sticky top-0 bg-background/90 backdrop-blur-sm py-1 z-10">
+              <div className="flex items-center justify-between sticky top-0 backdrop-blur-sm py-1 z-10">
                 <h3 className="text-sm font-semibold text-default-500">
                   {category}
                 </h3>
@@ -116,17 +116,17 @@ export function FeatureManagement() {
                         {item.label}
                       </span>
                       <div className="flex items-center gap-2 shrink-0">
-                        <Button
+                        {/* <Button
                           isIconOnly
                           size="sm"
                           variant="light"
                           color={pref.isFavorite ? "warning" : "default"}
                           onPress={() => toggleFavorite(item.id)}
                           title={t("settings.toggleFavorite")}
-                        >
+                        > */}
                           {/* 常用开关 */}
-                          <Star className={`w-4 h-4 ${pref.isFavorite ? "fill-current" : ""}`} />
-                        </Button>
+                          {/* <Star className={`w-4 h-4 ${pref.isFavorite ? "fill-current" : ""}`} /> */}
+                        {/* </Button> */}
                         <Button
                           isIconOnly
                           size="sm"
