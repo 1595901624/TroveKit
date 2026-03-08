@@ -609,6 +609,15 @@
     "light": "Light",
     "dark": "Dark",
     "system": "System",
+    "features": "Feature Settings",
+    "featuresDesc": "Manage which tools are visible.",
+    "featureManagement": "Feature Management",
+    "featureManagementDesc": "Manage visibility and favorite status of algorithms.",
+    "manage": "Manage",
+    "visible": "Visible",
+    "hidden": "Hidden",
+    "toggleVisibility": "Toggle visibility",
+    "toggleFavorite": "Toggle favorite",
     "about": "About"
   },
   "log": {

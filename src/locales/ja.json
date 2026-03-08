@@ -608,7 +608,16 @@
     "confirmClearLogs": "すべての操作ログを削除してもよろしいですか？この操作は取り消せません。",
     "light": "ライト",
     "dark": "ダーク",
-    "system": "システム", 
+    "system": "システム",
+    "features": "機能設定",
+    "featuresDesc": "ツールの表示/非表示を管理します。",
+    "featureManagement": "機能管理",
+    "featureManagementDesc": "アルゴリズムの表示/非表示およびお気に入り状態を管理します。",
+    "manage": "管理",
+    "visible": "表示",
+    "hidden": "非表示",
+    "toggleVisibility": "表示切替",
+    "toggleFavorite": "お気に入り切替",
     "about": "TroveKit について"
   },
   "log": {

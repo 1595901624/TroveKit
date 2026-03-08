@@ -71,7 +71,7 @@ export function FeatureManagement() {
       {/* 顶部搜索框 */}
       <div className="px-6 py-4 border-b border-default-200 shrink-0">
         <Input
-          placeholder={t("common.search", "搜索...")}
+          placeholder={t("common.search")}
           value={searchQuery}
           onValueChange={setSearchQuery}
           startContent={<Search className="w-4 h-4 text-default-400" />}
@@ -133,7 +133,7 @@ export function FeatureManagement() {
                           variant="light"
                           color={pref.visible ? "primary" : "default"}
                           onPress={() => toggleVisibility(item.id)}
-                          title={t("settings.toggleVisibility", "切换显示/隐藏")}
+                          title={t("settings.toggleVisibility")}
                         >
                           {/* 显示/隐藏开关 */}
                           {pref.visible ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
@@ -149,7 +149,7 @@ export function FeatureManagement() {
           {/* 没有搜索结果时的提示 */}
           {Object.keys(groupedFeatures).length === 0 && (
             <div className="text-center text-default-400 py-8">
-              {t("common.noResults", "没有找到匹配的功能")}
+              {t("common.noResults")}
             </div>
           )}
         </div>

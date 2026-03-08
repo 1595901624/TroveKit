@@ -608,7 +608,16 @@
     "confirmClearLogs": "確定要刪除所有操作紀錄嗎？此操作不可撤銷。",
     "light": "淺色",
     "dark": "深色",
-    "system": "系統", 
+    "system": "系統",
+    "features": "功能設定",
+    "featuresDesc": "管理工具的顯示與隱藏",
+    "featureManagement": "功能管理",
+    "featureManagementDesc": "管理算法的顯示/隱藏及常用狀態",
+    "manage": "管理",
+    "visible": "顯示",
+    "hidden": "隱藏",
+    "toggleVisibility": "切換顯示/隱藏",
+    "toggleFavorite": "切換常用",
     "about": "關於"
   },
   "log": {

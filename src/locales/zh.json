@@ -609,6 +609,15 @@
     "light": "浅色",
     "dark": "深色",
     "system": "系统",
+    "features": "功能设置",
+    "featuresDesc": "管理工具的显示与隐藏",
+    "featureManagement": "功能管理",
+    "featureManagementDesc": "管理算法的显示/隐藏及常用状态",
+    "manage": "管理",
+    "visible": "显示",
+    "hidden": "隐藏",
+    "toggleVisibility": "切换显示/隐藏",
+    "toggleFavorite": "切换常用",
     "about": "关于"
   },
   "log": {
