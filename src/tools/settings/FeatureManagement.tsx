@@ -99,7 +99,7 @@ export function FeatureManagement() {
                     onPress={() => toggleVisibility(group.topLevel!.id)}
                     startContent={topLevelPref?.visible ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
                   >
-                    {topLevelPref?.visible ? t("settings.visible", "显示") : t("settings.hidden", "隐藏")}
+                    {topLevelPref?.visible ? t("settings.visible") : t("settings.hidden")}
                   </Button>
                 )}
               </div>

@@ -96,14 +96,14 @@ export function Settings() {
         <div className="space-y-6">
           <Card className="shadow-sm border border-default-200">
             <CardHeader className="flex flex-col items-start px-6 pt-6 pb-0">
-              <h2 className="text-lg font-bold">{t("settings.features", "功能设置")}</h2>
-              <p className="text-default-500 text-small mt-1">{t("settings.featuresDesc", "管理工具的显示与隐藏")}</p>
+              <h2 className="text-lg font-bold">{t("settings.features")}</h2>
+              <p className="text-default-500 text-small mt-1">{t("settings.featuresDesc")}</p>
             </CardHeader>
             <CardBody className="px-6 py-6 gap-6">
               <div className="flex items-center justify-between">
                 <div className="flex flex-col">
-                  <span className="text-medium font-medium">{t("settings.featureManagement", "功能管理")}</span>
-                  <span className="text-tiny text-default-400">{t("settings.featureManagementDesc", "管理算法的显示/隐藏及常用状态")}</span>
+                  <span className="text-medium font-medium">{t("settings.featureManagement")}</span>
+                  <span className="text-tiny text-default-400">{t("settings.featureManagementDesc")}</span>
                 </div>
                 <Button
                   color="primary"
@@ -111,7 +111,7 @@ export function Settings() {
                   startContent={<Settings2 size={18} />}
                   onPress={featureModal.onOpen}
                 >
-                  {t("settings.manage", "管理")}
+                  {t("settings.manage")}
                 </Button>
               </div>
             </CardBody>
@@ -186,7 +186,7 @@ export function Settings() {
           {() => (
             <>
               <ModalHeader className="flex flex-col gap-1">
-                {t("settings.featureManagement", "功能管理")}
+                {t("settings.featureManagement")}
               </ModalHeader>
               <ModalBody>
                 <FeatureManagement />
