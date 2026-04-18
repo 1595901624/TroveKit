@@ -15,31 +15,73 @@ import { Card, CardBody } from "@heroui/react"
 import { ArrowRight, Lock, Code2, FileCode2, Shield, Wand2, ArrowRightLeft } from "lucide-react"
 import { useTranslation } from "react-i18next"
 
+/**
+ * 主应用组件
+ * 整个应用程序的根组件，负责管理全局状态和渲染主布局
+ * 
+ * 状态管理:
+ * - activeTool: 当前选中的工具/页面
+ * - activeTab: 当前工具的活跃标签页
+ * - visitedTools: 用户访问过的工具集合，用于实现懒加载
+ * 
+ * 功能:
+ * - 使用 ThemeProvider 提供主题支持
+ * - 使用 useTranslation 进行国际化
+ * - 维护用户访问历史以优化性能
+ */
 function App() {
+  // 当前选中的工具ID，默认为首页
   const [activeTool, setActiveTool] = useState<ToolId>("home")
+  // 当前工具的活跃标签页（可选）
   const [activeTab, setActiveTab] = useState<string | undefined>()
+  // 用户访问过的工具集合，用于条件渲染和性能优化
   const [visitedTools, setVisitedTools] = useState<Set<ToolId>>(new Set(["home"]))
+  // 翻译函数，用于获取国际化文本
   const { t } = useTranslation()
 
+  /**
+   * 副作用：跟踪用户访问的工具
+   * 当 activeTool 改变时，将其添加到已访问工具集合中
+   * 这样可以延迟加载未访问的工具组件，优化初始加载性能
+   */
   useEffect(() => {
     setVisitedTools(prev => {
+      // 如果当前工具已经访问过，直接返回之前的集合
       if (prev.has(activeTool)) return prev
+      // 创建新集合并添加当前工具
       const newSet = new Set(prev)
       newSet.add(activeTool)
       return newSet
     })
   }, [activeTool])
 
+  /**
+   * 处理工具切换
+   * 当用户从侧边栏选择不同工具时调用
+   * @param id - 要切换到的工具ID
+   */
   const handleToolChange = (id: ToolId) => {
     setActiveTool(id)
+    // 切换工具时重置标签页状态
     setActiveTab(undefined)
   }
 
+  /**
+   * 处理导航操作
+   * 支持导航到指定工具的特定标签页
+   * @param toolId - 目标工具ID
+   * @param tabId - 可选的目标标签页ID
+   */
   const handleNavigate = (toolId: ToolId, tabId?: string) => {
     setActiveTool(toolId)
     setActiveTab(tabId)
   }
 
+  /**
+   * 获取当前工具的标题
+   * 根据当前活跃的工具ID返回对应的国际化标题
+   * @returns 当前页面显示的标题文本
+   */
   const getTitle = () => {
     switch (activeTool) {
       case "home": return t("home.title")
@@ -56,6 +98,13 @@ function App() {
     }
   }
 
+  /**
+   * 主页渲染逻辑：
+   * 使用条件渲染和visitedTools集合实现按需加载
+   * 只有当用户访问过某个工具时才会渲染对应的组件
+   * activeTool === 工具ID 时显示该组件，否则隐藏
+   * 这种方式可以提高初始加载性能
+   */
   return (
     <ThemeProvider storageKey="trovekit-theme">
       <Layout
@@ -124,13 +173,40 @@ function App() {
 import { useFeaturePreferences } from "./contexts/FeaturePreferencesContext"
 import { useFeatures } from "./hooks/useFeatures"
 
+/**
+ * 首页视图组件
+ * 应用的欢迎页面，展示所有可用工具的卡片和常用功能
+ * 
+ * Props:
+ * - onNavigate: 导航回调函数，用于跳转到指定工具
+ * 
+ * 功能:
+ * - 显示工具分类卡片（加密、编码器、转换器等）
+ * - 显示用户收藏的常用功能
+ * - 根据用户偏好过滤显示的工具
+ */
 function HomeView({ onNavigate }: { onNavigate: (toolId: ToolId, tabId?: string) => void }) {
+  // 翻译函数
   const { t } = useTranslation()
+  // 用户功能偏好设置
   const { preferences, getPreference } = useFeaturePreferences()
+  // 所有可用功能列表
   const features = useFeatures()
 
+  /**
+   * 获取用户收藏的功能列表
+   * 过滤条件：
+   * 1. 功能必须有 tabId（子功能）
+   * 2. 功能必须被设置为收藏
+   * 3. 功能必须可见
+   */
   const favoriteFeatures = features.filter(f => f.tabId && preferences[f.id]?.isFavorite && preferences[f.id]?.visible !== false)
 
+  /**
+   * 工具卡片配置数组
+   * 定义首页显示的各个工具分类卡片
+   * 包含：ID、标题、描述、图标、渐变背景、图标颜色
+   */
   const tools = [
     {
       id: "crypto",
@@ -180,6 +256,13 @@ function HomeView({ onNavigate }: { onNavigate: (toolId: ToolId, tabId?: string)
       gradient: "from-cyan-500/20 to-blue-500/20",
       iconColor: "text-cyan-600 dark:text-cyan-400"
     },
+    /**
+     * 过滤工具卡片
+     * 根据用户偏好设置隐藏或显示某些工具
+     * 检查逻辑：
+     * 1. 检查顶级功能是否可见
+     * 2. 检查该工具下的所有子功能是否都隐藏
+     */
   ].filter(tool => {
     const topLevelFeature = features.find(f => f.toolId === tool.id && !f.tabId);
     if (topLevelFeature) {
@@ -196,8 +279,16 @@ function HomeView({ onNavigate }: { onNavigate: (toolId: ToolId, tabId?: string)
     return true;
   })
 
+  /**
+   * 首页视图渲染
+   * 包含三个主要部分：
+   * 1. 欢迎标题区域 - 显示应用名称和副标题
+   * 2. 工具卡片网格 - 展示所有可用工具分类
+   * 3. 常用功能区域 - 显示用户收藏的功能（如果有）
+   */
   return (
     <div className="space-y-12 py-8 animate-in fade-in duration-500">
+      {/* 欢迎标题区域 */}
       <div className="space-y-3 max-w-2xl">
         <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight">
           <span className="bg-clip-text text-transparent bg-gradient-to-r from-foreground via-foreground/90 to-foreground/70">
@@ -209,6 +300,7 @@ function HomeView({ onNavigate }: { onNavigate: (toolId: ToolId, tabId?: string)
         </p>
       </div>
 
+      {/* 工具卡片网格区域 - 使用响应式布局 */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {tools.map((item) => (
           <Card
@@ -219,15 +311,18 @@ function HomeView({ onNavigate }: { onNavigate: (toolId: ToolId, tabId?: string)
             shadow="none"
           >
             <CardBody className="p-8 space-y-6">
+              {/* 工具图标带渐变背景 */}
               <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${item.gradient} flex items-center justify-center transition-transform duration-500 group-hover:scale-110 group-hover:rotate-3`}>
                 <div className={item.iconColor}>
                   {item.icon}
                 </div>
               </div>
+              {/* 工具标题和描述 */}
               <div className="space-y-2">
                 <h3 className="font-bold text-lg tracking-tight group-hover:text-primary transition-colors">{item.title}</h3>
                 <p className="text-default-500 text-sm leading-relaxed line-clamp-2">{item.desc}</p>
               </div>
+              {/* "Get started" 悬停提示 */}
               <div className="pt-2 flex items-center gap-2 text-primary font-medium opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300">
                 <span className="text-xs">Get started</span>
                 <ArrowRight className="w-4 h-4" />
@@ -237,6 +332,7 @@ function HomeView({ onNavigate }: { onNavigate: (toolId: ToolId, tabId?: string)
         ))}
       </div>
 
+      {/* 常用功能区域 - 仅在有收藏功能时显示 */}
       {favoriteFeatures.length > 0 && (
         <div className="space-y-6 pt-8 border-t border-default-200/50">
           <h3 className="text-xl font-bold tracking-tight">{t("home.frequentlyUsed", "常用功能")}</h3>
