@@ -87,9 +87,38 @@ export function AesTab2() {
   const folderInputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
+    if (!isLoaded) return
     if (operation === "decrypt" && aesInputFormat === "String") setAesInputFormat("Base64")
     if (operation === "encrypt" && aesOutputFormat === "String") setAesOutputFormat("Base64")
-  }, [operation, aesInputFormat, aesOutputFormat])
+  }, [operation, aesInputFormat, aesOutputFormat, isLoaded])
+
+  // 分别记住加密和解密的输入格式
+  useEffect(() => {
+    if (!isLoaded) return
+    const stored = localStorage.getItem(`aes_${operation}_inputFormat`)
+    if (stored) {
+      setAesInputFormat(stored)
+    }
+  }, [operation, isLoaded])
+
+  useEffect(() => {
+    if (!isLoaded) return
+    localStorage.setItem(`aes_${operation}_inputFormat`, aesInputFormat)
+  }, [aesInputFormat, operation, isLoaded])
+
+  // 分别记住加密和解密的输出格式
+  useEffect(() => {
+    if (!isLoaded) return
+    const stored = localStorage.getItem(`aes_${operation}_outputFormat`)
+    if (stored) {
+      setAesOutputFormat(stored)
+    }
+  }, [operation, isLoaded])
+
+  useEffect(() => {
+    if (!isLoaded) return
+    localStorage.setItem(`aes_${operation}_outputFormat`, aesOutputFormat)
+  }, [aesOutputFormat, operation, isLoaded])
 
   useEffect(() => {
     let mounted = true;
@@ -106,15 +135,9 @@ export function AesTab2() {
           if (state.aesIvType) setAesIvType(state.aesIvType);
           if (state.aesMode) setAesMode(state.aesMode);
           if (state.aesPadding) setAesPadding(state.aesPadding);
-          if (state.aesInputFormat) setAesInputFormat(state.aesInputFormat);
-          if (state.aesOutputFormat) setAesOutputFormat(state.aesOutputFormat);
           if (state.activeTab) setActiveTab(state.activeTab);
           if (state.fileOperation) setFileOperation(state.fileOperation);
           if (state.fileOutputDir) setFileOutputDir(state.fileOutputDir);
-          if (state.aesFormat && !state.aesInputFormat && !state.aesOutputFormat) {
-            setAesInputFormat(state.aesFormat);
-            setAesOutputFormat(state.aesFormat);
-          }
         } catch (e) {
           console.error("Failed to parse AesTab state", e);
         }
@@ -153,14 +176,12 @@ export function AesTab2() {
         aesIvType,
         aesMode,
         aesPadding,
-        aesInputFormat,
-        aesOutputFormat,
         activeTab,
         fileOperation,
         fileOutputDir
       }))
     }
-  }, [aesInput, aesOutput, aesKey, aesKeyType, aesKeySize, aesIv, aesIvType, aesMode, aesPadding, aesInputFormat, aesOutputFormat, activeTab, fileOperation, fileOutputDir, isLoaded])
+  }, [aesInput, aesOutput, aesKey, aesKeyType, aesKeySize, aesIv, aesIvType, aesMode, aesPadding, activeTab, fileOperation, fileOutputDir, isLoaded])
 
   useEffect(() => {
     if (folderInputRef.current) {
@@ -574,10 +595,14 @@ export function AesTab2() {
         onSelectionChange={(k) => {
           const selected = k as "encrypt" | "decrypt" | "fileEncrypt" | "fileDecrypt"
           setActiveTab(selected)
-          if (selected === "encrypt" || selected === "decrypt") {
-            setOperation(selected)
-          } else {
-            setFileOperation(selected)
+          if (selected === "encrypt") {
+            setOperation("encrypt")
+          } else if (selected === "decrypt") {
+            setOperation("decrypt")
+          } else if (selected === "fileEncrypt") {
+            setFileOperation("fileEncrypt")
+          } else if (selected === "fileDecrypt") {
+            setFileOperation("fileDecrypt")
           }
         }}
         className="w-full"
