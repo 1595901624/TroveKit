@@ -6,34 +6,54 @@ import { useTranslation } from "react-i18next"
 import { useLog, type LogEntry } from "../contexts/LogContext"
 import { cn } from "../lib/utils"
 
+/** 日志会话摘要信息 */
 type LogSessionSummary = {
+  /** 会话 ID */
   sessionId: string
+  /** 最新日志的时间戳 */
   latestTimestamp: number
+  /** 日志数量 */
   count: number
+  /** 会话备注 */
   note?: string
 }
 
+/**
+ * 日志管理工具组件
+ * 提供日志会话管理、日志查看、搜索、删除等功能
+ */
 export function LogManagementTool() {
   const { t } = useTranslation()
   const { currentSessionId, refresh: refreshCurrentSession, switchToSession } = useLog()
 
+  // 加载状态
   const [loadingSessions, setLoadingSessions] = useState(true)
   const [loadingLogs, setLoadingLogs] = useState(false)
+  // 数据状态
   const [sessions, setSessions] = useState<LogSessionSummary[]>([])
   const [activeSessionId, setActiveSessionId] = useState<string>("")
   const [logs, setLogs] = useState<LogEntry[]>([])
   const [query, setQuery] = useState("")
   const [error, setError] = useState<string | null>(null)
 
+  // 编辑会话备注的状态
   const [editingSessionNote, setEditingSessionNote] = useState<string | null>(null)
   const [sessionNoteInput, setSessionNoteInput] = useState("")
 
+  /**
+   * 获取尾部空白字符的描述
+   * @param trailing 尾部空白字符串
+   */
   const getTrailingDescription = (trailing: string) => {
     if (trailing.includes('\n') || trailing.includes('\r')) return t('log.trailingNewline')
     if (trailing.includes('\t')) return t('log.trailingTab')
     return t('log.trailingSpaces')
   }
 
+  /**
+   * 渲染高亮文本，突出显示尾部空白字符
+   * @param text 要渲染的文本
+   */
   const renderHighlightedText = (text?: string) => {
     if (typeof text !== 'string') return text
     const match = text.match(/([ \t\n\r]+)$/)
@@ -59,6 +79,7 @@ export function LogManagementTool() {
     return text
   }
 
+  /** 根据搜索查询条件过滤日志 */
   const filteredLogs = useMemo(() => {
     const q = query.trim().toLowerCase()
     if (!q) return logs
@@ -76,6 +97,10 @@ export function LogManagementTool() {
     })
   }, [logs, query])
 
+  /**
+   * 重新加载会话列表
+   * @param keepActive 是否保持当前选中的会话
+   */
   const reloadSessions = async (keepActive = false) => {
     setError(null)
     setLoadingSessions(true)
@@ -91,7 +116,7 @@ export function LogManagementTool() {
             setLogs([])
          }
       } else if (activeSessionId && !result.find(s => s.sessionId === activeSessionId)) {
-          // If active session was deleted, select first or none
+          // 如果当前选中的会话已被删除，切换到第一个或清空
           if (result.length > 0) {
             setActiveSessionId(result[0].sessionId)
           } else {
@@ -106,6 +131,10 @@ export function LogManagementTool() {
     }
   }
 
+  /**
+   * 重新加载指定会话的日志
+   * @param sessionId 会话 ID
+   */
   const reloadLogs = async (sessionId: string) => {
     if (!sessionId) {
       setLogs([])
@@ -123,11 +152,13 @@ export function LogManagementTool() {
     }
   }
 
+  // 初始化时加载会话列表
   useEffect(() => {
     reloadSessions()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  // 当活动会话变化时加载对应日志
   useEffect(() => {
     if (activeSessionId) {
         reloadLogs(activeSessionId)
@@ -135,6 +166,7 @@ export function LogManagementTool() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeSessionId])
 
+  // 监听日志变化事件
   useEffect(() => {
     const handleLogsChanged = () => {
       reloadSessions(true)
@@ -146,9 +178,11 @@ export function LogManagementTool() {
     return () => window.removeEventListener('logs-changed', handleLogsChanged)
   }, [activeSessionId])
 
+  // 删除确认弹窗控制
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure()
   const [deleteTarget, setDeleteTarget] = useState<{ type: 'log' | 'session', id: string } | null>(null)
 
+  /** 执行删除确认 */
   const confirmDelete = async () => {
     if (!deleteTarget) return
     
@@ -161,18 +195,22 @@ export function LogManagementTool() {
     setDeleteTarget(null)
   }
 
+  /**
+   * 执行删除日志
+   * @param id 日志 ID
+   */
   const executeDeleteLog = async (id: string) => {
     try {
       await invoke("delete_log", { id })
-      // Optimistic update
+      // 乐观更新
       setLogs(prev => prev.filter(l => l.id !== id))
-      // Update session count locally or reload
+      // 更新会话计数或重新加载
       await reloadSessions(true)
       
-      // Notify other components
+      // 通知其他组件
       window.dispatchEvent(new CustomEvent('logs-changed'))
       
-      // If it belongs to current session, refresh LogPanel
+      // 如果属于当前会话，刷新日志面板
       if (activeSessionId === currentSessionId) {
         refreshCurrentSession()
       }
@@ -181,15 +219,19 @@ export function LogManagementTool() {
     }
   }
 
+  /**
+   * 执行删除会话
+   * @param sessionId 会话 ID
+   */
   const executeDeleteSession = async (sessionId: string) => {
     try {
       await invoke("delete_log_session", { sessionId })
       await reloadSessions()
       
-      // Notify other components
+      // 通知其他组件
       window.dispatchEvent(new CustomEvent('logs-changed'))
 
-      // If it IS the current session, refresh LogPanel
+      // 如果是当前会话，刷新日志面板
       if (sessionId === currentSessionId) {
         refreshCurrentSession()
       }
@@ -198,35 +240,62 @@ export function LogManagementTool() {
     }
   }
 
+  /**
+   * 处理删除日志点击
+   * @param id 日志 ID
+   * @param e 鼠标事件
+   */
   const handleDeleteLog = (id: string, e: React.MouseEvent) => {
     e.stopPropagation()
     setDeleteTarget({ type: 'log', id })
     onOpen()
   }
 
+  /**
+   * 处理删除会话点击
+   * @param sessionId 会话 ID
+   * @param e 鼠标事件
+   */
   const handleDeleteSession = (sessionId: string, e: React.MouseEvent) => {
     e.stopPropagation()
     setDeleteTarget({ type: 'session', id: sessionId })
     onOpen()
   }
 
+  /**
+   * 开始编辑会话备注
+   * @param sessionId 会话 ID
+   * @param currentNote 当前备注
+   * @param e 鼠标事件
+   */
   const handleStartEditSessionNote = (sessionId: string, currentNote?: string, e?: React.MouseEvent) => {
     e?.stopPropagation()
     setEditingSessionNote(sessionId)
     setSessionNoteInput(currentNote || "")
   }
 
+  /** 取消编辑会话备注 */
   const handleCancelEditSessionNote = (e?: React.MouseEvent) => {
     e?.stopPropagation()
     setEditingSessionNote(null)
     setSessionNoteInput("")
   }
 
+  /**
+   * 切换到指定会话
+   * @param sessionId 会话 ID
+   * @param e 鼠标事件
+   */
   const handleSwitchToSession = async (sessionId: string, e: React.MouseEvent) => {
     e.stopPropagation()
     await switchToSession(sessionId)
   }
 
+  /**
+   * 保存会话备注
+   * @param sessionId 会话 ID
+   * @param e 鼠标事件
+   */
   const handleSaveSessionNote = async (sessionId: string, e?: React.MouseEvent) => {
     e?.stopPropagation()
     try {
@@ -243,10 +312,10 @@ export function LogManagementTool() {
       setEditingSessionNote(null)
       setSessionNoteInput("")
       
-      // Notify other components
+      // 通知其他组件
       window.dispatchEvent(new CustomEvent('logs-changed'))
       
-      // If it's current session, sync with LogPanel
+      // 如果是当前会话，同步到日志面板
       if (sessionId === currentSessionId) {
         refreshCurrentSession()
       }
@@ -255,6 +324,10 @@ export function LogManagementTool() {
     }
   }
 
+  /**
+   * 根据日志类型获取对应图标
+   * @param type 日志类型
+   */
   const getLogIcon = (type: string) => {
     switch (type) {
       case "error": return <AlertCircle className="w-4 h-4 text-danger" />
