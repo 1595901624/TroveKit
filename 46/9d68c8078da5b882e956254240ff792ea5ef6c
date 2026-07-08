@@ -1,0 +1,130 @@
+src/components/MonacoEditor.tsx
+  s_06b016fc10d47d::t_a32739d8cba166 1-65
+src/App.tsx
+  s_06b016fc10d47d::t_955e4767661af6 1,10-18,124-126
+  s_06b016fc10d47d::t_fcfa30ca4d7982 9,123
+src/tools/formatter/JsonTab.tsx
+  s_06b016fc10d47d::t_a6dd5784d3dfc8 3-4
+src/tools/formatter/CssTab.tsx
+  s_06b016fc10d47d::t_a6dd5784d3dfc8 3-4
+src/tools/formatter/XmlTab.tsx
+  s_06b016fc10d47d::t_a6dd5784d3dfc8 3-4
+src/tools/encoder/JwtTab.tsx
+  s_06b016fc10d47d::t_a6dd5784d3dfc8 3,484
+src/tools/regex/RegexTool.tsx
+  s_06b016fc10d47d::t_a6dd5784d3dfc8 16-17
+src/tools/converter/JsonXmlTab.tsx
+  s_06b016fc10d47d::t_a6dd5784d3dfc8 3
+src/tools/formatter/SqlTab.tsx
+  s_06b016fc10d47d::t_a6dd5784d3dfc8 3-4
+src/tools/converter/JsonYamlTab.tsx
+  s_06b016fc10d47d::t_a6dd5784d3dfc8 3
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.0.0",
+  "base_commit_sha": "469d68c8078da5b882e956254240ff792ea5ef6c",
+  "prompts": {
+    "06b016fc10d47d94": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f4024-5111-7d21-a598-8f406711ccbc",
+        "model": "gpt-5.5"
+      },
+      "human_author": "luhaoyu <haoyu3@163.com>",
+      "messages": [],
+      "total_additions": 95,
+      "total_deletions": 47,
+      "accepted_lines": 0,
+      "overriden_lines": 0
+    }
+  },
+  "commit_stats": {
+    "git_diff_added_lines": 95,
+    "git_diff_deleted_lines": 47,
+    "ai_additions": 94,
+    "ai_accepted": 94,
+    "BYMC": 0,
+    "mixed_additions": 0,
+    "BYAC": 94,
+    "BYRC": 0,
+    "per_file": {
+      "src/App.tsx": {
+        "BYMC": [],
+        "BYAC": [
+          "1",
+          "9-18",
+          "123-126"
+        ],
+        "BYRC": []
+      },
+      "src/components/MonacoEditor.tsx": {
+        "BYMC": [],
+        "BYAC": [
+          "1-65"
+        ],
+        "BYRC": []
+      },
+      "src/tools/converter/JsonXmlTab.tsx": {
+        "BYMC": [],
+        "BYAC": [
+          "3"
+        ],
+        "BYRC": []
+      },
+      "src/tools/converter/JsonYamlTab.tsx": {
+        "BYMC": [],
+        "BYAC": [
+          "3"
+        ],
+        "BYRC": []
+      },
+      "src/tools/encoder/JwtTab.tsx": {
+        "BYMC": [],
+        "BYAC": [
+          "3",
+          "484"
+        ],
+        "BYRC": []
+      },
+      "src/tools/formatter/CssTab.tsx": {
+        "BYMC": [],
+        "BYAC": [
+          "3-4"
+        ],
+        "BYRC": []
+      },
+      "src/tools/formatter/JsonTab.tsx": {
+        "BYMC": [],
+        "BYAC": [
+          "3-4"
+        ],
+        "BYRC": []
+      },
+      "src/tools/formatter/SqlTab.tsx": {
+        "BYMC": [],
+        "BYAC": [
+          "3-4"
+        ],
+        "BYRC": []
+      },
+      "src/tools/formatter/XmlTab.tsx": {
+        "BYMC": [],
+        "BYAC": [
+          "3-4"
+        ],
+        "BYRC": []
+      },
+      "src/tools/regex/RegexTool.tsx": {
+        "BYMC": [],
+        "BYAC": [
+          "16-17"
+        ],
+        "BYRC": []
+      }
+    }
+  },
+  "ipa_account": "luhaoyu",
+  "commit_timestamp": 1783489134,
+  "requirement_id": ""
+}
