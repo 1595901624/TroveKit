@@ -1,7 +1,22 @@
+README.zh-HK.md
+  s_06b016fc10d47d::t_0b7d95d4238bc3 11,42,100,104-110,222
+  s_06b016fc10d47d::t_38e57a7da59ce0 41
+README.md
+  s_06b016fc10d47d::t_38e57a7da59ce0 41
+  s_06b016fc10d47d::t_2ae1e08a0200b9 11,42,100,104-109
+README.ja.md
+  s_06b016fc10d47d::t_f00c583e204060 11,42,100,104-110,208
+  s_06b016fc10d47d::t_38e57a7da59ce0 41
+README.zh-TW.md
+  s_06b016fc10d47d::t_38e57a7da59ce0 41
+  s_06b016fc10d47d::t_da5c21862a8f62 11,42,100,104-110,218
+README.zh-CN.md
+  s_06b016fc10d47d::t_38e57a7da59ce0 41
+  s_06b016fc10d47d::t_f6ce677da6ebc2 11,42,100,104-109
 ---
 {
   "schema_version": "authorship/3.0.0",
-  "git_ai_version": "1.5.9",
+  "git_ai_version": "1.0.0",
   "base_commit_sha": "750a34dba0d5b62f75d6f1a09fc230a0df32e636",
   "prompts": {
     "06b016fc10d47d94": {
@@ -11,10 +26,79 @@
         "model": "gpt-5.5"
       },
       "human_author": "luhaoyu <haoyu3@163.com>",
+      "messages": [],
       "total_additions": 59,
       "total_deletions": 14,
       "accepted_lines": 0,
       "overriden_lines": 0
     }
-  }
+  },
+  "commit_stats": {
+    "git_diff_added_lines": 58,
+    "git_diff_deleted_lines": 13,
+    "ai_additions": 56,
+    "ai_accepted": 56,
+    "BYMC": 0,
+    "mixed_additions": 0,
+    "BYAC": 56,
+    "BYRC": 0,
+    "per_file": {
+      "README.ja.md": {
+        "BYMC": [],
+        "BYAC": [
+          "11",
+          "41-42",
+          "100",
+          "104-110",
+          "208"
+        ],
+        "BYRC": []
+      },
+      "README.md": {
+        "BYMC": [],
+        "BYAC": [
+          "11",
+          "41-42",
+          "100",
+          "104-109"
+        ],
+        "BYRC": []
+      },
+      "README.zh-CN.md": {
+        "BYMC": [],
+        "BYAC": [
+          "11",
+          "41-42",
+          "100",
+          "104-109"
+        ],
+        "BYRC": []
+      },
+      "README.zh-HK.md": {
+        "BYMC": [],
+        "BYAC": [
+          "11",
+          "41-42",
+          "100",
+          "104-110",
+          "222"
+        ],
+        "BYRC": []
+      },
+      "README.zh-TW.md": {
+        "BYMC": [],
+        "BYAC": [
+          "11",
+          "41-42",
+          "100",
+          "104-110",
+          "218"
+        ],
+        "BYRC": []
+      }
+    }
+  },
+  "ipa_account": "luhaoyu",
+  "commit_timestamp": 1783521962,
+  "requirement_id": ""
 }
