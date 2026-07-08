@@ -12,6 +12,36 @@ import { getStoredItem, setStoredItem, removeStoredItem } from "../../lib/store"
 const STORAGE_KEY = "aes-tool-state"
 const MAX_FILE_SIZE = 30 * 1024 * 1024
 const FILE_MAGIC = new TextEncoder().encode("TKAESF1")
+type TextOperation = "encrypt" | "decrypt"
+type AesFormatState = Record<TextOperation, { input: string; output: string }>
+
+const DEFAULT_AES_FORMATS: AesFormatState = {
+  encrypt: { input: "String", output: "Base64" },
+  decrypt: { input: "Base64", output: "Base64" },
+}
+
+const normalizeAesFormats = (formats: Partial<Record<TextOperation, Partial<{ input: string; output: string }>>> = {}): AesFormatState => {
+  const normalized: AesFormatState = {
+    encrypt: {
+      input: formats.encrypt?.input || DEFAULT_AES_FORMATS.encrypt.input,
+      output: formats.encrypt?.output || DEFAULT_AES_FORMATS.encrypt.output,
+    },
+    decrypt: {
+      input: formats.decrypt?.input || DEFAULT_AES_FORMATS.decrypt.input,
+      output: formats.decrypt?.output || DEFAULT_AES_FORMATS.decrypt.output,
+    },
+  }
+
+  // 加密输入可以是 String，但解密输入不能是 String；加密输出也不能是 String。
+  if (normalized.decrypt.input === "String") normalized.decrypt.input = "Base64"
+  if (normalized.encrypt.output === "String") normalized.encrypt.output = "Base64"
+  return normalized
+}
+
+const getOperationFromActiveTab = (tab: string | undefined, fallback: TextOperation = "encrypt"): TextOperation => {
+  if (tab === "encrypt" || tab === "decrypt") return tab
+  return fallback
+}
 
 // 兼容 Tauri v1 / v2 的运行时检测（用于默认桌面目录和目录写入）
 const isTauriRuntime =
@@ -65,7 +95,7 @@ export function AesTab2() {
   const { addLog } = useLog()
 
   const [activeTab, setActiveTab] = useState<"encrypt" | "decrypt" | "fileEncrypt" | "fileDecrypt">("encrypt")
-  const [operation, setOperation] = useState<"encrypt" | "decrypt">("encrypt")
+  const [operation, setOperation] = useState<TextOperation>("encrypt")
   const [aesInput, setAesInput] = useState("")
   const [aesOutput, setAesOutput] = useState("")
   const [aesKey, setAesKey] = useState("")
@@ -75,8 +105,9 @@ export function AesTab2() {
   const [aesIvType, setAesIvType] = useState("text") 
   const [aesMode, setAesMode] = useState("CBC") 
   const [aesPadding, setAesPadding] = useState("Pkcs7") 
-  const [aesInputFormat, setAesInputFormat] = useState("String")
-  const [aesOutputFormat, setAesOutputFormat] = useState("Base64")
+  const [aesFormats, setAesFormats] = useState<AesFormatState>(DEFAULT_AES_FORMATS)
+  const [aesInputFormat, setAesInputFormat] = useState(DEFAULT_AES_FORMATS.encrypt.input)
+  const [aesOutputFormat, setAesOutputFormat] = useState(DEFAULT_AES_FORMATS.encrypt.output)
   const [fileOperation, setFileOperation] = useState<"fileEncrypt" | "fileDecrypt">("fileEncrypt")
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const [fileStatus, setFileStatus] = useState<{ type: "success" | "error" | "info"; message: string } | null>(null)
@@ -88,37 +119,11 @@ export function AesTab2() {
 
   useEffect(() => {
     if (!isLoaded) return
-    if (operation === "decrypt" && aesInputFormat === "String") setAesInputFormat("Base64")
-    if (operation === "encrypt" && aesOutputFormat === "String") setAesOutputFormat("Base64")
-  }, [operation, aesInputFormat, aesOutputFormat, isLoaded])
-
-  // 分别记住加密和解密的输入格式
-  useEffect(() => {
-    if (!isLoaded) return
-    const stored = localStorage.getItem(`aes_${operation}_inputFormat`)
-    if (stored) {
-      setAesInputFormat(stored)
-    }
+    const formats = normalizeAesFormats(aesFormats)
+    setAesFormats(formats)
+    setAesInputFormat(formats[operation].input)
+    setAesOutputFormat(formats[operation].output)
   }, [operation, isLoaded])
-
-  useEffect(() => {
-    if (!isLoaded) return
-    localStorage.setItem(`aes_${operation}_inputFormat`, aesInputFormat)
-  }, [aesInputFormat, operation, isLoaded])
-
-  // 分别记住加密和解密的输出格式
-  useEffect(() => {
-    if (!isLoaded) return
-    const stored = localStorage.getItem(`aes_${operation}_outputFormat`)
-    if (stored) {
-      setAesOutputFormat(stored)
-    }
-  }, [operation, isLoaded])
-
-  useEffect(() => {
-    if (!isLoaded) return
-    localStorage.setItem(`aes_${operation}_outputFormat`, aesOutputFormat)
-  }, [aesOutputFormat, operation, isLoaded])
 
   useEffect(() => {
     let mounted = true;
@@ -135,7 +140,24 @@ export function AesTab2() {
           if (state.aesIvType) setAesIvType(state.aesIvType);
           if (state.aesMode) setAesMode(state.aesMode);
           if (state.aesPadding) setAesPadding(state.aesPadding);
+          const restoredActiveTab = state.activeTab || "encrypt";
+          const restoredOperation = getOperationFromActiveTab(restoredActiveTab, state.operation || "encrypt");
+          const legacyFormats = {
+            encrypt: {
+              input: localStorage.getItem("aes_encrypt_inputFormat") || undefined,
+              output: localStorage.getItem("aes_encrypt_outputFormat") || undefined,
+            },
+            decrypt: {
+              input: localStorage.getItem("aes_decrypt_inputFormat") || undefined,
+              output: localStorage.getItem("aes_decrypt_outputFormat") || undefined,
+            },
+          };
+          const restoredFormats = normalizeAesFormats(state.aesFormats || legacyFormats);
           if (state.activeTab) setActiveTab(state.activeTab);
+          setOperation(restoredOperation);
+          setAesFormats(restoredFormats);
+          setAesInputFormat(restoredFormats[restoredOperation].input);
+          setAesOutputFormat(restoredFormats[restoredOperation].output);
           if (state.fileOperation) setFileOperation(state.fileOperation);
           if (state.fileOutputDir) setFileOutputDir(state.fileOutputDir);
         } catch (e) {
@@ -176,12 +198,32 @@ export function AesTab2() {
         aesIvType,
         aesMode,
         aesPadding,
+        operation,
+        aesFormats,
         activeTab,
         fileOperation,
         fileOutputDir
       }))
     }
-  }, [aesInput, aesOutput, aesKey, aesKeyType, aesKeySize, aesIv, aesIvType, aesMode, aesPadding, activeTab, fileOperation, fileOutputDir, isLoaded])
+  }, [aesInput, aesOutput, aesKey, aesKeyType, aesKeySize, aesIv, aesIvType, aesMode, aesPadding, operation, aesFormats, activeTab, fileOperation, fileOutputDir, isLoaded])
+
+  const updateAesInputFormat = (format: string) => {
+    const nextFormat = operation === "decrypt" && format === "String" ? "Base64" : format
+    setAesInputFormat(nextFormat)
+    setAesFormats(prev => normalizeAesFormats({
+      ...prev,
+      [operation]: { ...prev[operation], input: nextFormat },
+    }))
+  }
+
+  const updateAesOutputFormat = (format: string) => {
+    const nextFormat = operation === "encrypt" && format === "String" ? "Base64" : format
+    setAesOutputFormat(nextFormat)
+    setAesFormats(prev => normalizeAesFormats({
+      ...prev,
+      [operation]: { ...prev[operation], output: nextFormat },
+    }))
+  }
 
   useEffect(() => {
     if (folderInputRef.current) {
@@ -625,7 +667,7 @@ export function AesTab2() {
                 label={t("tools.hash.inputFormat")}
                 className="w-40"
                 selectedKeys={new Set([aesInputFormat])}
-                onSelectionChange={(keys) => setAesInputFormat(Array.from(keys)[0] as string)}
+                onSelectionChange={(keys) => updateAesInputFormat(Array.from(keys)[0] as string)}
                 disallowEmptySelection
               >
                 <SelectItem key="String" isDisabled={operation !== "encrypt"}>{t("tools.hash.text")}</SelectItem>
@@ -667,7 +709,7 @@ export function AesTab2() {
                 label={t("tools.hash.outputFormat")}
                 className="w-40"
                 selectedKeys={new Set([aesOutputFormat])}
-                onSelectionChange={(keys) => setAesOutputFormat(Array.from(keys)[0] as string)}
+                onSelectionChange={(keys) => updateAesOutputFormat(Array.from(keys)[0] as string)}
                 disallowEmptySelection
               >
                 <SelectItem key="String" isDisabled={operation !== "decrypt"}>{t("tools.hash.text")}</SelectItem>
@@ -807,6 +849,13 @@ export function AesTab2() {
             setAesIv("")
             setSelectedFile(null)
             setFileStatus(null)
+            setAesFormats(DEFAULT_AES_FORMATS)
+            setAesInputFormat(DEFAULT_AES_FORMATS[operation].input)
+            setAesOutputFormat(DEFAULT_AES_FORMATS[operation].output)
+            localStorage.removeItem("aes_encrypt_inputFormat")
+            localStorage.removeItem("aes_encrypt_outputFormat")
+            localStorage.removeItem("aes_decrypt_inputFormat")
+            localStorage.removeItem("aes_decrypt_outputFormat")
             removeStoredItem(STORAGE_KEY)
           }}
           title={t("tools.hash.clearAll")}
