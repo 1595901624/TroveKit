@@ -1,19 +1,21 @@
-import { useState } from "react"
+import { lazy, Suspense, useState } from "react"
 import { Layout } from "./components/Layout"
 import { ThemeProvider } from "./components/theme-provider"
-import { HashTool } from "./tools/HashTool"
-import { EncoderTool } from "./tools/EncoderTool"
-import { ClassicalTool } from "./tools/ClassicalTool"
-import { GeneratorTool } from "./tools/GeneratorTool"
-import { Settings } from "./tools/Settings"
-import { FormatterTool } from "./tools/FormatterTool"
-import { ConverterTool } from "./tools/ConverterTool"
-import { OthersTool } from "./tools/OthersTool"
-import { LogManagementTool } from "./tools/LogManagementTool"
 import { ToolId } from "./components/Sidebar"
 import { Card, CardBody } from "@heroui/react"
 import { ArrowRight, Lock, Code2, FileCode2, Shield, Wand2, ArrowRightLeft } from "lucide-react"
 import { useTranslation } from "react-i18next"
+
+// 工具页使用懒加载，避免首页启动时一次性加载所有工具及其重依赖。
+const HashTool = lazy(() => import("./tools/HashTool").then(module => ({ default: module.HashTool })))
+const EncoderTool = lazy(() => import("./tools/EncoderTool").then(module => ({ default: module.EncoderTool })))
+const ClassicalTool = lazy(() => import("./tools/ClassicalTool").then(module => ({ default: module.ClassicalTool })))
+const GeneratorTool = lazy(() => import("./tools/GeneratorTool").then(module => ({ default: module.GeneratorTool })))
+const Settings = lazy(() => import("./tools/Settings").then(module => ({ default: module.Settings })))
+const FormatterTool = lazy(() => import("./tools/FormatterTool").then(module => ({ default: module.FormatterTool })))
+const ConverterTool = lazy(() => import("./tools/ConverterTool").then(module => ({ default: module.ConverterTool })))
+const OthersTool = lazy(() => import("./tools/OthersTool").then(module => ({ default: module.OthersTool })))
+const LogManagementTool = lazy(() => import("./tools/LogManagementTool").then(module => ({ default: module.LogManagementTool })))
 
 /**
  * 主应用组件
@@ -118,7 +120,10 @@ function App() {
         title={getTitle()}
       >
         <div className="max-w-7xl mx-auto h-full">
-          {renderActiveTool()}
+          {/* 工具 chunk 加载期间保持内容区高度，避免页面布局跳动。 */}
+          <Suspense fallback={<div className="h-full" />}>
+            {renderActiveTool()}
+          </Suspense>
         </div>
       </Layout>
     </ThemeProvider>

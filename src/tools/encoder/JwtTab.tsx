@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react"
 import { Textarea, Button, Input, Select, SelectItem, Card, CardBody } from "@heroui/react"
-import Editor from "@monaco-editor/react"
+import Editor from "../../components/MonacoEditor"
 import { Copy, Trash2, ArrowRight, ShieldCheck, ShieldAlert, KeyRound, RefreshCw, Wand2 } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import * as jose from "jose"

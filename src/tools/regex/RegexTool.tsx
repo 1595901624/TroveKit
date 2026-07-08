@@ -13,7 +13,8 @@ import {
   Textarea,
   addToast,
 } from "@heroui/react"
-import Editor, { OnMount } from "@monaco-editor/react"
+import Editor from "../../components/MonacoEditor"
+import type { OnMount } from "@monaco-editor/react"
 import { AlertCircle, Copy, FileDown, Trash2, ListPlus, ChevronDown } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { useTheme } from "../../components/theme-provider"

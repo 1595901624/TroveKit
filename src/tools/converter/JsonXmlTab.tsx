@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { Button, addToast } from "@heroui/react"
-import Editor from "@monaco-editor/react"
+import Editor from "../../components/MonacoEditor"
 import { ArrowRight, ArrowLeft, Copy, Trash2, BookOpen } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { XMLParser, XMLBuilder } from "fast-xml-parser"

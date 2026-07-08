@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react"
 import { Button, Card, CardBody, ButtonGroup } from "@heroui/react"
-import Editor, { OnMount } from "@monaco-editor/react"
+import Editor from "../../components/MonacoEditor"
+import type { OnMount } from "@monaco-editor/react"
 import { Copy, Trash2, CheckCircle2, AlertCircle, Minimize2, Maximize2, BookOpen } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { useTheme } from "../../components/theme-provider"
