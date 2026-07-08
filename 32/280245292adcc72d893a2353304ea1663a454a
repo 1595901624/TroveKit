@@ -1,0 +1,34 @@
+src/tools/ClassicalTool.tsx
+  s_06b016fc10d47d::t_6502e2b369dd75 1
+src/tools/EncoderTool.tsx
+  s_06b016fc10d47d::t_6502e2b369dd75 1
+src/tools/OthersTool.tsx
+  s_06b016fc10d47d::t_6502e2b369dd75 1
+src/tools/GeneratorTool.tsx
+  s_06b016fc10d47d::t_6502e2b369dd75 1
+src/tools/ConverterTool.tsx
+  s_06b016fc10d47d::t_6502e2b369dd75 1
+src/tools/FormatterTool.tsx
+  s_06b016fc10d47d::t_6502e2b369dd75 1
+src/tools/HashTool.tsx
+  s_06b016fc10d47d::t_6502e2b369dd75 1
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.9",
+  "base_commit_sha": "32280245292adcc72d893a2353304ea1663a454a",
+  "prompts": {
+    "06b016fc10d47d94": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f4024-5111-7d21-a598-8f406711ccbc",
+        "model": "gpt-5.5"
+      },
+      "human_author": "luhaoyu <haoyu3@163.com>",
+      "total_additions": 35,
+      "total_deletions": 14,
+      "accepted_lines": 0,
+      "overriden_lines": 0
+    }
+  }
+}
