@@ -1,0 +1,186 @@
+src/tools/GeneratorTool.tsx
+  s_06b016fc10d47d::t_f6a0db2b0a32c2 37
+  s_06b016fc10d47d::t_0c9942c80eef36 38,60-62
+src/App.tsx
+  s_06b016fc10d47d::t_6b6620f83fca37 1,86-111,121
+  s_06b016fc10d47d::t_f6a0db2b0a32c2 83-84
+src/tools/HashTool.tsx
+  s_06b016fc10d47d::t_0c9942c80eef36 66-67,88,92
+  s_06b016fc10d47d::t_f6a0db2b0a32c2 65
+src/tools/converter/TimestampTab.tsx
+  s_06b016fc10d47d::t_4b600ac6503690 9-11,31,34-51,54-56,58
+  s_06b016fc10d47d::t_f6a0db2b0a32c2 33,53
+src/tools/FormatterTool.tsx
+  s_06b016fc10d47d::t_f6a0db2b0a32c2 41
+  s_06b016fc10d47d::t_0c9942c80eef36 42,64-66
+src/tools/converter/JsonYamlTab.tsx
+  s_06b016fc10d47d::t_f6a0db2b0a32c2 22,40
+  s_06b016fc10d47d::t_4b600ac6503690 1,9,11,20-21,23-39,41-45
+src/tools/converter/JsonXmlTab.tsx
+  s_06b016fc10d47d::t_f6a0db2b0a32c2 22,40
+  s_06b016fc10d47d::t_4b600ac6503690 1,11,20-21,23-39,41-45,237
+  s_06b016fc10d47d::t_35dcada9a97d56 9
+src/tools/OthersTool.tsx
+  s_06b016fc10d47d::t_f6a0db2b0a32c2 51
+  s_06b016fc10d47d::t_0c9942c80eef36 52-53,76-78
+src/tools/ConverterTool.tsx
+  s_06b016fc10d47d::t_f6a0db2b0a32c2 36
+  s_06b016fc10d47d::t_0c9942c80eef36 37,59-61
+src/tools/EncoderTool.tsx
+  s_06b016fc10d47d::t_f6a0db2b0a32c2 47
+  s_06b016fc10d47d::t_0c9942c80eef36 48,70-72
+src/tools/ClassicalTool.tsx
+  s_06b016fc10d47d::t_f6a0db2b0a32c2 39
+  s_06b016fc10d47d::t_0c9942c80eef36 40-41,62,66
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.0.0",
+  "base_commit_sha": "618f15e039258b3f2feb703a7759f3ab3bce4c9a",
+  "prompts": {
+    "06b016fc10d47d94": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f4024-5111-7d21-a598-8f406711ccbc",
+        "model": "gpt-5.5"
+      },
+      "human_author": "luhaoyu <haoyu3@163.com>",
+      "messages": [],
+      "total_additions": 165,
+      "total_deletions": 119,
+      "accepted_lines": 0,
+      "overriden_lines": 0
+    }
+  },
+  "commit_stats": {
+    "git_diff_added_lines": 162,
+    "git_diff_deleted_lines": 116,
+    "ai_additions": 153,
+    "ai_accepted": 153,
+    "BYMC": 9,
+    "mixed_additions": 0,
+    "BYAC": 153,
+    "BYRC": 0,
+    "per_file": {
+      "src/App.tsx": {
+        "BYMC": [],
+        "BYAC": [
+          "1",
+          "83-84",
+          "86-111",
+          "121"
+        ],
+        "BYRC": []
+      },
+      "src/tools/ClassicalTool.tsx": {
+        "BYMC": [],
+        "BYAC": [
+          "39-41",
+          "62",
+          "66"
+        ],
+        "BYRC": []
+      },
+      "src/tools/ConverterTool.tsx": {
+        "BYMC": [
+          "38"
+        ],
+        "BYAC": [
+          "36-37",
+          "59-61"
+        ],
+        "BYRC": []
+      },
+      "src/tools/EncoderTool.tsx": {
+        "BYMC": [
+          "49"
+        ],
+        "BYAC": [
+          "47-48",
+          "70-72"
+        ],
+        "BYRC": []
+      },
+      "src/tools/FormatterTool.tsx": {
+        "BYMC": [
+          "43"
+        ],
+        "BYAC": [
+          "41-42",
+          "64-66"
+        ],
+        "BYRC": []
+      },
+      "src/tools/GeneratorTool.tsx": {
+        "BYMC": [
+          "39"
+        ],
+        "BYAC": [
+          "37-38",
+          "60-62"
+        ],
+        "BYRC": []
+      },
+      "src/tools/HashTool.tsx": {
+        "BYMC": [],
+        "BYAC": [
+          "65-67",
+          "88",
+          "92"
+        ],
+        "BYRC": []
+      },
+      "src/tools/OthersTool.tsx": {
+        "BYMC": [],
+        "BYAC": [
+          "51-53",
+          "76-78"
+        ],
+        "BYRC": []
+      },
+      "src/tools/converter/JsonXmlTab.tsx": {
+        "BYMC": [
+          "10"
+        ],
+        "BYAC": [
+          "1",
+          "9",
+          "11",
+          "20-45",
+          "237"
+        ],
+        "BYRC": []
+      },
+      "src/tools/converter/JsonYamlTab.tsx": {
+        "BYMC": [
+          "10"
+        ],
+        "BYAC": [
+          "1",
+          "9",
+          "11",
+          "20-45"
+        ],
+        "BYRC": []
+      },
+      "src/tools/converter/TimestampTab.tsx": {
+        "BYMC": [
+          "32",
+          "52",
+          "57"
+        ],
+        "BYAC": [
+          "9-11",
+          "31",
+          "33-51",
+          "53-56",
+          "58"
+        ],
+        "BYRC": []
+      }
+    }
+  },
+  "ipa_account": "luhaoyu",
+  "commit_timestamp": 1783488420,
+  "requirement_id": ""
+}
