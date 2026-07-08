@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.0] - 2026-07-08
+
+### Fixed
+- Optimized memory usage to reduce application startup time and memory footprint.
+- AES tab state persistence has been fixed to ensure that users can correctly restore their previous encryption/decryption configurations after switching tabs.
+
 ## [0.2.4] - 2026-03-08
 
 ### Added
