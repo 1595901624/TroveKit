@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { Tabs, Tab } from "@heroui/react"
 import { useTranslation } from "react-i18next"
 import { QrTool } from "./qr/QrTool"
@@ -13,6 +13,7 @@ interface GeneratorToolProps {
 export function GeneratorTool({ activeTab }: GeneratorToolProps) {
   const { t } = useTranslation()
   const [selectedKey, setSelectedKey] = useState<string>("uuid")
+  const appliedActiveTabRef = useRef<string | undefined>(undefined)
   const { getPreference } = useFeaturePreferences()
 
   const tabs = [
@@ -23,7 +24,9 @@ export function GeneratorTool({ activeTab }: GeneratorToolProps) {
   const visibleTabs = tabs.filter(tab => getPreference(tab.featureId).visible)
 
   useEffect(() => {
-    if (activeTab && visibleTabs.some(t => t.id === activeTab)) {
+    // 搜索入口传入的 activeTab 只应用一次，避免用户点击同级 Tab 后又被拉回搜索目标。
+    if (activeTab && activeTab !== appliedActiveTabRef.current && visibleTabs.some(t => t.id === activeTab)) {
+      appliedActiveTabRef.current = activeTab
       setSelectedKey(activeTab)
     } else if (visibleTabs.length > 0 && !visibleTabs.some(t => t.id === selectedKey)) {
       setSelectedKey(visibleTabs[0].id)

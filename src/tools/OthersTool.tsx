@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { Tabs, Tab } from "@heroui/react"
 import { useTranslation } from "react-i18next"
 import { RegexTool } from "./regex/RegexTool"
@@ -23,6 +23,7 @@ export function OthersTool({ activeTab }: OthersToolProps) {
   const { t } = useTranslation()
   // 当前选中的标签页 key，默认为 "regex"
   const [selectedKey, setSelectedKey] = useState<string>("regex")
+  const appliedActiveTabRef = useRef<string | undefined>(undefined)
   const { getPreference } = useFeaturePreferences()
 
   // 定义所有可用的标签页配置
@@ -35,7 +36,9 @@ export function OthersTool({ activeTab }: OthersToolProps) {
 
   // 监听 activeTab 变化，自动切换到对应的标签页
   useEffect(() => {
-    if (activeTab && visibleTabs.some(t => t.id === activeTab)) {
+    // 搜索入口传入的 activeTab 只应用一次，避免用户点击同级 Tab 后又被拉回搜索目标。
+    if (activeTab && activeTab !== appliedActiveTabRef.current && visibleTabs.some(t => t.id === activeTab)) {
+      appliedActiveTabRef.current = activeTab
       setSelectedKey(activeTab)
     } else if (visibleTabs.length > 0 && !visibleTabs.some(t => t.id === selectedKey)) {
       // 如果当前选中的标签页不再可见，切换到第一个可见标签页
