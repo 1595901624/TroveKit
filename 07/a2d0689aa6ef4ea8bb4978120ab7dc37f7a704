@@ -1,0 +1,80 @@
+src/tools/regex/RegexTool.tsx
+  s_06b016fc10d47d::t_8df597951a3069 50,264
+src/lib/store.ts
+  s_06b016fc10d47d::t_4aaf8c30f8f6a7 12,17,28,31
+src/hooks/usePersistentState.ts
+  s_06b016fc10d47d::t_5c5f05993565e2 5-6
+src/tools/regex/regex.ts
+  s_06b016fc10d47d::t_c441ebd0356c10 48,67-68
+  s_06b016fc10d47d::t_11abd9cf58b2c8 116,119
+  s_06b016fc10d47d::t_77a8e1d3899473 106-115,117-118,120-123
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.0.0",
+  "base_commit_sha": "07a2d0689aa6ef4ea8bb4978120ab7dc37f7a704",
+  "prompts": {
+    "06b016fc10d47d94": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f4024-5111-7d21-a598-8f406711ccbc",
+        "model": "gpt-5.5"
+      },
+      "human_author": "luhaoyu <haoyu3@163.com>",
+      "messages": [],
+      "total_additions": 44,
+      "total_deletions": 37,
+      "accepted_lines": 0,
+      "overriden_lines": 0
+    }
+  },
+  "commit_stats": {
+    "git_diff_added_lines": 29,
+    "git_diff_deleted_lines": 22,
+    "ai_additions": 29,
+    "ai_accepted": 29,
+    "BYMC": 0,
+    "mixed_additions": 0,
+    "BYAC": 29,
+    "BYRC": 0,
+    "per_file": {
+      "src/hooks/usePersistentState.ts": {
+        "BYMC": [],
+        "BYAC": [
+          "5-6"
+        ],
+        "BYRC": []
+      },
+      "src/lib/store.ts": {
+        "BYMC": [],
+        "BYAC": [
+          "12",
+          "17",
+          "28",
+          "31"
+        ],
+        "BYRC": []
+      },
+      "src/tools/regex/RegexTool.tsx": {
+        "BYMC": [],
+        "BYAC": [
+          "50",
+          "264"
+        ],
+        "BYRC": []
+      },
+      "src/tools/regex/regex.ts": {
+        "BYMC": [],
+        "BYAC": [
+          "48",
+          "67-68",
+          "106-123"
+        ],
+        "BYRC": []
+      }
+    }
+  },
+  "ipa_account": "luhaoyu",
+  "commit_timestamp": 1783521496,
+  "requirement_id": ""
+}
