@@ -1,0 +1,125 @@
+src/tools/formatter/CssTab.tsx
+  s_06b016fc10d47d::t_28a22c0ce0eee9 25-30
+src/tools/regex/RegexTool.tsx
+  s_06b016fc10d47d::t_f7bdd2504fb0dc 300-309
+src/tools/formatter/JsonTab.tsx
+  s_06b016fc10d47d::t_ee27cc4419bd93 29-34
+src/contexts/LogContext.tsx
+  s_06b016fc10d47d::t_9c714ec2bfc4e4 87-91,93,98-99,110-111,113-114,116-127,143,175,178-182,185,273
+  s_06b016fc10d47d::t_88af27066901a6 92,94-97,100-109,112,115
+src/components/MonacoEditor.tsx
+  s_06b016fc10d47d::t_27a4df8719c1e5 64-72
+src/tools/formatter/XmlTab.tsx
+  s_06b016fc10d47d::t_a21122448d5924 25-30
+src/tools/formatter/SqlTab.tsx
+  s_06b016fc10d47d::t_ca904ba029fa75 26-31
+src-tauri/src/log_manager.rs
+  s_06b016fc10d47d::t_ed049027f115a7 15,53,66,93
+  s_06b016fc10d47d::t_bae081c0ce3d4a 9-14,54-65,67-92,94-105,258-260,314,320,324,335,449,455,459,470
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.0.0",
+  "base_commit_sha": "e3b5bc1636b65faba5dfe1e27a1475ea75a2c0f9",
+  "prompts": {
+    "06b016fc10d47d94": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f4024-5111-7d21-a598-8f406711ccbc",
+        "model": "gpt-5.5"
+      },
+      "human_author": "luhaoyu <haoyu3@163.com>",
+      "messages": [],
+      "total_additions": 176,
+      "total_deletions": 23,
+      "accepted_lines": 0,
+      "overriden_lines": 0
+    }
+  },
+  "commit_stats": {
+    "git_diff_added_lines": 168,
+    "git_diff_deleted_lines": 15,
+    "ai_additions": 164,
+    "ai_accepted": 164,
+    "BYMC": 0,
+    "mixed_additions": 0,
+    "BYAC": 164,
+    "BYRC": 0,
+    "per_file": {
+      "src-tauri/src/log_manager.rs": {
+        "BYMC": [],
+        "BYAC": [
+          "9-15",
+          "53-105",
+          "258-260",
+          "314",
+          "320",
+          "324",
+          "335",
+          "449",
+          "455",
+          "459",
+          "470"
+        ],
+        "BYRC": []
+      },
+      "src/components/MonacoEditor.tsx": {
+        "BYMC": [],
+        "BYAC": [
+          "64-72"
+        ],
+        "BYRC": []
+      },
+      "src/contexts/LogContext.tsx": {
+        "BYMC": [],
+        "BYAC": [
+          "87-127",
+          "143",
+          "175",
+          "178-182",
+          "185",
+          "273"
+        ],
+        "BYRC": []
+      },
+      "src/tools/formatter/CssTab.tsx": {
+        "BYMC": [],
+        "BYAC": [
+          "25-30"
+        ],
+        "BYRC": []
+      },
+      "src/tools/formatter/JsonTab.tsx": {
+        "BYMC": [],
+        "BYAC": [
+          "29-34"
+        ],
+        "BYRC": []
+      },
+      "src/tools/formatter/SqlTab.tsx": {
+        "BYMC": [],
+        "BYAC": [
+          "26-31"
+        ],
+        "BYRC": []
+      },
+      "src/tools/formatter/XmlTab.tsx": {
+        "BYMC": [],
+        "BYAC": [
+          "25-30"
+        ],
+        "BYRC": []
+      },
+      "src/tools/regex/RegexTool.tsx": {
+        "BYMC": [],
+        "BYAC": [
+          "300-309"
+        ],
+        "BYRC": []
+      }
+    }
+  },
+  "ipa_account": "luhaoyu",
+  "commit_timestamp": 1783521106,
+  "requirement_id": ""
+}
