@@ -8,7 +8,7 @@ English | [简体中文](README.zh-CN.md) | [繁體中文（香港）](README.zh
 </div>
 
 <div align="center">
-<a href="https://github.com/1595901624/trovekit/releases"><img src="https://img.shields.io/badge/version-v0.2.4-blue" alt="Version"></a>
+<a href="https://github.com/1595901624/trovekit/releases"><img src="https://img.shields.io/badge/version-v0.3.0-blue" alt="Version"></a>
 <a href="https://github.com/1595901624/trovekit/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-green" alt="License"></a>
 <img src="https://img.shields.io/badge/Windows-Supported-blue" alt="Windows">
 <img src="https://img.shields.io/badge/macOS-Supported-blue" alt="macOS">
@@ -38,7 +38,8 @@ Built with [Tauri v2](https://v2.tauri.app/) + [React](https://react.dev/), Trov
 - **Enhanced i18n**: English / 简体中文 / 繁體中文（HK/TW）/ 日本語 with optimized text sizing and translation quality
 - Logs & toasts: history, error feedback, copy buttons with **note functionality**
 - **State Persistence**: auto-save tool states (never lose your input)
-- **Regex Tool**: Real-time regular expression testing with syntax highlighting, match groups, highlighting and flag support (added in v0.2.4).
+- **Regex Tool**: Real-time regular expression testing with syntax highlighting, match groups, highlighting and flag support (updated in v0.3.0).
+- **Memory optimization**: tool pages, Monaco editors, logs, persisted state, and regex results are loaded and retained more conservatively in v0.3.0.
 
 ## 🧰 Utilities
 
@@ -96,8 +97,16 @@ Built with [Tauri v2](https://v2.tauri.app/) + [React](https://react.dev/), Trov
 - **Enhanced log interaction**: trailing whitespaces highlighted with visual markers (`·`, `→`, `↵`) and descriptive tooltips
 - **Redesigned Log Management Tool**: dedicated interface with a **master-detail layout** for viewing, searching, and managing all saved logs. Supports **deleting individual entries and entire sessions**
 - **Enhanced UUID logging**: displays generated UUIDs with configurable format (String/Hex/Base64/Binary), case, and hyphens. Shows count and format details in logs. Maximum 10 UUIDs displayed in log entries with clear indication when limit is reached
+- **Log memory limits**: current session logs are capped in memory, historical session loading is limited, and large input/output/details fields are truncated before being stored or restored
 - Structured method/input/output view
 - Error/success toasts + one-click copy
+
+### ⚙️ Performance & Memory
+
+- Tool pages and tabs are mounted on demand, reducing hidden component trees and editor instances.
+- Monaco editor loading is deferred until first use; editor models and view-state caches are explicitly released when tools unmount.
+- Tool state is persisted in Tauri Store only; old `localStorage` state is migrated once and then removed to avoid duplicate large text caches.
+- Regex match rendering is capped at 1,000 items, and replace-all counting no longer allocates a full match array.
 
 ## 🗺️ Roadmap
 

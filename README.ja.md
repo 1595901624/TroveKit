@@ -8,7 +8,7 @@
 </div>
 
 <div align="center">
-<a href="https://github.com/1595901624/trovekit/releases"><img src="https://img.shields.io/badge/version-v0.2.4-blue" alt="Version"></a>
+<a href="https://github.com/1595901624/trovekit/releases"><img src="https://img.shields.io/badge/version-v0.3.0-blue" alt="Version"></a>
 <a href="https://github.com/1595901624/trovekit/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-green" alt="License"></a>
 <img src="https://img.shields.io/badge/Windows-Supported-blue" alt="Windows">
 <img src="https://img.shields.io/badge/macOS-Supported-blue" alt="macOS">
@@ -38,6 +38,8 @@ TroveKit は [Tauri v2](https://v2.tauri.app/) + [React](https://react.dev/) で
 - **拡張国際化**：English / 簡體中文 / 繁體中文（HK/TW）/ 日本語、文字サイズと翻訳品質の最適化
 - ログとトースト：履歴、エラーフィードバック、コピーボタン、**メモ機能付き**
 - **状態の永続化**：ツール状態の自動保存（入力の損失を防ぐ）
+- **Regex Tool**：リアルタイムな正規表現テスト、構文ハイライト、マッチグループ表示、フラグ設定をサポート（v0.3.0 で最適化）。
+- **メモリ使用量の最適化**：v0.3.0 ではツールページ、Monaco エディター、ログ、永続化状態、正規表現結果をより控えめに読み込み・保持します。
 
 ## 🧰 ユーティリティ
 
@@ -95,14 +97,21 @@ TroveKit は [Tauri v2](https://v2.tauri.app/) + [React](https://react.dev/) で
 - **強化されたログインタラクション**：末尾の空白文字が視覚的なマーカー（`·`, `→`, `↵`）で強調表示され、説明用のツールチップが提供されます
 - **再設計されたログ管理ツール**：保存されたすべてのログを表示、検索、管理するための専用の **Master-Detail レイアウト** インターフェース。**個別のエントリやセッション全体の削除**をサポート
 - **UUID 生成のログ最適化**：生成された UUID とその設定形式（String/Hex/Base64/Binary）、大文字/小文字、ハイフン設定を表示。ログには数量と形式の詳細が表示され、最大10個のUUIDが表示され、制限超過時には明確な通知が表示されます
+- **ログのメモリ制限**：現在のセッションログはメモリ上の保持件数を制限し、履歴セッションの読み込み件数も制限します。大きな入力、出力、詳細フィールドは保存・復元前に切り詰められます
 - 構造化されたメソッド/入力/輸出ビュー
 - エラー/成功トースト + ワンクリックコピー
+
+### ⚙️ パフォーマンスとメモリ
+
+- ツールページと同階層の Tab は必要になった時だけマウントし、非表示のコンポーネントツリーやエディターインスタンスの常駐を減らします。
+- Monaco エディターは初回利用時まで遅延読み込みし、ツールのアンマウント時に editor model と view-state キャッシュを明示的に解放します。
+- ツール状態は Tauri Store のみに保存します。古い `localStorage` 状態は一度だけ移行し、その後削除して大きなテキストの重複キャッシュを避けます。
+- 正規表現のマッチ結果表示は最大 1000 件に制限し、一括置換の件数計算では完全なマッチ配列を追加で作成しません。
 
 ## 🗺️ Roadmap
 
 - Formatters：YAML
 - Generators：Lorem Ipsum / ランダムパスワードなど
-- 正規表現テスター：リアルタイムな正規表現テスト、構文ハイライトとマッチグループ表示。
 - テキスト比較：並列表示とインライン差分、空白無視やワード差分オプションをサポート。
 - よく使うツール：大文字小文字変換、改行コード正規化、空白除去などの便利ツール。
 

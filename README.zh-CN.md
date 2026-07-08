@@ -8,7 +8,7 @@
 </div>
 
 <div align="center">
-<a href="https://github.com/1595901624/trovekit/releases"><img src="https://img.shields.io/badge/version-v0.2.4-blue" alt="Version"></a>
+<a href="https://github.com/1595901624/trovekit/releases"><img src="https://img.shields.io/badge/version-v0.3.0-blue" alt="Version"></a>
 <a href="https://github.com/1595901624/trovekit/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-green" alt="License"></a>
 <img src="https://img.shields.io/badge/Windows-Supported-blue" alt="Windows">
 <img src="https://img.shields.io/badge/macOS-Supported-blue" alt="macOS">
@@ -38,7 +38,8 @@ TroveKit 基于 [Tauri v2](https://v2.tauri.app/) + [React](https://react.dev/) 
 - **增强国际化**：English / 简体中文 / 繁體中文（HK/TW）/ 日本語，优化文字大小与翻译质量
 - 日志与提示：操作记录、错误提示、复制按钮，支持**备注功能**
 - **状态持久化**：自动保存工具配置与内容（防止误触丢失）
-- **正则工具**：新增实时正则测试，支持语法高亮、匹配组显示与标志（flags）设置（已在 v0.2.4 中加入）。
+- **正则工具**：实时正则测试，支持语法高亮、匹配组显示与标志（flags）设置（已在 v0.3.0 中优化）。
+- **内存占用优化**：v0.3.0 对工具页、Monaco 编辑器、日志、持久化状态和正则结果做了更保守的按需加载与保留策略。
 
 ## 🧰 内置工具
 
@@ -96,8 +97,16 @@ TroveKit 基于 [Tauri v2](https://v2.tauri.app/) + [React](https://react.dev/) 
 - **增强日志交互**：尾随空白字符使用视觉标记（`·`, `→`, `↵`）高亮显示，并提供描述性提示
 - **重构日志管理工具**：全新的 **Master-Detail 布局** 界面，用于查看、搜索和管理所有已保存的日志。支持 **删除单个条目和整个会话**
 - **UUID 生成优化日志**：显示生成的 UUID 及其配置格式（String/Hex/Base64/Binary）、大小写、短横线设置。日志中显示数量和格式详情，最多显示 10 个 UUID，超出时有明确提示
+- **日志内存限制**：当前会话日志限制驻留数量，历史会话加载数量受限；大体积输入、输出、详情字段会在保存和恢复前截断
 - 方法、输入、输出结构化展示
 - 错误/成功提示 + 一键复制
+
+### ⚙️ 性能与内存优化
+
+- 工具页和同级 Tab 改为真正按需挂载，减少隐藏组件树和编辑器实例常驻。
+- Monaco 编辑器延迟到首次使用时加载；工具卸载时显式释放 editor model 与 view-state 缓存。
+- 工具状态只写入 Tauri Store；旧 `localStorage` 状态迁移一次后删除，避免大文本被重复缓存。
+- 正则匹配结果最多渲染 1000 条，批量替换计数不再额外创建完整匹配数组。
 
 ## 🗺️ Roadmap
 
