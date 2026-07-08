@@ -1,7 +1,29 @@
 ---
 {
   "schema_version": "authorship/3.0.0",
-  "git_ai_version": "1.5.9",
+  "git_ai_version": "1.0.0",
   "base_commit_sha": "9a249384bf96b98f61fb3a70caf5552fc420bba9",
-  "prompts": {}
+  "prompts": {},
+  "commit_stats": {
+    "git_diff_added_lines": 1,
+    "git_diff_deleted_lines": 1,
+    "ai_additions": 0,
+    "ai_accepted": 0,
+    "BYMC": 1,
+    "mixed_additions": 0,
+    "BYAC": 0,
+    "BYRC": 0,
+    "per_file": {
+      "index.html": {
+        "BYMC": [
+          "7"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      }
+    }
+  },
+  "ipa_account": "luhaoyu",
+  "commit_timestamp": 1783489735,
+  "requirement_id": ""
 }
