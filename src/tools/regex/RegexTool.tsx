@@ -47,6 +47,7 @@ interface RegexToolState {
 
 const STORAGE_KEY = "regex-tool-state" // 本地存储键名，用于保存工具状态
 const FLAG_ORDER = ["g", "i", "m", "s", "u"] as const // 正则表达式标志的显示顺序
+const MAX_RENDERED_MATCHES = 1000 // 限制右侧结果和 Monaco 高亮数量，避免大文本全局匹配占用过多内存
 /**
  * RegexTool 组件 - 正则表达式测试和替换工具
  * 提供正则表达式模式匹配、标志设置、文本替换等功能
@@ -260,7 +261,7 @@ export function RegexTool() {
       }
 
       const start = performance.now()
-      const m = collectMatches(input, built.regex)
+      const m = collectMatches(input, built.regex, MAX_RENDERED_MATCHES)
       const end = performance.now()
       setRegexError(null)
       setMatches(m)

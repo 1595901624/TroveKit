@@ -6,15 +6,15 @@ export async function getStoredItem(key: string): Promise<string | null> {
   try {
     const val = await store.get<string>(key);
     if (val !== null && val !== undefined) {
-      localStorage.setItem(key, val);
       return val;
     }
 
-    // 迁移逻辑：若 store 中不存在，则回退读取 localStorage 并写回 store。
+    // 迁移逻辑：只在 store 中不存在时读取旧 localStorage，迁移完成后删除旧副本，避免大文本状态常驻两份。
     const localVal = localStorage.getItem(key);
     if (localVal) {
       await store.set(key, localVal);
       await store.save();
+      localStorage.removeItem(key);
       return localVal;
     }
   } catch (err) {
@@ -25,9 +25,10 @@ export async function getStoredItem(key: string): Promise<string | null> {
 
 export async function setStoredItem(key: string, value: string): Promise<void> {
   try {
+    // 工具状态统一写入 Tauri store，不再镜像到 localStorage，减少 WebView2 进程里的同步存储缓存。
     await store.set(key, value);
     await store.save();
-    localStorage.setItem(key, value);
+    localStorage.removeItem(key);
   } catch (err) {
     console.error('Error in setStoredItem:', err);
   }

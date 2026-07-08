@@ -1,21 +1,9 @@
 import { useState, useEffect, Dispatch, SetStateAction } from 'react';
 import { getStoredItem, setStoredItem, removeStoredItem } from '../lib/store';
 
-function getInitialValueFromLocalStorage<T>(key: string, fallback: T): T {
-  if (typeof window === "undefined") return fallback;
-
-  try {
-    const localValue = window.localStorage.getItem(key);
-    if (localValue === null) return fallback;
-    return JSON.parse(localValue) as T;
-  } catch (e) {
-    console.error(`Failed to parse localStorage state for key "${key}"`, e);
-    return fallback;
-  }
-}
-
 export function usePersistentState<T>(key: string, initialState: T): [T, Dispatch<SetStateAction<T>>, () => void, boolean] {
-  const [state, setState] = useState<T>(() => getInitialValueFromLocalStorage(key, initialState));
+  // 持久化状态异步从 Tauri store 恢复，避免启动时同步解析 localStorage 中的大文本。
+  const [state, setState] = useState<T>(initialState);
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {

@@ -45,7 +45,7 @@ export function buildRegExp(pattern: string, flags: string): { regex: RegExp } |
   }
 }
 
-export function collectMatches(input: string, regex: RegExp): RegexMatch[] {
+export function collectMatches(input: string, regex: RegExp, limit = Number.POSITIVE_INFINITY): RegexMatch[] {
   const r = new RegExp(regex.source, regex.flags)
   r.lastIndex = 0
 
@@ -64,6 +64,8 @@ export function collectMatches(input: string, regex: RegExp): RegexMatch[] {
   while ((m = r.exec(input)) !== null) {
     if (m.index === undefined) break
     matches.push(toRegexMatch(m, matchIndex++))
+    // 正则测试页只需要展示有限结果，限制数组规模可避免大文本 + 全局匹配造成内存暴涨。
+    if (matches.length >= limit) break
     if (m[0] === "") r.lastIndex++
     if (r.lastIndex > input.length) break
   }
@@ -101,9 +103,24 @@ export function replaceOnce(input: string, pattern: string, flags: string, repla
 export function replaceAll(input: string, pattern: string, flags: string, replacement: string): { output: string; count: number } | { error: string } {
   const built = buildRegExp(pattern, ensureGlobal(flags))
   if ("error" in built) return built
-  const matches = collectMatches(input, built.regex)
-  if (matches.length === 0) return { output: input, count: 0 }
-  return { output: input.replace(built.regex, replacement), count: matches.length }
+  const count = countMatches(input, built.regex)
+  if (count === 0) return { output: input, count: 0 }
+  // 保留 JS 原生 replacement 语义，只把“统计次数”改成不分配 matches 数组。
+  return { output: input.replace(built.regex, replacement), count }
+}
+
+function countMatches(input: string, regex: RegExp): number {
+  const r = new RegExp(regex.source, regex.flags)
+  r.lastIndex = 0
+
+  let count = 0
+  let m: RegExpExecArray | null
+  while ((m = r.exec(input)) !== null) {
+    count++
+    if (m[0] === "") r.lastIndex++
+    if (r.lastIndex > input.length) break
+  }
+  return count
 }
 
 export function formatMatchesAsCsv(matches: RegexMatch[]): string {
