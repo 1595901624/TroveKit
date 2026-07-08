@@ -61,5 +61,13 @@ export default function MonacoEditor(props: MonacoEditorProps) {
     return <div style={{ height: props.height ?? "100%" }} />
   }
 
-  return <Editor {...props} />
+  return (
+    <Editor
+      {...props}
+      // 工具页切换时必须释放当前 model；显式声明，避免 Monaco 默认策略变化后残留大文本。
+      keepCurrentModel={props.keepCurrentModel ?? false}
+      // 当前工具没有依赖 Monaco 自带视图状态恢复，关闭后可减少卸载/切换时的 Map 缓存。
+      saveViewState={props.saveViewState ?? false}
+    />
+  )
 }

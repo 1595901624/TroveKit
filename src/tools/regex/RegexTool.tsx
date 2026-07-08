@@ -297,6 +297,16 @@ export function RegexTool() {
     decorationIdsRef.current = editor.deltaDecorations(decorationIdsRef.current, [])
   }
 
+  useEffect(() => {
+    return () => {
+      // 切换工具页卸载 Regex 时，先移除高亮装饰，再断开页面侧 Monaco 引用。
+      clearDecorations()
+      decorationIdsRef.current = []
+      editorRef.current = null
+      monacoRef.current = null
+    }
+  }, [])
+
   const applyDecorations = (list: RegexMatch[], selected: number | null) => {
     // 根据字符偏移 -> Monaco Range，生成 decoration 并批量应用
     const editor = editorRef.current

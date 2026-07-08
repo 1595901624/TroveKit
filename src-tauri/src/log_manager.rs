@@ -6,6 +6,13 @@ use std::sync::Mutex;
 use tauri::{AppHandle, Manager, Runtime, State};
 use uuid::Uuid;
 
+const MAX_CURRENT_LOGS: i64 = 200;
+const MAX_SESSION_LOGS: i64 = 500;
+const MAX_LOG_TEXT_CHARS: usize = 4000;
+const MAX_LOG_PARAM_CHARS: usize = 1000;
+const TRUNCATED_SUFFIX: &str = "\n...[truncated]";
+
+// 后端是日志持久化入口，在入库和读库时都做截断，防止历史大日志拖慢恢复现场。
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct LogEntry {
     pub id: String,
@@ -41,6 +48,59 @@ pub struct LogEntry {
 
 pub struct LogState {
     pub current_session_id: Mutex<String>,
+}
+
+// Rust 侧按 Unicode 字符截断，避免中文或 emoji 被截成非法边界。
+fn truncate_text(value: Option<String>, limit: usize) -> Option<String> {
+    value.map(|text| {
+        if text.chars().count() <= limit {
+            text
+        } else {
+            let mut truncated: String = text.chars().take(limit).collect();
+            truncated.push_str(TRUNCATED_SUFFIX);
+            truncated
+        }
+    })
+}
+
+// crypto_params 是 JSON 结构，递归处理所有字符串字段，避免嵌套大字段占用 SQLite 和前端内存。
+fn truncate_json_strings(value: Value, limit: usize) -> Value {
+    match value {
+        Value::String(text) => {
+            if text.chars().count() <= limit {
+                Value::String(text)
+            } else {
+                let mut truncated: String = text.chars().take(limit).collect();
+                truncated.push_str(TRUNCATED_SUFFIX);
+                Value::String(truncated)
+            }
+        }
+        Value::Array(items) => Value::Array(
+            items
+                .into_iter()
+                .map(|item| truncate_json_strings(item, limit))
+                .collect(),
+        ),
+        Value::Object(map) => Value::Object(
+            map.into_iter()
+                .map(|(key, item)| (key, truncate_json_strings(item, limit)))
+                .collect(),
+        ),
+        other => other,
+    }
+}
+
+// 统一清洗单条日志，保证新增、加载历史会话时使用同一套内存上限。
+fn sanitize_log_entry(mut entry: LogEntry) -> LogEntry {
+    entry.message = truncate_text(entry.message, MAX_LOG_TEXT_CHARS);
+    entry.input = truncate_text(entry.input, MAX_LOG_TEXT_CHARS);
+    entry.output = truncate_text(entry.output, MAX_LOG_TEXT_CHARS);
+    entry.details = truncate_text(entry.details, MAX_LOG_TEXT_CHARS);
+    entry.note = truncate_text(entry.note, 500);
+    entry.crypto_params = entry
+        .crypto_params
+        .map(|value| truncate_json_strings(value, MAX_LOG_PARAM_CHARS));
+    entry
 }
 
 impl LogState {
@@ -195,6 +255,9 @@ pub fn append_log<R: Runtime>(
         .map_err(|e| e.to_string())?
         .clone();
 
+    // 日志来自用户输入/转换结果，可能很大；入库前截断，避免 SQLite 和前端恢复时内存持续膨胀。
+    let entry = sanitize_log_entry(entry);
+
     let crypto_str = entry
         .crypto_params
         .as_ref()
@@ -248,16 +311,17 @@ pub fn load_logs<R: Runtime>(
             FROM logs
             WHERE session_id = ?1
             ORDER BY timestamp DESC
+            LIMIT ?2
             "#,
         )
         .map_err(|e| e.to_string())?;
 
     let rows = stmt
-        .query_map(params![session_id], |row| {
+        .query_map(params![session_id, MAX_CURRENT_LOGS], |row| {
             let crypto_str: Option<String> = row.get(9)?;
             let crypto_params = crypto_str
                 .and_then(|s| serde_json::from_str::<Value>(&s).ok());
-            Ok(LogEntry {
+            Ok(sanitize_log_entry(LogEntry {
                 id: row.get(0)?,
                 timestamp: row.get(1)?,
                 message: row.get(2)?,
@@ -268,7 +332,7 @@ pub fn load_logs<R: Runtime>(
                 note: row.get(7)?,
                 log_type: row.get(8)?,
                 crypto_params,
-            })
+            }))
         })
         .map_err(|e| e.to_string())?;
 
@@ -382,16 +446,17 @@ pub fn get_logs_by_session<R: Runtime>(
             FROM logs
             WHERE session_id = ?1
             ORDER BY timestamp DESC
+            LIMIT ?2
             "#,
         )
         .map_err(|e| e.to_string())?;
 
     let rows = stmt
-        .query_map(params![session_id], |row| {
+        .query_map(params![session_id, MAX_SESSION_LOGS], |row| {
             let crypto_str: Option<String> = row.get(9)?;
             let crypto_params = crypto_str
                 .and_then(|s| serde_json::from_str::<Value>(&s).ok());
-            Ok(LogEntry {
+            Ok(sanitize_log_entry(LogEntry {
                 id: row.get(0)?,
                 timestamp: row.get(1)?,
                 message: row.get(2)?,
@@ -402,7 +467,7 @@ pub fn get_logs_by_session<R: Runtime>(
                 note: row.get(7)?,
                 log_type: row.get(8)?,
                 crypto_params,
-            })
+            }))
         })
         .map_err(|e| e.to_string())?;
 

@@ -22,6 +22,13 @@ export function XmlTab() {
   const editorRef = useRef<any>(null)
 
   useEffect(() => {
+    return () => {
+      // Monaco 实例由封装组件 dispose，这里只断开页面侧引用，避免卸载后继续持有旧 editor。
+      editorRef.current = null
+    }
+  }, [])
+
+  useEffect(() => {
     let mounted = true
     getStoredItem(STORAGE_KEY).then((stored) => {
       if (mounted && stored) {

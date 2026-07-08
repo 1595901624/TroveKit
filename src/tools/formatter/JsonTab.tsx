@@ -26,6 +26,13 @@ export function JsonTab() {
   const editorRef = useRef<any>(null)
 
   useEffect(() => {
+    return () => {
+      // Monaco 实例由封装组件 dispose，这里只断开页面侧引用，避免卸载后继续持有旧 editor。
+      editorRef.current = null
+    }
+  }, [])
+
+  useEffect(() => {
     if (isLoaded && savedState) {
         if (savedState.code) setCode(savedState.code)
         if (savedState.viewMode) setViewMode(savedState.viewMode)

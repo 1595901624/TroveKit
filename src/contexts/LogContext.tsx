@@ -84,6 +84,47 @@ type LogDataContextType = Omit<LogContextType, "isOpen" | "setIsOpen" | "toggleP
 const LogUIContext = createContext<LogUIContextType | undefined>(undefined)
 const LogDataContext = createContext<LogDataContextType | undefined>(undefined)
 
+const MAX_LOGS_IN_MEMORY = 200
+const MAX_LOG_TEXT_LENGTH = 4000
+const MAX_LOG_PARAM_LENGTH = 1000
+const TRUNCATED_SUFFIX = "\n...[truncated]"
+
+// 日志里经常包含完整输入/输出，统一截断后再进入 React state，降低长期驻留内存。
+function truncateText(value: string | undefined, limit = MAX_LOG_TEXT_LENGTH) {
+  if (!value) return value
+  const chars = Array.from(value)
+  if (chars.length <= limit) return value
+  return `${chars.slice(0, limit).join("")}${TRUNCATED_SUFFIX}`
+}
+
+// cryptoParams 可能嵌套保存密钥/参数/结果，递归截断字符串字段，避免隐藏的大对象绕过限制。
+function truncateCryptoValue(value: any): any {
+  if (typeof value === "string") return truncateText(value, MAX_LOG_PARAM_LENGTH)
+  if (Array.isArray(value)) return value.map(truncateCryptoValue)
+  if (value && typeof value === "object") {
+    return Object.fromEntries(Object.entries(value).map(([key, item]) => [key, truncateCryptoValue(item)]))
+  }
+  return value
+}
+
+function truncateCryptoParams(params?: Record<string, any>): Record<string, any> | undefined {
+  if (!params) return undefined
+  return truncateCryptoValue(params)
+}
+
+// 后端已做 LIMIT，这里再兜底限制一次，防止旧版本/异常返回把大量日志灌进内存。
+function normalizeLogs(logs: LogEntry[]) {
+  return logs.slice(0, MAX_LOGS_IN_MEMORY).map((log) => ({
+    ...log,
+    message: truncateText(log.message),
+    input: truncateText(log.input),
+    output: truncateText(log.output),
+    details: truncateText(log.details),
+    note: truncateText(log.note, 500),
+    cryptoParams: truncateCryptoParams(log.cryptoParams),
+  }))
+}
+
 export function LogProvider({ children }: { children: React.ReactNode }) {
   const { t } = useTranslation()
   const [logs, setLogs] = useState<LogEntry[]>([])
@@ -99,7 +140,7 @@ export function LogProvider({ children }: { children: React.ReactNode }) {
   const refresh = useCallback(async () => {
     try {
       const newLogs = await invoke<LogEntry[]>("load_logs")
-      setLogs(newLogs)
+      setLogs(normalizeLogs(newLogs))
       
       const info = await invoke<{ sessionId: string; note: string | null }>("get_current_session_info")
       setCurrentSessionId(info.sessionId)
@@ -131,16 +172,17 @@ export function LogProvider({ children }: { children: React.ReactNode }) {
       }
   
       if (typeof content === 'string') {
-        newLog.message = content
+        newLog.message = truncateText(content)
       } else {
         newLog.method = content.method
-        newLog.input = content.input
-        newLog.output = content.output
-        if (content.cryptoParams) newLog.cryptoParams = content.cryptoParams
-        newLog.message = `${content.method}: ${content.input} -> ${content.output}`
+        newLog.input = truncateText(content.input)
+        newLog.output = truncateText(content.output)
+        if (content.cryptoParams) newLog.cryptoParams = truncateCryptoParams(content.cryptoParams)
+        // 方法日志已经单独保存 input/output，message 不再重复拼接大文本，避免一条日志占用多份内存。
+        newLog.message = content.method
       }
   
-      setLogs((prev) => [newLog, ...prev])
+      setLogs((prev) => [newLog, ...prev].slice(0, MAX_LOGS_IN_MEMORY))
       
       // Persist to backend
       invoke("append_log", { entry: newLog })
@@ -228,7 +270,7 @@ export function LogProvider({ children }: { children: React.ReactNode }) {
         await invoke("switch_to_session", { sessionId })
         setCurrentSessionId(sessionId)
         const newLogs = await invoke<LogEntry[]>("load_logs")
-        setLogs(newLogs)
+        setLogs(normalizeLogs(newLogs))
         const info = await invoke<{ sessionId: string; note: string | null }>("get_current_session_info")
         setSessionNote(info.note || "")
         window.dispatchEvent(new CustomEvent('logs-changed'))
