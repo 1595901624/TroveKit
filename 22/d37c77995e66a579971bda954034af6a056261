@@ -1,0 +1,62 @@
+src/tools/hash/AesTab2.tsx
+  s_06b016fc10d47d::t_f431da29aa5304 15-44,98,108-110,122-125,143-155,157-160,201-202,208-226,670,712,852-858
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.0.0",
+  "base_commit_sha": "22d37c77995e66a579971bda954034af6a056261",
+  "prompts": {
+    "06b016fc10d47d94": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f4024-5111-7d21-a598-8f406711ccbc",
+        "model": "gpt-5.5"
+      },
+      "human_author": "luhaoyu <haoyu3@163.com>",
+      "messages": [],
+      "total_additions": 85,
+      "total_deletions": 36,
+      "accepted_lines": 0,
+      "overriden_lines": 0
+    }
+  },
+  "commit_stats": {
+    "git_diff_added_lines": 86,
+    "git_diff_deleted_lines": 37,
+    "ai_additions": 85,
+    "ai_accepted": 85,
+    "BYMC": 1,
+    "mixed_additions": 0,
+    "BYAC": 85,
+    "BYRC": 0,
+    "per_file": {
+      "src-tauri/tauri.conf.json": {
+        "BYMC": [
+          "4"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/hash/AesTab2.tsx": {
+        "BYMC": [],
+        "BYAC": [
+          "15-44",
+          "98",
+          "108-110",
+          "122-125",
+          "143-155",
+          "157-160",
+          "201-202",
+          "208-226",
+          "670",
+          "712",
+          "852-858"
+        ],
+        "BYRC": []
+      }
+    }
+  },
+  "ipa_account": "luhaoyu",
+  "commit_timestamp": 1783491472,
+  "requirement_id": ""
+}
