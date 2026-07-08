@@ -1,21 +1,21 @@
-src/tools/ClassicalTool.tsx
-  s_06b016fc10d47d::t_6502e2b369dd75 1
-src/tools/EncoderTool.tsx
-  s_06b016fc10d47d::t_6502e2b369dd75 1
-src/tools/OthersTool.tsx
-  s_06b016fc10d47d::t_6502e2b369dd75 1
-src/tools/GeneratorTool.tsx
-  s_06b016fc10d47d::t_6502e2b369dd75 1
 src/tools/ConverterTool.tsx
-  s_06b016fc10d47d::t_6502e2b369dd75 1
-src/tools/FormatterTool.tsx
-  s_06b016fc10d47d::t_6502e2b369dd75 1
+  s_06b016fc10d47d::t_6502e2b369dd75 1,13,26-28
+src/tools/ClassicalTool.tsx
+  s_06b016fc10d47d::t_6502e2b369dd75 1,17,29-31
+src/tools/GeneratorTool.tsx
+  s_06b016fc10d47d::t_6502e2b369dd75 1,16,27-29
+src/tools/EncoderTool.tsx
+  s_06b016fc10d47d::t_6502e2b369dd75 1,21,37-39
 src/tools/HashTool.tsx
-  s_06b016fc10d47d::t_6502e2b369dd75 1
+  s_06b016fc10d47d::t_6502e2b369dd75 1,30,55-57
+src/tools/FormatterTool.tsx
+  s_06b016fc10d47d::t_6502e2b369dd75 1,18,31-33
+src/tools/OthersTool.tsx
+  s_06b016fc10d47d::t_6502e2b369dd75 1,26,39-41
 ---
 {
   "schema_version": "authorship/3.0.0",
-  "git_ai_version": "1.5.9",
+  "git_ai_version": "1.0.0",
   "base_commit_sha": "32280245292adcc72d893a2353304ea1663a454a",
   "prompts": {
     "06b016fc10d47d94": {
@@ -25,10 +25,89 @@ src/tools/HashTool.tsx
         "model": "gpt-5.5"
       },
       "human_author": "luhaoyu <haoyu3@163.com>",
+      "messages": [],
       "total_additions": 35,
       "total_deletions": 14,
       "accepted_lines": 0,
       "overriden_lines": 0
     }
-  }
+  },
+  "commit_stats": {
+    "git_diff_added_lines": 35,
+    "git_diff_deleted_lines": 14,
+    "ai_additions": 35,
+    "ai_accepted": 35,
+    "BYMC": 0,
+    "mixed_additions": 0,
+    "BYAC": 35,
+    "BYRC": 0,
+    "per_file": {
+      "src/tools/ClassicalTool.tsx": {
+        "BYMC": [],
+        "BYAC": [
+          "1",
+          "17",
+          "29-31"
+        ],
+        "BYRC": []
+      },
+      "src/tools/ConverterTool.tsx": {
+        "BYMC": [],
+        "BYAC": [
+          "1",
+          "13",
+          "26-28"
+        ],
+        "BYRC": []
+      },
+      "src/tools/EncoderTool.tsx": {
+        "BYMC": [],
+        "BYAC": [
+          "1",
+          "21",
+          "37-39"
+        ],
+        "BYRC": []
+      },
+      "src/tools/FormatterTool.tsx": {
+        "BYMC": [],
+        "BYAC": [
+          "1",
+          "18",
+          "31-33"
+        ],
+        "BYRC": []
+      },
+      "src/tools/GeneratorTool.tsx": {
+        "BYMC": [],
+        "BYAC": [
+          "1",
+          "16",
+          "27-29"
+        ],
+        "BYRC": []
+      },
+      "src/tools/HashTool.tsx": {
+        "BYMC": [],
+        "BYAC": [
+          "1",
+          "30",
+          "55-57"
+        ],
+        "BYRC": []
+      },
+      "src/tools/OthersTool.tsx": {
+        "BYMC": [],
+        "BYAC": [
+          "1",
+          "26",
+          "39-41"
+        ],
+        "BYRC": []
+      }
+    }
+  },
+  "ipa_account": "luhaoyu",
+  "commit_timestamp": 1783490169,
+  "requirement_id": ""
 }
