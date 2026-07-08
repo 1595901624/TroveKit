@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Button, addToast } from "@heroui/react"
 import Editor from "@monaco-editor/react"
 import { ArrowRight, ArrowLeft, Copy, Trash2, BookOpen } from "lucide-react"
@@ -6,6 +6,9 @@ import { useTranslation } from "react-i18next"
 import yaml from "js-yaml"
 import { useTheme } from "../../components/theme-provider"
 import { useLog } from "../../contexts/LogContext"
+import { getStoredItem, setStoredItem } from "../../lib/store"
+
+const STORAGE_KEY = "json-yaml-tool-state"
 
 export function JsonYamlTab() {
   const { t } = useTranslation()
@@ -14,6 +17,32 @@ export function JsonYamlTab() {
 
   const [jsonCode, setJsonCode] = useState("")
   const [yamlCode, setYamlCode] = useState("")
+  const [isLoaded, setIsLoaded] = useState(false)
+
+  // 组件会在切换 Tab 时卸载，因此挂载时从持久化存储恢复左右编辑器内容。
+  useEffect(() => {
+    let mounted = true
+    getStoredItem(STORAGE_KEY).then((stored) => {
+      if (mounted && stored) {
+        try {
+          const state = JSON.parse(stored)
+          if (typeof state.jsonCode === "string") setJsonCode(state.jsonCode)
+          if (typeof state.yamlCode === "string") setYamlCode(state.yamlCode)
+        } catch (e) {
+          console.error("Failed to parse JsonYamlTab state", e)
+        }
+      }
+      if (mounted) setIsLoaded(true)
+    })
+    return () => { mounted = false }
+  }, [])
+
+  // 恢复完成后再写入，避免初次挂载时用空状态覆盖已有编辑内容。
+  useEffect(() => {
+    if (isLoaded) {
+      setStoredItem(STORAGE_KEY, JSON.stringify({ jsonCode, yamlCode }))
+    }
+  }, [jsonCode, yamlCode, isLoaded])
 
   const handleJsonToYaml = () => {
     if (!jsonCode) return

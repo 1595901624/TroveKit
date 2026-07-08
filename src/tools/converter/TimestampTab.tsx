@@ -6,6 +6,9 @@ import { Clock, ArrowRightLeft, Copy, RefreshCw, Calendar } from "lucide-react"
 import { useLog } from "../../contexts/LogContext"
 import { getLocalTimeZone } from "@internationalized/date"
 import type { DateValue } from "@internationalized/date"
+import { getStoredItem, setStoredItem } from "../../lib/store"
+
+const STORAGE_KEY = "timestamp-tool-state"
 
 interface TimeInfo {
     secs: string
@@ -25,10 +28,37 @@ export function TimestampTab({ isVisible = true }: { isVisible?: boolean }) {
     const [dateInput, setDateInput] = useState("")
     const [dateOutput, setDateOutput] = useState<TimeInfo | null>(null)
     const [isPaused, setIsPaused] = useState(false)
+    const [isLoaded, setIsLoaded] = useState(false)
+
+    // 组件会在切换 Tab 时卸载，因此挂载时恢复用户输入的时间戳、单位和日期。
+    useEffect(() => {
+        let mounted = true
+        getStoredItem(STORAGE_KEY).then((stored) => {
+            if (mounted && stored) {
+                try {
+                    const state = JSON.parse(stored)
+                    if (typeof state.tsInput === "string") setTsInput(state.tsInput)
+                    if (typeof state.tsUnit === "string") setTsUnit(state.tsUnit)
+                    if (typeof state.dateInput === "string") setDateInput(state.dateInput)
+                    if (typeof state.isPaused === "boolean") setIsPaused(state.isPaused)
+                } catch (e) {
+                    console.error("Failed to parse TimestampTab state", e)
+                }
+            }
+            if (mounted) setIsLoaded(true)
+        })
+        return () => { mounted = false }
+    }, [])
+
+    // 恢复完成后再写入，避免初次挂载时用空状态覆盖已有编辑内容。
+    useEffect(() => {
+        if (isLoaded) {
+            setStoredItem(STORAGE_KEY, JSON.stringify({ tsInput, tsUnit, dateInput, isPaused }))
+        }
+    }, [tsInput, tsUnit, dateInput, isPaused, isLoaded])
 
     // Current Time Polling
     useEffect(() => {
-        console.log("isVisible", isVisible)
         if (!isVisible) return
 
         let active = true

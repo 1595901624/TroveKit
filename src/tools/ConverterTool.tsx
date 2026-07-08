@@ -33,6 +33,9 @@ export function ConverterTool({ isVisible = true, activeTab }: { isVisible?: boo
     return <div className="flex items-center justify-center h-full text-default-500">{t("common.noFeatures")}</div>
   }
 
+  // 只挂载当前选中的 Tab 内容，编辑内容由具体转换器 Tab 的持久化逻辑保存。
+  const activeTabConfig = visibleTabs.find(tab => tab.id === selectedKey) ?? visibleTabs[0]
+
   return (
     <div className="flex flex-col h-full overflow-hidden">
       <div className="flex-none w-full overflow-x-auto [&::-webkit-scrollbar]:hidden">
@@ -53,11 +56,9 @@ export function ConverterTool({ isVisible = true, activeTab }: { isVisible?: boo
       </div>
 
       <div className="flex-1 overflow-y-auto min-h-0 pt-4 pb-2">
-        {visibleTabs.map(tab => (
-          <div key={tab.id} className={selectedKey === tab.id ? "h-full" : "hidden h-full"}>
-            {tab.component}
-          </div>
-        ))}
+        <div className="h-full">
+          {activeTabConfig.component}
+        </div>
       </div>
     </div>
   )

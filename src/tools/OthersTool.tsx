@@ -48,6 +48,9 @@ export function OthersTool({ activeTab }: OthersToolProps) {
     return <div className="flex items-center justify-center h-full text-default-500">{t("common.noFeatures")}</div>
   }
 
+  // 只挂载当前选中的 Tab 内容，避免正则等重型工具在后台继续持有编辑器状态。
+  const activeTabConfig = visibleTabs.find(tab => tab.id === selectedKey) ?? visibleTabs[0]
+
   return (
     <div className="flex flex-col h-full overflow-hidden">
       {/* 标签页导航栏 - 隐藏滚动条 */}
@@ -70,11 +73,9 @@ export function OthersTool({ activeTab }: OthersToolProps) {
 
       {/* 标签页内容区域 - 可滚动 */}
       <div className="flex-1 overflow-y-auto min-h-0 pt-4 pb-2">
-        {visibleTabs.map(tab => (
-          <div key={tab.id} className={selectedKey === tab.id ? "h-full" : "hidden h-full"}>
-            {tab.component}
-          </div>
-        ))}
+        <div className="h-full">
+          {activeTabConfig.component}
+        </div>
       </div>
     </div>
   )

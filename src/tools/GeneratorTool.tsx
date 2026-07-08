@@ -34,6 +34,9 @@ export function GeneratorTool({ activeTab }: GeneratorToolProps) {
     return <div className="flex items-center justify-center h-full text-default-500">{t("common.noFeatures")}</div>
   }
 
+  // 只挂载当前选中的 Tab 内容，释放未使用生成器的预览对象和输出状态。
+  const activeTabConfig = visibleTabs.find(tab => tab.id === selectedKey) ?? visibleTabs[0]
+
   return (
     <div className="flex flex-col h-full overflow-hidden">
       <div className="flex-none w-full overflow-x-auto [&::-webkit-scrollbar]:hidden">
@@ -54,11 +57,9 @@ export function GeneratorTool({ activeTab }: GeneratorToolProps) {
       </div>
 
       <div className="flex-1 overflow-y-auto min-h-0 pt-4 pb-2">
-        {visibleTabs.map(tab => (
-          <div key={tab.id} className={selectedKey === tab.id ? "h-full" : "hidden h-full"}>
-            {tab.component}
-          </div>
-        ))}
+        <div className="h-full">
+          {activeTabConfig.component}
+        </div>
       </div>
     </div>
   )

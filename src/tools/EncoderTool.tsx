@@ -44,6 +44,9 @@ export function EncoderTool({ activeTab }: EncoderToolProps) {
     return <div className="flex items-center justify-center h-full text-default-500">{t("common.noFeatures")}</div>
   }
 
+  // 只挂载当前选中的 Tab 内容，切换回来时由各 Tab 自身从持久化存储恢复输入输出。
+  const activeTabConfig = visibleTabs.find(tab => tab.id === selectedKey) ?? visibleTabs[0]
+
   return (
     <div className="flex flex-col h-full overflow-hidden">
       <div className="flex-none w-full overflow-x-auto [&::-webkit-scrollbar]:hidden">
@@ -64,11 +67,9 @@ export function EncoderTool({ activeTab }: EncoderToolProps) {
       </div>
 
       <div className="flex-1 overflow-y-auto min-h-0 pt-4 pb-2">
-        {visibleTabs.map(tab => (
-          <div key={tab.id} className={selectedKey === tab.id ? (tab.className || "") : "hidden"}>
-            {tab.component}
-          </div>
-        ))}
+        <div className={activeTabConfig.className || ""}>
+          {activeTabConfig.component}
+        </div>
       </div>
     </div>
   )

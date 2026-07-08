@@ -62,6 +62,9 @@ export function HashTool({ activeTab }: HashToolProps) {
     return <div className="flex items-center justify-center h-full text-default-500">{t("common.noFeatures")}</div>
   }
 
+  // 只挂载当前选中的 Tab 内容，未选中的工具状态依赖各 Tab 自身的持久化逻辑恢复。
+  const activeTabConfig = visibleTabs.find(tab => tab.id === selectedKey) ?? visibleTabs[0]
+
   return (
     <div className="flex flex-col h-full overflow-hidden">
       <div className="flex-none w-full overflow-x-auto [&::-webkit-scrollbar]:hidden">
@@ -82,11 +85,7 @@ export function HashTool({ activeTab }: HashToolProps) {
       </div>
 
       <div className="flex-1 overflow-y-auto min-h-0 pt-4 pb-2">
-        {visibleTabs.map(tab => (
-          <div key={tab.id} className={selectedKey === tab.id ? "" : "hidden"}>
-            {tab.component}
-          </div>
-        ))}
+        {activeTabConfig.component}
       </div>
     </div>
   )
