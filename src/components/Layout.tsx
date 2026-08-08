@@ -11,12 +11,13 @@ import { useTranslation } from "react-i18next"
 interface LayoutProps {
   children: React.ReactNode
   activeTool: ToolId
+  activeTab?: string
   onToolChange: (id: ToolId) => void
   onNavigate: (toolId: ToolId, tabId?: string) => void
   title: string
 }
 
-export function Layout({ children, activeTool, onToolChange, onNavigate, title }: LayoutProps) {
+export function Layout({ children, activeTool, activeTab, onToolChange, onNavigate, title }: LayoutProps) {
   const { togglePanel, isOpen } = useLogUI()
   const { t } = useTranslation()
 
@@ -32,13 +33,16 @@ export function Layout({ children, activeTool, onToolChange, onNavigate, title }
         style={{ paddingRight: isOpen ? 320 : 0 }}
       >
         {/* Sidebar Navigation */}
-        <Sidebar activeTool={activeTool} onToolChange={onToolChange} />
+        <Sidebar activeTool={activeTool} activeTab={activeTab} onToolChange={onToolChange} onNavigate={onNavigate} />
         
         {/* Main Content Area */}
-        <main className="flex-1 flex flex-col relative overflow-hidden bg-content1/20">
+        <main className="flex-1 flex flex-col relative overflow-hidden bg-default-50/60">
           {/* Tool Header */}
-          <header className="h-14 border-b border-divider flex items-center justify-between px-6 shrink-0 bg-background/60 backdrop-blur-md">
-            <h1 className="text-base font-semibold tracking-tight">{title}</h1>
+          <header className="h-14 border-b border-divider flex items-center justify-between px-5 shrink-0 bg-background/80 backdrop-blur-md">
+            <div className="min-w-0">
+              <h1 className="truncate text-sm font-semibold tracking-tight">{title}</h1>
+              <p className="truncate text-[11px] text-default-400">TroveKit workspace</p>
+            </div>
             <div className="flex gap-2 items-center">
               <Tooltip content={t('log.toggle', 'Toggle Logs')}>
                 <Button isIconOnly variant={isOpen ? "flat" : "light"} radius="full" onPress={togglePanel}>
@@ -50,8 +54,8 @@ export function Layout({ children, activeTool, onToolChange, onNavigate, title }
           </header>
           
           {/* Scrollable Tool Content */}
-          <div className="flex-1 overflow-auto p-6 scrollbar-hide">
-             <div className="max-w-5xl mx-auto h-full">
+          <div className="flex-1 overflow-auto p-5 scrollbar-hide">
+             <div className="max-w-6xl mx-auto h-full rounded-xl border border-default-200/70 bg-background p-5 shadow-sm">
                 {children}
              </div>
           </div>

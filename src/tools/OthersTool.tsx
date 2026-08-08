@@ -1,5 +1,3 @@
-import { useEffect, useRef, useState } from "react"
-import { Tabs, Tab } from "../components/ui/base-ui"
 import { useTranslation } from "react-i18next"
 import { RegexTool } from "./regex/RegexTool"
 import { useFeaturePreferences } from "../contexts/FeaturePreferencesContext"
@@ -21,9 +19,6 @@ interface OthersToolProps {
  */
 export function OthersTool({ activeTab }: OthersToolProps) {
   const { t } = useTranslation()
-  // 当前选中的标签页 key，默认为 "regex"
-  const [selectedKey, setSelectedKey] = useState<string>("regex")
-  const appliedActiveTabRef = useRef<string | undefined>(undefined)
   const { getPreference } = useFeaturePreferences()
 
   // 定义所有可用的标签页配置
@@ -34,52 +29,19 @@ export function OthersTool({ activeTab }: OthersToolProps) {
   // 根据用户偏好设置过滤出可见的标签页
   const visibleTabs = tabs.filter(tab => getPreference(tab.featureId).visible)
 
-  // 监听 activeTab 变化，自动切换到对应的标签页
-  useEffect(() => {
-    // 搜索入口传入的 activeTab 只应用一次，避免用户点击同级 Tab 后又被拉回搜索目标。
-    if (activeTab && activeTab !== appliedActiveTabRef.current && visibleTabs.some(t => t.id === activeTab)) {
-      appliedActiveTabRef.current = activeTab
-      setSelectedKey(activeTab)
-    } else if (visibleTabs.length > 0 && !visibleTabs.some(t => t.id === selectedKey)) {
-      // 如果当前选中的标签页不再可见，切换到第一个可见标签页
-      setSelectedKey(visibleTabs[0].id)
-    }
-  }, [activeTab, visibleTabs, selectedKey])
-
   // 如果没有可见的标签页，显示提示信息
   if (visibleTabs.length === 0) {
     return <div className="flex items-center justify-center h-full text-default-500">{t("common.noFeatures")}</div>
   }
 
   // 只挂载当前选中的 Tab 内容，避免正则等重型工具在后台继续持有编辑器状态。
-  const activeTabConfig = visibleTabs.find(tab => tab.id === selectedKey) ?? visibleTabs[0]
+  const activeTabConfig = visibleTabs.find(tab => tab.id === activeTab) ?? visibleTabs[0]
 
   return (
-    <div className="flex flex-col h-full overflow-hidden">
-      {/* 标签页导航栏 - 隐藏滚动条 */}
-      <div className="flex-none w-full overflow-x-auto [&::-webkit-scrollbar]:hidden">
-        <Tabs
-          aria-label={t("nav.others")}
-          color="primary"
-          selectedKey={selectedKey}
-          onSelectionChange={(key) => setSelectedKey(key as string)}
-          classNames={{
-            tabList: "text-sm w-full",
-            tab: "text-xs",
-          }}
-        >
-          {visibleTabs.map(tab => (
-            <Tab key={tab.id} title={tab.title} />
-          ))}
-        </Tabs>
-      </div>
-
-      {/* 标签页内容区域 - 可滚动 */}
-      <div className="flex-1 overflow-y-auto min-h-0 pt-4 pb-2">
+    <div className="h-full min-h-0 overflow-y-auto pb-2">
         <div className="h-full">
           {activeTabConfig.component}
         </div>
-      </div>
     </div>
   )
 }

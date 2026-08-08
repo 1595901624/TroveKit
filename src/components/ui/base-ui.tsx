@@ -215,7 +215,9 @@ export function Tabs({ children, selectedKey, defaultSelectedKey, onSelectionCha
   )
 }
 
-export function Card({ children, className, ...props }: AnyProps) { return <div {...props} className={cx("rounded-xl bg-content1 text-foreground", className)}>{children}</div> }
+export function Card({ children, className, isPressable, onPress, shadow: _shadow, ...props }: AnyProps) {
+  return <div {...props} role={isPressable ? "button" : undefined} tabIndex={isPressable ? 0 : undefined} onClick={onPress} onKeyDown={isPressable ? (event) => { if (event.key === "Enter" || event.key === " ") onPress?.() } : undefined} className={cx("rounded-xl bg-content1 text-foreground", isPressable && "cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-primary/50", className)}>{children}</div>
+}
 export function CardHeader({ children, className, ...props }: AnyProps) { return <div {...props} className={cx("flex p-4", className)}>{children}</div> }
 export function CardBody({ children, className, ...props }: AnyProps) { return <div {...props} className={cx("flex flex-col p-4", className)}>{children}</div> }
 export function Chip({ children, className, color = "default", variant: _variant, size: _size, ...props }: AnyProps) { return <span {...props} className={cx("inline-flex items-center rounded-full px-2 py-0.5 text-xs", colorClasses[color], className)}>{children}</span> }

@@ -37,6 +37,13 @@ function App() {
   const [activeTab, setActiveTab] = useState<string | undefined>()
   // 翻译函数，用于获取国际化文本
   const { t } = useTranslation()
+  const features = useFeatures()
+  const { getPreference } = useFeaturePreferences()
+
+  const resolveTab = (toolId: ToolId, tabId?: string) => {
+    if (tabId) return tabId
+    return features.find(feature => feature.toolId === toolId && feature.tabId && getPreference(feature.id).visible)?.tabId
+  }
 
   /**
    * 处理工具切换
@@ -45,8 +52,7 @@ function App() {
    */
   const handleToolChange = (id: ToolId) => {
     setActiveTool(id)
-    // 切换工具时重置标签页状态
-    setActiveTab(undefined)
+    setActiveTab(resolveTab(id))
   }
 
   /**
@@ -57,7 +63,7 @@ function App() {
    */
   const handleNavigate = (toolId: ToolId, tabId?: string) => {
     setActiveTool(toolId)
-    setActiveTab(tabId)
+    setActiveTab(resolveTab(toolId, tabId))
   }
 
   /**
@@ -66,6 +72,8 @@ function App() {
    * @returns 当前页面显示的标题文本
    */
   const getTitle = () => {
+    const activeFeature = features.find(feature => feature.toolId === activeTool && feature.tabId === activeTab)
+    if (activeFeature) return activeFeature.label
     switch (activeTool) {
       case "home": return t("home.title")
       case "crypto": return t("nav.crypto")
@@ -115,11 +123,12 @@ function App() {
     <ThemeProvider storageKey="trovekit-theme">
       <Layout
         activeTool={activeTool}
+        activeTab={activeTab}
         onToolChange={handleToolChange}
         onNavigate={handleNavigate}
         title={getTitle()}
       >
-        <div className="max-w-7xl mx-auto h-full">
+        <div className="h-full">
           {/* 工具 chunk 加载期间保持内容区高度，避免页面布局跳动。 */}
           <Suspense fallback={<div className="h-full" />}>
             {renderActiveTool()}

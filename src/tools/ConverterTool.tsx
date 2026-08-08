@@ -1,5 +1,3 @@
-import { useState, useEffect, useRef } from "react"
-import { Tabs, Tab } from "../components/ui/base-ui"
 import { useTranslation } from "react-i18next"
 import { JsonXmlTab } from "./converter/JsonXmlTab"
 import { JsonYamlTab } from "./converter/JsonYamlTab"
@@ -9,12 +7,10 @@ import { useFeaturePreferences } from "../contexts/FeaturePreferencesContext"
 
 export function ConverterTool({ isVisible = true, activeTab }: { isVisible?: boolean; activeTab?: string }) {
   const { t } = useTranslation()
-  const [selectedKey, setSelectedKey] = useState<string>("timestamp")
-  const appliedActiveTabRef = useRef<string | undefined>(undefined)
   const { getPreference } = useFeaturePreferences()
 
   const tabs = [
-    { id: "timestamp", title: t("tools.converter.timestamp"), component: <TimestampTab isVisible={isVisible && selectedKey === "timestamp"} />, featureId: "conv-timestamp" },
+    { id: "timestamp", title: t("tools.converter.timestamp"), component: <TimestampTab isVisible={isVisible && activeTab === "timestamp"} />, featureId: "conv-timestamp" },
     { id: "subnet", title: t("tools.converter.subnet"), component: <SubnetTab />, featureId: "conv-subnet" },
     { id: "jsonXml", title: t("tools.converter.jsonXml"), component: <JsonXmlTab />, featureId: "conv-jsonxml" },
     { id: "jsonYaml", title: t("tools.converter.jsonYaml"), component: <JsonYamlTab />, featureId: "conv-jsonyaml" },
@@ -22,47 +18,18 @@ export function ConverterTool({ isVisible = true, activeTab }: { isVisible?: boo
 
   const visibleTabs = tabs.filter(tab => getPreference(tab.featureId).visible)
 
-  useEffect(() => {
-    // 搜索入口传入的 activeTab 只应用一次，避免用户点击同级 Tab 后又被拉回搜索目标。
-    if (activeTab && activeTab !== appliedActiveTabRef.current && visibleTabs.some(t => t.id === activeTab)) {
-      appliedActiveTabRef.current = activeTab
-      setSelectedKey(activeTab)
-    } else if (visibleTabs.length > 0 && !visibleTabs.some(t => t.id === selectedKey)) {
-      setSelectedKey(visibleTabs[0].id)
-    }
-  }, [activeTab, visibleTabs, selectedKey])
-
   if (visibleTabs.length === 0) {
     return <div className="flex items-center justify-center h-full text-default-500">{t("common.noFeatures")}</div>
   }
 
   // 只挂载当前选中的 Tab 内容，编辑内容由具体转换器 Tab 的持久化逻辑保存。
-  const activeTabConfig = visibleTabs.find(tab => tab.id === selectedKey) ?? visibleTabs[0]
+  const activeTabConfig = visibleTabs.find(tab => tab.id === activeTab) ?? visibleTabs[0]
 
   return (
-    <div className="flex flex-col h-full overflow-hidden">
-      <div className="flex-none w-full overflow-x-auto [&::-webkit-scrollbar]:hidden">
-        <Tabs
-          aria-label={t("tools.converter.converterOptions")}
-          color="primary"
-          selectedKey={selectedKey}
-          onSelectionChange={(key) => setSelectedKey(key as string)}
-          classNames={{
-            tabList: "text-sm w-full",
-            tab: "text-xs"
-          }}
-        >
-          {visibleTabs.map(tab => (
-            <Tab key={tab.id} title={tab.title} />
-          ))}
-        </Tabs>
-      </div>
-
-      <div className="flex-1 overflow-y-auto min-h-0 pt-4 pb-2">
+    <div className="h-full min-h-0 overflow-y-auto pb-2">
         <div className="h-full">
           {activeTabConfig.component}
         </div>
-      </div>
     </div>
   )
 }
