@@ -1,0 +1,161 @@
+src/App.tsx
+  21626ecc98bb6adc 40-46,55,66,75-76,126,131
+src/components/Layout.tsx
+  21626ecc98bb6adc 14,20,36,39,41-45,57-58
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.0.8",
+  "base_commit_sha": "bb62031f849bf5486c4d85b30453f8305ff325c5",
+  "prompts": {
+    "21626ecc98bb6adc": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019fdfb9-bccc-73b0-886e-77780de98c78",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "luhaoyu <haoyu3@163.com>",
+      "messages": [],
+      "total_additions": 279,
+      "total_deletions": 266,
+      "accepted_lines": 280,
+      "overriden_lines": 0
+    }
+  },
+  "commit_stats": {
+    "git_diff_added_lines": 226,
+    "git_diff_deleted_lines": 411,
+    "ai_additions": 24,
+    "ai_accepted": 24,
+    "BYMC": 192,
+    "mixed_additions": 0,
+    "BYAC": 24,
+    "BYRC": 0,
+    "per_file": {
+      "src/App.tsx": {
+        "BYMC": [],
+        "BYAC": [
+          "40-46",
+          "55",
+          "66",
+          "75-76",
+          "126",
+          "131"
+        ],
+        "BYRC": []
+      },
+      "src/components/Layout.tsx": {
+        "BYMC": [],
+        "BYAC": [
+          "14",
+          "20",
+          "36",
+          "39",
+          "41-45",
+          "57-58"
+        ],
+        "BYRC": []
+      },
+      "src/components/Sidebar.tsx": {
+        "BYMC": [
+          "7-8",
+          "10-11",
+          "14",
+          "16",
+          "19",
+          "21-22",
+          "28",
+          "30",
+          "33-53",
+          "56-59",
+          "61",
+          "63-73",
+          "75-79",
+          "81-83",
+          "86-88",
+          "90-98",
+          "100-102",
+          "106-113",
+          "115",
+          "117-135",
+          "137-143",
+          "145-146",
+          "148-149",
+          "151-181",
+          "184-186",
+          "189-194",
+          "197-220"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/components/ui/base-ui.tsx": {
+        "BYMC": [
+          "218-220"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/ClassicalTool.tsx": {
+        "BYMC": [
+          "29",
+          "32"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/ConverterTool.tsx": {
+        "BYMC": [
+          "13",
+          "26",
+          "29"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/EncoderTool.tsx": {
+        "BYMC": [
+          "37",
+          "40"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/FormatterTool.tsx": {
+        "BYMC": [
+          "31",
+          "34"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/GeneratorTool.tsx": {
+        "BYMC": [
+          "27",
+          "30"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/HashTool.tsx": {
+        "BYMC": [
+          "55",
+          "58"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/OthersTool.tsx": {
+        "BYMC": [
+          "38",
+          "41"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      }
+    }
+  },
+  "ipa_account": "luhaoyu",
+  "commit_timestamp": 1786168162,
+  "requirement_id": ""
+}
