@@ -1,0 +1,226 @@
+src/components/TitleBar.tsx
+  21626ecc98bb6adc 1-16,19,23-27,30-34,37-43,46-50,54-57,60-66,69-72,75-86,88-91,93,95-103
+src/lib/store.ts
+  21626ecc98bb6adc 3-4,8,16-17,30-36,44-45
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.0.8",
+  "base_commit_sha": "e67bf241f3e303e344887c2ab33e0f215fa7ea6f",
+  "prompts": {
+    "21626ecc98bb6adc": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019fdfb9-bccc-73b0-886e-77780de98c78",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "luhaoyu <haoyu3@163.com>",
+      "messages": [],
+      "total_additions": 101,
+      "total_deletions": 227,
+      "accepted_lines": 97,
+      "overriden_lines": 0
+    }
+  },
+  "commit_stats": {
+    "git_diff_added_lines": 360,
+    "git_diff_deleted_lines": 439,
+    "ai_additions": 94,
+    "ai_accepted": 94,
+    "BYMC": 264,
+    "mixed_additions": 0,
+    "BYAC": 94,
+    "BYRC": 0,
+    "per_file": {
+      "design-qa.md": {
+        "BYMC": [
+          "1-35"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src-tauri/tauri.conf.json": {
+        "BYMC": [
+          "18-19"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/App.tsx": {
+        "BYMC": [
+          "6",
+          "223",
+          "259",
+          "261-263",
+          "265",
+          "271",
+          "277",
+          "280",
+          "282-283",
+          "289-290",
+          "299-301",
+          "307",
+          "310-311"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/components/Layout.tsx": {
+        "BYMC": [
+          "8",
+          "25",
+          "30",
+          "39",
+          "41-47",
+          "49",
+          "51-52",
+          "55-57",
+          "62-63"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/components/Sidebar.tsx": {
+        "BYMC": [
+          "2-4",
+          "6-7",
+          "9",
+          "14",
+          "18",
+          "29",
+          "40",
+          "54-57",
+          "61-62",
+          "64-75",
+          "77-89",
+          "91-95",
+          "97",
+          "100-102",
+          "104-106",
+          "109-127",
+          "129-133",
+          "135-142",
+          "149-151",
+          "153-154"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/components/TitleBar.tsx": {
+        "BYMC": [
+          "104"
+        ],
+        "BYAC": [
+          "1-16",
+          "19",
+          "23-27",
+          "30-34",
+          "37-43",
+          "46-50",
+          "54-57",
+          "60-66",
+          "69-72",
+          "75-86",
+          "88-91",
+          "93",
+          "95-103"
+        ],
+        "BYRC": []
+      },
+      "src/components/ui/base-ui.test.tsx": {
+        "BYMC": [
+          "1-19"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/components/ui/base-ui.tsx": {
+        "BYMC": [
+          "151-165",
+          "167-168",
+          "173",
+          "176-178",
+          "184-185",
+          "188-191",
+          "223-224",
+          "278",
+          "280",
+          "292",
+          "295-296",
+          "298"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/contexts/LogContext.tsx": {
+        "BYMC": [
+          "91",
+          "142"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/lib/store.ts": {
+        "BYMC": [],
+        "BYAC": [
+          "3-4",
+          "8",
+          "16-17",
+          "30-36",
+          "44-45"
+        ],
+        "BYRC": []
+      },
+      "src/locales/en.json": {
+        "BYMC": [
+          "14-17",
+          "19-20"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/locales/ja.json": {
+        "BYMC": [
+          "14-17",
+          "19-20"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/locales/zh-HK.json": {
+        "BYMC": [
+          "14-17",
+          "19-20"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/locales/zh-TW.json": {
+        "BYMC": [
+          "14-17",
+          "19-20"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/locales/zh.json": {
+        "BYMC": [
+          "14-17",
+          "19-20"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/styles/globals.css": {
+        "BYMC": [
+          "48-58"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      }
+    }
+  },
+  "ipa_account": "luhaoyu",
+  "commit_timestamp": 1786170634,
+  "requirement_id": ""
+}
