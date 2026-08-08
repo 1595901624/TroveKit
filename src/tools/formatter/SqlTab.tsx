@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react"
-import { Button, Card, CardBody, ButtonGroup, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem } from "@heroui/react"
+import { Button, Card, CardBody, ButtonGroup, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem } from "../../components/ui/base-ui"
 import Editor from "../../components/MonacoEditor"
 import type { OnMount } from "@monaco-editor/react"
 import { Copy, Trash2, CheckCircle2, AlertCircle, Minimize2, Maximize2, BookOpen, Database } from "lucide-react"

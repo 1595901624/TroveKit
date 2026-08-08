@@ -112,7 +112,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Log Management View**: Optimized the log viewing interface in the log management page for better readability and user experience.
 - **Encryption Algorithm Logs**: Optimized log display for encryption algorithms.
 - **BaseXTab**: Removed custom alphabet feature (commented out).
-- **Toast Implementation**: Optimized toast notifications by replacing custom implementation with HeroUI's built-in addToast functionality for better consistency and maintainability.
+- **Toast Implementation**: Optimized toast notifications by replacing custom implementation with the UI layer's toast functionality for better consistency and maintainability.
 
 ### Fixed
 - **Log Panel Tooltip**: Fixed an issue where the "New Log" button tooltip was not correctly localized.
@@ -129,7 +129,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Collapsible Sidebar**: Added support for collapsing and expanding the sidebar to maximize workspace. The sidebar state is now persisted in local storage.
 
 ### Changed
-- **Log Management Tool Redesign**: Completely refactored the log management interface with a modern master-detail layout. Replaced native confirmation dialogs with HeroUI Modals and added support for deleting individual log entries and entire sessions.
+- **Log Management Tool Redesign**: Completely refactored the log management interface with a modern master-detail layout. Replaced native confirmation dialogs with accessible UI dialogs and added support for deleting individual log entries and entire sessions.
 <!-- - **Log Storage Format**: Logs are now stored in a SQLite database instead of JSONL files (experimental feature). -->
 
 ## [0.1.7] - 2026-01-03

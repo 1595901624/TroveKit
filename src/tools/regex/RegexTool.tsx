@@ -12,7 +12,7 @@ import {
   Tab,
   Textarea,
   addToast,
-} from "@heroui/react"
+} from "../../components/ui/base-ui"
 import Editor from "../../components/MonacoEditor"
 import type { OnMount } from "@monaco-editor/react"
 import { AlertCircle, Copy, FileDown, Trash2, ListPlus, ChevronDown } from "lucide-react"
@@ -774,7 +774,7 @@ export function RegexTool() {
                   </div>
 
                   <div className="flex-1 min-h-0">
-                    {/* 注意：HeroUI Textarea 默认会 autosize（按内容行数计算高度），需 disableAutosize 才能与 flex 布局一起撑满 */}
+                    {/* 关闭自动高度，让文本框配合 flex 布局填满可用空间。 */}
                     <Textarea
                       value={extractedResultsText}
                       isReadOnly

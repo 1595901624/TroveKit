@@ -12,8 +12,7 @@
     "tauri": "tauri"
   },
   "dependencies": {
-    "@heroui/react": "^2.7.5",
-    "@heroui/theme": "2.4.13",
+    "@base-ui/react": "^1.7.0",
     "@internationalized/date": "^3.10.1",
     "@monaco-editor/react": "^4.7.0",
     "@noble/ciphers": "^2.1.1",

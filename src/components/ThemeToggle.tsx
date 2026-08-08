@@ -1,6 +1,6 @@
 import { Moon, Sun, Monitor } from "lucide-react"
 import { useTheme } from "./theme-provider"
-import { Button, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem } from "@heroui/react"
+import { Button, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem } from "../components/ui/base-ui"
 import { useTranslation } from "react-i18next"
 
 export function ThemeToggle() {

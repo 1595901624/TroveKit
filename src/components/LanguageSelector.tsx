@@ -1,4 +1,4 @@
-import { Select, SelectItem } from "@heroui/react"
+import { Select, SelectItem } from "../components/ui/base-ui"
 import { useTranslation } from "react-i18next"
 import US from 'country-flag-icons/react/3x2/US'
 import CN from 'country-flag-icons/react/3x2/CN'

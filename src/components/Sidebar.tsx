@@ -12,7 +12,7 @@ import {
   FileText,
   MoreHorizontal,
 } from "lucide-react"
-import { Button, Tooltip } from "@heroui/react"
+import { Button, Tooltip } from "../components/ui/base-ui"
 import { cn } from "../lib/utils"
 import { useTranslation } from "react-i18next"
 import { usePersistentState } from "../hooks/usePersistentState"

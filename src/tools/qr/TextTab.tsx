@@ -1,4 +1,4 @@
-import { Textarea } from "@heroui/react"
+import { Textarea } from "../../components/ui/base-ui"
 import { useTranslation } from "react-i18next"
 
 interface TextTabProps {

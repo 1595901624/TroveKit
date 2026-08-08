@@ -1,4 +1,4 @@
-import { Input, Select, SelectItem, Checkbox } from "@heroui/react"
+import { Input, Select, SelectItem, Checkbox } from "../../components/ui/base-ui"
 import { useTranslation } from "react-i18next"
 import { Eye, EyeOff } from "lucide-react"
 import { useState } from "react"

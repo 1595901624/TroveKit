@@ -133,7 +133,7 @@ TroveKit 基於 [Tauri v2](https://v2.tauri.app/) + [React](https://react.dev/) 
 - **Core**: [Rust](https://www.rust-lang.org/) & [Tauri v2](https://tauri.app/)
 - **Frontend**: [React 19](https://react.dev/) & [TypeScript](https://www.typescriptlang.org/)
 - **Build Tool**: [Vite](https://vitejs.dev/)
-- **UI Framework**: [HeroUI](https://www.heroui.com/) & [Tailwind CSS](https://tailwindcss.com/)
+- **UI Framework**: [Base UI](https://base-ui.com/) & [Tailwind CSS](https://tailwindcss.com/)
 - **State & Logic**: [Framer Motion](https://www.framer.com/motion/), [i18next](https://www.i18next.com/), [crypto-js](https://cryptojs.gitbook.io/)
 - **QR Rendering**: [qr-code-styling](https://www.npmjs.com/package/qr-code-styling)
 - **XML Processing**: [fast-xml-parser](https://www.npmjs.com/package/fast-xml-parser)
@@ -141,7 +141,7 @@ TroveKit 基於 [Tauri v2](https://v2.tauri.app/) + [React](https://react.dev/) 
 ## 🎨 UI / UX
 
 - **Theme**：深淺色主題，支援系統同步
-- **Visuals**：基於 **HeroUI** 與 **TailwindCSS** 建構
+- **Visuals**：基於 **Base UI** 與 **TailwindCSS** 建構
 - **Animations**：由 **Framer Motion** 驅動
 - **優化文字大小**：提升所有工具與語言下的可讀性
 

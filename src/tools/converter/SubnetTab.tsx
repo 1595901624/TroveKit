@@ -9,7 +9,7 @@ import {
   Switch,
   Textarea,
   addToast,
-} from "@heroui/react"
+} from "../../components/ui/base-ui"
 import { Copy, Network, Settings2, FileDown, FileJson, ListPlus, Dices } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { useLog } from "../../contexts/LogContext"

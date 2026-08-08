@@ -119,7 +119,7 @@ Built with [Tauri v2](https://v2.tauri.app/) + [React](https://react.dev/), Trov
 ## 🎨 UI / UX
 
 - **Theme**: Dark/Light mode with system sync
-- **Visuals**: built with **HeroUI** and **TailwindCSS**
+- **Visuals**: built with **Base UI** and **TailwindCSS**
 - **Animations**: powered by **Framer Motion**
 - **Optimized Text Sizing**: improved readability across all tools and languages
 
@@ -144,7 +144,7 @@ Built with [Tauri v2](https://v2.tauri.app/) + [React](https://react.dev/), Trov
 - **Core**: [Rust](https://www.rust-lang.org/) & [Tauri v2](https://tauri.app/)
 - **Frontend**: [React 19](https://react.dev/) & [TypeScript](https://www.typescriptlang.org/)
 - **Build Tool**: [Vite](https://vitejs.dev/)
-- **UI Framework**: [HeroUI](https://www.heroui.com/) & [Tailwind CSS](https://tailwindcss.com/)
+- **UI Framework**: [Base UI](https://base-ui.com/) & [Tailwind CSS](https://tailwindcss.com/)
 - **State & Logic**: [Framer Motion](https://www.framer.com/motion/), [i18next](https://www.i18next.com/), [crypto-js](https://cryptojs.gitbook.io/)
 - **QR Rendering**: [qr-code-styling](https://www.npmjs.com/package/qr-code-styling)
 - **XML Processing**: [fast-xml-parser](https://www.npmjs.com/package/fast-xml-parser)

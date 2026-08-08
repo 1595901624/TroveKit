@@ -4,7 +4,7 @@ import TitleBar from "./TitleBar"
 import { ThemeToggle } from "./ThemeToggle"
 import { LogPanel } from "./LogPanel"
 import { useLogUI } from "../contexts/LogContext"
-import { Button, Tooltip } from "@heroui/react"
+import { Button, Tooltip } from "../components/ui/base-ui"
 import { Terminal } from "lucide-react"
 import { useTranslation } from "react-i18next"
 

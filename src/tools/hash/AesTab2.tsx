@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react"
-import { Textarea, Button, Input, Select, SelectItem, Tabs, Tab, Card, CardBody, CardHeader } from "@heroui/react"
+import { Textarea, Button, Input, Select, SelectItem, Tabs, Tab, Card, CardBody, CardHeader } from "../../components/ui/base-ui"
 import { Copy, Trash2, Lock, Unlock, FileUp, FolderOpen } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { useLog } from "../../contexts/LogContext"

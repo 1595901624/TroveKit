@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { HeroUIProvider, ToastProvider } from "@heroui/react";
+import { BaseUIProvider, ToastProvider } from "./components/ui/base-ui";
 
 import App from "./App";
 import "./styles/globals.css";
@@ -37,7 +37,7 @@ if (storedLang) {
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
-    <HeroUIProvider>
+    <BaseUIProvider>
       <ToastProvider placement="bottom-right" />
       <LogProvider>
         <FeaturePreferencesProvider>
@@ -46,6 +46,6 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
           </main>
         </FeaturePreferencesProvider>
       </LogProvider>
-    </HeroUIProvider>
+    </BaseUIProvider>
   </React.StrictMode>,
 );

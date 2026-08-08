@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useCallback, useEffect, useMemo } from "react"
-import { addToast } from "@heroui/react"
+import { addToast } from "../components/ui/base-ui"
 import { invoke } from "@tauri-apps/api/core"
 import { useTranslation } from "react-i18next"
 import { usePersistentState } from "../hooks/usePersistentState"

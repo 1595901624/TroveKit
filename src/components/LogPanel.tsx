@@ -2,7 +2,7 @@
 import { motion } from "framer-motion" // 用于动画效果
 import { useLogData, useLogUI, LogEntry } from "../contexts/LogContext" // 日志上下文
 import { Trash2, X, Terminal, Info, CheckCircle, AlertTriangle, AlertCircle, Copy, Plus, Edit, Check, MessageSquare } from "lucide-react" // 图标
-import { Button, ScrollShadow, Tooltip, Input } from "@heroui/react" // UI 组件
+import { Button, ScrollShadow, Tooltip, Input } from "../components/ui/base-ui" // UI 组件
 import { useTranslation } from "react-i18next" // 国际化
 import { useState, useMemo } from "react" // React hooks
 

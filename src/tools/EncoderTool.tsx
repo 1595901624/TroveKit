@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react"
-import { Tabs, Tab } from "@heroui/react"
+import { Tabs, Tab } from "../components/ui/base-ui"
 import { useTranslation } from "react-i18next"
 import { UrlTab } from "./encoder/UrlTab"
 import { Base64Tab } from "./encoder/Base64Tab"

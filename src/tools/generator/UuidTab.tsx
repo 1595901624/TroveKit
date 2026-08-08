@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react"
-import { Button, Input, Switch, RadioGroup, Radio, Textarea } from "@heroui/react"
+import { Button, Input, Switch, RadioGroup, Radio, Textarea } from "../../components/ui/base-ui"
 import { Copy, Trash2, RefreshCw } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { useLog } from "../../contexts/LogContext"

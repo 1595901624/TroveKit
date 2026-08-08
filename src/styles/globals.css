@@ -2,6 +2,51 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+    color-scheme: light;
+    --background: 255 255 255;
+    --foreground: 17 24 39;
+    --content-1: 255 255 255;
+    --divider: 228 228 231;
+    --default-50: 250 250 250;
+    --default-100: 244 244 245;
+    --default-200: 228 228 231;
+    --default-300: 212 212 216;
+    --default-400: 161 161 170;
+    --default-500: 113 113 122;
+    --default-600: 82 82 91;
+    --default-700: 63 63 70;
+    --primary: 0 111 238;
+    --primary-foreground: 255 255 255;
+    --secondary: 120 40 200;
+    --secondary-foreground: 255 255 255;
+    --success: 23 201 100;
+    --warning: 245 165 36;
+    --danger: 243 18 96;
+}
+
+.dark {
+    color-scheme: dark;
+    --background: 24 24 27;
+    --foreground: 244 244 245;
+    --content-1: 39 39 42;
+    --divider: 63 63 70;
+    --default-50: 39 39 42;
+    --default-100: 63 63 70;
+    --default-200: 82 82 91;
+    --default-300: 113 113 122;
+    --default-400: 161 161 170;
+    --default-500: 212 212 216;
+    --default-600: 228 228 231;
+    --default-700: 244 244 245;
+}
+
+html, body, #root {
+    min-height: 100%;
+    background: rgb(var(--background));
+    color: rgb(var(--foreground));
+}
+
 input {
     outline: none;
 }

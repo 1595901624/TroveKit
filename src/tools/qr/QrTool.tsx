@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react"
-import { Button, Input, Switch, Select, SelectItem, Popover, PopoverTrigger, PopoverContent, ButtonGroup, addToast } from "@heroui/react"
+import { Button, Input, Switch, Select, SelectItem, Popover, PopoverTrigger, PopoverContent, ButtonGroup, addToast } from "../../components/ui/base-ui"
 import { useTranslation } from "react-i18next"
 import { TextTab } from "./TextTab"
 import { WifiTab, WifiState } from "./WifiTab"

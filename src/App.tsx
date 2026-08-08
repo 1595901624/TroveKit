@@ -2,7 +2,7 @@ import { lazy, Suspense, useState } from "react"
 import { Layout } from "./components/Layout"
 import { ThemeProvider } from "./components/theme-provider"
 import { ToolId } from "./components/Sidebar"
-import { Card, CardBody } from "@heroui/react"
+import { Card, CardBody } from "./components/ui/base-ui"
 import { ArrowRight, Lock, Code2, FileCode2, Shield, Wand2, ArrowRightLeft } from "lucide-react"
 import { useTranslation } from "react-i18next"
 

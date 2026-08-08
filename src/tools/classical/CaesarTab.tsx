@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { Textarea, Button, Input, RadioGroup, Radio, Tooltip } from "@heroui/react"
+import { Textarea, Button, Input, RadioGroup, Radio, Tooltip } from "../../components/ui/base-ui"
 import { Copy, Trash2, ArrowDownUp, Info, Shield, ShieldAlert } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { useLog } from "../../contexts/LogContext"
