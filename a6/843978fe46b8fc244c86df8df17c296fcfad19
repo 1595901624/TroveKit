@@ -1,0 +1,562 @@
+README.md
+  21626ecc98bb6adc 122,147
+src/tools/formatter/SqlTab.tsx
+  21626ecc98bb6adc 2
+README.ja.md
+  21626ecc98bb6adc 135,143
+src/App.tsx
+  21626ecc98bb6adc 5
+src/tools/regex/RegexTool.tsx
+  21626ecc98bb6adc 15,777
+src/tools/FormatterTool.tsx
+  21626ecc98bb6adc 2
+src/tools/HashTool.tsx
+  21626ecc98bb6adc 2
+src/tools/encoder/JwtTab.tsx
+  21626ecc98bb6adc 2
+README.zh-TW.md
+  21626ecc98bb6adc 136,144
+README.zh-HK.md
+  21626ecc98bb6adc 136,144
+src/tools/GeneratorTool.tsx
+  21626ecc98bb6adc 2
+src/tools/formatter/JsonTab.tsx
+  21626ecc98bb6adc 2
+README.zh-CN.md
+  21626ecc98bb6adc 136,144
+src/main.tsx
+  21626ecc98bb6adc 3,40,49
+src/tools/ClassicalTool.tsx
+  21626ecc98bb6adc 2
+src/tools/OthersTool.tsx
+  21626ecc98bb6adc 2
+src/tools/EncoderTool.tsx
+  21626ecc98bb6adc 2
+src/tools/ConverterTool.tsx
+  21626ecc98bb6adc 2
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.0.8",
+  "base_commit_sha": "a6843978fe46b8fc244c86df8df17c296fcfad19",
+  "prompts": {
+    "21626ecc98bb6adc": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019fdfb9-bccc-73b0-886e-77780de98c78",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "luhaoyu <haoyu3@163.com>",
+      "messages": [],
+      "total_additions": 28,
+      "total_deletions": 28,
+      "accepted_lines": 26,
+      "overriden_lines": 0
+    }
+  },
+  "commit_stats": {
+    "git_diff_added_lines": 445,
+    "git_diff_deleted_lines": 86,
+    "ai_additions": 26,
+    "ai_accepted": 26,
+    "BYMC": 419,
+    "mixed_additions": 0,
+    "BYAC": 26,
+    "BYRC": 0,
+    "per_file": {
+      "CHANGELOG.md": {
+        "BYMC": [
+          "115",
+          "132"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "README.ja.md": {
+        "BYMC": [],
+        "BYAC": [
+          "135",
+          "143"
+        ],
+        "BYRC": []
+      },
+      "README.md": {
+        "BYMC": [],
+        "BYAC": [
+          "122",
+          "147"
+        ],
+        "BYRC": []
+      },
+      "README.zh-CN.md": {
+        "BYMC": [],
+        "BYAC": [
+          "136",
+          "144"
+        ],
+        "BYRC": []
+      },
+      "README.zh-HK.md": {
+        "BYMC": [],
+        "BYAC": [
+          "136",
+          "144"
+        ],
+        "BYRC": []
+      },
+      "README.zh-TW.md": {
+        "BYMC": [],
+        "BYAC": [
+          "136",
+          "144"
+        ],
+        "BYRC": []
+      },
+      "package.json": {
+        "BYMC": [
+          "15"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/App.tsx": {
+        "BYMC": [],
+        "BYAC": [
+          "5"
+        ],
+        "BYRC": []
+      },
+      "src/components/LanguageSelector.tsx": {
+        "BYMC": [
+          "1"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/components/Layout.tsx": {
+        "BYMC": [
+          "7"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/components/LogPanel.tsx": {
+        "BYMC": [
+          "5"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/components/Sidebar.tsx": {
+        "BYMC": [
+          "15"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/components/ThemeToggle.tsx": {
+        "BYMC": [
+          "3"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/components/ui/base-ui.tsx": {
+        "BYMC": [
+          "1-291"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/contexts/LogContext.tsx": {
+        "BYMC": [
+          "2"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/main.tsx": {
+        "BYMC": [],
+        "BYAC": [
+          "3",
+          "40",
+          "49"
+        ],
+        "BYRC": []
+      },
+      "src/styles/globals.css": {
+        "BYMC": [
+          "5-49"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/ClassicalTool.tsx": {
+        "BYMC": [],
+        "BYAC": [
+          "2"
+        ],
+        "BYRC": []
+      },
+      "src/tools/ConverterTool.tsx": {
+        "BYMC": [],
+        "BYAC": [
+          "2"
+        ],
+        "BYRC": []
+      },
+      "src/tools/EncoderTool.tsx": {
+        "BYMC": [],
+        "BYAC": [
+          "2"
+        ],
+        "BYRC": []
+      },
+      "src/tools/FormatterTool.tsx": {
+        "BYMC": [],
+        "BYAC": [
+          "2"
+        ],
+        "BYRC": []
+      },
+      "src/tools/GeneratorTool.tsx": {
+        "BYMC": [],
+        "BYAC": [
+          "2"
+        ],
+        "BYRC": []
+      },
+      "src/tools/HashTool.tsx": {
+        "BYMC": [],
+        "BYAC": [
+          "2"
+        ],
+        "BYRC": []
+      },
+      "src/tools/LogManagementTool.tsx": {
+        "BYMC": [
+          "3",
+          "728"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/OthersTool.tsx": {
+        "BYMC": [],
+        "BYAC": [
+          "2"
+        ],
+        "BYRC": []
+      },
+      "src/tools/Settings.tsx": {
+        "BYMC": [
+          "1"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/classical/BaconTab.tsx": {
+        "BYMC": [
+          "2"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/classical/CaesarTab.tsx": {
+        "BYMC": [
+          "2"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/classical/MorseTab.tsx": {
+        "BYMC": [
+          "2"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/converter/JsonXmlTab.tsx": {
+        "BYMC": [
+          "2"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/converter/JsonYamlTab.tsx": {
+        "BYMC": [
+          "2"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/converter/SubnetTab.tsx": {
+        "BYMC": [
+          "12"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/converter/TimestampTab.tsx": {
+        "BYMC": [
+          "2"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/encoder/Base32Tab.tsx": {
+        "BYMC": [
+          "2"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/encoder/Base64Tab.tsx": {
+        "BYMC": [
+          "2"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/encoder/BaseXTab.tsx": {
+        "BYMC": [
+          "2"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/encoder/BrainfuckTab.tsx": {
+        "BYMC": [
+          "2"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/encoder/HexTab.tsx": {
+        "BYMC": [
+          "2"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/encoder/JwtTab.tsx": {
+        "BYMC": [],
+        "BYAC": [
+          "2"
+        ],
+        "BYRC": []
+      },
+      "src/tools/encoder/UrlTab.tsx": {
+        "BYMC": [
+          "2"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/formatter/CssTab.tsx": {
+        "BYMC": [
+          "2"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/formatter/JsonTab.tsx": {
+        "BYMC": [],
+        "BYAC": [
+          "2"
+        ],
+        "BYRC": []
+      },
+      "src/tools/formatter/SqlTab.tsx": {
+        "BYMC": [],
+        "BYAC": [
+          "2"
+        ],
+        "BYRC": []
+      },
+      "src/tools/formatter/XmlTab.tsx": {
+        "BYMC": [
+          "2"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/generator/UuidTab.tsx": {
+        "BYMC": [
+          "2",
+          "222"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/hash/AesTab.tsx": {
+        "BYMC": [
+          "2"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/hash/AesTab2.tsx": {
+        "BYMC": [
+          "2"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/hash/BlakeTab.tsx": {
+        "BYMC": [
+          "2"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/hash/ChaCha20Tab.tsx": {
+        "BYMC": [
+          "2"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/hash/DesTab.tsx": {
+        "BYMC": [
+          "2"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/hash/HmacMd5Tab.tsx": {
+        "BYMC": [
+          "2"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/hash/Md2Tab.tsx": {
+        "BYMC": [
+          "2"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/hash/Md4Tab.tsx": {
+        "BYMC": [
+          "2"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/hash/Md5Tab.tsx": {
+        "BYMC": [
+          "2"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/hash/Rc4Tab.tsx": {
+        "BYMC": [
+          "2"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/hash/RsaTab.tsx": {
+        "BYMC": [
+          "2"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/hash/ShaTab.tsx": {
+        "BYMC": [
+          "2"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/hash/Sm2Tab.tsx": {
+        "BYMC": [
+          "2"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/hash/Sm3Tab.tsx": {
+        "BYMC": [
+          "2"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/hash/Sm4Tab.tsx": {
+        "BYMC": [
+          "2"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/hash/TripleDesTab.tsx": {
+        "BYMC": [
+          "2",
+          "340"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/hash/TriviumTab.tsx": {
+        "BYMC": [
+          "2"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/qr/QrTool.tsx": {
+        "BYMC": [
+          "2",
+          "596"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/qr/TextTab.tsx": {
+        "BYMC": [
+          "1"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/qr/WifiTab.tsx": {
+        "BYMC": [
+          "1"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/regex/RegexTool.tsx": {
+        "BYMC": [],
+        "BYAC": [
+          "15",
+          "777"
+        ],
+        "BYRC": []
+      },
+      "src/tools/settings/FeatureManagement.tsx": {
+        "BYMC": [
+          "2"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "tailwind.config.js": {
+        "BYMC": [
+          "8-36",
+          "39-40"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      }
+    }
+  },
+  "ipa_account": "luhaoyu",
+  "commit_timestamp": 1786166540,
+  "requirement_id": ""
+}
