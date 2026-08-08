@@ -11,8 +11,13 @@
     "cancel": "取消",
     "delete": "刪除",
     "yes": "是",
-    "no": "否"
+    "no": "否",
+    "sidebar": "側邊欄",
+    "back": "返回",
+    "forward": "前進"
   },
+  "menu": { "file": "檔案", "edit": "編輯", "view": "檢視", "help": "說明" },
+  "window": { "minimize": "最小化", "maximize": "最大化", "close": "關閉" },
   "nav": {
     "home": "首頁",
     "encoder": "編碼工具",

@@ -11,8 +11,13 @@
     "cancel": "取消",
     "delete": "删除",
     "yes": "是",
-    "no": "否"
+    "no": "否",
+    "sidebar": "侧栏",
+    "back": "返回",
+    "forward": "前进"
   },
+  "menu": { "file": "文件", "edit": "编辑", "view": "视图", "help": "帮助" },
+  "window": { "minimize": "最小化", "maximize": "最大化", "close": "关闭" },
   "nav": {
     "home": "首页",
     "encoder": "编码工具",

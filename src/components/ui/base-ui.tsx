@@ -148,27 +148,47 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(function 
 type ItemData = { value: string; label: React.ReactNode; startContent?: React.ReactNode; disabled?: boolean }
 export function SelectItem(_props: AnyProps) { return null }
 
+// React.Children.toArray() rewrites explicit keys (for example "ja" becomes
+// ".$ja"). HeroUI exposed the original key to onSelectionChange, so keep the
+// elements' keys intact when adapting collection components to Base UI.
+export function collectionElements(children: React.ReactNode) {
+  const elements: React.ReactElement<AnyProps>[] = []
+  React.Children.forEach(children, child => {
+    if (React.isValidElement<AnyProps>(child)) elements.push(child)
+  })
+  return elements
+}
+
+export function collectionValue(child: React.ReactElement<AnyProps>) {
+  return String(child.props.value ?? child.key ?? "")
+}
+
 export function Select({ children, label, placeholder, className, classNames, selectedKeys, defaultSelectedKeys, onSelectionChange, onChange, startContent, isDisabled, ...props }: SelectProps) {
-  const items = React.Children.toArray(children).filter(React.isValidElement).map((child: any): ItemData => ({
-    value: String(child.key ?? child.props.value ?? ""),
+  const items = collectionElements(children).map((child): ItemData => ({
+    value: collectionValue(child),
     label: child.props.children,
     startContent: child.props.startContent,
     disabled: child.props.isDisabled,
   }))
+  const isControlled = selectedKeys !== undefined
   const selected = selectedKeys === "all" ? items[0]?.value : Array.from(selectedKeys ?? [])[0] as string | undefined
   const defaultSelected = Array.from(defaultSelectedKeys ?? [])[0] as string | undefined
-  const current = items.find(item => item.value === selected)
+  const [uncontrolledValue, setUncontrolledValue] = useState(defaultSelected)
+  const currentValue = isControlled ? selected : uncontrolledValue
+  const current = items.find(item => item.value === currentValue)
   const { variant: _variant, size: _size, color: _color, ...rootProps } = props
   return (
     <BaseSelect.Root
       {...rootProps}
       items={items}
-      value={selected}
-      defaultValue={defaultSelected}
+      value={isControlled ? selected : undefined}
+      defaultValue={isControlled ? undefined : defaultSelected}
       disabled={isDisabled}
       onValueChange={(value) => {
-        onSelectionChange?.(new Set(value == null ? [] : [String(value)]))
-        onChange?.({ target: { value: value == null ? "" : String(value) } } as unknown as React.ChangeEvent<HTMLSelectElement>)
+        const nextValue = value == null ? "" : String(value)
+        if (!isControlled) setUncontrolledValue(nextValue || undefined)
+        onSelectionChange?.(new Set(nextValue ? [nextValue] : []))
+        onChange?.({ target: { value: nextValue }, currentTarget: { value: nextValue } } as unknown as React.ChangeEvent<HTMLSelectElement>)
       }}
     >
       <div className={cx("flex min-w-0 flex-col gap-1 text-sm", className, classNames?.base)}>
@@ -200,8 +220,8 @@ export function Select({ children, label, placeholder, className, classNames, se
 
 export function Tab(_props: AnyProps) { return null }
 export function Tabs({ children, selectedKey, defaultSelectedKey, onSelectionChange, className, classNames, ...props }: TabsProps) {
-  const tabs = React.Children.toArray(children).filter(React.isValidElement).map((child: any) => ({
-    value: String(child.key ?? child.props.value ?? ""), title: child.props.title, content: child.props.children,
+  const tabs = collectionElements(children).map(child => ({
+    value: collectionValue(child), title: child.props.title, content: child.props.children,
   }))
   const { color: _color, variant: _variant, size: _size, ...rootProps } = props
   return (
@@ -255,9 +275,9 @@ export function Dropdown({ children }: AnyProps) { return <BaseMenu.Root>{childr
 export function DropdownTrigger({ children }: AnyProps) { return <BaseMenu.Trigger render={React.Children.only(children) as React.ReactElement} /> }
 export function DropdownItem(_props: AnyProps) { return null }
 export function DropdownMenu({ children, className, selectedKeys, onSelectionChange, ...props }: DropdownMenuProps) {
-  const items = React.Children.toArray(children).filter(React.isValidElement) as React.ReactElement<AnyProps>[]
+  const items = collectionElements(children)
   const { selectionMode: _selectionMode, disallowEmptySelection: _disallow, ...native } = props
-  return <BaseMenu.Portal><BaseMenu.Positioner className="z-[100]" sideOffset={4}><BaseMenu.Popup {...native} className={cx("min-w-36 rounded-lg border border-default-200 bg-background p-1 text-sm shadow-xl outline-none", className)}>{items.map(item => { const value = String(item.key ?? ""); return <BaseMenu.Item key={value} disabled={item.props.isDisabled} onClick={(event) => { item.props.onClick?.(event); item.props.onPress?.(); onSelectionChange?.(new Set([value])) }} className="flex cursor-default items-center gap-2 rounded-md px-2 py-2 outline-none data-[highlighted]:bg-default-100 data-[disabled]:opacity-40">{item.props.startContent}{item.props.children}{selectedKeys && Array.from(selectedKeys).includes(value) && <Check className="ml-auto h-4 w-4" />}</BaseMenu.Item> })}</BaseMenu.Popup></BaseMenu.Positioner></BaseMenu.Portal>
+  return <BaseMenu.Portal><BaseMenu.Positioner className="z-[100]" sideOffset={4}><BaseMenu.Popup {...native} className={cx("min-w-36 rounded-lg border border-default-200 bg-background p-1 text-sm shadow-xl outline-none", className)}>{items.map(item => { const value = collectionValue(item); return <BaseMenu.Item key={value} disabled={item.props.isDisabled} onClick={(event) => { item.props.onClick?.(event); item.props.onPress?.(); onSelectionChange?.(new Set([value])) }} className="flex cursor-default items-center gap-2 rounded-md px-2 py-2 outline-none data-[highlighted]:bg-default-100 data-[disabled]:opacity-40">{item.props.startContent}{item.props.children}{selectedKeys && Array.from(selectedKeys).map(String).includes(value) && <Check className="ml-auto h-4 w-4" />}</BaseMenu.Item> })}</BaseMenu.Popup></BaseMenu.Positioner></BaseMenu.Portal>
 }
 
 export function Popover({ children, isOpen, defaultOpen, onOpenChange, placement = "bottom", ...props }: AnyProps) { const [side, align] = String(placement).split("-"); return <PopoverContext.Provider value={{ side, align, props }}><BasePopover.Root open={isOpen} defaultOpen={defaultOpen} onOpenChange={onOpenChange}>{children}</BasePopover.Root></PopoverContext.Provider> }
@@ -269,12 +289,13 @@ export function useDisclosure() {
   const [isOpen, setOpen] = useState(false)
   return useMemo(() => ({ isOpen, onOpen: () => setOpen(true), onClose: () => setOpen(false), onOpenChange: setOpen }), [isOpen])
 }
-const ModalContext = createContext({ onClose: () => {} })
+const ModalContext = createContext({ onClose: () => {}, baseClassName: undefined as string | undefined })
 export function Modal({ children, isOpen, onClose, onOpenChange, classNames, ...props }: AnyProps) {
   const { size: _size, scrollBehavior: _scroll, placement: _placement, ...root } = props
-  return <ModalContext.Provider value={{ onClose }}><BaseDialog.Root {...root} open={isOpen} onOpenChange={(open) => { onOpenChange?.(open); if (!open) onClose?.() }}><div data-modal-base-class={classNames?.base}>{children}</div></BaseDialog.Root></ModalContext.Provider>
+  const close = () => { onOpenChange?.(false); onClose?.() }
+  return <ModalContext.Provider value={{ onClose: close, baseClassName: classNames?.base }}><BaseDialog.Root {...root} open={isOpen} onOpenChange={(open) => { onOpenChange?.(open); if (!open) onClose?.() }}>{children}</BaseDialog.Root></ModalContext.Provider>
 }
-export function ModalContent({ children, className }: ModalContentProps) { const { onClose } = useContext(ModalContext); return <BaseDialog.Portal><BaseDialog.Backdrop className="fixed inset-0 z-[120] bg-black/45 backdrop-blur-sm data-[starting-style]:opacity-0 data-[ending-style]:opacity-0" /><BaseDialog.Viewport className="fixed inset-0 z-[121] flex items-center justify-center p-4"><BaseDialog.Popup className={cx("flex max-h-[90vh] w-full max-w-3xl flex-col overflow-hidden rounded-xl border border-default-200 bg-background shadow-2xl outline-none", className)}>{typeof children === "function" ? children(onClose) : children}</BaseDialog.Popup></BaseDialog.Viewport></BaseDialog.Portal> }
+export function ModalContent({ children, className, classNames, hideCloseButton, ...props }: ModalContentProps) { const { onClose, baseClassName } = useContext(ModalContext); return <BaseDialog.Portal><BaseDialog.Backdrop className="fixed inset-0 z-[120] bg-black/45 backdrop-blur-sm data-[starting-style]:opacity-0 data-[ending-style]:opacity-0" /><BaseDialog.Viewport className="fixed inset-0 z-[121] flex items-center justify-center p-4"><BaseDialog.Popup {...props} className={cx("relative flex max-h-[90vh] w-full max-w-3xl flex-col overflow-hidden rounded-xl border border-default-200 bg-background shadow-2xl outline-none", baseClassName, classNames?.base, className)}>{!hideCloseButton && <BaseDialog.Close aria-label="Close" className="absolute right-4 top-4 z-10 rounded-md p-1 text-default-400 hover:bg-default-100 hover:text-foreground"><X className="h-4 w-4" /></BaseDialog.Close>}{typeof children === "function" ? children(onClose) : children}</BaseDialog.Popup></BaseDialog.Viewport></BaseDialog.Portal> }
 export function ModalHeader({ children, className, ...props }: AnyProps) { return <BaseDialog.Title {...props} className={cx("px-6 pt-5 text-lg font-semibold", className)}>{children}</BaseDialog.Title> }
 export function ModalBody({ children, className, ...props }: AnyProps) { return <div {...props} className={cx("min-h-0 overflow-auto px-6 py-4", className)}>{children}</div> }
 export function ModalFooter({ children, className, ...props }: AnyProps) { return <div {...props} className={cx("flex justify-end gap-2 px-6 pb-5", className)}>{children}</div> }

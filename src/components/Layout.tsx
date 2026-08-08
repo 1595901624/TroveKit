@@ -5,7 +5,7 @@ import { ThemeToggle } from "./ThemeToggle"
 import { LogPanel } from "./LogPanel"
 import { useLogUI } from "../contexts/LogContext"
 import { Button, Tooltip } from "../components/ui/base-ui"
-import { Terminal } from "lucide-react"
+import { Folder, MoreHorizontal, Terminal } from "lucide-react"
 import { useTranslation } from "react-i18next"
 
 interface LayoutProps {
@@ -22,12 +22,12 @@ export function Layout({ children, activeTool, activeTab, onToolChange, onNaviga
   const { t } = useTranslation()
 
   return (
-    <div className="h-screen w-screen flex flex-col bg-background text-foreground overflow-hidden">
+    <div className="flex h-screen w-screen flex-col overflow-hidden bg-[#f3f3f3] text-foreground dark:bg-[#202020]">
       {/* Global TitleBar (Window Controls) */}
       <TitleBar onNavigate={onNavigate} />
       
       <div
-        className="flex-1 flex overflow-hidden relative"
+        className="relative flex flex-1 overflow-hidden"
         // 为覆盖式 LogPanel 预留空间：避免遮挡主内容。
         // 注意：这里是一次性 resize（开/关时各一次），不会像 width 动画那样每帧触发布局重排。
         style={{ paddingRight: isOpen ? 320 : 0 }}
@@ -36,26 +36,31 @@ export function Layout({ children, activeTool, activeTab, onToolChange, onNaviga
         <Sidebar activeTool={activeTool} activeTab={activeTab} onToolChange={onToolChange} onNavigate={onNavigate} />
         
         {/* Main Content Area */}
-        <main className="flex-1 flex flex-col relative overflow-hidden bg-default-50/60">
+        <main className="relative flex min-w-0 flex-1 flex-col overflow-hidden rounded-tl-[22px] rounded-tr-[22px] border-l border-t border-default-200/80 bg-background shadow-[-2px_-1px_10px_rgba(0,0,0,0.025)]">
           {/* Tool Header */}
-          <header className="h-14 border-b border-divider flex items-center justify-between px-5 shrink-0 bg-background/80 backdrop-blur-md">
-            <div className="min-w-0">
-              <h1 className="truncate text-sm font-semibold tracking-tight">{title}</h1>
-              <p className="truncate text-[11px] text-default-400">TroveKit workspace</p>
+          <header className="flex h-[74px] shrink-0 items-center justify-between border-b border-divider/80 px-6">
+            <div className="flex min-w-0 items-center gap-3">
+              <Folder className="h-5 w-5 shrink-0 text-default-600" />
+              <h1 className="truncate text-[15px] font-semibold tracking-[-0.01em]">{title}</h1>
+              <button type="button" className="flex h-7 w-7 items-center justify-center rounded-lg text-default-400 hover:bg-default-100 hover:text-foreground" aria-label="More options">
+                <MoreHorizontal className="h-4 w-4" />
+              </button>
             </div>
-            <div className="flex gap-2 items-center">
+            <div className="flex items-center gap-2">
               <Tooltip content={t('log.toggle', 'Toggle Logs')}>
-                <Button isIconOnly variant={isOpen ? "flat" : "light"} radius="full" onPress={togglePanel}>
-                  <Terminal className="w-[1.2rem] h-[1.2rem] text-default-500" />
+                <Button isIconOnly variant="bordered" radius="full" className="h-9 w-9 min-w-9 border-default-200 bg-background" onPress={togglePanel}>
+                  <Terminal className="h-4 w-4 text-default-500" />
                 </Button>
               </Tooltip>
-              <ThemeToggle />
+              <div className="rounded-full border border-default-200 bg-background p-0.5 shadow-sm">
+                <ThemeToggle />
+              </div>
             </div>
           </header>
           
           {/* Scrollable Tool Content */}
-          <div className="flex-1 overflow-auto p-5 scrollbar-hide">
-             <div className="max-w-6xl mx-auto h-full rounded-xl border border-default-200/70 bg-background p-5 shadow-sm">
+          <div className="flex-1 overflow-auto scrollbar-hide">
+             <div className="mx-auto h-full w-full max-w-6xl px-7 py-6">
                 {children}
              </div>
           </div>

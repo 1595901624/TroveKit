@@ -88,6 +88,7 @@ const MAX_LOGS_IN_MEMORY = 200
 const MAX_LOG_TEXT_LENGTH = 4000
 const MAX_LOG_PARAM_LENGTH = 1000
 const TRUNCATED_SUFFIX = "\n...[truncated]"
+const isTauriRuntime = typeof window !== "undefined" && "__TAURI_INTERNALS__" in window
 
 // 日志里经常包含完整输入/输出，统一截断后再进入 React state，降低长期驻留内存。
 function truncateText(value: string | undefined, limit = MAX_LOG_TEXT_LENGTH) {
@@ -138,6 +139,7 @@ export function LogProvider({ children }: { children: React.ReactNode }) {
   const [currentSessionId, setCurrentSessionId] = useState<string | null>(null)
 
   const refresh = useCallback(async () => {
+    if (!isTauriRuntime) return
     try {
       const newLogs = await invoke<LogEntry[]>("load_logs")
       setLogs(normalizeLogs(newLogs))

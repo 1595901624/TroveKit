@@ -3,7 +3,7 @@ import { Layout } from "./components/Layout"
 import { ThemeProvider } from "./components/theme-provider"
 import { ToolId } from "./components/Sidebar"
 import { Card, CardBody } from "./components/ui/base-ui"
-import { ArrowRight, Lock, Code2, FileCode2, Shield, Wand2, ArrowRightLeft } from "lucide-react"
+import { Lock, Code2, FileCode2, Shield, Wand2, ArrowRightLeft } from "lucide-react"
 import { useTranslation } from "react-i18next"
 
 // 工具页使用懒加载，避免首页启动时一次性加载所有工具及其重依赖。
@@ -220,7 +220,7 @@ function HomeView({ onNavigate }: { onNavigate: (toolId: ToolId, tabId?: string)
     {
       id: "converter",
       title: t("nav.converter", "转换器"),
-      desc: "JSON 与 XML 互转",
+      desc: t("tools.converter.jsonXml"),
       icon: <ArrowRightLeft className="w-6 h-6" />,
       gradient: "from-cyan-500/20 to-blue-500/20",
       iconColor: "text-cyan-600 dark:text-cyan-400"
@@ -256,45 +256,38 @@ function HomeView({ onNavigate }: { onNavigate: (toolId: ToolId, tabId?: string)
    * 3. 常用功能区域 - 显示用户收藏的功能（如果有）
    */
   return (
-    <div className="space-y-12 py-8 animate-in fade-in duration-500">
+    <div className="animate-in space-y-10 py-5 fade-in duration-300">
       {/* 欢迎标题区域 */}
-      <div className="space-y-3 max-w-2xl">
-        <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight">
-          <span className="bg-clip-text text-transparent bg-gradient-to-r from-foreground via-foreground/90 to-foreground/70">
-            {t("home.welcome")}
-          </span>
+      <div className="max-w-2xl space-y-2">
+        <h2 className="text-[30px] font-semibold tracking-[-0.035em]">
+          <span>{t("home.welcome")}</span>
         </h2>
-        <p className="text-default-500 text-lg leading-relaxed">
+        <p className="text-[15px] leading-relaxed text-default-500">
           {t("home.subtitle")}
         </p>
       </div>
 
       {/* 工具卡片网格区域 - 使用响应式布局 */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">
         {tools.map((item) => (
           <Card
             key={item.id}
             isPressable
             onPress={() => onNavigate(item.id as ToolId)}
-            className="group border border-default-200/50 bg-background/60 backdrop-blur-sm hover:bg-default-100/50 transition-all duration-300 hover:-translate-y-1.5 hover:shadow-2xl hover:shadow-primary/5"
+            className="group border border-default-200/80 bg-default-50/60 transition-colors duration-150 hover:bg-default-100/80"
             shadow="none"
           >
-            <CardBody className="p-8 space-y-6">
+            <CardBody className="space-y-4 p-5">
               {/* 工具图标带渐变背景 */}
-              <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${item.gradient} flex items-center justify-center transition-transform duration-500 group-hover:scale-110 group-hover:rotate-3`}>
-                <div className={item.iconColor}>
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-default-200 bg-background text-default-600 shadow-sm">
+                <div>
                   {item.icon}
                 </div>
               </div>
               {/* 工具标题和描述 */}
               <div className="space-y-2">
-                <h3 className="font-bold text-lg tracking-tight group-hover:text-primary transition-colors">{item.title}</h3>
-                <p className="text-default-500 text-sm leading-relaxed line-clamp-2">{item.desc}</p>
-              </div>
-              {/* "Get started" 悬停提示 */}
-              <div className="pt-2 flex items-center gap-2 text-primary font-medium opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300">
-                <span className="text-xs">Get started</span>
-                <ArrowRight className="w-4 h-4" />
+                <h3 className="text-[15px] font-semibold tracking-tight">{item.title}</h3>
+                <p className="line-clamp-2 text-[13px] leading-relaxed text-default-500">{item.desc}</p>
               </div>
             </CardBody>
           </Card>
@@ -303,19 +296,19 @@ function HomeView({ onNavigate }: { onNavigate: (toolId: ToolId, tabId?: string)
 
       {/* 常用功能区域 - 仅在有收藏功能时显示 */}
       {favoriteFeatures.length > 0 && (
-        <div className="space-y-6 pt-8 border-t border-default-200/50">
-          <h3 className="text-xl font-bold tracking-tight">{t("home.frequentlyUsed", "常用功能")}</h3>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        <div className="space-y-4 border-t border-default-200/70 pt-7">
+          <h3 className="text-[17px] font-semibold tracking-tight">{t("home.frequentlyUsed", "常用功能")}</h3>
+          <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4">
             {favoriteFeatures.map(f => (
               <Card
                 key={f.id}
                 isPressable
                 onPress={() => onNavigate(f.toolId, f.tabId)}
-                className="group border border-default-200/50 bg-background/60 backdrop-blur-sm hover:bg-default-100/50 transition-all duration-300 hover:-translate-y-1"
+                className="group border border-default-200/80 bg-default-50/60 transition-colors hover:bg-default-100/80"
                 shadow="none"
               >
-                <CardBody className="p-4 flex flex-row items-center gap-3">
-                  <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
+                <CardBody className="flex flex-row items-center gap-3 p-4">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-lg border border-default-200 bg-background text-default-500">
                     <ArrowRightLeft className="w-4 h-4" />
                   </div>
                   <div className="flex-1 text-left">

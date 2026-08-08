@@ -11,8 +11,13 @@
     "cancel": "Cancel",
     "delete": "Delete",
     "yes": "Yes",
-    "no": "No"
+    "no": "No",
+    "sidebar": "Sidebar",
+    "back": "Back",
+    "forward": "Forward"
   },
+  "menu": { "file": "File", "edit": "Edit", "view": "View", "help": "Help" },
+  "window": { "minimize": "Minimize", "maximize": "Maximize", "close": "Close" },
   "nav": {
     "home": "Home",
     "encoder": "Encoders",

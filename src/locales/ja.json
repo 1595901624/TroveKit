@@ -11,8 +11,13 @@
     "cancel": "キャンセル",
     "delete": "削除",
     "yes": "はい",
-    "no": "いいえ"
+    "no": "いいえ",
+    "sidebar": "サイドバー",
+    "back": "戻る",
+    "forward": "進む"
   },
+  "menu": { "file": "ファイル", "edit": "編集", "view": "表示", "help": "ヘルプ" },
+  "window": { "minimize": "最小化", "maximize": "最大化", "close": "閉じる" },
   "nav": {
     "home": "ホーム",
     "encoder": "エンコーダー",
