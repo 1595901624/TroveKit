@@ -67,6 +67,16 @@ body {
     overscroll-behavior: none;
 }
 
+/* Keep scrolling available while removing the native scrollbar chrome. */
+.scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+    display: none;
+}
+
 .regex-match-decoration {
     background-color: rgba(59, 130, 246, 0.18);
     border-bottom: 1px solid rgba(59, 130, 246, 0.55);

@@ -7,7 +7,7 @@ import {
   Search,
   Settings,
 } from "lucide-react"
-import { useEffect, useMemo } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { useFeaturePreferences } from "../contexts/FeaturePreferencesContext"
 import { useLogUI } from "../contexts/LogContext"
@@ -26,10 +26,19 @@ interface SidebarProps {
 }
 
 const groupOrder: ToolId[] = ["encoder", "crypto", "classical", "formatters", "generators", "converter", "others"]
+const SIDEBAR_MIN_WIDTH = 240
+const SIDEBAR_MAX_WIDTH = 480
+const SIDEBAR_DEFAULT_WIDTH = 280
+
+const clampSidebarWidth = (width: number) => Math.min(SIDEBAR_MAX_WIDTH, Math.max(SIDEBAR_MIN_WIDTH, width))
 
 export function Sidebar({ activeTool, activeTab, onToolChange, onNavigate }: SidebarProps) {
   const { t } = useTranslation()
   const [isCollapsed, setIsCollapsed] = usePersistentState<boolean>("sidebar-collapsed", false)
+  const [storedWidth, setStoredWidth, , isStoredWidthLoaded] = usePersistentState<number>("sidebar-width", SIDEBAR_DEFAULT_WIDTH)
+  const [sidebarWidth, setSidebarWidth] = useState(SIDEBAR_DEFAULT_WIDTH)
+  const [isResizing, setIsResizing] = useState(false)
+  const sidebarWidthRef = useRef(SIDEBAR_DEFAULT_WIDTH)
   const [expandedGroups, setExpandedGroups] = usePersistentState<Record<string, boolean>>("sidebar-expanded-groups", {
     encoder: true,
     crypto: true,
@@ -37,6 +46,23 @@ export function Sidebar({ activeTool, activeTab, onToolChange, onNavigate }: Sid
   const features = useFeatures()
   const { getPreference } = useFeaturePreferences()
   const { togglePanel } = useLogUI()
+
+  const updateSidebarWidth = (width: number) => {
+    const nextWidth = clampSidebarWidth(width)
+    sidebarWidthRef.current = nextWidth
+    setSidebarWidth(nextWidth)
+  }
+
+  useEffect(() => {
+    if (isStoredWidthLoaded) {
+      updateSidebarWidth(typeof storedWidth === "number" && Number.isFinite(storedWidth) ? storedWidth : SIDEBAR_DEFAULT_WIDTH)
+    }
+  }, [isStoredWidthLoaded, storedWidth])
+
+  useEffect(() => () => {
+    document.body.style.cursor = ""
+    document.body.style.userSelect = ""
+  }, [])
 
   const groups = useMemo(() => groupOrder.map(id => {
     const topLevel = features.find(feature => feature.toolId === id && !feature.tabId)
@@ -55,12 +81,54 @@ export function Sidebar({ activeTool, activeTab, onToolChange, onNavigate }: Sid
     return () => window.removeEventListener("trovekit:toggle-sidebar", toggleSidebar)
   }, [setIsCollapsed])
 
+  const getWidthFromPointer = (event: React.PointerEvent<HTMLDivElement>) => {
+    const sidebarLeft = event.currentTarget.parentElement?.getBoundingClientRect().left ?? 0
+    return event.clientX - sidebarLeft
+  }
+
+  const startResize = (event: React.PointerEvent<HTMLDivElement>) => {
+    if (isCollapsed) return
+    event.preventDefault()
+    event.currentTarget.setPointerCapture(event.pointerId)
+    document.body.style.cursor = "col-resize"
+    document.body.style.userSelect = "none"
+    setIsResizing(true)
+    updateSidebarWidth(getWidthFromPointer(event))
+  }
+
+  const resize = (event: React.PointerEvent<HTMLDivElement>) => {
+    if (isResizing) updateSidebarWidth(getWidthFromPointer(event))
+  }
+
+  const finishResize = (event: React.PointerEvent<HTMLDivElement>) => {
+    if (!isResizing) return
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+      event.currentTarget.releasePointerCapture(event.pointerId)
+    }
+    document.body.style.cursor = ""
+    document.body.style.userSelect = ""
+    setIsResizing(false)
+    setStoredWidth(sidebarWidthRef.current)
+    window.dispatchEvent(new Event("resize"))
+  }
+
+  const resizeWithKeyboard = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return
+    event.preventDefault()
+    const direction = event.key === "ArrowRight" ? 1 : -1
+    const step = event.shiftKey ? 40 : 10
+    const nextWidth = clampSidebarWidth(sidebarWidthRef.current + direction * step)
+    updateSidebarWidth(nextWidth)
+    setStoredWidth(nextWidth)
+    window.dispatchEvent(new Event("resize"))
+  }
+
   return (
     <aside className={cn(
-      "relative h-full shrink-0 overflow-hidden bg-[#f3f3f3] transition-[width] duration-200 dark:bg-[#202020]",
-      isCollapsed ? "w-0" : "w-[clamp(250px,18.65vw,382px)]",
-    )}>
-      <div className="flex h-full w-[clamp(250px,18.65vw,382px)] flex-col">
+      "relative h-full shrink-0 overflow-hidden bg-[#f3f3f3] dark:bg-[#202020]",
+      !isResizing && "transition-[width] duration-200",
+    )} style={{ width: isCollapsed ? 0 : sidebarWidth }}>
+      <div className="flex h-full flex-col" style={{ width: sidebarWidth }}>
         <div className="flex h-[45px] shrink-0 items-center gap-0.5 border-b border-black/[0.055] px-2 dark:border-white/[0.07]">
           <Button
             variant="light"
@@ -132,6 +200,29 @@ export function Sidebar({ activeTool, activeTab, onToolChange, onNavigate }: Sid
           </div>
         </div>
       </div>
+
+      {!isCollapsed && (
+        <div
+          className="group absolute inset-y-0 right-0 z-20 w-2 cursor-col-resize touch-none outline-none"
+          role="separator"
+          aria-label={t("common.resizeSidebar", "调整侧栏宽度")}
+          aria-orientation="vertical"
+          aria-valuemin={SIDEBAR_MIN_WIDTH}
+          aria-valuemax={SIDEBAR_MAX_WIDTH}
+          aria-valuenow={Math.round(sidebarWidth)}
+          tabIndex={0}
+          onPointerDown={startResize}
+          onPointerMove={resize}
+          onPointerUp={finishResize}
+          onPointerCancel={finishResize}
+          onKeyDown={resizeWithKeyboard}
+        >
+          <div className={cn(
+            "absolute inset-y-0 right-0 w-px bg-transparent transition-colors group-hover:bg-primary/50 group-focus-visible:bg-primary/70",
+            isResizing && "bg-primary/70",
+          )} />
+        </div>
+      )}
     </aside>
   )
 }
