@@ -1,0 +1,178 @@
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.0.8",
+  "base_commit_sha": "3c51a4ec5211c7eec8e714614f935f2491ef7722",
+  "prompts": {
+    "da0e50ae28a62e5d": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019fec42-fb53-7562-9e92-d27af7a7f79f",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "luhaoyu <haoyu3@163.com>",
+      "messages": [],
+      "total_additions": 119,
+      "total_deletions": 18,
+      "accepted_lines": 119,
+      "overriden_lines": 0
+    }
+  },
+  "commit_stats": {
+    "git_diff_added_lines": 538,
+    "git_diff_deleted_lines": 301,
+    "ai_additions": 0,
+    "ai_accepted": 0,
+    "BYMC": 534,
+    "mixed_additions": 0,
+    "BYAC": 0,
+    "BYRC": 0,
+    "per_file": {
+      "src/locales/en.json": {
+        "BYMC": [
+          "206",
+          "257"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/locales/ja.json": {
+        "BYMC": [
+          "206",
+          "231"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/locales/zh-HK.json": {
+        "BYMC": [
+          "206",
+          "231"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/locales/zh-TW.json": {
+        "BYMC": [
+          "206",
+          "231"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/locales/zh.json": {
+        "BYMC": [
+          "206",
+          "231"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/EncoderTool.tsx": {
+        "BYMC": [
+          "22-23",
+          "26",
+          "38"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/encoder/Base64Tab.tsx": {
+        "BYMC": [
+          "1",
+          "4-5",
+          "9-21",
+          "28-30",
+          "32-36",
+          "39",
+          "43-47",
+          "49",
+          "52-55",
+          "59",
+          "61",
+          "63-68",
+          "71-72",
+          "74-75",
+          "77",
+          "79-89",
+          "91",
+          "93",
+          "95-96",
+          "98-100",
+          "107-108",
+          "111-115",
+          "119-137"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/encoder/BrainfuckTab.tsx": {
+        "BYMC": [
+          "1",
+          "5",
+          "173-196",
+          "202-204",
+          "206-210",
+          "220-223",
+          "235",
+          "237",
+          "239-244",
+          "247-253",
+          "255-257",
+          "259-263",
+          "265",
+          "267",
+          "269",
+          "271-272",
+          "274-276",
+          "283-292",
+          "295-299",
+          "303-323"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/encoder/EncoderWorkbench.tsx": {
+        "BYMC": [
+          "1-216"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/encoder/HexTab.tsx": {
+        "BYMC": [
+          "1",
+          "3",
+          "6-7",
+          "11-31",
+          "39-54",
+          "58-62",
+          "68",
+          "70",
+          "72-78",
+          "80-81",
+          "83-84",
+          "86",
+          "88-92",
+          "94",
+          "96",
+          "98",
+          "100-101",
+          "103-105",
+          "112-113",
+          "116-120",
+          "124-142",
+          "144-146",
+          "148",
+          "150-151",
+          "153-154"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      }
+    }
+  },
+  "ipa_account": "luhaoyu",
+  "commit_timestamp": 1786376834,
+  "requirement_id": ""
+}
