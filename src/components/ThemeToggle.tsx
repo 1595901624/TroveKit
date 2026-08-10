@@ -16,8 +16,8 @@ export function ThemeToggle({ className, variant = "light" }: ThemeToggleProps =
     <Dropdown>
       <DropdownTrigger>
         <Button isIconOnly variant={variant} radius="full" className={className} aria-label="Toggle theme">
-          <Sun className="h-4 w-4 rotate-0 scale-100 text-default-500 transition-all dark:-rotate-90 dark:scale-0" />
-          <Moon className="absolute h-4 w-4 rotate-90 scale-0 text-default-500 transition-all dark:rotate-0 dark:scale-100" />
+          <Sun className="h-3.5 w-3.5 rotate-0 scale-100 text-default-500 transition-all dark:-rotate-90 dark:scale-0" />
+          <Moon className="absolute h-3.5 w-3.5 rotate-90 scale-0 text-default-500 transition-all dark:rotate-0 dark:scale-100" />
         </Button>
       </DropdownTrigger>
       <DropdownMenu aria-label="Theme selection" selectionMode="single" selectedKeys={new Set([theme])}>

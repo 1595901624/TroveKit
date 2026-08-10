@@ -3,7 +3,6 @@ import {
   ChevronDown,
   CircleHelp,
   FileText,
-  FolderClosed,
   House,
   Search,
   Settings,
@@ -62,21 +61,21 @@ export function Sidebar({ activeTool, activeTab, onToolChange, onNavigate }: Sid
       isCollapsed ? "w-0" : "w-[clamp(250px,18.65vw,382px)]",
     )}>
       <div className="flex h-full w-[clamp(250px,18.65vw,382px)] flex-col">
-        <div className="flex h-[60px] shrink-0 items-center gap-1 border-b border-black/[0.055] px-3 dark:border-white/[0.07]">
+        <div className="flex h-[45px] shrink-0 items-center gap-0.5 border-b border-black/[0.055] px-2 dark:border-white/[0.07]">
           <Button
             variant="light"
             className={cn(
-              "h-10 min-w-0 flex-1 justify-start gap-3 rounded-xl px-3 text-left text-[14px] hover:bg-black/[0.045] dark:hover:bg-white/[0.06]",
+              "h-8 min-w-0 flex-1 justify-start gap-2.5 rounded-lg px-2 text-left text-[13px] hover:bg-black/[0.045] dark:hover:bg-white/[0.06]",
               activeTool === "home" && "bg-black/[0.055] dark:bg-white/[0.08]",
             )}
             onPress={() => onToolChange("home")}
           >
-            <House className="h-[18px] w-[18px] text-default-600" />
+            <House className="h-[15px] w-[15px] text-default-600" />
             <span>{t("nav.home")}</span>
           </Button>
           <div className="flex shrink-0 items-center gap-0.5">
-            <SidebarIcon label={t("common.search", "搜索")} onClick={() => window.dispatchEvent(new Event("trovekit:open-search"))}><Search className="h-[18px] w-[18px]" /></SidebarIcon>
-            <SidebarIcon label={t("log.toggle", "日志")} onClick={togglePanel}><Bell className="h-[18px] w-[18px]" /></SidebarIcon>
+            <SidebarIcon label={t("common.search", "搜索")} onClick={() => window.dispatchEvent(new Event("trovekit:open-search"))}><Search className="h-[15px] w-[15px]" /></SidebarIcon>
+            <SidebarIcon label={t("log.toggle", "日志")} onClick={togglePanel}><Bell className="h-[15px] w-[15px]" /></SidebarIcon>
           </div>
         </div>
 
@@ -93,7 +92,6 @@ export function Sidebar({ activeTool, activeTab, onToolChange, onNavigate }: Sid
                     onPress={() => setExpandedGroups(current => ({ ...current, [group.id]: !current[group.id] }))}
                     aria-expanded={expanded}
                   >
-                    <FolderClosed className="h-[17px] w-[17px] shrink-0" />
                     <span className="min-w-0 flex-1 truncate font-medium">{group.label}</span>
                     <ChevronDown className={cn("h-3.5 w-3.5 text-default-400 transition-transform", !expanded && "-rotate-90")} />
                   </Button>
@@ -139,7 +137,7 @@ export function Sidebar({ activeTool, activeTab, onToolChange, onNavigate }: Sid
 }
 
 function SidebarIcon({ children, label, onClick }: { children: React.ReactNode; label: string; onClick: () => void }) {
-  return <Tooltip content={label}><Button isIconOnly size="sm" variant="light" aria-label={label} onPress={onClick} className="text-default-500 hover:bg-black/[0.05] hover:text-foreground dark:hover:bg-white/[0.07]">{children}</Button></Tooltip>
+  return <Tooltip content={label}><Button isIconOnly size="sm" variant="light" aria-label={label} onPress={onClick} className="h-8 w-8 min-w-8 text-default-500 hover:bg-black/[0.05] hover:text-foreground dark:hover:bg-white/[0.07]">{children}</Button></Tooltip>
 }
 
 function BottomAction({ active, icon, label, onClick }: { active: boolean; icon: React.ReactNode; label: string; onClick: () => void }) {
