@@ -19,11 +19,11 @@ export function EncoderTool({ activeTab }: EncoderToolProps) {
 
   const tabs = [
     { id: "url", title: t("tools.encoder.url"), component: <UrlTab />, featureId: "encoder-url", className: "h-full min-h-0" },
-    { id: "hex", title: t("tools.encoder.hex"), component: <HexTab />, featureId: "encoder-hex" },
-    { id: "base64", title: t("tools.encoder.base64"), component: <Base64Tab />, featureId: "encoder-base64" },
+    { id: "hex", title: t("tools.encoder.hex"), component: <HexTab />, featureId: "encoder-hex", className: "h-full min-h-0" },
+    { id: "base64", title: t("tools.encoder.base64"), component: <Base64Tab />, featureId: "encoder-base64", className: "h-full min-h-0" },
     { id: "base32", title: t("tools.encoder.base32"), component: <Base32Tab />, featureId: "encoder-base32" },
     { id: "basex", title: t("tools.encoder.baseX"), component: <BaseXTab />, featureId: "encoder-basex" },
-    { id: "brainfuck", title: t("tools.encoder.brainfuck"), component: <BrainfuckTab />, featureId: "encoder-brainfuck" }, // Wait, brainfuck is not in useFeatures? Let me check.
+    { id: "brainfuck", title: t("tools.encoder.brainfuck"), component: <BrainfuckTab />, featureId: "encoder-brainfuck", className: "h-full min-h-0" },
     { id: "jwt", title: t("tools.encoder.jwtToken"), component: <JwtTab />, featureId: "encoder-jwt", className: "h-full" },
   ]
 
@@ -35,7 +35,7 @@ export function EncoderTool({ activeTab }: EncoderToolProps) {
 
   // 只挂载当前选中的 Tab 内容，切换回来时由各 Tab 自身从持久化存储恢复输入输出。
   const activeTabConfig = visibleTabs.find(tab => tab.id === activeTab) ?? visibleTabs[0]
-  const fillsAvailableHeight = activeTabConfig.id === "url"
+  const fillsAvailableHeight = ["url", "hex", "base64", "brainfuck"].includes(activeTabConfig.id)
 
   return (
     <div className={`h-full min-h-0 ${fillsAvailableHeight ? "overflow-hidden" : "overflow-y-auto pb-2"}`}>

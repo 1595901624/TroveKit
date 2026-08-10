@@ -1,9 +1,8 @@
-import { useState, useEffect } from "react"
-import { Textarea, Button } from "../../components/ui/base-ui"
-import { Copy, Trash2, ArrowDownUp, ChevronDown } from "lucide-react"
+import { useEffect, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { useLog } from "../../contexts/LogContext"
 import { getStoredItem, setStoredItem, removeStoredItem } from "../../lib/store"
+import { EncoderWorkbench } from "./EncoderWorkbench"
 
 const STORAGE_KEY = "brainfuck-tool-state"
 
@@ -171,13 +170,44 @@ function brainfuckToOok(bfCode: string) {
     .join(" ")
 }
 
+type BrainfuckMode = "bf-encode" | "bf-decode" | "ook-encode" | "ook-decode"
+
+function transformBrainfuck(value: string, mode: BrainfuckMode) {
+  switch (mode) {
+    case "bf-encode":
+      return bfEncodePlain(value)
+    case "bf-decode": {
+      const trimmed = value.trim()
+      return bfInterpret(/Ook[.!?]/i.test(trimmed) ? ookToBrainfuck(trimmed) : trimmed)
+    }
+    case "ook-encode":
+      return brainfuckToOok(bfEncodePlain(value))
+    case "ook-decode":
+      return bfInterpret(ookToBrainfuck(value))
+  }
+}
+
+const LOG_METHODS: Record<BrainfuckMode, string> = {
+  "bf-encode": "Brainfuck Encode",
+  "bf-decode": "Brainfuck Decode",
+  "ook-encode": "Ook Encode",
+  "ook-decode": "Ook Decode",
+}
+
 export function BrainfuckTab() {
   const { t } = useTranslation()
   const { addLog } = useLog()
-
   const [bfInput, setBfInput] = useState("")
   const [bfOutput, setBfOutput] = useState("")
+  const [activeMode, setActiveMode] = useState<BrainfuckMode>("bf-encode")
+  const [autoTransform, setAutoTransform] = useState(false)
+  const [transformError, setTransformError] = useState("")
   const [isLoaded, setIsLoaded] = useState(false)
+  const latestAutoResult = useRef({ activeMode, autoTransform, transformError, bfInput, bfOutput })
+  const addLogRef = useRef(addLog)
+
+  addLogRef.current = addLog
+  latestAutoResult.current = { activeMode, autoTransform, transformError, bfInput, bfOutput }
 
   useEffect(() => {
     let mounted = true
@@ -187,6 +217,10 @@ export function BrainfuckTab() {
           const state = JSON.parse(stored)
           if (state.bfInput) setBfInput(state.bfInput)
           if (state.bfOutput) setBfOutput(state.bfOutput)
+          if (["bf-encode", "bf-decode", "ook-encode", "ook-decode"].includes(state.activeMode)) {
+            setActiveMode(state.activeMode)
+          }
+          if (typeof state.autoTransform === "boolean") setAutoTransform(state.autoTransform)
         } catch (e) {
           console.error("Failed to parse BrainfuckTab state", e)
         }
@@ -198,124 +232,94 @@ export function BrainfuckTab() {
 
   useEffect(() => {
     if (isLoaded) {
-      setStoredItem(STORAGE_KEY, JSON.stringify({ bfInput, bfOutput }))
+      setStoredItem(STORAGE_KEY, JSON.stringify({ bfInput, bfOutput, activeMode, autoTransform }))
     }
-  }, [bfInput, bfOutput, isLoaded])
+  }, [activeMode, autoTransform, bfInput, bfOutput, isLoaded])
 
-  const handleEncodeBrainfuck = () => {
-    if (!bfInput) return
-    try {
-      const result = bfEncodePlain(bfInput)
-      setBfOutput(result)
-      addLog({ method: "Brainfuck Encode", input: bfInput, output: result }, "success")
-    } catch (e) {
-      addLog({ method: "Brainfuck Encode", input: bfInput, output: (e as Error).message }, "error")
+  useEffect(() => {
+    if (!isLoaded || !autoTransform) return
+    if (!bfInput) {
+      setBfOutput("")
+      setTransformError("")
+      return
     }
-  }
 
-  const handleDecodeBrainfuck = () => {
-    if (!bfInput) return
-    try {
-      // Detect Ook
-      let code = bfInput.trim()
-      if (/Ook[.!?]/i.test(code)) {
-        code = ookToBrainfuck(code)
+    const timer = window.setTimeout(() => {
+      try {
+        setBfOutput(transformBrainfuck(bfInput, activeMode))
+        setTransformError("")
+      } catch (e) {
+        setBfOutput("")
+        setTransformError((e as Error).message)
       }
-      const result = bfInterpret(code)
-      setBfOutput(result)
-      addLog({ method: "Brainfuck Decode", input: bfInput, output: result }, "success")
-    } catch (e) {
-      addLog({ method: "Brainfuck Decode", input: bfInput, output: (e as Error).message }, "error")
-    }
-  }
+    }, 180)
+    return () => window.clearTimeout(timer)
+  }, [activeMode, autoTransform, bfInput, isLoaded])
 
-  const handleEncodeOok = () => {
-    if (!bfInput) return
-    try {
-      const bf = bfEncodePlain(bfInput)
-      const result = brainfuckToOok(bf)
-      setBfOutput(result)
-      addLog({ method: "Ook Encode", input: bfInput, output: result }, "success")
-    } catch (e) {
-      addLog({ method: "Ook Encode", input: bfInput, output: (e as Error).message }, "error")
-    }
-  }
+  useEffect(() => () => {
+    const state = latestAutoResult.current
+    if (!state.autoTransform || !state.bfInput || !state.bfOutput || state.transformError) return
+    addLogRef.current({ method: LOG_METHODS[state.activeMode], input: state.bfInput, output: state.bfOutput }, "success")
+  }, [])
 
-  const handleDecodeOok = () => {
+  const runTransform = (writeLog: boolean) => {
     if (!bfInput) return
+    const method = LOG_METHODS[activeMode]
     try {
-      const bf = ookToBrainfuck(bfInput)
-      const result = bfInterpret(bf)
+      const result = transformBrainfuck(bfInput, activeMode)
       setBfOutput(result)
-      addLog({ method: "Ook Decode", input: bfInput, output: result }, "success")
+      setTransformError("")
+      if (writeLog) addLog({ method, input: bfInput, output: result }, "success")
     } catch (e) {
-      addLog({ method: "Ook Decode", input: bfInput, output: (e as Error).message }, "error")
+      const message = (e as Error).message
+      setTransformError(message)
+      if (writeLog) addLog({ method, input: bfInput, output: message }, "error")
     }
   }
 
   const swap = () => {
     setBfInput(bfOutput)
     setBfOutput(bfInput)
+    if (autoTransform) {
+      const inverseMode: Record<BrainfuckMode, BrainfuckMode> = {
+        "bf-encode": "bf-decode",
+        "bf-decode": "bf-encode",
+        "ook-encode": "ook-decode",
+        "ook-decode": "ook-encode",
+      }
+      setActiveMode(inverseMode[activeMode])
+    }
+    setTransformError("")
   }
 
-  const copyToClipboard = (text: string) => {
-    if (!text) return
-    navigator.clipboard.writeText(text)
+  const clearAll = () => {
+    setBfInput("")
+    setBfOutput("")
+    setTransformError("")
+    removeStoredItem(STORAGE_KEY)
   }
 
   return (
-    <div className="space-y-4">
-      <Textarea
-        label={t("tools.encoder.input")}
-        placeholder={t("tools.encoder.base64Placeholder")}
-        minRows={6}
-        variant="bordered"
-        value={bfInput}
-        onValueChange={setBfInput}
-        classNames={{
-          inputWrapper: "bg-default-100/50 hover:bg-default-100 focus-within:bg-background"
-        }}
-      />
-
-      <div className="flex items-center justify-center gap-4 py-2">
-        <Button color="primary" variant="flat" onPress={handleEncodeBrainfuck} startContent={<ChevronDown className="w-4 h-4" />}>
-          {t("tools.encoder.encode")} (BF)
-        </Button>
-        <Button color="secondary" variant="flat" onPress={handleDecodeBrainfuck} startContent={<ChevronDown className="w-4 h-4" />}>
-          {t("tools.encoder.decode")} (BF)
-        </Button>
-        <Button color="primary" variant="flat" onPress={handleEncodeOok} startContent={<ChevronDown className="w-4 h-4" />}>
-          {t("tools.encoder.encode")} (Ook)
-        </Button>
-        <Button color="secondary" variant="flat" onPress={handleDecodeOok} startContent={<ChevronDown className="w-4 h-4" />}>
-          {t("tools.encoder.decode")} (Ook)
-        </Button>
-
-        <Button isIconOnly variant="light" onPress={swap} title={t("tools.encoder.swap")}>
-          <ArrowDownUp className="w-4 h-4" />
-        </Button>
-        <Button isIconOnly variant="light" color="danger" onPress={() => { setBfInput(""); setBfOutput(""); removeStoredItem(STORAGE_KEY); }} title={t("tools.encoder.clearAll")}>
-          <Trash2 className="w-4 h-4" />
-        </Button>
-      </div>
-
-      <div className="relative group">
-        <Textarea
-          label={t("tools.encoder.output")}
-          readOnly
-          minRows={6}
-          variant="bordered"
-          value={bfOutput}
-          classNames={{
-            inputWrapper: "bg-default-100/30 group-hover:bg-default-100/50 transition-colors font-mono text-tiny"
-          }}
-        />
-        <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-          <Button isIconOnly size="sm" variant="flat" onPress={() => copyToClipboard(bfOutput)} title={t("tools.encoder.copy")}>
-            <Copy className="w-4 h-4" />
-          </Button>
-        </div>
-      </div>
-    </div>
+    <EncoderWorkbench
+      id="brainfuck"
+      modes={[
+        { key: "bf-encode", label: `${t("tools.encoder.encode")} BF` },
+        { key: "bf-decode", label: `${t("tools.encoder.decode")} BF` },
+        { key: "ook-encode", label: `${t("tools.encoder.encode")} Ook` },
+        { key: "ook-decode", label: `${t("tools.encoder.decode")} Ook` },
+      ]}
+      activeMode={activeMode}
+      onModeChange={setActiveMode}
+      autoTransform={autoTransform}
+      onAutoTransformChange={setAutoTransform}
+      onTransform={() => runTransform(!autoTransform)}
+      onSwap={swap}
+      onClear={clearAll}
+      input={bfInput}
+      onInputChange={setBfInput}
+      inputPlaceholder={t("tools.encoder.brainfuckPlaceholder")}
+      output={bfOutput}
+      error={transformError}
+    />
   )
 }

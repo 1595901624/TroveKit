@@ -1,127 +1,139 @@
-import { useState, useEffect } from "react"
-import { Textarea, Button } from "../../components/ui/base-ui"
-import { Copy, Trash2, ArrowDownUp, ChevronDown } from "lucide-react"
+import { useEffect, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { useLog } from "../../contexts/LogContext"
-import { getStoredItem, setStoredItem, removeStoredItem } from "../../lib/store"
+import { getStoredItem, removeStoredItem, setStoredItem } from "../../lib/store"
+import { EncoderWorkbench } from "./EncoderWorkbench"
 
 const STORAGE_KEY = "base64-tool-state"
+
+type Base64Mode = "encode" | "decode"
+
+function transformBase64(value: string, mode: Base64Mode) {
+  if (mode === "encode") {
+    const data = new TextEncoder().encode(value)
+    const binary = Array.from(data, (byte) => String.fromCodePoint(byte)).join("")
+    return window.btoa(binary)
+  }
+
+  const binary = window.atob(value.trim())
+  const bytes = Uint8Array.from(binary, (character) => character.codePointAt(0)!)
+  return new TextDecoder().decode(bytes)
+}
 
 export function Base64Tab() {
   const { t } = useTranslation()
   const { addLog } = useLog()
-
   const [base64Input, setBase64Input] = useState("")
   const [base64Output, setBase64Output] = useState("")
+  const [activeMode, setActiveMode] = useState<Base64Mode>("encode")
+  const [autoTransform, setAutoTransform] = useState(false)
+  const [transformError, setTransformError] = useState("")
   const [isLoaded, setIsLoaded] = useState(false)
+  const latestAutoResult = useRef({ activeMode, autoTransform, transformError, base64Input, base64Output })
+  const addLogRef = useRef(addLog)
+
+  addLogRef.current = addLog
+  latestAutoResult.current = { activeMode, autoTransform, transformError, base64Input, base64Output }
 
   useEffect(() => {
-    let mounted = true;
+    let mounted = true
     getStoredItem(STORAGE_KEY).then((stored) => {
       if (mounted && stored) {
         try {
-          const state = JSON.parse(stored);
-          if (state.base64Input) setBase64Input(state.base64Input);
-          if (state.base64Output) setBase64Output(state.base64Output);
+          const state = JSON.parse(stored)
+          if (state.base64Input) setBase64Input(state.base64Input)
+          if (state.base64Output) setBase64Output(state.base64Output)
+          if (state.activeMode === "encode" || state.activeMode === "decode") setActiveMode(state.activeMode)
+          if (typeof state.autoTransform === "boolean") setAutoTransform(state.autoTransform)
         } catch (e) {
-          console.error("Failed to parse Base64Tab state", e);
+          console.error("Failed to parse Base64Tab state", e)
         }
       }
-      if (mounted) setIsLoaded(true);
-    });
-    return () => { mounted = false; };
-  }, []);
+      if (mounted) setIsLoaded(true)
+    })
+    return () => { mounted = false }
+  }, [])
 
   useEffect(() => {
     if (isLoaded) {
-      setStoredItem(STORAGE_KEY, JSON.stringify({ base64Input, base64Output }))
+      setStoredItem(STORAGE_KEY, JSON.stringify({ base64Input, base64Output, activeMode, autoTransform }))
     }
-  }, [base64Input, base64Output, isLoaded])
+  }, [activeMode, autoTransform, base64Input, base64Output, isLoaded])
 
-  const handleBase64Encode = () => {
-    if (!base64Input) return
-    try {
-      const encoder = new TextEncoder()
-      const data = encoder.encode(base64Input)
-      const binString = Array.from(data, (byte) => String.fromCodePoint(byte)).join("")
-      const result = window.btoa(binString)
-      setBase64Output(result)
-      addLog({ method: "Base64 Encode", input: base64Input, output: result }, "success")
-    } catch (e) {
-      addLog({ method: "Base64 Encode", input: base64Input, output: (e as Error).message }, "error")
+  useEffect(() => {
+    if (!isLoaded || !autoTransform) return
+    if (!base64Input) {
+      setBase64Output("")
+      setTransformError("")
+      return
     }
-  }
-
-  const handleBase64Decode = () => {
-    if (!base64Input) return
     try {
-      const binString = window.atob(base64Input.trim())
-      const bytes = Uint8Array.from(binString, (m) => m.codePointAt(0)!)
-      const decoder = new TextDecoder()
-      const result = decoder.decode(bytes)
-      setBase64Output(result)
-      addLog({ method: "Base64 Decode", input: base64Input, output: result }, "success")
+      setBase64Output(transformBase64(base64Input, activeMode))
+      setTransformError("")
     } catch (e) {
-      addLog({ method: "Base64 Decode", input: base64Input, output: (e as Error).message }, "error")
+      setBase64Output("")
+      setTransformError((e as Error).message)
+    }
+  }, [activeMode, autoTransform, base64Input, isLoaded])
+
+  useEffect(() => () => {
+    const state = latestAutoResult.current
+    if (!state.autoTransform || !state.base64Input || !state.base64Output || state.transformError) return
+    addLogRef.current({
+      method: state.activeMode === "encode" ? "Base64 Encode" : "Base64 Decode",
+      input: state.base64Input,
+      output: state.base64Output,
+    }, "success")
+  }, [])
+
+  const runTransform = (writeLog: boolean) => {
+    if (!base64Input) return
+    const method = activeMode === "encode" ? "Base64 Encode" : "Base64 Decode"
+    try {
+      const result = transformBase64(base64Input, activeMode)
+      setBase64Output(result)
+      setTransformError("")
+      if (writeLog) addLog({ method, input: base64Input, output: result }, "success")
+    } catch (e) {
+      const message = (e as Error).message
+      setTransformError(message)
+      if (writeLog) addLog({ method, input: base64Input, output: message }, "error")
     }
   }
 
   const swapBase64 = () => {
     setBase64Input(base64Output)
     setBase64Output(base64Input)
+    if (autoTransform) setActiveMode(activeMode === "encode" ? "decode" : "encode")
+    setTransformError("")
   }
 
-  const copyToClipboard = (text: string) => {
-    if (!text) return
-    navigator.clipboard.writeText(text)
+  const clearAll = () => {
+    setBase64Input("")
+    setBase64Output("")
+    setTransformError("")
+    removeStoredItem(STORAGE_KEY)
   }
 
   return (
-    <div className="space-y-4">
-      <Textarea
-        label={t("tools.encoder.input")}
-        placeholder={t("tools.encoder.base64Placeholder")}
-        minRows={6}
-        variant="bordered"
-        value={base64Input}
-        onValueChange={setBase64Input}
-        classNames={{
-          inputWrapper: "bg-default-100/50 hover:bg-default-100 focus-within:bg-background"
-        }}
-      />
-
-      <div className="flex items-center justify-center gap-4 py-2">
-        <Button color="primary" variant="flat" onPress={handleBase64Encode} startContent={<ChevronDown className="w-4 h-4" />}>
-          {t("tools.encoder.encode")}
-        </Button>
-        <Button color="secondary" variant="flat" onPress={handleBase64Decode} startContent={<ChevronDown className="w-4 h-4" />}>
-          {t("tools.encoder.decode")}
-        </Button>
-        <Button isIconOnly variant="light" onPress={swapBase64} title={t("tools.encoder.swap")}>
-          <ArrowDownUp className="w-4 h-4" />
-        </Button>
-        <Button isIconOnly variant="light" color="danger" onPress={() => { setBase64Input(""); setBase64Output(""); removeStoredItem(STORAGE_KEY); }} title={t("tools.encoder.clearAll")}>
-          <Trash2 className="w-4 h-4" />
-        </Button>
-      </div>
-
-      <div className="relative group">
-        <Textarea
-          label={t("tools.encoder.output")}
-          readOnly
-          minRows={6}
-          variant="bordered"
-          value={base64Output}
-          classNames={{
-            inputWrapper: "bg-default-100/30 group-hover:bg-default-100/50 transition-colors font-mono text-tiny"
-          }}
-        />
-        <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-          <Button isIconOnly size="sm" variant="flat" onPress={() => copyToClipboard(base64Output)} title={t("tools.encoder.copy")}>
-            <Copy className="w-4 h-4" />
-          </Button>
-        </div>
-      </div>
-    </div>
+    <EncoderWorkbench
+      id="base64"
+      modes={[
+        { key: "encode", label: t("tools.encoder.encode") },
+        { key: "decode", label: t("tools.encoder.decode") },
+      ]}
+      activeMode={activeMode}
+      onModeChange={setActiveMode}
+      autoTransform={autoTransform}
+      onAutoTransformChange={setAutoTransform}
+      onTransform={() => runTransform(!autoTransform)}
+      onSwap={swapBase64}
+      onClear={clearAll}
+      input={base64Input}
+      onInputChange={setBase64Input}
+      inputPlaceholder={t("tools.encoder.base64Placeholder")}
+      output={base64Output}
+      error={transformError}
+    />
   )
 }
