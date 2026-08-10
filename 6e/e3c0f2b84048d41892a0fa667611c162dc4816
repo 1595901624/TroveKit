@@ -1,0 +1,83 @@
+src/components/Layout.tsx
+  b33edc9eecca0b34 8,39,41-43,45,47-48,51
+src/components/Sidebar.tsx
+  b33edc9eecca0b34 64,68,73,77-78,140
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.0.8",
+  "base_commit_sha": "6ee3c0f2b84048d41892a0fa667611c162dc4816",
+  "prompts": {
+    "b33edc9eecca0b34": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019fec26-65fe-7240-bedb-7aeec442c8d9",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "luhaoyu <haoyu3@163.com>",
+      "messages": [],
+      "total_additions": 15,
+      "total_deletions": 21,
+      "accepted_lines": 15,
+      "overriden_lines": 0
+    }
+  },
+  "commit_stats": {
+    "git_diff_added_lines": 45,
+    "git_diff_deleted_lines": 54,
+    "ai_additions": 15,
+    "ai_accepted": 15,
+    "BYMC": 30,
+    "mixed_additions": 0,
+    "BYAC": 15,
+    "BYRC": 0,
+    "per_file": {
+      "design-qa.md": {
+        "BYMC": [
+          "1",
+          "5-11",
+          "15-19",
+          "23-27",
+          "31-36",
+          "40-42",
+          "46"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/components/Layout.tsx": {
+        "BYMC": [],
+        "BYAC": [
+          "8",
+          "39",
+          "41-43",
+          "45",
+          "47-48",
+          "51"
+        ],
+        "BYRC": []
+      },
+      "src/components/Sidebar.tsx": {
+        "BYMC": [],
+        "BYAC": [
+          "64",
+          "68",
+          "73",
+          "77-78",
+          "140"
+        ],
+        "BYRC": []
+      },
+      "src/components/ThemeToggle.tsx": {
+        "BYMC": [
+          "19-20"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      }
+    }
+  },
+  "ipa_account": "luhaoyu",
+  "commit_timestamp": 1786374630,
+  "requirement_id": ""
+}
