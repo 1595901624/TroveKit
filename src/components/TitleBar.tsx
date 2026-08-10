@@ -14,6 +14,7 @@ import {
 import { useTranslation } from "react-i18next"
 import { CommandMenu } from "./CommandMenu"
 import { ToolId } from "./Sidebar"
+import { Button } from "./ui/base-ui"
 
 interface TitleBarProps {
   onNavigate?: (toolId: ToolId, tabId?: string) => void
@@ -68,22 +69,22 @@ export default function TitleBar({ onNavigate }: TitleBarProps) {
 
         <div className="flex h-full items-center gap-0.5 text-[13px]" data-tauri-drag-region>
           {[t("menu.file", "文件"), t("menu.edit", "编辑"), t("menu.view", "视图"), t("menu.help", "帮助")].map(label => (
-            <button key={label} type="button" className="rounded-md px-3 py-1.5 hover:bg-black/[0.055] dark:hover:bg-white/[0.07]">{label}</button>
+            <Button key={label} variant="light" className="h-auto min-w-0 rounded-md px-3 py-1.5 text-[13px] hover:bg-black/[0.055] dark:hover:bg-white/[0.07]">{label}</Button>
           ))}
         </div>
 
         <div className="flex-1" data-tauri-drag-region />
 
-        <button
-          type="button"
+        <Button
+          variant="light"
           className="mr-2 flex h-7 items-center gap-2 rounded-xl border border-black/[0.06] bg-white/70 px-3 text-[11px] text-[#666] shadow-sm hover:bg-white dark:border-white/10 dark:bg-white/5 dark:text-default-400"
-          onClick={() => setIsSearchOpen(true)}
+          onPress={() => setIsSearchOpen(true)}
         >
           <Search className="h-3.5 w-3.5" />
           <span>{t("common.search", "搜索")}</span>
           <span className="rounded border border-black/10 px-1 font-mono text-[9px] dark:border-white/10">Ctrl K</span>
           <ChevronDown className="h-3 w-3" />
-        </button>
+        </Button>
 
         <div className="flex h-full items-stretch">
           <WindowButton label={t("window.minimize", "最小化")} onClick={() => appWindow?.minimize()}><Minus className="h-4 w-4" /></WindowButton>
@@ -96,9 +97,9 @@ export default function TitleBar({ onNavigate }: TitleBarProps) {
 }
 
 function TitleButton({ children, label, onClick, disabled }: { children: React.ReactNode; label: string; onClick?: () => void; disabled?: boolean }) {
-  return <button type="button" title={label} aria-label={label} disabled={disabled} onClick={onClick} className="flex h-8 w-9 items-center justify-center rounded-md hover:bg-black/[0.055] disabled:opacity-35 dark:hover:bg-white/[0.07]">{children}</button>
+  return <Button isIconOnly size="sm" variant="light" title={label} aria-label={label} isDisabled={disabled} onPress={onClick} className="w-9 min-w-9 rounded-md hover:bg-black/[0.055] disabled:opacity-35 dark:hover:bg-white/[0.07]">{children}</Button>
 }
 
 function WindowButton({ children, label, onClick, danger }: { children: React.ReactNode; label: string; onClick: () => void; danger?: boolean }) {
-  return <button type="button" title={label} aria-label={label} onClick={onClick} className={`flex w-11 items-center justify-center transition-colors ${danger ? "hover:bg-red-500 hover:text-white" : "hover:bg-black/[0.055] dark:hover:bg-white/[0.07]"}`}>{children}</button>
+  return <Button isIconOnly variant="light" title={label} aria-label={label} onPress={onClick} className={`h-full w-11 min-w-11 rounded-none ${danger ? "hover:bg-red-500 hover:text-white" : "hover:bg-black/[0.055] dark:hover:bg-white/[0.07]"}`}>{children}</Button>
 }

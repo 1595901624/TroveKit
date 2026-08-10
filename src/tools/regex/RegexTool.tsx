@@ -576,10 +576,11 @@ export function RegexTool() {
                                 {group.title}
                               </div>
                               {group.items.map((it) => (
-                                <button
+                                <Button
                                   key={it.id}
-                                  className="w-full text-left px-3 py-2 rounded-lg hover:bg-default-100 transition-colors"
-                                  onClick={() => {
+                                  variant="light"
+                                  className="h-auto w-full justify-start text-left px-3 py-2 rounded-lg hover:bg-default-100"
+                                  onPress={() => {
                                     setPattern(it.pattern)
                                     setPanelTab("matchInfo")
                                     setIsPresetOpen(false)
@@ -589,7 +590,7 @@ export function RegexTool() {
                                   <div className="mt-0.5 font-mono text-[11px] text-default-600 whitespace-pre-wrap break-words">
                                     {it.pattern}
                                   </div>
-                                </button>
+                                </Button>
                               ))}
                             </div>
                           ))
@@ -694,11 +695,12 @@ export function RegexTool() {
                     <div className="p-6 text-center text-default-400 text-sm">{t("tools.regex.noMatches")}</div>
                   ) : (
                     matches.map((m) => (
-                      <button
+                      <Button
                         key={`${m.matchIndex}-${m.start}-${m.end}`}
-                        className={`w-full text-left px-3 py-2 rounded-lg transition-colors ${selectedMatchIndex === m.matchIndex ? "bg-primary/10 text-primary" : "hover:bg-default-100"
+                        variant="light"
+                        className={`h-auto w-full justify-start text-left px-3 py-2 rounded-lg ${selectedMatchIndex === m.matchIndex ? "bg-primary/10 text-primary" : "hover:bg-default-100"
                           }`}
-                        onClick={() => jumpToMatch(m.matchIndex)}
+                        onPress={() => jumpToMatch(m.matchIndex)}
                       >
                         <div className="flex items-center justify-between gap-3">
                           <span className="text-xs font-semibold">#{m.matchIndex}</span>
@@ -717,7 +719,7 @@ export function RegexTool() {
                             )}
                           </div>
                         )}
-                      </button>
+                      </Button>
                     ))
                   )}
                 </div>

@@ -38,7 +38,7 @@ interface DropdownMenuProps extends AnyProps { onSelectionChange?: (keys: Select
 interface ModalContentProps extends AnyProps { children?: React.ReactNode | ((onClose: () => void) => React.ReactNode) }
 const cx = (...values: Array<string | undefined | false>) => twMerge(values.filter(Boolean).join(" "))
 
-const colorClasses: Record<string, string> = {
+const solidColorClasses: Record<string, string> = {
   default: "bg-default-100 text-foreground hover:bg-default-200",
   primary: "bg-primary text-primary-foreground hover:bg-primary/90",
   secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/90",
@@ -47,13 +47,51 @@ const colorClasses: Record<string, string> = {
   danger: "bg-danger text-white hover:bg-danger/90",
 }
 
+const flatColorClasses: Record<string, string> = {
+  default: "bg-default-100 text-foreground hover:bg-default-200",
+  primary: "bg-primary/15 text-primary hover:bg-primary/25",
+  secondary: "bg-secondary/15 text-secondary hover:bg-secondary/25",
+  success: "bg-success/15 text-success hover:bg-success/25",
+  warning: "bg-warning/20 text-warning hover:bg-warning/30",
+  danger: "bg-danger/15 text-danger hover:bg-danger/25",
+}
+
+const lightColorClasses: Record<string, string> = {
+  default: "bg-transparent text-foreground hover:bg-default-100",
+  primary: "bg-transparent text-primary hover:bg-primary/10",
+  secondary: "bg-transparent text-secondary hover:bg-secondary/10",
+  success: "bg-transparent text-success hover:bg-success/10",
+  warning: "bg-transparent text-warning hover:bg-warning/10",
+  danger: "bg-transparent text-danger hover:bg-danger/10",
+}
+
+const borderedColorClasses: Record<string, string> = {
+  default: "border border-default-300 bg-transparent text-foreground hover:bg-default-100",
+  primary: "border border-primary/50 bg-transparent text-primary hover:bg-primary/10",
+  secondary: "border border-secondary/50 bg-transparent text-secondary hover:bg-secondary/10",
+  success: "border border-success/50 bg-transparent text-success hover:bg-success/10",
+  warning: "border border-warning/60 bg-transparent text-warning hover:bg-warning/10",
+  danger: "border border-danger/50 bg-transparent text-danger hover:bg-danger/10",
+}
+
+const textColorClasses: Record<string, string> = {
+  default: "text-foreground",
+  primary: "text-primary",
+  secondary: "text-secondary",
+  success: "text-success",
+  warning: "text-warning",
+  danger: "text-danger",
+}
+
 function buttonClasses({ color = "default", variant = "solid", size = "md", isIconOnly, radius }: AnyProps) {
+  const resolvedColor = color in solidColorClasses ? color : "default"
   const variants: Record<string, string> = {
-    solid: colorClasses[color],
-    flat: cx(colorClasses[color], "bg-opacity-15 hover:bg-opacity-25", color === "default" && "bg-default-100"),
-    bordered: "border border-default-300 bg-transparent hover:bg-default-100",
-    light: "bg-transparent hover:bg-default-100",
-    ghost: "border border-current bg-transparent hover:bg-default-100",
+    solid: solidColorClasses[resolvedColor],
+    flat: flatColorClasses[resolvedColor],
+    bordered: borderedColorClasses[resolvedColor],
+    faded: cx("border border-default-200 bg-default-50 hover:bg-default-100", textColorClasses[resolvedColor]),
+    light: lightColorClasses[resolvedColor],
+    ghost: cx("border border-current", lightColorClasses[resolvedColor]),
   }
   return cx(
     "inline-flex shrink-0 select-none items-center justify-center gap-2 font-medium transition-colors outline-none focus-visible:ring-2 focus-visible:ring-primary/50 disabled:pointer-events-none disabled:opacity-50",
@@ -72,6 +110,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
     <BaseButton
       {...native}
       ref={ref}
+      type={native.type ?? "button"}
       disabled={isDisabled || isLoading}
       onClick={onPress ?? onClick}
       className={cx(buttonClasses({ color, variant, size, isIconOnly, radius }), className)}
@@ -83,8 +122,15 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
   )
 })
 
-export function ButtonGroup({ children, className }: AnyProps) {
-  return <div className={cx("inline-flex [&>button:not(:first-child)]:rounded-l-none [&>button:not(:last-child)]:rounded-r-none", className)}>{children}</div>
+export function ButtonGroup({ children, className, variant, color, size, radius, isDisabled }: AnyProps) {
+  const sharedProps = { variant, color, size, radius, isDisabled }
+  return (
+    <div className={cx("inline-flex [&>button:not(:first-child)]:rounded-l-none [&>button:not(:last-child)]:rounded-r-none", className)}>
+      {React.Children.map(children, child => React.isValidElement<AnyProps>(child)
+        ? React.cloneElement(child, Object.fromEntries(Object.entries(sharedProps).filter(([key, value]) => value !== undefined && child.props[key] === undefined)))
+        : child)}
+    </div>
+  )
 }
 
 function FieldShell({ label, description, errorMessage, startContent, endContent, className, classNames, children }: AnyProps) {
@@ -107,7 +153,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
 ) {
   const { variant: _variant, size: _size, color: _color, isInvalid: _isInvalid, ...native } = props
   return (
-    <FieldShell {...{ label, description, errorMessage, startContent, className, classNames }} endContent={<>{endContent}{isClearable && value ? <button type="button" className="rounded p-0.5 text-default-400 hover:text-foreground" onClick={() => onValueChange?.("")} aria-label="Clear"><X className="h-3.5 w-3.5" /></button> : null}</>}>
+    <FieldShell {...{ label, description, errorMessage, startContent, className, classNames }} endContent={<>{endContent}{isClearable && value ? <Button isIconOnly size="sm" variant="light" className="h-5 min-w-5 w-5 p-0 text-default-400 hover:text-foreground" onPress={() => onValueChange?.("")} aria-label="Clear"><X className="h-3.5 w-3.5" /></Button> : null}</>}>
       <BaseInput
         {...native}
         value={value}
@@ -240,7 +286,7 @@ export function Card({ children, className, isPressable, onPress, shadow: _shado
 }
 export function CardHeader({ children, className, ...props }: AnyProps) { return <div {...props} className={cx("flex p-4", className)}>{children}</div> }
 export function CardBody({ children, className, ...props }: AnyProps) { return <div {...props} className={cx("flex flex-col p-4", className)}>{children}</div> }
-export function Chip({ children, className, color = "default", variant: _variant, size: _size, ...props }: AnyProps) { return <span {...props} className={cx("inline-flex items-center rounded-full px-2 py-0.5 text-xs", colorClasses[color], className)}>{children}</span> }
+export function Chip({ children, className, color = "default", variant: _variant, size: _size, ...props }: AnyProps) { return <span {...props} className={cx("inline-flex items-center rounded-full px-2 py-0.5 text-xs", flatColorClasses[color] ?? flatColorClasses.default, className)}>{children}</span> }
 export function Spinner({ className, size = "md", ...props }: AnyProps) { return <LoaderCircle {...props} className={cx("animate-spin text-primary", size === "sm" ? "h-4 w-4" : "h-6 w-6", className)} /> }
 
 export function ScrollShadow({ children, className, ...props }: AnyProps) {

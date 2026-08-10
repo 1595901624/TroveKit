@@ -1,4 +1,4 @@
-import { Input, Select, SelectItem, Checkbox } from "../../components/ui/base-ui"
+import { Button, Input, Select, SelectItem, Checkbox } from "../../components/ui/base-ui"
 import { useTranslation } from "react-i18next"
 import { Eye, EyeOff } from "lucide-react"
 import { useState } from "react"
@@ -40,13 +40,13 @@ export function WifiTab({ value, onChange }: WifiTabProps) {
             onValueChange={(v) => update("password", v)}
             type={isVisible ? "text" : "password"}
             endContent={
-              <button className="focus:outline-none" type="button" onClick={() => setIsVisible(!isVisible)}>
+              <Button isIconOnly size="sm" variant="light" className="h-7 min-w-7 w-7" onPress={() => setIsVisible(!isVisible)} aria-label={isVisible ? "Hide password" : "Show password"}>
                 {isVisible ? (
                   <EyeOff className="text-2xl text-default-400 pointer-events-none" />
                 ) : (
                   <Eye className="text-2xl text-default-400 pointer-events-none" />
                 )}
-              </button>
+              </Button>
             }
           />
 

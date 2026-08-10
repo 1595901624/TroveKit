@@ -42,9 +42,9 @@ export function Layout({ children, activeTool, activeTab, onToolChange, onNaviga
             <div className="flex min-w-0 items-center gap-3">
               <Folder className="h-5 w-5 shrink-0 text-default-600" />
               <h1 className="truncate text-[15px] font-semibold tracking-[-0.01em]">{title}</h1>
-              <button type="button" className="flex h-7 w-7 items-center justify-center rounded-lg text-default-400 hover:bg-default-100 hover:text-foreground" aria-label="More options">
+              <Button isIconOnly size="sm" variant="light" className="h-7 min-w-7 w-7 text-default-400" aria-label="More options">
                 <MoreHorizontal className="h-4 w-4" />
-              </button>
+              </Button>
             </div>
             <div className="flex items-center gap-2">
               <Tooltip content={t('log.toggle', 'Toggle Logs')}>

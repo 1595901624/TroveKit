@@ -90,8 +90,11 @@ function ColorPicker({ label, color, onChange, t }: ColorPickerProps) {
                 <span className="text-[10px] font-medium text-default-600">{label}</span>
                 <Popover placement="bottom" showArrow={true}>
                     <PopoverTrigger>
-                        <button 
-                            className="w-6 h-6 rounded-full border border-default-300 shadow-sm transition-transform hover:scale-110 active:scale-95"
+                        <Button
+                            isIconOnly
+                            size="sm"
+                            variant="bordered"
+                            className="w-6 min-w-6 h-6 rounded-full border-default-300 p-0 shadow-sm transition-transform hover:scale-110 active:scale-95"
                             style={{ backgroundColor: color }}
                             aria-label={t("tools.qr.pickColor")}
                         />
