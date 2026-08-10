@@ -1,0 +1,184 @@
+src/components/Sidebar.tsx
+  b33edc9eecca0b34 65
+  92fbe7946799b261 7,69,74,77
+src/components/Layout.tsx
+  b33edc9eecca0b34 41
+  92fbe7946799b261 51,55
+src/components/ThemeToggle.tsx
+  92fbe7946799b261 6-11,18-20
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.0.8",
+  "base_commit_sha": "7c3e80c769b5a633cb22b7d902658c56a84c5a1a",
+  "prompts": {
+    "92fbe7946799b261": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019febd4-82dc-7792-b4b6-1d6c90c4fdb6",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "luhaoyu <haoyu3@163.com>",
+      "messages": [],
+      "total_additions": 20,
+      "total_deletions": 25,
+      "accepted_lines": 15,
+      "overriden_lines": 0
+    },
+    "b33edc9eecca0b34": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019fec26-65fe-7240-bedb-7aeec442c8d9",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "luhaoyu <haoyu3@163.com>",
+      "messages": [],
+      "total_additions": 2,
+      "total_deletions": 2,
+      "accepted_lines": 2,
+      "overriden_lines": 0
+    }
+  },
+  "commit_stats": {
+    "git_diff_added_lines": 357,
+    "git_diff_deleted_lines": 111,
+    "ai_additions": 17,
+    "ai_accepted": 17,
+    "BYMC": 333,
+    "mixed_additions": 0,
+    "BYAC": 17,
+    "BYRC": 0,
+    "per_file": {
+      "design-qa.md": {
+        "BYMC": [
+          "1",
+          "3",
+          "5-12",
+          "14",
+          "16-18",
+          "20",
+          "22-26",
+          "28",
+          "30-38",
+          "40",
+          "42-45",
+          "47-51"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/components/Layout.tsx": {
+        "BYMC": [],
+        "BYAC": [
+          "41",
+          "51",
+          "55"
+        ],
+        "BYRC": []
+      },
+      "src/components/Sidebar.tsx": {
+        "BYMC": [],
+        "BYAC": [
+          "7",
+          "65",
+          "69",
+          "74",
+          "77"
+        ],
+        "BYRC": []
+      },
+      "src/components/ThemeToggle.tsx": {
+        "BYMC": [],
+        "BYAC": [
+          "6-11",
+          "18-20"
+        ],
+        "BYRC": []
+      },
+      "src/components/ui/base-ui.tsx": {
+        "BYMC": [
+          "305-332"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/locales/en.json": {
+        "BYMC": [
+          "255-258"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/locales/ja.json": {
+        "BYMC": [
+          "229-232"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/locales/zh-HK.json": {
+        "BYMC": [
+          "229-232"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/locales/zh-TW.json": {
+        "BYMC": [
+          "229-232"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/locales/zh.json": {
+        "BYMC": [
+          "229-232"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/EncoderTool.tsx": {
+        "BYMC": [
+          "21",
+          "38",
+          "41"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/encoder/UrlTab.tsx": {
+        "BYMC": [
+          "1-2",
+          "4",
+          "6",
+          "10-18",
+          "26-28",
+          "30-40",
+          "43",
+          "47-51",
+          "53",
+          "56-59",
+          "63",
+          "65-91",
+          "96",
+          "98",
+          "101",
+          "109",
+          "111",
+          "114",
+          "119-131",
+          "137-145",
+          "153-154",
+          "157-219",
+          "223-263",
+          "266-307"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      }
+    }
+  },
+  "ipa_account": "luhaoyu",
+  "commit_timestamp": 1786373719,
+  "requirement_id": ""
+}
