@@ -1,0 +1,125 @@
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.0.8",
+  "base_commit_sha": "f31c422a392f4588ca3934ac3ec371145e79c1d8",
+  "prompts": {
+    "da0e50ae28a62e5d": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019fec42-fb53-7562-9e92-d27af7a7f79f",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "luhaoyu <haoyu3@163.com>",
+      "messages": [],
+      "total_additions": 0,
+      "total_deletions": 0,
+      "accepted_lines": 119,
+      "overriden_lines": 0
+    }
+  },
+  "commit_stats": {
+    "git_diff_added_lines": 410,
+    "git_diff_deleted_lines": 395,
+    "ai_additions": 0,
+    "ai_accepted": 0,
+    "BYMC": 394,
+    "mixed_additions": 0,
+    "BYAC": 0,
+    "BYRC": 0,
+    "per_file": {
+      "src/tools/EncoderTool.tsx": {
+        "BYMC": [
+          "24-25",
+          "27",
+          "38"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/encoder/Base32Tab.tsx": {
+        "BYMC": [
+          "1",
+          "4-6",
+          "10-14",
+          "21-23",
+          "25-29",
+          "32",
+          "36-40",
+          "42",
+          "45-48",
+          "52",
+          "54",
+          "56-61",
+          "64-65",
+          "67-68",
+          "70",
+          "72-82",
+          "84",
+          "86",
+          "88-89",
+          "91-93",
+          "100-101",
+          "104-108",
+          "112-130"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/encoder/BaseXTab.tsx": {
+        "BYMC": [
+          "1",
+          "4",
+          "6-7",
+          "11",
+          "18-19",
+          "22",
+          "24-27",
+          "29-30",
+          "42",
+          "46-52",
+          "54",
+          "57-60",
+          "64-72",
+          "74",
+          "76-79",
+          "81-83",
+          "85-86",
+          "89-120",
+          "122",
+          "124",
+          "126-129",
+          "131",
+          "134",
+          "136-141",
+          "149-150",
+          "153-159",
+          "163-192"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/encoder/JwtTab.tsx": {
+        "BYMC": [
+          "2",
+          "4",
+          "67",
+          "314-322",
+          "324-374",
+          "376",
+          "379-429",
+          "432-454",
+          "456-461",
+          "463-471",
+          "473",
+          "475-494"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      }
+    }
+  },
+  "ipa_account": "luhaoyu",
+  "commit_timestamp": 1786377754,
+  "requirement_id": ""
+}
