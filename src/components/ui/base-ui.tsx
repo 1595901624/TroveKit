@@ -302,9 +302,34 @@ export function Radio({ children, value, className, isDisabled, ...props }: AnyP
   const { size: _size, color: _color, ...native } = props
   return <label className={cx("inline-flex items-center gap-2 text-sm", isDisabled && "opacity-50", className)}><BaseRadio.Root {...native} value={value} disabled={isDisabled} className="flex h-4 w-4 items-center justify-center rounded-full border border-default-400 data-[checked]:border-primary"><BaseRadio.Indicator className="h-2 w-2 rounded-full bg-primary" /></BaseRadio.Root>{children}</label>
 }
-export function Switch({ children, isSelected, defaultSelected, onValueChange, className, isDisabled, ...props }: ToggleProps) {
-  const { size: _size, color: _color, ...native } = props
-  return <label className={cx("inline-flex items-center gap-2", className)}><BaseSwitch.Root {...native} checked={isSelected} defaultChecked={defaultSelected} onCheckedChange={onValueChange} disabled={isDisabled} className="relative h-5 w-9 rounded-full bg-default-300 transition-colors data-[checked]:bg-primary"><BaseSwitch.Thumb className="block h-4 w-4 translate-x-0.5 rounded-full bg-white shadow transition-transform data-[checked]:translate-x-[18px]" /></BaseSwitch.Root>{children}</label>
+export function Switch({ children, isSelected, defaultSelected, onValueChange, className, classNames, isDisabled, ...props }: ToggleProps) {
+  const { size = "md", color: _color, ...native } = props
+  const isSmall = size === "sm"
+  return (
+    <label className={cx("inline-flex cursor-pointer items-center gap-2 text-sm text-default-600", isDisabled && "cursor-not-allowed opacity-50", className, classNames?.base)}>
+      <BaseSwitch.Root
+        {...native}
+        checked={isSelected}
+        defaultChecked={defaultSelected}
+        onCheckedChange={onValueChange}
+        disabled={isDisabled}
+        className={cx(
+          "relative inline-flex shrink-0 items-center rounded-full border border-default-300 bg-default-200 outline-none transition-[background-color,border-color,box-shadow] data-[checked]:border-primary data-[checked]:bg-primary data-[focused]:ring-2 data-[focused]:ring-primary/25",
+          isSmall ? "h-4 w-7" : "h-5 w-9",
+          classNames?.root,
+        )}
+      >
+        <BaseSwitch.Thumb
+          className={cx(
+            "block translate-x-0.5 rounded-full bg-white shadow-sm transition-transform",
+            isSmall ? "h-3 w-3 data-[checked]:translate-x-[14px]" : "h-4 w-4 data-[checked]:translate-x-[18px]",
+            classNames?.thumb,
+          )}
+        />
+      </BaseSwitch.Root>
+      {children}
+    </label>
+  )
 }
 export function Checkbox({ children, isSelected, defaultSelected, onValueChange, className, isDisabled, ...props }: ToggleProps) {
   const { size: _size, color: _color, ...native } = props

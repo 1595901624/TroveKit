@@ -38,7 +38,7 @@ export function Layout({ children, activeTool, activeTab, onToolChange, onNaviga
         {/* Main Content Area */}
         <main className="relative flex min-w-0 flex-1 flex-col overflow-hidden rounded-tl-[22px] rounded-tr-[22px] border-l border-t border-default-200/80 bg-background shadow-[-2px_-1px_10px_rgba(0,0,0,0.025)]">
           {/* Tool Header */}
-          <header className="flex h-[74px] shrink-0 items-center justify-between border-b border-divider/80 px-6">
+          <header className="flex h-[60px] shrink-0 items-center justify-between border-b border-divider/80 px-6">
             <div className="flex min-w-0 items-center gap-3">
               <Folder className="h-5 w-5 shrink-0 text-default-600" />
               <h1 className="truncate text-[15px] font-semibold tracking-[-0.01em]">{title}</h1>
@@ -48,13 +48,11 @@ export function Layout({ children, activeTool, activeTab, onToolChange, onNaviga
             </div>
             <div className="flex items-center gap-2">
               <Tooltip content={t('log.toggle', 'Toggle Logs')}>
-                <Button isIconOnly variant="bordered" radius="full" className="h-9 w-9 min-w-9 border-default-200 bg-background" onPress={togglePanel}>
+                <Button isIconOnly variant="bordered" radius="full" className="h-9 w-9 min-w-9 border-default-200 bg-background shadow-sm" onPress={togglePanel} aria-label={t('log.toggle', 'Toggle Logs')}>
                   <Terminal className="h-4 w-4 text-default-500" />
                 </Button>
               </Tooltip>
-              <div className="rounded-full border border-default-200 bg-background p-0.5 shadow-sm">
-                <ThemeToggle />
-              </div>
+              <ThemeToggle variant="bordered" className="h-9 w-9 min-w-9 border-default-200 bg-background shadow-sm" />
             </div>
           </header>
           

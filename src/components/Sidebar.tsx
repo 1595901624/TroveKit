@@ -4,9 +4,9 @@ import {
   CircleHelp,
   FileText,
   FolderClosed,
+  House,
   Search,
   Settings,
-  SquarePen,
 } from "lucide-react"
 import { useEffect, useMemo } from "react"
 import { useTranslation } from "react-i18next"
@@ -62,30 +62,22 @@ export function Sidebar({ activeTool, activeTab, onToolChange, onNavigate }: Sid
       isCollapsed ? "w-0" : "w-[clamp(250px,18.65vw,382px)]",
     )}>
       <div className="flex h-full w-[clamp(250px,18.65vw,382px)] flex-col">
-        <div className="flex h-[74px] shrink-0 items-center justify-between px-4">
-          <Button variant="light" className="h-auto min-w-0 gap-2 px-1.5 py-2 hover:bg-black/[0.045] dark:hover:bg-white/[0.06]" onPress={() => onToolChange("home")}>
-            <img src="/t_bgw.svg" alt="TroveKit" className="h-7 w-7 shrink-0" />
-            <span className="truncate text-[17px] font-semibold tracking-[-0.02em]">TroveKit</span>
-            <ChevronDown className="h-3.5 w-3.5 text-default-400" />
-          </Button>
-          <div className="flex items-center gap-0.5">
-            <SidebarIcon label={t("common.search", "搜索")} onClick={() => window.dispatchEvent(new Event("trovekit:open-search"))}><Search className="h-[18px] w-[18px]" /></SidebarIcon>
-            <SidebarIcon label={t("log.toggle", "日志")} onClick={togglePanel}><Bell className="h-[18px] w-[18px]" /></SidebarIcon>
-          </div>
-        </div>
-
-        <div className="border-b border-black/[0.055] px-3 pb-3 dark:border-white/[0.07]">
+        <div className="flex h-[60px] shrink-0 items-center gap-1 border-b border-black/[0.055] px-3 dark:border-white/[0.07]">
           <Button
             variant="light"
             className={cn(
-              "flex h-10 w-full items-center gap-3 rounded-xl px-3 text-left text-[14px] transition-colors hover:bg-black/[0.045] dark:hover:bg-white/[0.06]",
+              "h-10 min-w-0 flex-1 justify-start gap-3 rounded-xl px-3 text-left text-[14px] hover:bg-black/[0.045] dark:hover:bg-white/[0.06]",
               activeTool === "home" && "bg-black/[0.055] dark:bg-white/[0.08]",
             )}
             onPress={() => onToolChange("home")}
           >
-            <SquarePen className="h-[18px] w-[18px] text-default-600" />
+            <House className="h-[18px] w-[18px] text-default-600" />
             <span>{t("nav.home")}</span>
           </Button>
+          <div className="flex shrink-0 items-center gap-0.5">
+            <SidebarIcon label={t("common.search", "搜索")} onClick={() => window.dispatchEvent(new Event("trovekit:open-search"))}><Search className="h-[18px] w-[18px]" /></SidebarIcon>
+            <SidebarIcon label={t("log.toggle", "日志")} onClick={togglePanel}><Bell className="h-[18px] w-[18px]" /></SidebarIcon>
+          </div>
         </div>
 
         <nav className="flex-1 overflow-y-auto px-3 py-4 scrollbar-hide" aria-label="Tools">
