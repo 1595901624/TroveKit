@@ -1,0 +1,131 @@
+src/components/ui/base-ui.tsx
+  92fbe7946799b261 41,50-85,87,89-94,113,125-133,156,289
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.0.8",
+  "base_commit_sha": "c273f4b974376ce8f23fe9aa53f1af3982dc67e5",
+  "prompts": {
+    "92fbe7946799b261": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019febd4-82dc-7792-b4b6-1d6c90c4fdb6",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "luhaoyu <haoyu3@163.com>",
+      "messages": [],
+      "total_additions": 58,
+      "total_deletions": 12,
+      "accepted_lines": 56,
+      "overriden_lines": 0
+    }
+  },
+  "commit_stats": {
+    "git_diff_added_lines": 125,
+    "git_diff_deleted_lines": 50,
+    "ai_additions": 56,
+    "ai_accepted": 56,
+    "BYMC": 67,
+    "mixed_additions": 0,
+    "BYAC": 56,
+    "BYRC": 0,
+    "per_file": {
+      "src/components/Layout.tsx": {
+        "BYMC": [
+          "45",
+          "47"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/components/Sidebar.tsx": {
+        "BYMC": [
+          "18",
+          "66",
+          "70",
+          "78-79",
+          "84",
+          "88",
+          "98-99",
+          "101",
+          "107",
+          "114",
+          "116",
+          "121",
+          "124",
+          "150",
+          "154"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/components/TitleBar.tsx": {
+        "BYMC": [
+          "17",
+          "72",
+          "78-79",
+          "81",
+          "87",
+          "100",
+          "104"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/components/ui/base-ui.test.tsx": {
+        "BYMC": [
+          "2-3",
+          "21-40"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/components/ui/base-ui.tsx": {
+        "BYMC": [],
+        "BYAC": [
+          "41",
+          "50-85",
+          "87",
+          "89-94",
+          "113",
+          "125-133",
+          "156",
+          "289"
+        ],
+        "BYRC": []
+      },
+      "src/tools/qr/QrTool.tsx": {
+        "BYMC": [
+          "93-97"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/qr/WifiTab.tsx": {
+        "BYMC": [
+          "1",
+          "43",
+          "49"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/regex/RegexTool.tsx": {
+        "BYMC": [
+          "579",
+          "581-583",
+          "593",
+          "698",
+          "700-701",
+          "703",
+          "722"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      }
+    }
+  },
+  "ipa_account": "luhaoyu",
+  "commit_timestamp": 1786369057,
+  "requirement_id": ""
+}
