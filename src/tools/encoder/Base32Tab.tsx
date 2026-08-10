@@ -1,122 +1,132 @@
-import { useState, useEffect } from "react"
-import { Textarea, Button } from "../../components/ui/base-ui"
-import { Copy, Trash2, ArrowDownUp, ChevronDown } from "lucide-react"
+import { useEffect, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { useLog } from "../../contexts/LogContext"
-import { base32Encode, base32Decode } from "../../lib/base32"
-import { getStoredItem, setStoredItem, removeStoredItem } from "../../lib/store"
+import { base32Decode, base32Encode } from "../../lib/base32"
+import { getStoredItem, removeStoredItem, setStoredItem } from "../../lib/store"
+import { EncoderWorkbench } from "./EncoderWorkbench"
 
 const STORAGE_KEY = "base32-tool-state"
+
+type Base32Mode = "encode" | "decode"
+
+function transformBase32(value: string, mode: Base32Mode) {
+  return mode === "encode" ? base32Encode(value) : base32Decode(value)
+}
 
 export function Base32Tab() {
   const { t } = useTranslation()
   const { addLog } = useLog()
-
   const [base32Input, setBase32Input] = useState("")
   const [base32Output, setBase32Output] = useState("")
+  const [activeMode, setActiveMode] = useState<Base32Mode>("encode")
+  const [autoTransform, setAutoTransform] = useState(false)
+  const [transformError, setTransformError] = useState("")
   const [isLoaded, setIsLoaded] = useState(false)
+  const latestAutoResult = useRef({ activeMode, autoTransform, transformError, base32Input, base32Output })
+  const addLogRef = useRef(addLog)
+
+  addLogRef.current = addLog
+  latestAutoResult.current = { activeMode, autoTransform, transformError, base32Input, base32Output }
 
   useEffect(() => {
-    let mounted = true;
+    let mounted = true
     getStoredItem(STORAGE_KEY).then((stored) => {
       if (mounted && stored) {
         try {
-          const state = JSON.parse(stored);
-          if (state.base32Input) setBase32Input(state.base32Input);
-          if (state.base32Output) setBase32Output(state.base32Output);
+          const state = JSON.parse(stored)
+          if (state.base32Input) setBase32Input(state.base32Input)
+          if (state.base32Output) setBase32Output(state.base32Output)
+          if (state.activeMode === "encode" || state.activeMode === "decode") setActiveMode(state.activeMode)
+          if (typeof state.autoTransform === "boolean") setAutoTransform(state.autoTransform)
         } catch (e) {
-          console.error("Failed to parse Base32Tab state", e);
+          console.error("Failed to parse Base32Tab state", e)
         }
       }
-      if (mounted) setIsLoaded(true);
-    });
-    return () => { mounted = false; };
-  }, []);
+      if (mounted) setIsLoaded(true)
+    })
+    return () => { mounted = false }
+  }, [])
 
   useEffect(() => {
     if (isLoaded) {
-      setStoredItem(STORAGE_KEY, JSON.stringify({ base32Input, base32Output }))
+      setStoredItem(STORAGE_KEY, JSON.stringify({ base32Input, base32Output, activeMode, autoTransform }))
     }
-  }, [base32Input, base32Output, isLoaded])
+  }, [activeMode, autoTransform, base32Input, base32Output, isLoaded])
 
-  const handleBase32Encode = () => {
-    if (!base32Input) return
-    try {
-      const result = base32Encode(base32Input)
-      setBase32Output(result)
-      addLog({ method: "Base32 Encode", input: base32Input, output: result }, "success")
-    } catch (e) {
-      addLog({ method: "Base32 Encode", input: base32Input, output: (e as Error).message }, "error")
+  useEffect(() => {
+    if (!isLoaded || !autoTransform) return
+    if (!base32Input) {
+      setBase32Output("")
+      setTransformError("")
+      return
     }
-  }
-
-  const handleBase32Decode = () => {
-    if (!base32Input) return
     try {
-      const result = base32Decode(base32Input)
-      setBase32Output(result)
-      addLog({ method: "Base32 Decode", input: base32Input, output: result }, "success")
+      setBase32Output(transformBase32(base32Input, activeMode))
+      setTransformError("")
     } catch (e) {
-      addLog({ method: "Base32 Decode", input: base32Input, output: (e as Error).message }, "error")
+      setBase32Output("")
+      setTransformError((e as Error).message)
+    }
+  }, [activeMode, autoTransform, base32Input, isLoaded])
+
+  useEffect(() => () => {
+    const state = latestAutoResult.current
+    if (!state.autoTransform || !state.base32Input || !state.base32Output || state.transformError) return
+    addLogRef.current({
+      method: state.activeMode === "encode" ? "Base32 Encode" : "Base32 Decode",
+      input: state.base32Input,
+      output: state.base32Output,
+    }, "success")
+  }, [])
+
+  const runTransform = (writeLog: boolean) => {
+    if (!base32Input) return
+    const method = activeMode === "encode" ? "Base32 Encode" : "Base32 Decode"
+    try {
+      const result = transformBase32(base32Input, activeMode)
+      setBase32Output(result)
+      setTransformError("")
+      if (writeLog) addLog({ method, input: base32Input, output: result }, "success")
+    } catch (e) {
+      const message = (e as Error).message
+      setTransformError(message)
+      if (writeLog) addLog({ method, input: base32Input, output: message }, "error")
     }
   }
 
   const swapBase32 = () => {
     setBase32Input(base32Output)
     setBase32Output(base32Input)
+    if (autoTransform) setActiveMode(activeMode === "encode" ? "decode" : "encode")
+    setTransformError("")
   }
 
-  const copyToClipboard = (text: string) => {
-    if (!text) return
-    navigator.clipboard.writeText(text)
+  const clearAll = () => {
+    setBase32Input("")
+    setBase32Output("")
+    setTransformError("")
+    removeStoredItem(STORAGE_KEY)
   }
 
   return (
-    <div className="space-y-4">
-      <Textarea
-        label={t("tools.encoder.input")}
-        placeholder={t("tools.encoder.base32Placeholder")}
-        minRows={6}
-        variant="bordered"
-        value={base32Input}
-        onValueChange={setBase32Input}
-        classNames={{
-          inputWrapper: "bg-default-100/50 hover:bg-default-100 focus-within:bg-background"
-        }}
-      />
-
-      <div className="flex items-center justify-center gap-4 py-2">
-        <Button color="primary" variant="flat" onPress={handleBase32Encode} startContent={<ChevronDown className="w-4 h-4" />}>
-          {t("tools.encoder.encode")}
-        </Button>
-        <Button color="secondary" variant="flat" onPress={handleBase32Decode} startContent={<ChevronDown className="w-4 h-4" />}>
-          {t("tools.encoder.decode")}
-        </Button>
-        <Button isIconOnly variant="light" onPress={swapBase32} title={t("tools.encoder.swap")}>
-          <ArrowDownUp className="w-4 h-4" />
-        </Button>
-        <Button isIconOnly variant="light" color="danger" onPress={() => { setBase32Input(""); setBase32Output(""); removeStoredItem(STORAGE_KEY); }} title={t("tools.encoder.clearAll")}>
-          <Trash2 className="w-4 h-4" />
-        </Button>
-      </div>
-
-      <div className="relative group">
-        <Textarea
-          label={t("tools.encoder.output")}
-          readOnly
-          minRows={6}
-          variant="bordered"
-          value={base32Output}
-          classNames={{
-            inputWrapper: "bg-default-100/30 group-hover:bg-default-100/50 transition-colors font-mono text-tiny"
-          }}
-        />
-        <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-          <Button isIconOnly size="sm" variant="flat" onPress={() => copyToClipboard(base32Output)} title={t("tools.encoder.copy")}>
-            <Copy className="w-4 h-4" />
-          </Button>
-        </div>
-      </div>
-    </div>
+    <EncoderWorkbench
+      id="base32"
+      modes={[
+        { key: "encode", label: t("tools.encoder.encode") },
+        { key: "decode", label: t("tools.encoder.decode") },
+      ]}
+      activeMode={activeMode}
+      onModeChange={setActiveMode}
+      autoTransform={autoTransform}
+      onAutoTransformChange={setAutoTransform}
+      onTransform={() => runTransform(!autoTransform)}
+      onSwap={swapBase32}
+      onClear={clearAll}
+      input={base32Input}
+      onInputChange={setBase32Input}
+      inputPlaceholder={t("tools.encoder.base32Placeholder")}
+      output={base32Output}
+      error={transformError}
+    />
   )
 }

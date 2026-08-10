@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react"
-import { Textarea, Button, Input, Select, SelectItem, Card, CardBody } from "../../components/ui/base-ui"
+import { Textarea, Button, ButtonGroup, Input, Select, SelectItem } from "../../components/ui/base-ui"
 import Editor from "../../components/MonacoEditor"
-import { Copy, Trash2, ArrowRight, ShieldCheck, ShieldAlert, KeyRound, RefreshCw, Wand2 } from "lucide-react"
+import { Copy, Trash2, ArrowDown, ArrowRight, ShieldCheck, ShieldAlert, KeyRound, RefreshCw, Wand2 } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import * as jose from "jose"
 import { useTheme } from "../../components/theme-provider"
@@ -64,6 +64,7 @@ export function JwtTab() {
   const [publicKey, setPublicKey] = useState("")
   const [privateKey, setPrivateKey] = useState("")
   const [algorithm, setAlgorithm] = useState("HS256")
+  const [activeJsonPanel, setActiveJsonPanel] = useState<"header" | "payload">("payload")
   const [verificationStatus, setVerificationStatus] = useState<"valid" | "invalid" | "none">("none")
   const [verificationMsg, setVerificationMsg] = useState("")
   
@@ -310,175 +311,187 @@ export function JwtTab() {
 
   const algType = getAlgType(algorithm)
 
+  const clearAll = () => {
+    setToken("")
+    setHeader("{}")
+    setPayload("{}")
+    setVerificationStatus("none")
+    setVerificationMsg("")
+    removeStoredItem(STORAGE_KEY)
+  }
+
   return (
-    <div className="flex flex-col md:flex-row h-full gap-4 overflow-hidden p-1">
-        {/* Left: Encoded Token */}
-        <div className="md:w-5/12 flex flex-col gap-2 h-full min-h-0">
-            <div className="flex justify-between items-center px-1">
-                <div className="flex items-center gap-2">
-                  <h3 className="text-sm font-semibold text-default-600">{t("tools.encoder.jwtToken")}</h3>
-                  <Button size="sm" variant="flat" color="primary" onPress={handleManualDecode} startContent={<RefreshCw className="w-3 h-3" />} className="h-7 px-2">
-                    {t("tools.encoder.decode")}
-                  </Button>
-                </div>
-                <div className="flex gap-1">
-                    <Button isIconOnly size="sm" variant="light" onPress={() => copyToClipboard(token)} title={t("tools.encoder.copy")}>
-                        <Copy className="w-4 h-4" />
-                    </Button>
-                    <Button isIconOnly size="sm" variant="light" color="danger" onPress={() => { setToken(""); setHeader("{}"); setPayload("{}"); removeStoredItem(STORAGE_KEY); }} title={t("tools.encoder.clearAll")}>
-                        <Trash2 className="w-4 h-4" />
-                    </Button>
-                </div>
+    <div className="flex h-full min-h-0 flex-col gap-3 overflow-hidden">
+      <div className="flex shrink-0 flex-wrap items-center gap-2 rounded-xl border border-default-200 bg-default-50/70 p-2">
+        <span className="flex shrink-0 items-center gap-1.5 px-1 text-xs font-semibold text-default-600">
+          <KeyRound className="h-3.5 w-3.5" />
+          {t("tools.encoder.signatureConfig")}
+        </span>
+
+        <Select
+          className="w-28"
+          classNames={{ trigger: "h-8 bg-background px-2.5 text-xs" }}
+          selectedKeys={[algorithm]}
+          onChange={(event) => setAlgorithm(event.target.value)}
+          aria-label={t("tools.encoder.algorithm")}
+        >
+          {ALGORITHMS.map((alg) => <SelectItem key={alg.value}>{alg.label}</SelectItem>)}
+        </Select>
+
+        <div className="min-w-48 flex-1">
+          {algType === "HMAC" ? (
+            <Input
+              placeholder={t("tools.encoder.secretPlaceholder")}
+              value={secret}
+              onValueChange={setSecret}
+              isClearable
+              classNames={{
+                inputWrapper: "h-8 min-h-8 bg-background px-2.5",
+                input: "h-7 font-mono text-xs",
+              }}
+            />
+          ) : (
+            <div className="grid min-w-0 gap-2 sm:grid-cols-2">
+              <Textarea
+                minRows={1}
+                placeholder={t("tools.encoder.publicKeyPlaceholder")}
+                value={publicKey}
+                onValueChange={setPublicKey}
+                classNames={{
+                  inputWrapper: "h-14 min-h-14 bg-background p-2",
+                  input: "min-h-0 overflow-auto font-mono text-[10px] leading-4",
+                }}
+              />
+              <Textarea
+                minRows={1}
+                placeholder={t("tools.encoder.privateKeyPlaceholder")}
+                value={privateKey}
+                onValueChange={setPrivateKey}
+                classNames={{
+                  inputWrapper: "h-14 min-h-14 bg-background p-2",
+                  input: "min-h-0 overflow-auto font-mono text-[10px] leading-4",
+                }}
+              />
             </div>
-            <div className="flex-1 min-h-0 relative group">
-                <Textarea
-                    variant="bordered"
-                    placeholder={t("tools.encoder.jwtPlaceholder")}
-                    value={token}
-                    onValueChange={handleTokenChange}
-                    className="h-full"
-                    classNames={{
-                        base: "h-full",
-                        input: "h-full font-mono text-xs leading-relaxed resize-none",
-                        inputWrapper: "h-full bg-default-50/50 hover:bg-default-100/50 focus-within:bg-background overflow-hidden"
-                    }}
-                />
-            </div>
-             {/* Verification Status Card */}
-             <div className="mt-2">
-                {verificationStatus !== "none" && (
-                    <Card className={`border ${verificationStatus === "valid" ? "border-success bg-success-50 dark:bg-success-900/20" : "border-danger bg-danger-50 dark:bg-danger-900/20"}`} shadow="sm">
-                        <CardBody className="flex flex-row items-center gap-3 py-2 px-3">
-                            {verificationStatus === "valid" ? <ShieldCheck className="w-5 h-5 text-success" /> : <ShieldAlert className="w-5 h-5 text-danger" />}
-                            <div className="flex flex-col">
-                                <span className={`font-medium text-xs ${verificationStatus === "valid" ? "text-success" : "text-danger"}`}>
-                                    {verificationStatus === "valid" ? t("tools.encoder.verified") : t("tools.encoder.invalidSignature")}
-                                </span>
-                                {verificationMsg && <span className="text-[10px] opacity-80 line-clamp-1">{verificationMsg}</span>}
-                            </div>
-                        </CardBody>
-                    </Card>
-                )}
-            </div>
+          )}
         </div>
 
-        {/* Center Divider / Action */}
-        <div className="hidden md:flex flex-col justify-center items-center">
-             <ArrowRight className="text-default-300" />
+        <Button size="sm" variant="flat" color="primary" className="h-8" onPress={handleManualDecode} startContent={<RefreshCw className="h-3.5 w-3.5" />}>
+          {t("tools.encoder.decode")}
+        </Button>
+        <Button size="sm" color="primary" className="h-8" onPress={handleEncode}>
+          {t("tools.encoder.encodeJwt")}
+        </Button>
+        <Button size="sm" variant="light" className="h-8 text-default-500 hover:bg-danger/10 hover:text-danger" onPress={clearAll} startContent={<Trash2 className="h-4 w-4" />}>
+          {t("tools.encoder.clearAll")}
+        </Button>
+      </div>
+
+      <div className="grid min-h-0 flex-1 grid-rows-[minmax(0,0.9fr)_40px_minmax(0,1.1fr)] overflow-hidden rounded-xl border border-default-200 bg-background lg:grid-cols-[minmax(0,5fr)_48px_minmax(0,7fr)] lg:grid-rows-1">
+        <section className="flex min-h-0 min-w-0 flex-col" aria-labelledby="jwt-token-heading">
+          <div className="flex h-12 shrink-0 items-center justify-between gap-3 border-b border-default-200 px-4">
+            <div className="flex min-w-0 items-center gap-3">
+              <h2 id="jwt-token-heading" className="shrink-0 text-sm font-semibold text-foreground">{t("tools.encoder.jwtToken")}</h2>
+              <span className="truncate text-[11px] text-default-400">
+                {t("tools.encoder.characterCount", { count: token.length })}
+              </span>
+            </div>
+            <div className="flex min-w-0 items-center gap-2">
+              {verificationStatus !== "none" && (
+                <span
+                  className={`flex min-w-0 items-center gap-1 truncate text-[11px] font-medium ${verificationStatus === "valid" ? "text-success" : "text-danger"}`}
+                  title={verificationMsg}
+                >
+                  {verificationStatus === "valid" ? <ShieldCheck className="h-4 w-4 shrink-0" /> : <ShieldAlert className="h-4 w-4 shrink-0" />}
+                  <span className="truncate">{verificationStatus === "valid" ? t("tools.encoder.verified") : t("tools.encoder.invalidSignature")}</span>
+                </span>
+              )}
+              <Button size="sm" variant="light" color="primary" className="h-8 min-w-0 px-2.5" onPress={() => copyToClipboard(token)} isDisabled={!token} startContent={<Copy className="h-4 w-4" />}>
+                {t("tools.encoder.copy")}
+              </Button>
+            </div>
+          </div>
+          <Textarea
+            aria-label={t("tools.encoder.jwtToken")}
+            placeholder={t("tools.encoder.jwtPlaceholder")}
+            value={token}
+            onValueChange={handleTokenChange}
+            className="min-h-0 flex-1"
+            classNames={{
+              inputWrapper: "min-h-0 flex-1 rounded-none border-0 bg-transparent p-4 focus-within:border-transparent focus-within:ring-0",
+              input: "min-h-0 resize-none overflow-auto font-mono text-[13px] leading-6",
+            }}
+          />
+        </section>
+
+        <div className="flex items-center justify-center border-y border-default-200 bg-default-50/60 lg:border-x lg:border-y-0">
+          <ArrowDown className="h-4 w-4 text-default-400 lg:hidden" />
+          <ArrowRight className="hidden h-4 w-4 text-default-400 lg:block" />
         </div>
 
-        {/* Right: Decoded Header, Payload, Signature */}
-        <div className="md:w-7/12 flex flex-col gap-4 h-full min-h-0 overflow-hidden">
-            
-            {/* Header & Payload split vertically */}
-            <div className="flex-1 flex flex-col gap-4 min-h-0">
-                {/* Header */}
-                <div className="h-[40%] flex flex-col gap-1 min-h-0">
-                    <div className="flex justify-between items-center px-1">
-                      <span className="text-xs font-semibold text-default-500">{t("tools.encoder.header")}</span>
-                      <Button isIconOnly size="sm" variant="light" onPress={handleRandomHeader} title={t("tools.formatter.example")}>
-                        <Wand2 className="w-3 h-3" />
-                      </Button>
-                    </div>
-                    <div className="flex-1 border border-default-200 rounded-lg overflow-hidden bg-content1 shadow-inner">
-                        <Editor
-                            height="100%"
-                            defaultLanguage="json"
-                            value={header}
-                            onChange={(val) => setHeader(val || "")}
-                            theme={theme === "dark" ? "vs-dark" : "light"}
-                            options={{ minimap: { enabled: false }, fontSize: 13, lineNumbers: "off", folding: false, wordWrap: "on", scrollBeyondLastLine: false }}
-                        />
-                    </div>
-                </div>
+        <section className="flex min-h-0 min-w-0 flex-col lg:grid lg:grid-rows-2 lg:divide-y lg:divide-default-200" aria-label={`${t("tools.encoder.header")} / ${t("tools.encoder.payload")}`}>
+          <div className="flex h-10 shrink-0 items-center border-b border-default-200 px-3 lg:hidden">
+            <ButtonGroup className="rounded-lg bg-default-100 p-0.5">
+              <Button
+                size="sm"
+                variant={activeJsonPanel === "header" ? "flat" : "light"}
+                color={activeJsonPanel === "header" ? "primary" : "default"}
+                className="h-7 min-w-20"
+                onPress={() => setActiveJsonPanel("header")}
+              >
+                {t("tools.encoder.header")}
+              </Button>
+              <Button
+                size="sm"
+                variant={activeJsonPanel === "payload" ? "flat" : "light"}
+                color={activeJsonPanel === "payload" ? "primary" : "default"}
+                className="h-7 min-w-20"
+                onPress={() => setActiveJsonPanel("payload")}
+              >
+                {t("tools.encoder.payload")}
+              </Button>
+            </ButtonGroup>
+          </div>
 
-                {/* Payload */}
-                <div className="flex-1 flex flex-col gap-1 min-h-0">
-                     <div className="flex justify-between items-center px-1">
-                        <span className="text-xs font-semibold text-default-500">{t("tools.encoder.payload")}</span>
-                        <Button isIconOnly size="sm" variant="light" onPress={handleRandomPayload} title={t("tools.formatter.example")}>
-                          <Wand2 className="w-3 h-3" />
-                        </Button>
-                     </div>
-                     <div className="flex-1 border border-default-200 rounded-lg overflow-hidden bg-content1 shadow-inner">
-                        <Editor
-                            height="100%"
-                            defaultLanguage="json"
-                            value={payload}
-                            onChange={(val) => setPayload(val || "")}
-                            theme={theme === "dark" ? "vs-dark" : "light"}
-                            options={{ minimap: { enabled: false }, fontSize: 13, lineNumbers: "off", folding: false, wordWrap: "on", scrollBeyondLastLine: false }}
-                        />
-                    </div>
-                </div>
+          <div className={`${activeJsonPanel === "header" ? "flex" : "hidden"} min-h-0 flex-1 flex-col lg:flex`}>
+            <div className="flex h-10 shrink-0 items-center justify-between px-4">
+              <span className="text-xs font-semibold text-default-600">{t("tools.encoder.header")}</span>
+              <Button isIconOnly size="sm" variant="light" onPress={handleRandomHeader} title={t("tools.formatter.example")} aria-label={t("tools.formatter.example")}>
+                <Wand2 className="h-3.5 w-3.5" />
+              </Button>
             </div>
-
-            {/* Signature / Keys */}
-            <div className="flex flex-col gap-3 p-3 bg-content2 rounded-xl border border-default-100 shadow-sm">
-                <div className="flex justify-between items-center">
-                     <span className="text-xs font-semibold flex items-center gap-2 text-default-600">
-                        <KeyRound className="w-3 h-3" />
-                        {t("tools.encoder.signatureConfig")}
-                     </span>
-                     <Button size="sm" color="primary" onPress={handleEncode} className="font-semibold h-7">
-                        {t("tools.encoder.encodeJwt")}
-                     </Button>
-                </div>
-                
-                <div className="flex gap-2 items-center">
-                    <Select 
-                        labelPlacement="outside-left" 
-                        size="sm" 
-                        className="w-32" 
-                        selectedKeys={[algorithm]} 
-                        onChange={(e) => setAlgorithm(e.target.value)}
-                        aria-label="Algorithm"
-                    >
-                        {ALGORITHMS.map((alg) => (
-                            <SelectItem key={alg.value} textValue={alg.label}>
-                                {alg.label}
-                            </SelectItem>
-                        ))}
-                    </Select>
-                    
-                    <div className="flex-1 min-w-0">
-                        {algType === "HMAC" && (
-                            <Input
-                                size="sm"
-                                placeholder={t("tools.encoder.secretPlaceholder")}
-                                value={secret}
-                                onValueChange={setSecret}
-                                isClearable
-                                classNames={{ input: "font-mono text-xs" }}
-                            />
-                        )}
-                        {algType !== "HMAC" && (
-                             <div className="flex gap-2">
-                                <Textarea
-                                    minRows={1}
-                                    maxRows={2}
-                                    size="sm"
-                                    placeholder={t("tools.encoder.publicKeyPlaceholder")}
-                                    value={publicKey}
-                                    onValueChange={setPublicKey}
-                                    classNames={{ input: "font-mono text-[10px] py-1" }}
-                                />
-                                <Textarea
-                                    minRows={1}
-                                    maxRows={2}
-                                    size="sm"
-                                    placeholder={t("tools.encoder.privateKeyPlaceholder")}
-                                    value={privateKey}
-                                    onValueChange={setPrivateKey}
-                                    classNames={{ input: "font-mono text-[10px] py-1" }}
-                                />
-                             </div>
-                        )}
-                    </div>
-                </div>
+            <div className="min-h-0 flex-1 border-t border-default-200 bg-default-50/30">
+              <Editor
+                height="100%"
+                defaultLanguage="json"
+                value={header}
+                onChange={(value) => setHeader(value || "")}
+                theme={theme === "dark" ? "vs-dark" : "light"}
+                options={{ minimap: { enabled: false }, fontSize: 13, lineNumbers: "off", folding: false, wordWrap: "on", scrollBeyondLastLine: false }}
+              />
             </div>
+          </div>
 
-        </div>
+          <div className={`${activeJsonPanel === "payload" ? "flex" : "hidden"} min-h-0 flex-1 flex-col lg:flex`}>
+            <div className="flex h-10 shrink-0 items-center justify-between px-4">
+              <span className="text-xs font-semibold text-default-600">{t("tools.encoder.payload")}</span>
+              <Button isIconOnly size="sm" variant="light" onPress={handleRandomPayload} title={t("tools.formatter.example")} aria-label={t("tools.formatter.example")}>
+                <Wand2 className="h-3.5 w-3.5" />
+              </Button>
+            </div>
+            <div className="min-h-0 flex-1 border-t border-default-200 bg-default-50/30">
+              <Editor
+                height="100%"
+                defaultLanguage="json"
+                value={payload}
+                onChange={(value) => setPayload(value || "")}
+                theme={theme === "dark" ? "vs-dark" : "light"}
+                options={{ minimap: { enabled: false }, fontSize: 13, lineNumbers: "off", folding: false, wordWrap: "on", scrollBeyondLastLine: false }}
+              />
+            </div>
+          </div>
+        </section>
+      </div>
     </div>
   )
 }

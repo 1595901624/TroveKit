@@ -1,49 +1,33 @@
-import { useState, useEffect } from "react"
-import { Textarea, Button, Select, SelectItem, Input } from "../../components/ui/base-ui"
-import { Copy, Trash2, ArrowDownUp, ChevronDown } from "lucide-react"
-import { useTranslation } from "react-i18next"
-import { useLog } from "../../contexts/LogContext"
+import { useEffect, useRef, useState } from "react"
 import { invoke } from "@tauri-apps/api/core"
-import { getStoredItem, setStoredItem, removeStoredItem } from "../../lib/store"
+import { useTranslation } from "react-i18next"
+import { Select, SelectItem } from "../../components/ui/base-ui"
+import { useLog } from "../../contexts/LogContext"
+import { getStoredItem, removeStoredItem, setStoredItem } from "../../lib/store"
+import { EncoderWorkbench } from "./EncoderWorkbench"
 
 const STORAGE_KEY = "basex-tool-state"
+
+type BaseXMode = "encode" | "decode"
 
 export function BaseXTab() {
   const { t } = useTranslation()
   const { addLog } = useLog()
-
   const [baseXInput, setBaseXInput] = useState("")
   const [baseXOutput, setBaseXOutput] = useState("")
+  const [activeMode, setActiveMode] = useState<BaseXMode>("encode")
+  const [autoTransform, setAutoTransform] = useState(false)
   const [selectedBase, setSelectedBase] = useState("base16")
-  // const [isCustomAlphabet, setIsCustomAlphabet] = useState(savedState.isCustomAlphabet || false)
-  const [isCustomAlphabet] = useState<boolean>(false)
   const [customAlphabet, setCustomAlphabet] = useState("")
+  const [transformError, setTransformError] = useState("")
   const [isLoaded, setIsLoaded] = useState(false)
+  const isCustomAlphabet = false
+  const latestAutoResult = useRef({ activeMode, autoTransform, transformError, baseXInput, baseXOutput, selectedBase })
+  const addLogRef = useRef(addLog)
+  const requestIdRef = useRef(0)
 
-  useEffect(() => {
-    let mounted = true;
-    getStoredItem(STORAGE_KEY).then((stored) => {
-      if (mounted && stored) {
-        try {
-          const state = JSON.parse(stored);
-          if (state.baseXInput) setBaseXInput(state.baseXInput);
-          if (state.baseXOutput) setBaseXOutput(state.baseXOutput);
-          if (state.selectedBase) setSelectedBase(state.selectedBase);
-          if (state.customAlphabet) setCustomAlphabet(state.customAlphabet);
-        } catch (e) {
-          console.error("Failed to parse BaseXTab state", e);
-        }
-      }
-      if (mounted) setIsLoaded(true);
-    });
-    return () => { mounted = false; };
-  }, []);
-
-  useEffect(() => {
-    if (isLoaded) {
-      setStoredItem(STORAGE_KEY, JSON.stringify({ baseXInput, baseXOutput, selectedBase, isCustomAlphabet, customAlphabet }))
-    }
-  }, [baseXInput, baseXOutput, selectedBase, isCustomAlphabet, customAlphabet, isLoaded])
+  addLogRef.current = addLog
+  latestAutoResult.current = { activeMode, autoTransform, transformError, baseXInput, baseXOutput, selectedBase }
 
   const baseOptions = [
     { key: "base16", label: t("tools.encoder.base16") },
@@ -51,58 +35,110 @@ export function BaseXTab() {
     { key: "base58", label: t("tools.encoder.base58") },
     { key: "base62", label: t("tools.encoder.base62") },
     { key: "base64", label: t("tools.encoder.base64") },
-    // { key: "base85", label: t("tools.encoder.base85") },
     { key: "base91", label: t("tools.encoder.base91") },
   ]
 
-  const handleBaseXEncode = async () => {
-    if (!baseXInput) return
-    try {
-      const result = await invoke<string>("basex_encode", {
-        input: baseXInput,
-        base: selectedBase,
-        alphabet: isCustomAlphabet ? customAlphabet : null
-      })
-      setBaseXOutput(result)
-      addLog({ 
-        method: `BaseX Encode (${selectedBase})`, 
-        input: baseXInput, 
-        output: result,
-        cryptoParams: { algorithm: selectedBase }
-      }, "success")
-    } catch (e) {
-      setBaseXOutput("")
-      addLog({ 
-        method: `BaseX Encode (${selectedBase})`, 
-        input: baseXInput, 
-        output: String(e),
-        cryptoParams: { algorithm: selectedBase }
-      }, "error")
-    }
-  }
+  useEffect(() => {
+    let mounted = true
+    getStoredItem(STORAGE_KEY).then((stored) => {
+      if (mounted && stored) {
+        try {
+          const state = JSON.parse(stored)
+          if (state.baseXInput) setBaseXInput(state.baseXInput)
+          if (state.baseXOutput) setBaseXOutput(state.baseXOutput)
+          if (state.activeMode === "encode" || state.activeMode === "decode") setActiveMode(state.activeMode)
+          if (typeof state.autoTransform === "boolean") setAutoTransform(state.autoTransform)
+          if (state.selectedBase) setSelectedBase(state.selectedBase)
+          if (state.customAlphabet) setCustomAlphabet(state.customAlphabet)
+        } catch (e) {
+          console.error("Failed to parse BaseXTab state", e)
+        }
+      }
+      if (mounted) setIsLoaded(true)
+    })
+    return () => { mounted = false }
+  }, [])
 
-  const handleBaseXDecode = async () => {
+  useEffect(() => {
+    if (isLoaded) {
+      setStoredItem(STORAGE_KEY, JSON.stringify({
+        baseXInput,
+        baseXOutput,
+        activeMode,
+        autoTransform,
+        selectedBase,
+        isCustomAlphabet,
+        customAlphabet,
+      }))
+    }
+  }, [activeMode, autoTransform, baseXInput, baseXOutput, customAlphabet, isLoaded, selectedBase])
+
+  const transformBaseX = (value: string, mode: BaseXMode) => invoke<string>(
+    mode === "encode" ? "basex_encode" : "basex_decode",
+    { input: value, base: selectedBase, alphabet: isCustomAlphabet ? customAlphabet : null },
+  )
+
+  useEffect(() => {
+    if (!isLoaded || !autoTransform) return
+    if (!baseXInput) {
+      setBaseXOutput("")
+      setTransformError("")
+      return
+    }
+
+    const requestId = ++requestIdRef.current
+    const timer = window.setTimeout(async () => {
+      try {
+        const result = await transformBaseX(baseXInput, activeMode)
+        if (requestId !== requestIdRef.current) return
+        setBaseXOutput(result)
+        setTransformError("")
+      } catch (e) {
+        if (requestId !== requestIdRef.current) return
+        setBaseXOutput("")
+        setTransformError(String(e))
+      }
+    }, 180)
+
+    return () => {
+      window.clearTimeout(timer)
+      requestIdRef.current++
+    }
+  }, [activeMode, autoTransform, baseXInput, customAlphabet, isLoaded, selectedBase])
+
+  useEffect(() => () => {
+    const state = latestAutoResult.current
+    if (!state.autoTransform || !state.baseXInput || !state.baseXOutput || state.transformError) return
+    addLogRef.current({
+      method: `BaseX ${state.activeMode === "encode" ? "Encode" : "Decode"} (${state.selectedBase})`,
+      input: state.baseXInput,
+      output: state.baseXOutput,
+      cryptoParams: { algorithm: state.selectedBase },
+    }, "success")
+  }, [])
+
+  const runTransform = async (writeLog: boolean) => {
     if (!baseXInput) return
+    const method = `BaseX ${activeMode === "encode" ? "Encode" : "Decode"} (${selectedBase})`
     try {
-      const result = await invoke<string>("basex_decode", {
-        input: baseXInput,
-        base: selectedBase,
-        alphabet: isCustomAlphabet ? customAlphabet : null
-      })
+      const result = await transformBaseX(baseXInput, activeMode)
       setBaseXOutput(result)
-      addLog({ 
-        method: `BaseX Decode (${selectedBase})`, 
-        input: baseXInput, 
+      setTransformError("")
+      if (writeLog) addLog({
+        method,
+        input: baseXInput,
         output: result,
-        cryptoParams: { algorithm: selectedBase }
+        cryptoParams: { algorithm: selectedBase },
       }, "success")
     } catch (e) {
+      const message = String(e)
       setBaseXOutput("")
-      addLog({ 
-        method: `BaseX Decode (${selectedBase})`, 
-        input: baseXInput, 
-        output: String(e),
-        cryptoParams: { algorithm: selectedBase }
+      setTransformError(message)
+      if (writeLog) addLog({
+        method,
+        input: baseXInput,
+        output: message,
+        cryptoParams: { algorithm: selectedBase },
       }, "error")
     }
   }
@@ -110,93 +146,49 @@ export function BaseXTab() {
   const swapBaseX = () => {
     setBaseXInput(baseXOutput)
     setBaseXOutput(baseXInput)
+    if (autoTransform) setActiveMode(activeMode === "encode" ? "decode" : "encode")
+    setTransformError("")
   }
 
-  const copyToClipboard = (text: string) => {
-    if (!text) return
-    navigator.clipboard.writeText(text)
+  const clearAll = () => {
+    setBaseXInput("")
+    setBaseXOutput("")
+    setSelectedBase("base16")
+    setCustomAlphabet("")
+    setTransformError("")
+    removeStoredItem(STORAGE_KEY)
   }
 
   return (
-    <div className="space-y-4">
-      <div className="flex flex-col gap-4">
-        <div className="flex flex-wrap gap-4 items-end">
-          <Select
-            label={t("tools.encoder.base")}
-            className="max-w-xs"
-            selectedKeys={[selectedBase]}
-            onChange={(e) => setSelectedBase(e.target.value)}
-          >
-            {baseOptions.map((opt) => (
-              <SelectItem key={opt.key}>{opt.label}</SelectItem>
-            ))}
-          </Select>
-
-          {/* <div className="flex items-center pb-2">
-            <Switch isSelected={isCustomAlphabet} onValueChange={setIsCustomAlphabet}>
-              {t("tools.encoder.useCustomAlphabet")}
-            </Switch>
-          </div> */}
-        </div>
-        
-        {isCustomAlphabet && (
-          <Input
-            label={t("tools.encoder.alphabet")}
-            placeholder={t("tools.encoder.alphabet")}
-            value={customAlphabet}
-            onValueChange={setCustomAlphabet}
-            variant="bordered"
-            classNames={{
-              inputWrapper: "bg-default-100/50 hover:bg-default-100 focus-within:bg-background"
-            }}
-          />
-        )}
-      </div>
-
-      <Textarea
-        label={t("tools.encoder.input")}
-        placeholder={t("tools.encoder.baseXPlaceholder")}
-        minRows={6}
-        variant="bordered"
-        value={baseXInput}
-        onValueChange={setBaseXInput}
-        classNames={{
-          inputWrapper: "bg-default-100/50 hover:bg-default-100 focus-within:bg-background"
-        }}
-      />
-
-      <div className="flex items-center justify-center gap-4 py-2">
-        <Button color="primary" variant="flat" onPress={handleBaseXEncode} startContent={<ChevronDown className="w-4 h-4" />}>
-          {t("tools.encoder.encode")}
-        </Button>
-        <Button color="secondary" variant="flat" onPress={handleBaseXDecode} startContent={<ChevronDown className="w-4 h-4" />}>
-          {t("tools.encoder.decode")}
-        </Button>
-        <Button isIconOnly variant="light" onPress={swapBaseX} title={t("tools.encoder.swap")}>
-          <ArrowDownUp className="w-4 h-4" />
-        </Button>
-        <Button isIconOnly variant="light" color="danger" onPress={() => { setBaseXInput(""); setBaseXOutput(""); setSelectedBase("base16"); setCustomAlphabet(""); removeStoredItem(STORAGE_KEY); }} title={t("tools.encoder.clearAll")}>
-          <Trash2 className="w-4 h-4" />
-        </Button>
-      </div>
-
-      <div className="relative group">
-        <Textarea
-          label={t("tools.encoder.output")}
-          readOnly
-          minRows={6}
-          variant="bordered"
-          value={baseXOutput}
-          classNames={{
-            inputWrapper: "bg-default-100/30 group-hover:bg-default-100/50 transition-colors font-mono text-tiny"
-          }}
-        />
-        <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-          <Button isIconOnly size="sm" variant="flat" onPress={() => copyToClipboard(baseXOutput)} title={t("tools.encoder.copy")}>
-            <Copy className="w-4 h-4" />
-          </Button>
-        </div>
-      </div>
-    </div>
+    <EncoderWorkbench
+      id="basex"
+      modes={[
+        { key: "encode", label: t("tools.encoder.encode") },
+        { key: "decode", label: t("tools.encoder.decode") },
+      ]}
+      activeMode={activeMode}
+      onModeChange={setActiveMode}
+      autoTransform={autoTransform}
+      onAutoTransformChange={setAutoTransform}
+      onTransform={() => { void runTransform(!autoTransform) }}
+      onSwap={swapBaseX}
+      onClear={clearAll}
+      input={baseXInput}
+      onInputChange={setBaseXInput}
+      inputPlaceholder={t("tools.encoder.baseXPlaceholder")}
+      output={baseXOutput}
+      error={transformError}
+      toolbarContent={(
+        <Select
+          aria-label={t("tools.encoder.base")}
+          className="w-36"
+          classNames={{ trigger: "h-8 bg-background px-2.5 text-xs" }}
+          selectedKeys={[selectedBase]}
+          onChange={(event) => setSelectedBase(event.target.value)}
+        >
+          {baseOptions.map((option) => <SelectItem key={option.key}>{option.label}</SelectItem>)}
+        </Select>
+      )}
+    />
   )
 }
