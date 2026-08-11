@@ -1,7 +1,6 @@
 import {
   Bell,
   ChevronDown,
-  CircleHelp,
   FileText,
   House,
   Search,
@@ -193,11 +192,6 @@ export function Sidebar({ activeTool, activeTab, onToolChange, onNavigate }: Sid
         <div className="shrink-0 border-t border-black/[0.055] px-3 py-3 dark:border-white/[0.07]">
           <BottomAction active={activeTool === "logManagement"} icon={<FileText className="h-[17px] w-[17px]" />} label={t("nav.logManagement", "日志管理")} onClick={() => onToolChange("logManagement")} />
           <BottomAction active={activeTool === "settings"} icon={<Settings className="h-[17px] w-[17px]" />} label={t("nav.settings")} onClick={() => onToolChange("settings")} />
-          <div className="mt-2 flex items-center gap-3 px-2 py-1.5 text-default-500">
-            <div className="flex h-6 w-6 items-center justify-center rounded-full bg-amber-400 text-[9px] font-semibold text-white">TK</div>
-            <span className="flex-1 text-[13px]">TroveKit</span>
-            <CircleHelp className="h-[17px] w-[17px]" />
-          </div>
         </div>
       </div>
 
