@@ -142,8 +142,8 @@ export function Sidebar({ macOSOverlay = false, isCollapsed, activeTool, activeT
           </div>
         </div>
 
-        <nav className="flex-1 overflow-y-auto px-3 py-4 scrollbar-hide" aria-label="Tools">
-          <div className="space-y-4">
+        <nav className="flex-1 overflow-y-auto px-2.5 py-3 scrollbar-hide" aria-label="Tools">
+          <div className="space-y-2.5">
             {groups.map(group => {
               const expanded = expandedGroups[group.id] ?? false
               const activeGroup = activeTool === group.id
@@ -151,7 +151,7 @@ export function Sidebar({ macOSOverlay = false, isCollapsed, activeTool, activeT
                 <section key={group.id}>
                   <Button
                     variant="light"
-                    className="group flex h-8 w-full items-center gap-2 rounded-lg px-2 text-left text-[14px] text-default-600 hover:bg-black/[0.04] dark:hover:bg-white/[0.05]"
+                    className="group flex h-8 w-full items-center justify-start gap-2 rounded-lg px-2.5 text-left text-[13px] text-default-600 hover:bg-black/[0.04] dark:hover:bg-white/[0.05]"
                     onPress={() => setExpandedGroups(current => ({ ...current, [group.id]: !current[group.id] }))}
                     aria-expanded={expanded}
                   >
@@ -160,7 +160,7 @@ export function Sidebar({ macOSOverlay = false, isCollapsed, activeTool, activeT
                   </Button>
 
                   {expanded && (
-                    <div className="mt-1 space-y-0.5 pl-6">
+                    <div className="relative ml-3 mt-0.5 space-y-0.5 border-l border-black/[0.07] pl-2 dark:border-white/[0.08]">
                       {group.children.map((child, index) => {
                         const active = activeGroup && (activeTab === child.tabId || (!activeTab && index === 0))
                         return (
@@ -168,11 +168,15 @@ export function Sidebar({ macOSOverlay = false, isCollapsed, activeTool, activeT
                             key={child.id}
                             variant="light"
                             className={cn(
-                              "flex min-h-9 w-full items-center rounded-xl px-3 py-1.5 text-left text-[14px] leading-5 text-default-600 transition-colors hover:bg-black/[0.045] hover:text-foreground dark:hover:bg-white/[0.06]",
-                              active && "bg-black/[0.06] font-medium text-foreground dark:bg-white/[0.09]",
+                              "relative flex h-8 min-w-0 w-full items-center justify-start rounded-lg px-2.5 text-left text-[13px] leading-5 text-default-500 transition-colors hover:bg-black/[0.045] hover:text-foreground dark:hover:bg-white/[0.055]",
+                              active && "bg-black/[0.06] font-medium text-foreground dark:bg-white/[0.085]",
                             )}
                             onPress={() => onNavigate(group.id, child.tabId)}
                           >
+                            <span className={cn(
+                              "absolute -left-[11px] top-1/2 h-1.5 w-1.5 -translate-y-1/2 rounded-full border border-[#f3f3f3] bg-default-300 dark:border-[#202020] dark:bg-default-200",
+                              active && "bg-primary ring-2 ring-primary/15 dark:bg-primary",
+                            )} />
                             <span className="truncate">{child.label}</span>
                           </Button>
                         )
