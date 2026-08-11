@@ -13,11 +13,9 @@ import {
   Textarea,
   addToast,
 } from "../../components/ui/base-ui"
-import Editor from "../../components/MonacoEditor"
-import type { OnMount } from "@monaco-editor/react"
+import CodeEditor, { type CodeEditorHandle } from "../../components/CodeEditor"
 import { AlertCircle, Copy, FileDown, Trash2, ListPlus, ChevronDown } from "lucide-react"
 import { useTranslation } from "react-i18next"
-import { useTheme } from "../../components/theme-provider"
 import { getStoredItem, removeStoredItem, setStoredItem } from "../../lib/store"
 import { save } from "@tauri-apps/plugin-dialog"
 import { writeFile } from "@tauri-apps/plugin-fs"
@@ -47,15 +45,14 @@ interface RegexToolState {
 
 const STORAGE_KEY = "regex-tool-state" // 本地存储键名，用于保存工具状态
 const FLAG_ORDER = ["g", "i", "m", "s", "u"] as const // 正则表达式标志的显示顺序
-const MAX_RENDERED_MATCHES = 1000 // 限制右侧结果和 Monaco 高亮数量，避免大文本全局匹配占用过多内存
+const MAX_RENDERED_MATCHES = 1000 // 限制右侧结果和编辑器高亮数量，避免大文本全局匹配占用过多内存
 /**
  * RegexTool 组件 - 正则表达式测试和替换工具
  * 提供正则表达式模式匹配、标志设置、文本替换等功能
- * 支持 Monaco 编辑器集成和结果导出
+ * 支持 CodeMirror 编辑器集成和结果导出
  */
 export function RegexTool() {
   const { t, i18n } = useTranslation()
-  const { theme } = useTheme()
 
   // 正则表达式三要素：pattern + flags + input（测试文本）
   const [pattern, setPattern] = useState("")
@@ -80,10 +77,8 @@ export function RegexTool() {
   const [presetQuery, setPresetQuery] = useState("")
   const [isFlagsOpen, setIsFlagsOpen] = useState(false)
 
-  // Monaco 编辑器相关引用：用于高亮匹配区间、跳转定位
-  const editorRef = useRef<any>(null)
-  const monacoRef = useRef<any>(null)
-  const decorationIdsRef = useRef<string[]>([])
+  // 编辑器引用用于在点击匹配项时选中并滚动到对应文本。
+  const editorRef = useRef<CodeEditorHandle>(null)
   const presetPopoverRef = useRef<HTMLDivElement | null>(null)
 
   useEffect(() => {
@@ -256,7 +251,6 @@ export function RegexTool() {
         setMatches([])
         setElapsedMs(0)
         setSelectedMatchIndex(null)
-        clearDecorations()
         return
       }
 
@@ -274,15 +268,14 @@ export function RegexTool() {
     return () => clearTimeout(id)
   }, [pattern, flagsLabel, input]) // 延迟执行正则表达式匹配，计算匹配结果和性能
 
-  useEffect(() => {
-    // 将 matches 同步到 Monaco 高亮（选中项用不同样式区分）
-    applyDecorations(matches, selectedMatchIndex)
-  }, [matches, selectedMatchIndex, theme])
-
-  const handleEditorDidMount: OnMount = (editor, monaco) => {
-    editorRef.current = editor
-    monacoRef.current = monaco
-  }
+  const editorHighlights = useMemo(
+    () => matches.map((match, index) => ({
+      from: match.start,
+      to: match.end,
+      active: index === selectedMatchIndex,
+    })),
+    [matches, selectedMatchIndex]
+  )
 
   const handlePatternBlur = () => {
     const parsed = parseRegexLiteral(pattern)
@@ -291,60 +284,12 @@ export function RegexTool() {
     setFlags(parsed.flags)
   }
 
-  const clearDecorations = () => {
-    // 清空 Monaco 中的高亮装饰（避免残留）
-    const editor = editorRef.current
-    if (!editor) return
-    decorationIdsRef.current = editor.deltaDecorations(decorationIdsRef.current, [])
-  }
-
-  useEffect(() => {
-    return () => {
-      // 切换工具页卸载 Regex 时，先移除高亮装饰，再断开页面侧 Monaco 引用。
-      clearDecorations()
-      decorationIdsRef.current = []
-      editorRef.current = null
-      monacoRef.current = null
-    }
-  }, [])
-
-  const applyDecorations = (list: RegexMatch[], selected: number | null) => {
-    // 根据字符偏移 -> Monaco Range，生成 decoration 并批量应用
-    const editor = editorRef.current
-    const monaco = monacoRef.current
-    const model = editor?.getModel?.()
-    if (!editor || !monaco || !model) return
-
-    const decorations = list.map((m, idx) => {
-      const startPos = model.getPositionAt(m.start)
-      const endPos = model.getPositionAt(m.end)
-      const range = new monaco.Range(startPos.lineNumber, startPos.column, endPos.lineNumber, endPos.column)
-      return {
-        range,
-        options: {
-          inlineClassName: idx === selected ? "regex-match-decoration-active" : "regex-match-decoration",
-        },
-      }
-    })
-
-    decorationIdsRef.current = editor.deltaDecorations(decorationIdsRef.current, decorations)
-  } // 在 Monaco 编辑器中应用匹配高亮装饰
-
   const jumpToMatch = (idx: number) => {
     // 点击某条匹配：滚动到对应位置并选中，方便定位上下文
     setSelectedMatchIndex(idx)
-    const editor = editorRef.current
-    const monaco = monacoRef.current
-    const model = editor?.getModel?.()
     const m = matches[idx]
-    if (!editor || !monaco || !model || !m) return
-
-    const startPos = model.getPositionAt(m.start)
-    const endPos = model.getPositionAt(m.end)
-    const range = new monaco.Range(startPos.lineNumber, startPos.column, endPos.lineNumber, endPos.column)
-    editor.revealRangeInCenter(range)
-    editor.setSelection(range)
-    editor.focus()
+    if (!m) return
+    editorRef.current?.revealRange(m.start, m.end)
   } // 跳转到指定的匹配位置并选中
 
   const handleCopy = async (text: string) => {
@@ -413,7 +358,7 @@ export function RegexTool() {
   }
 
   const handleClearAll = async () => {
-    // 一键清空：同时清理本地持久化与 Monaco 高亮
+    // 一键清空：同时清理本地持久化与编辑器高亮
     setPattern("")
     setFlags("g")
     setInput("")
@@ -425,7 +370,6 @@ export function RegexTool() {
     setRegexError(null)
     setMatches([])
     setElapsedMs(0)
-    clearDecorations()
     await removeStoredItem(STORAGE_KEY)
   }
 
@@ -458,7 +402,7 @@ export function RegexTool() {
   } // 执行全局替换操作
 
   return (
-    // 布局约定：使用 flex-1 + min-h-0 让右侧 Tab 内容、Monaco Editor 能正确撑满剩余高度
+    // 布局约定：使用 flex-1 + min-h-0 让右侧 Tab 内容、代码编辑器能正确撑满剩余高度
     <div className="flex flex-col h-full gap-4">
       <div className="flex-1 min-h-0 flex flex-col lg:flex-row gap-4">
         <div className="flex-1 min-h-0 flex flex-col gap-4 min-w-0">
@@ -602,20 +546,13 @@ export function RegexTool() {
               </div>
             </div>
             <div className="flex-1 min-h-0 border border-default-200 rounded-xl overflow-hidden shadow-sm bg-content1">
-              <Editor
-                height="100%"
-                defaultLanguage="plaintext"
+              <CodeEditor
+                ref={editorRef}
+                language="plaintext"
                 value={input}
-                onChange={(value) => setInput(value || "")}
-                onMount={handleEditorDidMount}
-                theme={theme === "dark" ? "vs-dark" : "light"}
-                options={{
-                  minimap: { enabled: false },
-                  fontSize: 13,
-                  wordWrap: "on",
-                  scrollBeyondLastLine: false,
-                  padding: { top: 12, bottom: 12 },
-                }}
+                onChange={setInput}
+                highlights={editorHighlights}
+                ariaLabel={t("tools.regex.testString")}
               />
             </div>
           </div>
@@ -833,20 +770,11 @@ export function RegexTool() {
               </div>
 
               <div className="flex-1 min-h-0 border border-default-200 rounded-xl overflow-hidden shadow-sm bg-content1">
-                <Editor
-                  height="100%"
-                  defaultLanguage="plaintext"
+                <CodeEditor
+                  language="plaintext"
                   value={output}
-                  onChange={(value) => setOutput(value || "")}
-                  theme={theme === "dark" ? "vs-dark" : "light"}
-                  options={{
-                    minimap: { enabled: false },
-                    fontSize: 13,
-                    wordWrap: "on",
-                    readOnly: false,
-                    scrollBeyondLastLine: false,
-                    padding: { top: 12, bottom: 12 },
-                  }}
+                  onChange={setOutput}
+                  ariaLabel={t("tools.regex.replaceResult")}
                 />
               </div>
             </div>

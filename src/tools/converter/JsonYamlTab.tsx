@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react"
 import { Button, addToast } from "../../components/ui/base-ui"
-import Editor from "../../components/MonacoEditor"
+import CodeEditor from "../../components/CodeEditor"
 import { ArrowRight, ArrowLeft, Copy, Trash2, BookOpen } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import yaml from "js-yaml"
-import { useTheme } from "../../components/theme-provider"
 import { useLog } from "../../contexts/LogContext"
 import { getStoredItem, setStoredItem } from "../../lib/store"
 
@@ -12,7 +11,6 @@ const STORAGE_KEY = "json-yaml-tool-state"
 
 export function JsonYamlTab() {
   const { t } = useTranslation()
-  const { theme } = useTheme()
   const { addLog } = useLog()
 
   const [jsonCode, setJsonCode] = useState("")
@@ -169,19 +167,11 @@ export function JsonYamlTab() {
                 </div>
             </div>
             <div className="flex-1 border border-default-200 rounded-xl overflow-hidden shadow-sm bg-content1">
-                <Editor
-                    height="100%"
-                    defaultLanguage="json"
+                <CodeEditor
+                    language="json"
                     value={jsonCode}
-                    onChange={(value) => setJsonCode(value || "")}
-                    theme={theme === "dark" ? "vs-dark" : "light"}
-                    options={{
-                        minimap: { enabled: false },
-                        fontSize: 13,
-                        wordWrap: "on",
-                        scrollBeyondLastLine: false,
-                        padding: { top: 12, bottom: 12 },
-                    }}
+                    onChange={setJsonCode}
+                    ariaLabel="JSON"
                 />
             </div>
         </div>
@@ -200,19 +190,11 @@ export function JsonYamlTab() {
                 </div>
             </div>
             <div className="flex-1 border border-default-200 rounded-xl overflow-hidden shadow-sm bg-content1">
-                <Editor
-                    height="100%"
-                    defaultLanguage="yaml"
+                <CodeEditor
+                    language="yaml"
                     value={yamlCode}
-                    onChange={(value) => setYamlCode(value || "")}
-                    theme={theme === "dark" ? "vs-dark" : "light"}
-                    options={{
-                        minimap: { enabled: false },
-                        fontSize: 13,
-                        wordWrap: "on",
-                        scrollBeyondLastLine: false,
-                        padding: { top: 12, bottom: 12 },
-                    }}
+                    onChange={setYamlCode}
+                    ariaLabel="YAML"
                 />
             </div>
         </div>
