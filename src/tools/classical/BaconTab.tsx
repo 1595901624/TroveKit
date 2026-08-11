@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react"
-import { Textarea, Button, Input, RadioGroup, Radio } from "../../components/ui/base-ui"
-import { Copy, Trash2, ArrowDownUp, Shield, ShieldAlert } from "lucide-react"
+import { Button, Input, Select, SelectItem } from "../../components/ui/base-ui"
+import { Shield, ShieldAlert } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { useLog } from "../../contexts/LogContext"
 import { getStoredItem, setStoredItem, removeStoredItem } from "../../lib/store"
+import { HashOperationSwitch, HashWorkbench } from "../hash/HashWorkbench"
 
 const STORAGE_KEY = "bacon-tool-state"
 
@@ -20,6 +21,7 @@ export function BaconTab() {
   const [mode, setMode] = useState<"AB" | "ab" | "01" | "custom">("AB")
   const [customA, setCustomA] = useState("0")
   const [customB, setCustomB] = useState("1")
+  const [operation, setOperation] = useState<"encode" | "decode">("encode")
   const [isLoaded, setIsLoaded] = useState(false)
 
   useEffect(() => {
@@ -146,120 +148,29 @@ export function BaconTab() {
   const swapText = () => {
     setInput(output)
     setOutput(input)
-  }
-
-  const copyToClipboard = (text: string) => {
-    if (!text) return
-    navigator.clipboard.writeText(text)
+    setOperation((current) => current === "encode" ? "decode" : "encode")
   }
 
   return (
-    <div className="space-y-4">
-      <Textarea
-        label={t("tools.classical.inputPlaceholder")}
-        placeholder={t("tools.classical.inputPlaceholder")}
-        minRows={5}
-        variant="bordered"
-        value={input}
-        onValueChange={setInput}
-        classNames={{
-          inputWrapper: "bg-default-100/50 hover:bg-default-100 focus-within:bg-background"
-        }}
-      />
-
-      <div className="flex flex-col gap-4 p-4 bg-default-50 rounded-lg border border-default-100">
-        <div className="flex flex-wrap items-end gap-6">
-          <RadioGroup
-            label={t("tools.classical.bacon.alphabet")}
-            value={alphabetType}
-            onValueChange={(v) => setAlphabetType(v as "26" | "24")}
-            orientation="horizontal"
-            size="sm"
-          >
-            <Radio value="26">{t("tools.classical.bacon.standard")}</Radio>
-            <Radio value="24">{t("tools.classical.bacon.traditional")}</Radio>
-          </RadioGroup>
-
-          <RadioGroup
-            label={t("tools.classical.bacon.mode")}
-            value={mode}
-            onValueChange={(v) => setMode(v as any)}
-            orientation="horizontal"
-            size="sm"
-          >
-            <Radio value="AB">A/B</Radio>
-            <Radio value="ab">a/b</Radio>
-            <Radio value="01">0/1</Radio>
-            <Radio value="custom">{t("tools.classical.bacon.custom")}</Radio>
-          </RadioGroup>
-
-          {mode === "custom" && (
-            <div className="flex gap-2 items-center">
-              <Input
-                label="A"
-                value={customA}
-                onValueChange={setCustomA}
-                size="sm"
-                className="w-16"
-                variant="bordered"
-                maxLength={1}
-              />
-              <Input
-                label="B"
-                value={customB}
-                onValueChange={setCustomB}
-                size="sm"
-                className="w-16"
-                variant="bordered"
-                maxLength={1}
-              />
-            </div>
-          )}
+    <HashWorkbench
+      id="bacon"
+      input={input}
+      onInputChange={setInput}
+      inputPlaceholder={t("tools.classical.inputPlaceholder")}
+      inputLabel={t("tools.encoder.input")}
+      outputLabel={t("tools.encoder.output")}
+      output={output}
+      onSwap={swapText}
+      onClear={() => { setInput(""); setOutput(""); removeStoredItem(STORAGE_KEY) }}
+      toolbarContent={<HashOperationSwitch ariaLabel="Bacon" value={operation} onChange={setOperation} options={[{ value: "encode", label: t("tools.classical.encode") }, { value: "decode", label: t("tools.classical.decode") }]} />}
+      configContent={(
+        <div className="grid gap-2 sm:grid-cols-[180px_180px_minmax(0,1fr)]">
+          <Select size="sm" label={t("tools.classical.bacon.alphabet")} selectedKeys={[alphabetType]} onChange={(event) => setAlphabetType(event.target.value as "26" | "24")}><SelectItem key="26">{t("tools.classical.bacon.standard")}</SelectItem><SelectItem key="24">{t("tools.classical.bacon.traditional")}</SelectItem></Select>
+          <Select size="sm" label={t("tools.classical.bacon.mode")} selectedKeys={[mode]} onChange={(event) => setMode(event.target.value as typeof mode)}><SelectItem key="AB">A/B</SelectItem><SelectItem key="ab">a/b</SelectItem><SelectItem key="01">0/1</SelectItem><SelectItem key="custom">{t("tools.classical.bacon.custom")}</SelectItem></Select>
+          {mode === "custom" && <div className="flex gap-2"><Input label="A" value={customA} onValueChange={setCustomA} size="sm" className="w-20" maxLength={1} classNames={{ inputWrapper: "h-9 min-h-9 bg-background" }} /><Input label="B" value={customB} onValueChange={setCustomB} size="sm" className="w-20" maxLength={1} classNames={{ inputWrapper: "h-9 min-h-9 bg-background" }} /></div>}
         </div>
-
-        <div className="flex items-center gap-2 justify-end">
-          <Button color="primary" onPress={handleEncode} startContent={<Shield className="w-4 h-4" />}>
-            {t("tools.classical.encode")}
-          </Button>
-          <Button color="secondary" onPress={handleDecode} startContent={<ShieldAlert className="w-4 h-4" />}>
-            {t("tools.classical.decode")}
-          </Button>
-          <Button isIconOnly variant="light" onPress={swapText} title={t("tools.encoder.swap")}>
-            <ArrowDownUp className="w-4 h-4" />
-          </Button>
-          <Button
-            isIconOnly
-            variant="light"
-            color="danger"
-            onPress={() => {
-              setInput("")
-              setOutput("")
-              removeStoredItem(STORAGE_KEY)
-            }}
-            title={t("tools.encoder.clearAll")}
-          >
-            <Trash2 className="w-4 h-4" />
-          </Button>
-        </div>
-      </div>
-
-      <div className="relative group">
-        <Textarea
-          label={t("tools.encoder.output")}
-          readOnly
-          minRows={5}
-          variant="bordered"
-          value={output}
-          classNames={{
-            inputWrapper: "bg-default-100/30 group-hover:bg-default-100/50 transition-colors font-mono text-tiny"
-          }}
-        />
-        <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-          <Button isIconOnly size="sm" variant="flat" onPress={() => copyToClipboard(output)} title={t("tools.encoder.copy")}>
-            <Copy className="w-4 h-4" />
-          </Button>
-        </div>
-      </div>
-    </div>
+      )}
+      actions={<Button size="sm" color="primary" variant="solid" className="h-8 min-w-[88px]" onPress={operation === "encode" ? handleEncode : handleDecode} isDisabled={!input} startContent={operation === "encode" ? <Shield className="h-4 w-4" /> : <ShieldAlert className="h-4 w-4" />}>{operation === "encode" ? t("tools.classical.encode") : t("tools.classical.decode")}</Button>}
+    />
   )
 }

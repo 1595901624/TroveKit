@@ -29,8 +29,8 @@ export function ClassicalTool({ activeTab }: ClassicalToolProps) {
   const activeTabConfig = visibleTabs.find(tab => tab.id === activeTab) ?? visibleTabs[0]
 
   return (
-    <div className="h-full min-h-0 overflow-y-auto pb-2">
-        {activeTabConfig.component}
+    <div className="h-full min-h-0 overflow-hidden pb-2">
+      {activeTabConfig.component}
     </div>
   )
 }

@@ -1,5 +1,5 @@
 import type { ReactNode } from "react"
-import { ArrowDown, ArrowRight, Copy, Trash2 } from "lucide-react"
+import { ArrowDown, ArrowDownUp, ArrowLeftRight, ArrowRight, Copy, Trash2 } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { Button, ButtonGroup, Textarea } from "../../components/ui/base-ui"
 
@@ -46,6 +46,10 @@ interface HashWorkbenchProps {
   configContent?: ReactNode
   inputPlaceholder?: string
   outputPlaceholder?: string
+  inputLabel?: string
+  outputLabel?: string
+  onSwap?: () => void
+  onCopy?: () => void
 }
 
 function byteLength(value: string) {
@@ -63,12 +67,21 @@ export function HashWorkbench({
   configContent,
   inputPlaceholder,
   outputPlaceholder,
+  inputLabel,
+  outputLabel,
+  onSwap,
+  onCopy,
 }: HashWorkbenchProps) {
   const { t } = useTranslation()
 
   const copyOutput = () => {
-    if (output) navigator.clipboard.writeText(output)
+    if (!output) return
+    if (onCopy) onCopy()
+    else navigator.clipboard.writeText(output)
   }
+
+  const resolvedInputLabel = inputLabel ?? t("tools.hash.inputLabel")
+  const resolvedOutputLabel = outputLabel ?? t("tools.hash.outputLabel")
 
   return (
     <div className="flex h-full min-h-0 flex-col gap-3 overflow-hidden">
@@ -101,7 +114,7 @@ export function HashWorkbench({
           <div className="flex h-12 shrink-0 items-center justify-between border-b border-default-200 px-4">
             <div className="flex min-w-0 items-baseline gap-3">
               <h2 id={`${id}-input-heading`} className="shrink-0 text-sm font-semibold text-foreground">
-                {t("tools.hash.inputLabel")}
+                {resolvedInputLabel}
               </h2>
               <span className="truncate text-[11px] text-default-400">
                 {input.length} chars · {byteLength(input)} bytes
@@ -109,7 +122,7 @@ export function HashWorkbench({
             </div>
           </div>
           <Textarea
-            aria-label={t("tools.hash.inputLabel")}
+            aria-label={resolvedInputLabel}
             placeholder={inputPlaceholder ?? t("tools.hash.inputPlaceholder")}
             value={input}
             onValueChange={onInputChange}
@@ -122,15 +135,24 @@ export function HashWorkbench({
         </section>
 
         <div className="flex items-center justify-center border-y border-default-200 bg-default-50/60 md:border-x md:border-y-0">
-          <ArrowDown className="h-4 w-4 text-default-400 md:hidden" />
-          <ArrowRight className="hidden h-4 w-4 text-default-400 md:block" />
+          {onSwap ? (
+            <Button isIconOnly size="sm" variant="bordered" radius="full" className="h-9 w-9 min-w-9 border-default-200 bg-background text-default-500" onPress={onSwap} aria-label={t("tools.encoder.swap")} title={t("tools.encoder.swap")}>
+              <ArrowDownUp className="h-4 w-4 md:hidden" />
+              <ArrowLeftRight className="hidden h-4 w-4 md:block" />
+            </Button>
+          ) : (
+            <>
+              <ArrowDown className="h-4 w-4 text-default-400 md:hidden" />
+              <ArrowRight className="hidden h-4 w-4 text-default-400 md:block" />
+            </>
+          )}
         </div>
 
         <section className="flex min-h-0 min-w-0 flex-col" aria-labelledby={`${id}-output-heading`}>
           <div className="flex h-12 shrink-0 items-center justify-between gap-3 border-b border-default-200 px-4">
             <div className="flex min-w-0 items-baseline gap-3">
               <h2 id={`${id}-output-heading`} className="shrink-0 text-sm font-semibold text-foreground">
-                {t("tools.hash.outputLabel")}
+                {resolvedOutputLabel}
               </h2>
               <span className="truncate text-[11px] text-default-400">
                 {output.length} chars · {byteLength(output)} bytes
@@ -149,7 +171,7 @@ export function HashWorkbench({
             </Button>
           </div>
           <Textarea
-            aria-label={t("tools.hash.outputLabel")}
+            aria-label={resolvedOutputLabel}
             isReadOnly
             placeholder={outputPlaceholder}
             value={output}

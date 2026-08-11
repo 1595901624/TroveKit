@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react"
-import { Textarea, Button, Input, RadioGroup, Radio, Tooltip } from "../../components/ui/base-ui"
-import { Copy, Trash2, ArrowDownUp, Info, Shield, ShieldAlert } from "lucide-react"
+import { Button, Input, Select, SelectItem } from "../../components/ui/base-ui"
+import { Shield, ShieldAlert } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { useLog } from "../../contexts/LogContext"
 import { getStoredItem, setStoredItem, removeStoredItem } from "../../lib/store"
+import { HashOperationSwitch, HashWorkbench } from "../hash/HashWorkbench"
 
 const STORAGE_KEY = "caesar-tool-state"
 
@@ -15,6 +16,7 @@ export function CaesarTab() {
   const [output, setOutput] = useState("")
   const [shift, setShift] = useState("3")
   const [nonLetterMode, setNonLetterMode] = useState("keep") // ignore, encrypt, keep
+  const [operation, setOperation] = useState<"encode" | "decode">("encode")
   const [isLoaded, setIsLoaded] = useState(false)
 
   useEffect(() => {
@@ -83,11 +85,7 @@ export function CaesarTab() {
   const swapText = () => {
     setInput(output)
     setOutput(input)
-  }
-
-  const copyToClipboard = (text: string) => {
-    if (!text) return
-    navigator.clipboard.writeText(text)
+    setOperation((current) => current === "encode" ? "decode" : "encode")
   }
 
   const handleShiftChange = (val: string) => {
@@ -98,86 +96,24 @@ export function CaesarTab() {
   }
 
   return (
-    <div className="space-y-4">
-      <Textarea
-        label={t("tools.classical.inputPlaceholder")}
-        placeholder={t("tools.classical.inputPlaceholder")}
-        minRows={5}
-        variant="bordered"
-        value={input}
-        onValueChange={setInput}
-        classNames={{
-          inputWrapper: "bg-default-100/50 hover:bg-default-100 focus-within:bg-background"
-        }}
-      />
-
-      <div className="flex flex-col md:flex-row gap-4 p-4 bg-default-50 rounded-lg border border-default-100 items-center justify-between">
-          <div className="flex items-center gap-4">
-              <Input
-                type="number"
-                label={t("tools.classical.shift")}
-                value={shift}
-                onValueChange={handleShiftChange}
-                className="w-32"
-                size="sm"
-                variant="flat"
-              />
-              
-              <div className="flex items-center gap-2">
-                 <RadioGroup
-                    orientation="horizontal"
-                    label={
-                        <div className="flex items-center gap-1">
-                            {t("tools.classical.nonLetter")}
-                            <Tooltip content={<div className="whitespace-pre-wrap">{t("tools.classical.symbolTooltip")}</div>}>
-                                <Info className="w-3 h-3 cursor-pointer text-default-500" />
-                            </Tooltip>
-                        </div>
-                    }
-                    value={nonLetterMode}
-                    onValueChange={setNonLetterMode}
-                    size="sm"
-                  >
-                    <Radio value="ignore">{t("tools.classical.ignore")}</Radio>
-                    <Radio value="keep">{t("tools.classical.keep")}</Radio>
-                    <Radio value="encrypt">{t("tools.classical.encrypt")}</Radio>
-                  </RadioGroup>
-              </div>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <Button color="primary" onPress={() => processCaesar(false)} startContent={<Shield className="w-4 h-4" />}>
-                {t("tools.classical.encode")}
-            </Button>
-            <Button color="secondary" onPress={() => processCaesar(true)} startContent={<ShieldAlert className="w-4 h-4" />}>
-                {t("tools.classical.decode")}
-            </Button>
-            <Button isIconOnly variant="light" onPress={swapText} title={t("tools.encoder.swap")}>
-                <ArrowDownUp className="w-4 h-4" />
-            </Button>
-            <Button isIconOnly variant="light" color="danger" onPress={() => { setInput(""); setOutput(""); removeStoredItem(STORAGE_KEY); }} title={t("tools.encoder.clearAll")}>
-                <Trash2 className="w-4 h-4" />
-            </Button>
-          </div>
-      </div>
-
-      <div className="relative group">
-        <Textarea
-          label={t("tools.encoder.output")}
-          readOnly
-          minRows={5}
-          variant="bordered"
-          value={output}
-          classNames={{
-            inputWrapper: "bg-default-100/30 group-hover:bg-default-100/50 transition-colors font-mono text-tiny"
-          }}
-        />
-        <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-          <Button isIconOnly size="sm" variant="flat" onPress={() => copyToClipboard(output)} title={t("tools.encoder.copy")}>
-            <Copy className="w-4 h-4" />
-          </Button>
+    <HashWorkbench
+      id="caesar"
+      input={input}
+      onInputChange={setInput}
+      inputPlaceholder={t("tools.classical.inputPlaceholder")}
+      inputLabel={t("tools.encoder.input")}
+      outputLabel={t("tools.encoder.output")}
+      output={output}
+      onSwap={swapText}
+      onClear={() => { setInput(""); setOutput(""); removeStoredItem(STORAGE_KEY) }}
+      toolbarContent={<HashOperationSwitch ariaLabel="Caesar" value={operation} onChange={setOperation} options={[{ value: "encode", label: t("tools.classical.encode") }, { value: "decode", label: t("tools.classical.decode") }]} />}
+      configContent={(
+        <div className="grid gap-2 sm:grid-cols-[128px_minmax(0,1fr)]">
+          <Input type="number" label={t("tools.classical.shift")} value={shift} onValueChange={handleShiftChange} size="sm" classNames={{ inputWrapper: "h-9 min-h-9 bg-background" }} />
+          <Select size="sm" label={t("tools.classical.nonLetter")} description={t("tools.classical.symbolTooltip")} selectedKeys={[nonLetterMode]} onChange={(event) => setNonLetterMode(event.target.value)}><SelectItem key="ignore">{t("tools.classical.ignore")}</SelectItem><SelectItem key="keep">{t("tools.classical.keep")}</SelectItem><SelectItem key="encrypt">{t("tools.classical.encrypt")}</SelectItem></Select>
         </div>
-      </div>
-    </div>
+      )}
+      actions={<Button size="sm" color="primary" variant="solid" className="h-8 min-w-[88px]" onPress={() => processCaesar(operation === "decode")} isDisabled={!input} startContent={operation === "encode" ? <Shield className="h-4 w-4" /> : <ShieldAlert className="h-4 w-4" />}>{operation === "encode" ? t("tools.classical.encode") : t("tools.classical.decode")}</Button>}
+    />
   )
 }
