@@ -8,7 +8,7 @@ import { open as openDialog } from "@tauri-apps/plugin-dialog"
 import { writeFile } from "@tauri-apps/plugin-fs"
 import { desktopDir, join } from "@tauri-apps/api/path"
 import { getStoredItem, setStoredItem, removeStoredItem } from "../../lib/store"
-import { HashOperationSwitch, HashWorkbench } from "./HashWorkbench"
+import { HashOperationSwitch, HashToolbarField, HashWorkbench } from "./HashWorkbench"
 
 const STORAGE_KEY = "aes-tool-state"
 const MAX_FILE_SIZE = 30 * 1024 * 1024
@@ -659,8 +659,13 @@ export function AesTab2() {
                 onChange={(selected) => { setActiveTab(selected); setOperation(selected) }}
                 options={[{ value: "encrypt", label: t("tools.hash.encrypt") }, { value: "decrypt", label: t("tools.hash.decrypt") }]}
               />
-              <Select aria-label={t("tools.hash.inputFormat")} className="w-28" classNames={{ trigger: "h-8 bg-background px-2.5 text-xs" }} selectedKeys={[aesInputFormat]} onChange={(event) => updateAesInputFormat(event.target.value)}><SelectItem key="String" isDisabled={operation !== "encrypt"}>{t("tools.hash.text")}</SelectItem><SelectItem key="Base64">Base64</SelectItem><SelectItem key="Hex">Hex</SelectItem></Select>
-              <Select aria-label={t("tools.hash.outputFormat")} className="w-28" classNames={{ trigger: "h-8 bg-background px-2.5 text-xs" }} selectedKeys={[aesOutputFormat]} onChange={(event) => updateAesOutputFormat(event.target.value)}><SelectItem key="String" isDisabled={operation !== "decrypt"}>{t("tools.hash.text")}</SelectItem><SelectItem key="Base64">Base64</SelectItem><SelectItem key="Hex">Hex</SelectItem></Select>
+              <HashToolbarField label={t("tools.hash.inputFormat")}>
+                <Select aria-label={t("tools.hash.inputFormat")} className="w-28" classNames={{ trigger: "h-8 bg-background px-2.5 text-xs" }} selectedKeys={[aesInputFormat]} onChange={(event) => updateAesInputFormat(event.target.value)}><SelectItem key="String" isDisabled={operation !== "encrypt"}>{t("tools.hash.text")}</SelectItem><SelectItem key="Base64">Base64</SelectItem><SelectItem key="Hex">Hex</SelectItem></Select>
+              </HashToolbarField>
+              <span aria-hidden="true" className="text-sm text-default-400">→</span>
+              <HashToolbarField label={t("tools.hash.outputFormat")}>
+                <Select aria-label={t("tools.hash.outputFormat")} className="w-28" classNames={{ trigger: "h-8 bg-background px-2.5 text-xs" }} selectedKeys={[aesOutputFormat]} onChange={(event) => updateAesOutputFormat(event.target.value)}><SelectItem key="String" isDisabled={operation !== "decrypt"}>{t("tools.hash.text")}</SelectItem><SelectItem key="Base64">Base64</SelectItem><SelectItem key="Hex">Hex</SelectItem></Select>
+              </HashToolbarField>
             </>
           )}
           configContent={(

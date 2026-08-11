@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next"
 import { useLog } from "../../contexts/LogContext"
 import CryptoJS from "crypto-js"
 import { getStoredItem, setStoredItem, removeStoredItem } from "../../lib/store"
-import { HashOperationSwitch, HashWorkbench } from "./HashWorkbench"
+import { HashOperationSwitch, HashToolbarField, HashWorkbench } from "./HashWorkbench"
 
 const STORAGE_KEY = "des-tool-state"
 
@@ -247,8 +247,13 @@ export function DesTab() {
             onChange={(selected) => { setActiveTab(selected); setOperation(selected) }}
             options={[{ value: "encrypt", label: t("tools.hash.encrypt") }, { value: "decrypt", label: t("tools.hash.decrypt") }]}
           />
-          <Select aria-label={t("tools.hash.inputFormat")} className="w-28" classNames={{ trigger: "h-8 bg-background px-2.5 text-xs" }} selectedKeys={[desInputFormat]} onChange={(event) => setDesInputFormat(event.target.value)}><SelectItem key="String" isDisabled={operation !== "encrypt"}>{t("tools.hash.text")}</SelectItem><SelectItem key="Base64">Base64</SelectItem><SelectItem key="Hex">Hex</SelectItem></Select>
-          <Select aria-label={t("tools.hash.outputFormat")} className="w-28" classNames={{ trigger: "h-8 bg-background px-2.5 text-xs" }} selectedKeys={[desOutputFormat]} onChange={(event) => setDesOutputFormat(event.target.value)}><SelectItem key="String" isDisabled={operation !== "decrypt"}>{t("tools.hash.text")}</SelectItem><SelectItem key="Base64">Base64</SelectItem><SelectItem key="Hex">Hex</SelectItem></Select>
+          <HashToolbarField label={t("tools.hash.inputFormat")}>
+            <Select aria-label={t("tools.hash.inputFormat")} className="w-28" classNames={{ trigger: "h-8 bg-background px-2.5 text-xs" }} selectedKeys={[desInputFormat]} onChange={(event) => setDesInputFormat(event.target.value)}><SelectItem key="String" isDisabled={operation !== "encrypt"}>{t("tools.hash.text")}</SelectItem><SelectItem key="Base64">Base64</SelectItem><SelectItem key="Hex">Hex</SelectItem></Select>
+          </HashToolbarField>
+          <span aria-hidden="true" className="text-sm text-default-400">→</span>
+          <HashToolbarField label={t("tools.hash.outputFormat")}>
+            <Select aria-label={t("tools.hash.outputFormat")} className="w-28" classNames={{ trigger: "h-8 bg-background px-2.5 text-xs" }} selectedKeys={[desOutputFormat]} onChange={(event) => setDesOutputFormat(event.target.value)}><SelectItem key="String" isDisabled={operation !== "decrypt"}>{t("tools.hash.text")}</SelectItem><SelectItem key="Base64">Base64</SelectItem><SelectItem key="Hex">Hex</SelectItem></Select>
+          </HashToolbarField>
         </>
       )}
       configContent={(

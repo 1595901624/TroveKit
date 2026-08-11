@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next"
 import { useLog } from "../../contexts/LogContext"
 import CryptoJS from "crypto-js"
 import { getStoredItem, setStoredItem, removeStoredItem } from "../../lib/store"
-import { HashWorkbench } from "./HashWorkbench"
+import { HashToolbarField, HashWorkbench } from "./HashWorkbench"
 
 const STORAGE_KEY = "sha-tool-state"
 
@@ -101,14 +101,14 @@ export function ShaTab() {
       onClear={() => { setShaInput(""); setShaOutput(""); setShaType("SHA256"); setShaCase("lower"); removeStoredItem(STORAGE_KEY) }}
       toolbarContent={(
         <>
-          <Select aria-label={t("tools.hash.algorithm")} className="w-32" classNames={{ trigger: "h-8 bg-background px-2.5 text-xs" }} selectedKeys={[shaType]} onChange={(event) => setShaType(event.target.value)}>
+          <HashToolbarField label={t("tools.hash.algorithm")}><Select aria-label={t("tools.hash.algorithm")} className="w-32" classNames={{ trigger: "h-8 bg-background px-2.5 text-xs" }} selectedKeys={[shaType]} onChange={(event) => setShaType(event.target.value)}>
             <SelectItem key="SHA1">{t("tools.hash.sha1")}</SelectItem>
             <SelectItem key="SHA224">{t("tools.hash.sha224")}</SelectItem>
             <SelectItem key="SHA256">{t("tools.hash.sha256")}</SelectItem>
             <SelectItem key="SHA384">{t("tools.hash.sha384")}</SelectItem>
             <SelectItem key="SHA512">{t("tools.hash.sha512")}</SelectItem>
             <SelectItem key="SHA3">{t("tools.hash.sha3")}</SelectItem>
-          </Select>
+          </Select></HashToolbarField>
           <RadioGroup orientation="horizontal" value={shaCase} onValueChange={setShaCase} label={t("tools.hash.case")} size="sm">
             <Radio value="lower">{t("tools.hash.lowercase")}</Radio>
             <Radio value="upper">{t("tools.hash.uppercase")}</Radio>

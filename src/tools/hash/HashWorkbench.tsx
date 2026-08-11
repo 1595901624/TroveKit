@@ -35,6 +35,22 @@ export function HashOperationSwitch<T extends string>({ value, onChange, options
   )
 }
 
+interface HashToolbarFieldProps {
+  label: string
+  children: ReactNode
+}
+
+export function HashToolbarField({ label, children }: HashToolbarFieldProps) {
+  return (
+    <div className="flex shrink-0 items-center gap-1.5" role="group" aria-label={label}>
+      <span className="whitespace-nowrap text-[11px] font-medium text-default-500">
+        {label}
+      </span>
+      {children}
+    </div>
+  )
+}
+
 interface HashWorkbenchProps {
   id: string
   input: string

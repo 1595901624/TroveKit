@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next"
 import { useLog } from "../../contexts/LogContext"
 import CryptoJS from "crypto-js"
 import { getStoredItem, setStoredItem, removeStoredItem } from "../../lib/store"
-import { HashWorkbench } from "./HashWorkbench"
+import { HashToolbarField, HashWorkbench } from "./HashWorkbench"
 
 const STORAGE_KEY = "rc4-tool-state"
 
@@ -139,10 +139,12 @@ export function Rc4Tab() {
       output={rc4Output}
       onClear={() => { setRc4Input(""); setRc4Output(""); setRc4Key(""); removeStoredItem(STORAGE_KEY) }}
       toolbarContent={(
-        <Select aria-label={t("tools.hash.format")} className="w-28" classNames={{ trigger: "h-8 bg-background px-2.5 text-xs" }} selectedKeys={[rc4Format]} onChange={(event) => setRc4Format(event.target.value)}>
-          <SelectItem key="Base64">Base64</SelectItem>
-          <SelectItem key="Hex">Hex</SelectItem>
-        </Select>
+        <HashToolbarField label={t("tools.hash.format")}>
+          <Select aria-label={t("tools.hash.format")} className="w-28" classNames={{ trigger: "h-8 bg-background px-2.5 text-xs" }} selectedKeys={[rc4Format]} onChange={(event) => setRc4Format(event.target.value)}>
+            <SelectItem key="Base64">Base64</SelectItem>
+            <SelectItem key="Hex">Hex</SelectItem>
+          </Select>
+        </HashToolbarField>
       )}
       configContent={(
         <div className="grid grid-cols-[minmax(0,1fr)_112px] gap-2">

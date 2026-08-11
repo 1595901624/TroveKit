@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next"
 import { useLog } from "../../contexts/LogContext"
 import JSEncrypt from "jsencrypt"
 import { getStoredItem, setStoredItem, removeStoredItem } from "../../lib/store"
-import { HashWorkbench } from "./HashWorkbench"
+import { HashToolbarField, HashWorkbench } from "./HashWorkbench"
 
 const STORAGE_KEY = "rsa-tool-state"
 
@@ -145,7 +145,7 @@ export function RsaTab() {
       onClear={() => { setInput(""); setOutput(""); setPublicKey(""); setPrivateKey(""); removeStoredItem(STORAGE_KEY) }}
       toolbarContent={(
         <>
-          <Select aria-label={t("tools.hash.keySize")} className="w-28" classNames={{ trigger: "h-8 bg-background px-2.5 text-xs" }} selectedKeys={[keySize]} onChange={(event) => setKeySize(event.target.value)}><SelectItem key="512">{t("tools.hash.bit512")}</SelectItem><SelectItem key="1024">{t("tools.hash.bit1024")}</SelectItem><SelectItem key="2048">{t("tools.hash.bit2048")}</SelectItem><SelectItem key="4096">{t("tools.hash.bit4096")}</SelectItem></Select>
+          <HashToolbarField label={t("tools.hash.keySize")}><Select aria-label={t("tools.hash.keySize")} className="w-28" classNames={{ trigger: "h-8 bg-background px-2.5 text-xs" }} selectedKeys={[keySize]} onChange={(event) => setKeySize(event.target.value)}><SelectItem key="512">{t("tools.hash.bit512")}</SelectItem><SelectItem key="1024">{t("tools.hash.bit1024")}</SelectItem><SelectItem key="2048">{t("tools.hash.bit2048")}</SelectItem><SelectItem key="4096">{t("tools.hash.bit4096")}</SelectItem></Select></HashToolbarField>
           <Button size="sm" variant="flat" className="h-8" onPress={handleGenerateKeys} isLoading={isGenerating} startContent={!isGenerating && <KeyRound className="h-4 w-4" />}>{t("tools.hash.generateKeyPair", "Generate Key Pair")}</Button>
           <span className="hidden truncate text-[11px] text-default-400 xl:inline">{t("tools.hash.rsaNote", "Generating large keys may take a few seconds.")}</span>
         </>

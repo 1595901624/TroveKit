@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next"
 import { useLog } from "../../contexts/LogContext"
 import CryptoJS from "crypto-js"
 import { getStoredItem, setStoredItem, removeStoredItem } from "../../lib/store"
-import { HashWorkbench } from "./HashWorkbench"
+import { HashToolbarField, HashWorkbench } from "./HashWorkbench"
 
 const STORAGE_KEY = "triple-des-tool-state"
 
@@ -199,15 +199,15 @@ export function TripleDesTab() {
       onClear={() => { setDesInput(""); setDesOutput(""); setDesKey(""); setDesIv(""); removeStoredItem(STORAGE_KEY) }}
       toolbarContent={(
         <>
-          <Select aria-label={t("tools.hash.mode")} className="w-24" classNames={{ trigger: "h-8 bg-background px-2.5 text-xs" }} selectedKeys={[desMode]} onChange={(event) => setDesMode(event.target.value)}>
+          <HashToolbarField label={t("tools.hash.mode")}><Select aria-label={t("tools.hash.mode")} className="w-24" classNames={{ trigger: "h-8 bg-background px-2.5 text-xs" }} selectedKeys={[desMode]} onChange={(event) => setDesMode(event.target.value)}>
             {['CBC', 'ECB', 'CTR', 'OFB', 'CFB'].map((mode) => <SelectItem key={mode}>{mode}</SelectItem>)}
-          </Select>
-          <Select aria-label={t("tools.hash.padding")} className="w-36" classNames={{ trigger: "h-8 bg-background px-2.5 text-xs" }} selectedKeys={[desPadding]} onChange={(event) => setDesPadding(event.target.value)}>
+          </Select></HashToolbarField>
+          <HashToolbarField label={t("tools.hash.padding")}><Select aria-label={t("tools.hash.padding")} className="w-36" classNames={{ trigger: "h-8 bg-background px-2.5 text-xs" }} selectedKeys={[desPadding]} onChange={(event) => setDesPadding(event.target.value)}>
             <SelectItem key="Pkcs7">{t("tools.hash.pkcs7")}</SelectItem><SelectItem key="ZeroPadding">{t("tools.hash.zeroPadding")}</SelectItem><SelectItem key="AnsiX923">{t("tools.hash.ansiX923")}</SelectItem><SelectItem key="Iso10126">{t("tools.hash.iso10126")}</SelectItem><SelectItem key="NoPadding">{t("tools.hash.noPadding")}</SelectItem>
-          </Select>
-          <Select aria-label={t("tools.hash.format")} className="w-24" classNames={{ trigger: "h-8 bg-background px-2.5 text-xs" }} selectedKeys={[desFormat]} onChange={(event) => setDesFormat(event.target.value)}>
+          </Select></HashToolbarField>
+          <HashToolbarField label={t("tools.hash.format")}><Select aria-label={t("tools.hash.format")} className="w-24" classNames={{ trigger: "h-8 bg-background px-2.5 text-xs" }} selectedKeys={[desFormat]} onChange={(event) => setDesFormat(event.target.value)}>
             <SelectItem key="Base64">Base64</SelectItem><SelectItem key="Hex">Hex</SelectItem>
-          </Select>
+          </Select></HashToolbarField>
         </>
       )}
       configContent={(

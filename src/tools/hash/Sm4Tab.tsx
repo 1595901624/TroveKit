@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next"
 import { useLog } from "../../contexts/LogContext"
 import { invoke } from "@tauri-apps/api/core"
 import { getStoredItem, setStoredItem, removeStoredItem } from "../../lib/store"
-import { HashWorkbench } from "./HashWorkbench"
+import { HashToolbarField, HashWorkbench } from "./HashWorkbench"
 
 const STORAGE_KEY = "sm4-tool-state"
 
@@ -148,9 +148,9 @@ export function Sm4Tab() {
       onClear={() => { setSm4Input(""); setSm4Output(""); setSm4Key(""); setSm4Iv(""); removeStoredItem(STORAGE_KEY) }}
       toolbarContent={(
         <>
-          <Select aria-label={t("tools.hash.mode")} className="w-24" classNames={{ trigger: "h-8 bg-background px-2.5 text-xs" }} selectedKeys={[sm4Mode]} onChange={(event) => setSm4Mode(event.target.value as any)}>{['ecb', 'cbc', 'cfb', 'ofb', 'ctr'].map((mode) => <SelectItem key={mode}>{mode.toUpperCase()}</SelectItem>)}</Select>
-          <Select aria-label={t("tools.hash.padding")} className="w-32" classNames={{ trigger: "h-8 bg-background px-2.5 text-xs" }} selectedKeys={[sm4Padding]} onChange={(event) => setSm4Padding(event.target.value)}><SelectItem key="pkcs7">{t("tools.hash.pkcs7")}</SelectItem><SelectItem key="zero">{t("tools.hash.zeroPadding")}</SelectItem><SelectItem key="none">{t("tools.hash.noPadding")}</SelectItem></Select>
-          <Select aria-label={t("tools.hash.format")} className="w-24" classNames={{ trigger: "h-8 bg-background px-2.5 text-xs" }} selectedKeys={[sm4Format]} onChange={(event) => setSm4Format(event.target.value)}><SelectItem key="base64">Base64</SelectItem><SelectItem key="hex">Hex</SelectItem></Select>
+          <HashToolbarField label={t("tools.hash.mode")}><Select aria-label={t("tools.hash.mode")} className="w-24" classNames={{ trigger: "h-8 bg-background px-2.5 text-xs" }} selectedKeys={[sm4Mode]} onChange={(event) => setSm4Mode(event.target.value as any)}>{['ecb', 'cbc', 'cfb', 'ofb', 'ctr'].map((mode) => <SelectItem key={mode}>{mode.toUpperCase()}</SelectItem>)}</Select></HashToolbarField>
+          <HashToolbarField label={t("tools.hash.padding")}><Select aria-label={t("tools.hash.padding")} className="w-32" classNames={{ trigger: "h-8 bg-background px-2.5 text-xs" }} selectedKeys={[sm4Padding]} onChange={(event) => setSm4Padding(event.target.value)}><SelectItem key="pkcs7">{t("tools.hash.pkcs7")}</SelectItem><SelectItem key="zero">{t("tools.hash.zeroPadding")}</SelectItem><SelectItem key="none">{t("tools.hash.noPadding")}</SelectItem></Select></HashToolbarField>
+          <HashToolbarField label={t("tools.hash.format")}><Select aria-label={t("tools.hash.format")} className="w-24" classNames={{ trigger: "h-8 bg-background px-2.5 text-xs" }} selectedKeys={[sm4Format]} onChange={(event) => setSm4Format(event.target.value)}><SelectItem key="base64">Base64</SelectItem><SelectItem key="hex">Hex</SelectItem></Select></HashToolbarField>
         </>
       )}
       configContent={(

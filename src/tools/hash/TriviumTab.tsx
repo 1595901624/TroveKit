@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next"
 import { useLog } from "../../contexts/LogContext"
 import { getStoredItem, removeStoredItem, setStoredItem } from "../../lib/store"
 import { invoke } from "@tauri-apps/api/core"
-import { HashWorkbench } from "./HashWorkbench"
+import { HashToolbarField, HashWorkbench } from "./HashWorkbench"
 
 const STORAGE_KEY = "trivium-tool-state"
 
@@ -297,7 +297,7 @@ export function TriviumTab() {
       inputPlaceholder={t("tools.hash.aesInputPlaceholder")}
       output={format === "Hex" ? (caseOption === "upper" ? output.toUpperCase() : output.toLowerCase()) : output}
       onClear={clearAll}
-      toolbarContent={<><Select aria-label={t("tools.hash.format")} className="w-28" classNames={{ trigger: "h-8 bg-background px-2.5 text-xs" }} selectedKeys={[format]} onChange={(event) => setFormat(event.target.value)}><SelectItem key="Base64">Base64</SelectItem><SelectItem key="Hex">Hex</SelectItem></Select>{format === "Hex" && <CaseSelector />}</>}
+      toolbarContent={<><HashToolbarField label={t("tools.hash.format")}><Select aria-label={t("tools.hash.format")} className="w-28" classNames={{ trigger: "h-8 bg-background px-2.5 text-xs" }} selectedKeys={[format]} onChange={(event) => setFormat(event.target.value)}><SelectItem key="Base64">Base64</SelectItem><SelectItem key="Hex">Hex</SelectItem></Select></HashToolbarField>{format === "Hex" && <CaseSelector />}</>}
       configContent={(
         <div className="grid gap-2 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto] md:items-end">
           <Input size="sm" label={t("tools.hash.key")} placeholder={`${t("tools.hash.keyPlaceholder")} (80-bit, Hex)`} value={key} onValueChange={setKey} classNames={{ inputWrapper: "h-9 min-h-9 bg-background" }} />
