@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react"
 import { Textarea, Button, Select, SelectItem } from "../../components/ui/base-ui"
-import { Copy, Trash2, Lock, Unlock, KeyRound } from "lucide-react"
+import { Lock, Unlock, KeyRound } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { useLog } from "../../contexts/LogContext"
 import JSEncrypt from "jsencrypt"
 import { getStoredItem, setStoredItem, removeStoredItem } from "../../lib/store"
+import { HashWorkbench } from "./HashWorkbench"
 
 const STORAGE_KEY = "rsa-tool-state"
 
@@ -134,114 +135,28 @@ export function RsaTab() {
     }
   }
 
-  const copyToClipboard = (text: string) => {
-    if (!text) return
-    navigator.clipboard.writeText(text)
-  }
-
   return (
-    <div className="space-y-4">
-      <Textarea
-        label={t("tools.hash.inputLabel", "Input Text")}
-        placeholder={t("tools.hash.rsaInputPlaceholder", "Enter text...")}
-        minRows={4}
-        variant="bordered"
-        value={input}
-        onValueChange={setInput}
-        classNames={{
-          inputWrapper: "bg-default-100/50 hover:bg-default-100 focus-within:bg-background"
-        }}
-      />
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-2 bg-default-50 rounded-lg">
-          <div className="space-y-4">
-              <Textarea
-                size="sm"
-                label={t("tools.hash.publicKey", "Public Key (Encryption)")}
-                placeholder={t("tools.hash.publicKey", "Public Key (Encryption)")}
-                value={publicKey}
-                onValueChange={setPublicKey}
-                minRows={4}
-                classNames={{
-                    input: "font-mono text-tiny"
-                }}
-              />
-              <Textarea
-                size="sm"
-                label={t("tools.hash.privateKey", "Private Key (Decryption)")}
-                placeholder={t("tools.hash.privateKey", "Private Key (Decryption)")}
-                value={privateKey}
-                onValueChange={setPrivateKey}
-                minRows={4}
-                classNames={{
-                    input: "font-mono text-tiny"
-                }}
-              />
-          </div>
-
-          <div className="space-y-4">
-                <div className="flex gap-4 items-center">
-                    <Select 
-                      size="sm" 
-                      label={t("tools.hash.keySize")}
-                      className="max-w-xs" 
-                      selectedKeys={new Set([keySize])}
-                      onSelectionChange={(keys) => setKeySize(Array.from(keys)[0] as string)}
-                      disallowEmptySelection
-                    >
-                      <SelectItem key="512">{t("tools.hash.bit512")}</SelectItem>
-                      <SelectItem key="1024">{t("tools.hash.bit1024")}</SelectItem>
-                      <SelectItem key="2048">{t("tools.hash.bit2048")}</SelectItem>
-                      <SelectItem key="4096">{t("tools.hash.bit4096")}</SelectItem>
-                    </Select>
-                    
-                    <Button 
-                        size="sm" 
-                        color="success" 
-                        variant="flat" 
-                        onPress={handleGenerateKeys} 
-                        isLoading={isGenerating}
-                        startContent={!isGenerating && <KeyRound className="w-4 h-4" />}
-                    >
-                        {t("tools.hash.generateKeyPair", "Generate Key Pair")}
-                    </Button>
-                </div>
-                
-                <div className="text-tiny text-default-400 p-2">
-                    {t("tools.hash.rsaNote", "Note: Generating large keys (2048+) may take a few seconds and freeze the UI temporarily.")}
-                </div>
-          </div>
-      </div>
-
-      <div className="flex items-center gap-2 justify-end">
-          <Button color="primary" variant="flat" onPress={handleEncrypt} startContent={<Lock className="w-4 h-4" />}>
-          {t("tools.hash.encrypt")}
-          </Button>
-          <Button color="secondary" variant="flat" onPress={handleDecrypt} startContent={<Unlock className="w-4 h-4" />}>
-          {t("tools.hash.decrypt")}
-          </Button>
-          <Button isIconOnly variant="light" color="danger" onPress={() => { setInput(""); setOutput(""); setPublicKey(""); setPrivateKey(""); removeStoredItem(STORAGE_KEY); }} title={t("tools.hash.clearAll")}>
-          <Trash2 className="w-4 h-4" />
-          </Button>
-      </div>
-
-      <div className="relative group">
-        <Textarea
-          label={t("tools.hash.outputLabel", "Output")}
-          readOnly
-          minRows={4}
-          variant="bordered"
-          value={output}
-          classNames={{
-            inputWrapper: "bg-default-100/30 group-hover:bg-default-100/50 transition-colors font-mono text-tiny"
-          }}
-        />
-        <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-          <Button isIconOnly size="sm" variant="flat" onPress={() => copyToClipboard(output)}>
-            <Copy className="w-4 h-4" />
-          </Button>
+    <HashWorkbench
+      id="rsa"
+      input={input}
+      onInputChange={setInput}
+      inputPlaceholder={t("tools.hash.rsaInputPlaceholder", "Enter text...")}
+      output={output}
+      onClear={() => { setInput(""); setOutput(""); setPublicKey(""); setPrivateKey(""); removeStoredItem(STORAGE_KEY) }}
+      toolbarContent={(
+        <>
+          <Select aria-label={t("tools.hash.keySize")} className="w-28" classNames={{ trigger: "h-8 bg-background px-2.5 text-xs" }} selectedKeys={[keySize]} onChange={(event) => setKeySize(event.target.value)}><SelectItem key="512">{t("tools.hash.bit512")}</SelectItem><SelectItem key="1024">{t("tools.hash.bit1024")}</SelectItem><SelectItem key="2048">{t("tools.hash.bit2048")}</SelectItem><SelectItem key="4096">{t("tools.hash.bit4096")}</SelectItem></Select>
+          <Button size="sm" variant="flat" className="h-8" onPress={handleGenerateKeys} isLoading={isGenerating} startContent={!isGenerating && <KeyRound className="h-4 w-4" />}>{t("tools.hash.generateKeyPair", "Generate Key Pair")}</Button>
+          <span className="hidden truncate text-[11px] text-default-400 xl:inline">{t("tools.hash.rsaNote", "Generating large keys may take a few seconds.")}</span>
+        </>
+      )}
+      configContent={(
+        <div className="grid gap-2 md:grid-cols-2">
+          <Textarea aria-label={t("tools.hash.publicKey")} placeholder={t("tools.hash.publicKey")} value={publicKey} onValueChange={setPublicKey} minRows={2} classNames={{ inputWrapper: "h-20 min-h-20 bg-background p-2.5", input: "min-h-0 overflow-auto font-mono text-[10px] leading-4" }} />
+          <Textarea aria-label={t("tools.hash.privateKey")} placeholder={t("tools.hash.privateKey")} value={privateKey} onValueChange={setPrivateKey} minRows={2} classNames={{ inputWrapper: "h-20 min-h-20 bg-background p-2.5", input: "min-h-0 overflow-auto font-mono text-[10px] leading-4" }} />
         </div>
-      </div>
-    </div>
+      )}
+      actions={<><Button size="sm" color="primary" onPress={handleEncrypt} isDisabled={!input} startContent={<Lock className="h-4 w-4" />}>{t("tools.hash.encrypt")}</Button><Button size="sm" variant="flat" onPress={handleDecrypt} isDisabled={!input} startContent={<Unlock className="h-4 w-4" />}>{t("tools.hash.decrypt")}</Button></>}
+    />
   )
 }

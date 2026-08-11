@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react"
-import { Textarea, Button, RadioGroup, Radio, Input, Select, SelectItem } from "../../components/ui/base-ui"
-import { Copy, Trash2, Hash } from "lucide-react"
+import { Button, RadioGroup, Radio, Input, Select, SelectItem } from "../../components/ui/base-ui"
+import { Hash } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { useLog } from "../../contexts/LogContext"
 import CryptoJS from "crypto-js"
 import { getStoredItem, setStoredItem, removeStoredItem } from "../../lib/store"
+import { HashWorkbench } from "./HashWorkbench"
 
 const STORAGE_KEY = "hmac-md5-tool-state"
 
@@ -95,11 +96,6 @@ export function HmacMd5Tab() {
     }
   }
 
-  const copyToClipboard = (text: string) => {
-    if (!text) return
-    navigator.clipboard.writeText(text)
-  }
-
   const handleClear = () => {
     setInput("")
     setOutput("")
@@ -108,81 +104,47 @@ export function HmacMd5Tab() {
   }
 
   return (
-    <div className="space-y-4">
-      <Textarea
-        label={t("tools.hash.inputLabel")}
-        placeholder={t("tools.hash.inputPlaceholder")}
-        minRows={4}
-        variant="bordered"
-        value={input}
-        onValueChange={setInput}
-        classNames={{
-          inputWrapper: "bg-default-100/50 hover:bg-default-100 focus-within:bg-background"
-        }}
-      />
-
-      <div className="flex flex-wrap items-end gap-4 p-2 bg-default-50 rounded-lg">
-        <div className="flex gap-2 flex-1 min-w-[200px]">
+    <HashWorkbench
+      id="hmac-md5"
+      input={input}
+      onInputChange={setInput}
+      output={output}
+      onClear={handleClear}
+      toolbarContent={(
+        <RadioGroup orientation="horizontal" value={outputCase} onValueChange={setOutputCase} label={t("tools.hash.case")} size="sm">
+          <Radio value="lower">{t("tools.hash.lowercase")}</Radio>
+          <Radio value="upper">{t("tools.hash.uppercase")}</Radio>
+        </RadioGroup>
+      )}
+      configContent={(
+        <div className="grid grid-cols-[minmax(0,1fr)_112px] gap-2">
           <Input
             size="sm"
             label={t("tools.hash.key")}
             placeholder={t("tools.hash.keyPlaceholder")}
             value={key}
             onValueChange={setKey}
-            className="flex-1"
+            className="min-w-0"
+            classNames={{ inputWrapper: "h-9 min-h-9 bg-background" }}
           />
           <Select
             size="sm"
             label={t("tools.hash.keyType")}
-            className="w-24"
-            selectedKeys={new Set([keyType])}
-            onSelectionChange={(keys) => setKeyType(Array.from(keys)[0] as string)}
+            className="w-28"
+            selectedKeys={[keyType]}
+            onChange={(event) => setKeyType(event.target.value)}
             disallowEmptySelection
           >
             <SelectItem key="text">{t("tools.hash.text")}</SelectItem>
             <SelectItem key="hex">{t("tools.hash.hex")}</SelectItem>
           </Select>
         </div>
-
-        <RadioGroup
-          orientation="horizontal"
-          value={outputCase}
-          onValueChange={setOutputCase}
-          label={t("tools.hash.case")}
-          size="sm"
-          className="text-tiny"
-        >
-          <Radio value="lower">{t("tools.hash.lowercase")}</Radio>
-          <Radio value="upper">{t("tools.hash.uppercase")}</Radio>
-        </RadioGroup>
-      </div>
-
-      <div className="flex items-center gap-2 justify-end">
-        <Button color="primary" variant="flat" onPress={handleHmacMd5} startContent={<Hash className="w-4 h-4" />}>
+      )}
+      actions={(
+        <Button size="sm" color="primary" onPress={handleHmacMd5} isDisabled={!input} startContent={<Hash className="h-4 w-4" />}>
           {t("tools.hash.generate")}
         </Button>
-        <Button isIconOnly variant="light" color="danger" onPress={handleClear} title={t("tools.hash.clearAll")}>
-          <Trash2 className="w-4 h-4" />
-        </Button>
-      </div>
-
-      <div className="relative group">
-        <Textarea
-          label={t("tools.hash.hmacMd5OutputLabel")}
-          readOnly
-          minRows={4}
-          variant="bordered"
-          value={output}
-          classNames={{
-            inputWrapper: "bg-default-100/30 group-hover:bg-default-100/50 transition-colors font-mono text-tiny"
-          }}
-        />
-        <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-          <Button isIconOnly size="sm" variant="flat" onPress={() => copyToClipboard(output)}>
-            <Copy className="w-4 h-4" />
-          </Button>
-        </div>
-      </div>
-    </div>
+      )}
+    />
   )
 }

@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react"
-import { Textarea, Button, RadioGroup, Radio } from "../../components/ui/base-ui"
-import { Copy, Trash2, Hash } from "lucide-react"
+import { Button, RadioGroup, Radio, Select, SelectItem } from "../../components/ui/base-ui"
+import { Hash } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { useLog } from "../../contexts/LogContext"
 import { blake2b, blake2s } from "@noble/hashes/blake2"
 import { blake3 } from "@noble/hashes/blake3"
 import { getStoredItem, setStoredItem, removeStoredItem } from "../../lib/store"
+import { HashWorkbench } from "./HashWorkbench"
 
 const STORAGE_KEY = "blake-tool-state"
 
@@ -79,11 +80,6 @@ export function BlakeTab() {
     }
   }
 
-  const copyToClipboard = (text: string) => {
-    if (!text) return
-    navigator.clipboard.writeText(text)
-  }
-
   // Keep the displayed hash output in sync with the selected case in real-time
   useEffect(() => {
     if (!blakeOutput) return
@@ -105,75 +101,30 @@ export function BlakeTab() {
   }, [blakeInput, blakeOutput, blakeType, blakeCase, isLoaded])
 
   return (
-    <div className="space-y-4">
-      <Textarea
-        label={t("tools.hash.inputLabel")}
-        placeholder={t("tools.hash.inputPlaceholder")}
-        minRows={6}
-        variant="bordered"
-        value={blakeInput}
-        onValueChange={setBlakeInput}
-        classNames={{
-          inputWrapper: "bg-default-100/50 hover:bg-default-100 focus-within:bg-background"
-        }}
-      />
-
-      <div className="flex flex-wrap items-center justify-between gap-4 py-2 px-1">
-          <div className="flex items-center gap-6">
-            <RadioGroup
-              orientation="horizontal"
-              value={blakeType}
-              onValueChange={setBlakeType}
-              label={t("tools.hash.algorithm")}
-              size="sm"
-              className="max-w-full"
-            >
-              <div className="flex flex-wrap gap-4">
-                <Radio value="BLAKE2b-512">{t("tools.hash.blake2b512")}</Radio>
-                <Radio value="BLAKE2s-256">{t("tools.hash.blake2s256")}</Radio>
-                <Radio value="BLAKE3-256">{t("tools.hash.blake3256")}</Radio>
-              </div>
-            </RadioGroup>
-
-            <RadioGroup
-              orientation="horizontal"
-              value={blakeCase}
-              onValueChange={setBlakeCase}
-              label={t("tools.hash.case")}
-              size="sm"
-            >
-              <Radio value="lower">{t("tools.hash.lowercase")}</Radio>
-              <Radio value="upper">{t("tools.hash.uppercase")}</Radio>
-            </RadioGroup>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <Button color="primary" variant="flat" onPress={handleBlakeHash} startContent={<Hash className="w-4 h-4" />}>
-              {t("tools.hash.generate")}
-            </Button>
-            <Button isIconOnly variant="light" color="danger" onPress={() => { setBlakeInput(""); setBlakeOutput(""); setBlakeType("BLAKE2b-512"); setBlakeCase("lower"); removeStoredItem(STORAGE_KEY); }} title={t("tools.hash.clearAll")}>
-              <Trash2 className="w-4 h-4" />
-            </Button>
-          </div>
-      </div>
-
-      <div className="relative group">
-        <Textarea
-          label={t("tools.hash.outputLabel")}
-          readOnly
-          minRows={4}
-          variant="bordered"
-          value={blakeOutput}
-          classNames={{
-            inputWrapper: "bg-default-100/30 group-hover:bg-default-100/50 transition-colors font-mono text-tiny"
-          }}
-        />
-        <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-          <Button isIconOnly size="sm" variant="flat" onPress={() => copyToClipboard(blakeOutput)}>
-            <Copy className="w-4 h-4" />
-          </Button>
-        </div>
-      </div>
-    </div>
+    <HashWorkbench
+      id="blake"
+      input={blakeInput}
+      onInputChange={setBlakeInput}
+      output={blakeOutput}
+      onClear={() => { setBlakeInput(""); setBlakeOutput(""); setBlakeType("BLAKE2b-512"); setBlakeCase("lower"); removeStoredItem(STORAGE_KEY) }}
+      toolbarContent={(
+        <>
+          <Select aria-label={t("tools.hash.algorithm")} className="w-40" classNames={{ trigger: "h-8 bg-background px-2.5 text-xs" }} selectedKeys={[blakeType]} onChange={(event) => setBlakeType(event.target.value)}>
+            <SelectItem key="BLAKE2b-512">{t("tools.hash.blake2b512")}</SelectItem>
+            <SelectItem key="BLAKE2s-256">{t("tools.hash.blake2s256")}</SelectItem>
+            <SelectItem key="BLAKE3-256">{t("tools.hash.blake3256")}</SelectItem>
+          </Select>
+          <RadioGroup orientation="horizontal" value={blakeCase} onValueChange={setBlakeCase} label={t("tools.hash.case")} size="sm">
+            <Radio value="lower">{t("tools.hash.lowercase")}</Radio>
+            <Radio value="upper">{t("tools.hash.uppercase")}</Radio>
+          </RadioGroup>
+        </>
+      )}
+      actions={(
+        <Button size="sm" color="primary" onPress={handleBlakeHash} isDisabled={!blakeInput} startContent={<Hash className="h-4 w-4" />}>
+          {t("tools.hash.generate")}
+        </Button>
+      )}
+    />
   )
 }

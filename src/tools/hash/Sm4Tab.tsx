@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react"
-import { Textarea, Button, RadioGroup, Radio, Input, Select, SelectItem } from "../../components/ui/base-ui"
-import { Copy, Trash2, Lock, Unlock } from "lucide-react"
+import { Button, Input, Select, SelectItem } from "../../components/ui/base-ui"
+import { Lock, Unlock } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { useLog } from "../../contexts/LogContext"
 import { invoke } from "@tauri-apps/api/core"
 import { getStoredItem, setStoredItem, removeStoredItem } from "../../lib/store"
+import { HashWorkbench } from "./HashWorkbench"
 
 const STORAGE_KEY = "sm4-tool-state"
 
@@ -137,149 +138,28 @@ export function Sm4Tab() {
     }
   }
 
-  const copyToClipboard = (text: string) => {
-    if (!text) return
-    navigator.clipboard.writeText(text)
-  }
-
   return (
-    <div className="space-y-4">
-      <Textarea
-        label={t("tools.hash.inputLabel")}
-        placeholder={t("tools.hash.sm4InputPlaceholder")}
-        minRows={4}
-        variant="bordered"
-        value={sm4Input}
-        onValueChange={setSm4Input}
-        classNames={{
-          inputWrapper: "bg-default-100/50 hover:bg-default-100 focus-within:bg-background"
-        }}
-      />
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-2 bg-default-50 rounded-lg">
-          <div className="space-y-4">
-              <div className="flex gap-2">
-                    <Input 
-                      size="sm"
-                      label={t("tools.hash.key")}
-                      placeholder="Key (16 bytes)"
-                      value={sm4Key}
-                      onValueChange={setSm4Key}
-                      className="flex-1"
-                    />
-                    <Select 
-                      size="sm" 
-                      label={t("tools.hash.text")}
-                      className="w-24" 
-                      selectedKeys={new Set([sm4KeyType])}
-                      onSelectionChange={(keys) => setSm4KeyType(Array.from(keys)[0] as string)}
-                      disallowEmptySelection
-                    >
-                      <SelectItem key="text">{t("tools.hash.text")}</SelectItem>
-                      <SelectItem key="hex">{t("tools.hash.hex")}</SelectItem>
-                    </Select>
-              </div>
-
-              <div className="flex gap-2">
-                  <Input 
-                      size="sm"
-                      label={t("tools.hash.iv")}
-                      placeholder="IV (16 bytes)"
-                      value={sm4Iv}
-                      onValueChange={setSm4Iv}
-                      isDisabled={sm4Mode === "ecb"}
-                      className="flex-1"
-                    />
-                    <Select 
-                      size="sm" 
-                      label={t("tools.hash.text")}
-                      className="w-24" 
-                      selectedKeys={new Set([sm4IvType])}
-                      onSelectionChange={(keys) => setSm4IvType(Array.from(keys)[0] as string)}
-                      isDisabled={sm4Mode === "ecb"}
-                      disallowEmptySelection
-                    >
-                      <SelectItem key="text">{t("tools.hash.text")}</SelectItem>
-                      <SelectItem key="hex">{t("tools.hash.hex")}</SelectItem>
-                    </Select>
-              </div>
-          </div>
-
-          <div className="space-y-2">
-                <RadioGroup
-                  orientation="horizontal"
-                  value={sm4Mode}
-                  onValueChange={(value) => setSm4Mode(value as any)}
-                  label={t("tools.hash.mode")}
-                  size="sm"
-                  className="text-tiny"
-                >
-                  <Radio value="ecb">{t("tools.hash.ecb")}</Radio>
-                  <Radio value="cbc">{t("tools.hash.cbc")}</Radio>
-                  <Radio value="cfb">{t("tools.hash.cfb")}</Radio>
-                  <Radio value="ofb">{t("tools.hash.ofb")}</Radio>
-                  <Radio value="ctr">{t("tools.hash.ctr")}</Radio>
-                </RadioGroup>
-
-                <div className="flex gap-4">
-                  <RadioGroup
-                    orientation="horizontal"
-                    value={sm4Padding}
-                    onValueChange={setSm4Padding}
-                    label={t("tools.hash.padding")}
-                    size="sm"
-                    className="text-tiny"
-                  >
-                    <Radio value="pkcs7">{t("tools.hash.pkcs7")}</Radio>
-                    <Radio value="zero">{t("tools.hash.zeroPadding")}</Radio>
-                    <Radio value="none">{t("tools.hash.noPadding")}</Radio>
-                  </RadioGroup>
-                </div>
-
-                <RadioGroup
-                  orientation="horizontal"
-                  value={sm4Format}
-                  onValueChange={setSm4Format}
-                  label={t("tools.hash.format")}
-                  description={t("tools.hash.formatNote")}
-                  size="sm"
-                  className="text-tiny"
-                >
-                  <Radio value="base64">Base64</Radio>
-                  <Radio value="hex">Hex</Radio>
-                </RadioGroup>
-          </div>
-      </div>
-
-      <div className="flex items-center gap-2 justify-end">
-          <Button color="primary" variant="flat" onPress={handleSm4Encrypt} startContent={<Lock className="w-4 h-4" />}>
-          {t("tools.hash.encrypt")}
-          </Button>
-          <Button color="secondary" variant="flat" onPress={handleSm4Decrypt} startContent={<Unlock className="w-4 h-4" />}>
-          {t("tools.hash.decrypt")}
-          </Button>
-          <Button isIconOnly variant="light" color="danger" onPress={() => { setSm4Input(""); setSm4Output(""); setSm4Key(""); setSm4Iv(""); removeStoredItem(STORAGE_KEY); }} title={t("tools.hash.clearAll")}>
-          <Trash2 className="w-4 h-4" />
-          </Button>
-      </div>
-
-      <div className="relative group">
-        <Textarea
-          label={t("tools.hash.outputLabel")}
-          readOnly
-          minRows={4}
-          variant="bordered"
-          value={sm4Output}
-          classNames={{
-            inputWrapper: "bg-default-100/30 group-hover:bg-default-100/50 transition-colors font-mono text-tiny"
-          }}
-        />
-        <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-          <Button isIconOnly size="sm" variant="flat" onPress={() => copyToClipboard(sm4Output)}>
-            <Copy className="w-4 h-4" />
-          </Button>
+    <HashWorkbench
+      id="sm4"
+      input={sm4Input}
+      onInputChange={setSm4Input}
+      inputPlaceholder={t("tools.hash.sm4InputPlaceholder")}
+      output={sm4Output}
+      onClear={() => { setSm4Input(""); setSm4Output(""); setSm4Key(""); setSm4Iv(""); removeStoredItem(STORAGE_KEY) }}
+      toolbarContent={(
+        <>
+          <Select aria-label={t("tools.hash.mode")} className="w-24" classNames={{ trigger: "h-8 bg-background px-2.5 text-xs" }} selectedKeys={[sm4Mode]} onChange={(event) => setSm4Mode(event.target.value as any)}>{['ecb', 'cbc', 'cfb', 'ofb', 'ctr'].map((mode) => <SelectItem key={mode}>{mode.toUpperCase()}</SelectItem>)}</Select>
+          <Select aria-label={t("tools.hash.padding")} className="w-32" classNames={{ trigger: "h-8 bg-background px-2.5 text-xs" }} selectedKeys={[sm4Padding]} onChange={(event) => setSm4Padding(event.target.value)}><SelectItem key="pkcs7">{t("tools.hash.pkcs7")}</SelectItem><SelectItem key="zero">{t("tools.hash.zeroPadding")}</SelectItem><SelectItem key="none">{t("tools.hash.noPadding")}</SelectItem></Select>
+          <Select aria-label={t("tools.hash.format")} className="w-24" classNames={{ trigger: "h-8 bg-background px-2.5 text-xs" }} selectedKeys={[sm4Format]} onChange={(event) => setSm4Format(event.target.value)}><SelectItem key="base64">Base64</SelectItem><SelectItem key="hex">Hex</SelectItem></Select>
+        </>
+      )}
+      configContent={(
+        <div className="grid gap-2 md:grid-cols-2">
+          <div className="grid grid-cols-[minmax(0,1fr)_96px] gap-2"><Input size="sm" label={t("tools.hash.key")} placeholder="Key (16 bytes)" value={sm4Key} onValueChange={setSm4Key} classNames={{ inputWrapper: "h-9 min-h-9 bg-background" }} /><Select size="sm" label={t("tools.hash.keyType")} selectedKeys={[sm4KeyType]} onChange={(event) => setSm4KeyType(event.target.value)}><SelectItem key="text">{t("tools.hash.text")}</SelectItem><SelectItem key="hex">{t("tools.hash.hex")}</SelectItem></Select></div>
+          <div className="grid grid-cols-[minmax(0,1fr)_96px] gap-2"><Input size="sm" label={t("tools.hash.iv")} placeholder="IV (16 bytes)" value={sm4Iv} onValueChange={setSm4Iv} isDisabled={sm4Mode === "ecb"} classNames={{ inputWrapper: "h-9 min-h-9 bg-background" }} /><Select size="sm" label={t("tools.hash.keyType")} selectedKeys={[sm4IvType]} onChange={(event) => setSm4IvType(event.target.value)} isDisabled={sm4Mode === "ecb"}><SelectItem key="text">{t("tools.hash.text")}</SelectItem><SelectItem key="hex">{t("tools.hash.hex")}</SelectItem></Select></div>
         </div>
-      </div>
-    </div>
+      )}
+      actions={<><Button size="sm" color="primary" onPress={handleSm4Encrypt} isDisabled={!sm4Input} startContent={<Lock className="h-4 w-4" />}>{t("tools.hash.encrypt")}</Button><Button size="sm" variant="flat" onPress={handleSm4Decrypt} isDisabled={!sm4Input} startContent={<Unlock className="h-4 w-4" />}>{t("tools.hash.decrypt")}</Button></>}
+    />
   )
 }

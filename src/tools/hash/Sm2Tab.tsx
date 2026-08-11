@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react"
 import { Textarea, Button, RadioGroup, Radio } from "../../components/ui/base-ui"
-import { Copy, Trash2, Lock, Unlock, KeyRound } from "lucide-react"
+import { Lock, Unlock, KeyRound } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { useLog } from "../../contexts/LogContext"
 // @ts-ignore
 import { CipherMode, sm2 } from "sm-crypto"
 import { getStoredItem, setStoredItem, removeStoredItem } from "../../lib/store"
+import { HashWorkbench } from "./HashWorkbench"
 
 const STORAGE_KEY = "sm2-tool-state"
 
@@ -130,97 +131,17 @@ export function Sm2Tab() {
     }
   }
 
-  const copyToClipboard = (text: string) => {
-    if (!text) return
-    navigator.clipboard.writeText(text)
-  }
-
   return (
-    <div className="space-y-4">
-      <Textarea
-        label={t("tools.hash.inputLabel")}
-        placeholder={t("tools.hash.aesInputPlaceholder")}
-        minRows={4}
-        variant="bordered"
-        value={input}
-        onValueChange={setInput}
-        classNames={{
-          inputWrapper: "bg-default-100/50 hover:bg-default-100 focus-within:bg-background"
-        }}
-      />
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-2 bg-default-50 rounded-lg">
-          <div className="space-y-4">
-              <Textarea
-                size="sm"
-                label={t("tools.hash.publicKey")}
-                placeholder={t("tools.hash.publicKey")}
-                value={publicKey}
-                onValueChange={setPublicKey}
-                minRows={2}
-              />
-              <Textarea
-                size="sm"
-                label={t("tools.hash.privateKey")}
-                placeholder={t("tools.hash.privateKey")}
-                value={privateKey}
-                onValueChange={setPrivateKey}
-                minRows={2}
-              />
-          </div>
-
-          <div className="space-y-4">
-                <div className="flex gap-4">
-                  <RadioGroup
-                    orientation="horizontal"
-                    value={mode}
-                    onValueChange={setMode}
-                    label={t("tools.hash.cipherMode")}
-                    size="sm"
-                    className="text-tiny"
-                  >
-                    <Radio value="1">{t("tools.hash.c1c3c2")}</Radio>
-                    <Radio value="0">{t("tools.hash.c1c2c3")}</Radio>
-                  </RadioGroup>
-                </div>
-
-                <div className="flex flex-col gap-2">
-                    <Button size="sm" color="success" variant="flat" onPress={handleGenerateKeys} startContent={<KeyRound className="w-4 h-4" />}>
-                        {t("tools.hash.generateKeyPair")}
-                    </Button>
-                </div>
-          </div>
-      </div>
-
-      <div className="flex items-center gap-2 justify-end">
-          <Button color="primary" variant="flat" onPress={handleEncrypt} startContent={<Lock className="w-4 h-4" />}>
-          {t("tools.hash.encrypt")}
-          </Button>
-          <Button color="secondary" variant="flat" onPress={handleDecrypt} startContent={<Unlock className="w-4 h-4" />}>
-          {t("tools.hash.decrypt")}
-          </Button>
-          <Button isIconOnly variant="light" color="danger" onPress={() => { setInput(""); setOutput(""); setPublicKey(""); setPrivateKey(""); removeStoredItem(STORAGE_KEY); }} title={t("tools.hash.clearAll")}>
-          <Trash2 className="w-4 h-4" />
-          </Button>
-      </div>
-
-      <div className="relative group">
-        <Textarea
-          label={t("tools.hash.outputLabel")}
-          readOnly
-          minRows={4}
-          variant="bordered"
-          value={output}
-          classNames={{
-            inputWrapper: "bg-default-100/30 group-hover:bg-default-100/50 transition-colors font-mono text-tiny"
-          }}
-        />
-        <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-          <Button isIconOnly size="sm" variant="flat" onPress={() => copyToClipboard(output)}>
-            <Copy className="w-4 h-4" />
-          </Button>
-        </div>
-      </div>
-    </div>
+    <HashWorkbench
+      id="sm2"
+      input={input}
+      onInputChange={setInput}
+      inputPlaceholder={t("tools.hash.aesInputPlaceholder")}
+      output={output}
+      onClear={() => { setInput(""); setOutput(""); setPublicKey(""); setPrivateKey(""); removeStoredItem(STORAGE_KEY) }}
+      toolbarContent={<><RadioGroup orientation="horizontal" value={mode} onValueChange={setMode} label={t("tools.hash.cipherMode")} size="sm"><Radio value="1">{t("tools.hash.c1c3c2")}</Radio><Radio value="0">{t("tools.hash.c1c2c3")}</Radio></RadioGroup><Button size="sm" variant="flat" className="h-8" onPress={handleGenerateKeys} startContent={<KeyRound className="h-4 w-4" />}>{t("tools.hash.generateKeyPair")}</Button></>}
+      configContent={<div className="grid gap-2 md:grid-cols-2"><Textarea aria-label={t("tools.hash.publicKey")} placeholder={t("tools.hash.publicKey")} value={publicKey} onValueChange={setPublicKey} minRows={2} classNames={{ inputWrapper: "h-20 min-h-20 bg-background p-2.5", input: "min-h-0 overflow-auto font-mono text-[10px] leading-4" }} /><Textarea aria-label={t("tools.hash.privateKey")} placeholder={t("tools.hash.privateKey")} value={privateKey} onValueChange={setPrivateKey} minRows={2} classNames={{ inputWrapper: "h-20 min-h-20 bg-background p-2.5", input: "min-h-0 overflow-auto font-mono text-[10px] leading-4" }} /></div>}
+      actions={<><Button size="sm" color="primary" onPress={handleEncrypt} isDisabled={!input} startContent={<Lock className="h-4 w-4" />}>{t("tools.hash.encrypt")}</Button><Button size="sm" variant="flat" onPress={handleDecrypt} isDisabled={!input} startContent={<Unlock className="h-4 w-4" />}>{t("tools.hash.decrypt")}</Button></>}
+    />
   )
 }

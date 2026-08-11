@@ -628,9 +628,27 @@ export function AesTab2() {
     else void handleFileDecrypt()
   }
 
+  const clearAll = () => {
+    setAesInput("")
+    setAesOutput("")
+    setAesKey("")
+    setAesIv("")
+    setSelectedFile(null)
+    setFileStatus(null)
+    setAesFormats(DEFAULT_AES_FORMATS)
+    setAesInputFormat(DEFAULT_AES_FORMATS[operation].input)
+    setAesOutputFormat(DEFAULT_AES_FORMATS[operation].output)
+    localStorage.removeItem("aes_encrypt_inputFormat")
+    localStorage.removeItem("aes_encrypt_outputFormat")
+    localStorage.removeItem("aes_decrypt_inputFormat")
+    localStorage.removeItem("aes_decrypt_outputFormat")
+    removeStoredItem(STORAGE_KEY)
+  }
+
   return (
-    <div className="space-y-4">
-      <Tabs
+    <div className="flex h-full min-h-0 flex-col gap-3 overflow-y-auto pb-1">
+      <div className="flex shrink-0 flex-wrap items-center justify-between gap-2 rounded-xl border border-default-200 bg-default-50/70 p-1.5">
+        <Tabs
         aria-label="AES"
         color="primary"
         selectedKey={activeTab}
@@ -647,18 +665,35 @@ export function AesTab2() {
             setFileOperation("fileDecrypt")
           }
         }}
-        className="w-full"
+        className="min-w-0"
       >
         <Tab key="encrypt" title={t("tools.hash.encrypt")} />
         <Tab key="decrypt" title={t("tools.hash.decrypt")} />
         {/* <Tab key="fileEncrypt" title={t("tools.hash.fileEncrypt")} /> */}
         {/* <Tab key="fileDecrypt" title={t("tools.hash.fileDecrypt")} /> */}
       </Tabs>
+        {(activeTab === "encrypt" || activeTab === "decrypt") && (
+          <div className="flex items-center gap-2">
+            <Button
+              size="sm"
+              color="primary"
+              onPress={handleRun}
+              isDisabled={!aesInput}
+              startContent={operation === "encrypt" ? <Lock className="h-4 w-4" /> : <Unlock className="h-4 w-4" />}
+            >
+              {operation === "encrypt" ? t("tools.hash.encrypt") : t("tools.hash.decrypt")}
+            </Button>
+            <Button size="sm" variant="light" className="text-default-500 hover:bg-danger/10 hover:text-danger" onPress={clearAll} startContent={<Trash2 className="h-4 w-4" />}>
+              {t("tools.hash.clearAll")}
+            </Button>
+          </div>
+        )}
+      </div>
 
       {(activeTab === "encrypt" || activeTab === "decrypt") && (
       <>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <Card className="shadow-none border border-divider/50">
+        <Card className="overflow-hidden rounded-xl border border-default-200 shadow-none">
           <CardHeader className="flex gap-2 items-center justify-between">
             <div className="text-sm font-medium">{t("tools.hash.inputLabel")}</div>
             <div className="flex items-center gap-2">
@@ -700,7 +735,7 @@ export function AesTab2() {
           </CardBody>
         </Card>
 
-        <Card className="shadow-none border border-divider/50">
+        <Card className="overflow-hidden rounded-xl border border-default-200 shadow-none">
           <CardHeader className="flex gap-2 items-center justify-between">
             <div className="text-sm font-medium">{t("tools.hash.outputLabel")}</div>
             <div className="flex items-center gap-2">
@@ -723,7 +758,7 @@ export function AesTab2() {
           </CardHeader>
           <CardBody className="pt-0">
             <Textarea
-              readOnly
+              isReadOnly
               minRows={8}
               variant="bordered"
               value={aesOutput}
@@ -735,7 +770,7 @@ export function AesTab2() {
         </Card>
       </div>
 
-      <div className="p-3 bg-default-50 rounded-lg">
+      <div className="rounded-xl border border-default-200 bg-default-50/50 p-3">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           <div className="space-y-3">
             <div className="flex gap-2">
@@ -829,40 +864,6 @@ export function AesTab2() {
         </div>
       </div>
 
-      <div className="flex items-center gap-2 justify-end">
-        <Button
-          color={operation === "encrypt" ? "primary" : "secondary"}
-          variant="flat"
-          onPress={handleRun}
-          startContent={operation === "encrypt" ? <Lock className="w-4 h-4" /> : <Unlock className="w-4 h-4" />}
-        >
-          {operation === "encrypt" ? t("tools.hash.encrypt") : t("tools.hash.decrypt")}
-        </Button>
-        <Button
-          isIconOnly
-          variant="light"
-          color="danger"
-          onPress={() => {
-            setAesInput("")
-            setAesOutput("")
-            setAesKey("")
-            setAesIv("")
-            setSelectedFile(null)
-            setFileStatus(null)
-            setAesFormats(DEFAULT_AES_FORMATS)
-            setAesInputFormat(DEFAULT_AES_FORMATS[operation].input)
-            setAesOutputFormat(DEFAULT_AES_FORMATS[operation].output)
-            localStorage.removeItem("aes_encrypt_inputFormat")
-            localStorage.removeItem("aes_encrypt_outputFormat")
-            localStorage.removeItem("aes_decrypt_inputFormat")
-            localStorage.removeItem("aes_decrypt_outputFormat")
-            removeStoredItem(STORAGE_KEY)
-          }}
-          title={t("tools.hash.clearAll")}
-        >
-          <Trash2 className="w-4 h-4" />
-        </Button>
-      </div>
       </>
       )}
 

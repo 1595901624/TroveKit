@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react"
-import { Textarea, Button, RadioGroup, Radio, Input, Select, SelectItem } from "../../components/ui/base-ui"
-import { Copy, Trash2, Lock, Unlock } from "lucide-react"
+import { Button, Input, Select, SelectItem } from "../../components/ui/base-ui"
+import { Lock, Unlock } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { useLog } from "../../contexts/LogContext"
 import CryptoJS from "crypto-js"
 import { getStoredItem, setStoredItem, removeStoredItem } from "../../lib/store"
+import { HashWorkbench } from "./HashWorkbench"
 
 const STORAGE_KEY = "triple-des-tool-state"
 
@@ -188,153 +189,34 @@ export function TripleDesTab() {
     }
   }
 
-  const copyToClipboard = (text: string) => {
-    if (!text) return
-    navigator.clipboard.writeText(text)
-  }
-
   return (
-    <div className="space-y-4">
-      <Textarea
-        label={t("tools.hash.inputLabel")}
-        placeholder={t("tools.hash.aesInputPlaceholder")}
-        minRows={4}
-        variant="bordered"
-        value={desInput}
-        onValueChange={setDesInput}
-        classNames={{
-          inputWrapper: "bg-default-100/50 hover:bg-default-100 focus-within:bg-background"
-        }}
-      />
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-2 bg-default-50 rounded-lg">
-        <div className="space-y-4">
-          <div className="flex gap-2">
-            <Input
-              size="sm"
-              label={t("tools.hash.key")}
-              placeholder="Key"
-              value={desKey}
-              onValueChange={setDesKey}
-              className="flex-1"
-            />
-            <Select
-              size="sm"
-              label={t("tools.hash.text")}
-              className="w-24"
-              selectedKeys={new Set([desKeyType])}
-              onSelectionChange={(keys) => setDesKeyType(Array.from(keys)[0] as string)}
-              disallowEmptySelection
-            >
-              <SelectItem key="text">{t("tools.hash.text")}</SelectItem>
-              <SelectItem key="hex">{t("tools.hash.hex")}</SelectItem>
-            </Select>
-          </div>
-
-          <div className="flex gap-2">
-            <Input
-              size="sm"
-              label={t("tools.hash.iv")}
-              placeholder={`${t("tools.hash.iv")} (${t("tools.hash.bit64")})`}
-              value={desIv}
-              onValueChange={setDesIv}
-              isDisabled={desMode === "ECB"}
-              className="flex-1"
-            />
-            <Select
-              size="sm"
-              label={t("tools.hash.text")}
-              className="w-24"
-              selectedKeys={new Set([desIvType])}
-              onSelectionChange={(keys) => setDesIvType(Array.from(keys)[0] as string)}
-              isDisabled={desMode === "ECB"}
-              disallowEmptySelection
-            >
-              <SelectItem key="text">{t("tools.hash.text")}</SelectItem>
-              <SelectItem key="hex">{t("tools.hash.hex")}</SelectItem>
-            </Select>
-          </div>
+    <HashWorkbench
+      id="triple-des"
+      input={desInput}
+      onInputChange={setDesInput}
+      inputPlaceholder={t("tools.hash.aesInputPlaceholder")}
+      output={desOutput}
+      onClear={() => { setDesInput(""); setDesOutput(""); setDesKey(""); setDesIv(""); removeStoredItem(STORAGE_KEY) }}
+      toolbarContent={(
+        <>
+          <Select aria-label={t("tools.hash.mode")} className="w-24" classNames={{ trigger: "h-8 bg-background px-2.5 text-xs" }} selectedKeys={[desMode]} onChange={(event) => setDesMode(event.target.value)}>
+            {['CBC', 'ECB', 'CTR', 'OFB', 'CFB'].map((mode) => <SelectItem key={mode}>{mode}</SelectItem>)}
+          </Select>
+          <Select aria-label={t("tools.hash.padding")} className="w-36" classNames={{ trigger: "h-8 bg-background px-2.5 text-xs" }} selectedKeys={[desPadding]} onChange={(event) => setDesPadding(event.target.value)}>
+            <SelectItem key="Pkcs7">{t("tools.hash.pkcs7")}</SelectItem><SelectItem key="ZeroPadding">{t("tools.hash.zeroPadding")}</SelectItem><SelectItem key="AnsiX923">{t("tools.hash.ansiX923")}</SelectItem><SelectItem key="Iso10126">{t("tools.hash.iso10126")}</SelectItem><SelectItem key="NoPadding">{t("tools.hash.noPadding")}</SelectItem>
+          </Select>
+          <Select aria-label={t("tools.hash.format")} className="w-24" classNames={{ trigger: "h-8 bg-background px-2.5 text-xs" }} selectedKeys={[desFormat]} onChange={(event) => setDesFormat(event.target.value)}>
+            <SelectItem key="Base64">Base64</SelectItem><SelectItem key="Hex">Hex</SelectItem>
+          </Select>
+        </>
+      )}
+      configContent={(
+        <div className="grid gap-2 md:grid-cols-2">
+          <div className="grid grid-cols-[minmax(0,1fr)_96px] gap-2"><Input size="sm" label={t("tools.hash.key")} placeholder="Key" value={desKey} onValueChange={setDesKey} classNames={{ inputWrapper: "h-9 min-h-9 bg-background" }} /><Select size="sm" label={t("tools.hash.keyType")} selectedKeys={[desKeyType]} onChange={(event) => setDesKeyType(event.target.value)}><SelectItem key="text">{t("tools.hash.text")}</SelectItem><SelectItem key="hex">{t("tools.hash.hex")}</SelectItem></Select></div>
+          <div className="grid grid-cols-[minmax(0,1fr)_96px] gap-2"><Input size="sm" label={t("tools.hash.iv")} placeholder={`${t("tools.hash.iv")} (${t("tools.hash.bit64")})`} value={desIv} onValueChange={setDesIv} isDisabled={desMode === "ECB"} classNames={{ inputWrapper: "h-9 min-h-9 bg-background" }} /><Select size="sm" label={t("tools.hash.keyType")} selectedKeys={[desIvType]} onChange={(event) => setDesIvType(event.target.value)} isDisabled={desMode === "ECB"}><SelectItem key="text">{t("tools.hash.text")}</SelectItem><SelectItem key="hex">{t("tools.hash.hex")}</SelectItem></Select></div>
         </div>
-
-        <div className="space-y-2">
-          <div className="flex gap-4">
-            <RadioGroup
-              orientation="horizontal"
-              value={desMode}
-              onValueChange={setDesMode}
-              label={t("tools.hash.mode")}
-              size="sm"
-              className="text-tiny"
-            >
-              <Radio value="CBC">{t("tools.hash.cbc")}</Radio>
-              <Radio value="ECB">{t("tools.hash.ecb")}</Radio>
-              <Radio value="CTR">{t("tools.hash.ctr")}</Radio>
-              <Radio value="OFB">{t("tools.hash.ofb")}</Radio>
-              <Radio value="CFB">{t("tools.hash.cfb")}</Radio>
-            </RadioGroup>
-          </div>
-
-          <div className="flex gap-4">
-            <RadioGroup
-              orientation="horizontal"
-              value={desPadding}
-              onValueChange={setDesPadding}
-              label={t("tools.hash.padding")}
-              size="sm"
-              className="text-tiny"
-            >
-              <Radio value="Pkcs7">{t("tools.hash.pkcs7")}</Radio>
-              <Radio value="ZeroPadding">{t("tools.hash.zeroPadding")}</Radio>
-              <Radio value="AnsiX923">{t("tools.hash.ansiX923")}</Radio>
-              <Radio value="Iso10126">{t("tools.hash.iso10126")}</Radio>
-              <Radio value="NoPadding">{t("tools.hash.noPadding")}</Radio>
-            </RadioGroup>
-          </div>
-
-          <RadioGroup
-            orientation="horizontal"
-            value={desFormat}
-            onValueChange={setDesFormat}
-            label={t("tools.hash.format")}
-            description={t("tools.hash.formatNote")}
-            size="sm"
-            className="text-tiny"
-          >
-            <Radio value="Base64">Base64</Radio>
-            <Radio value="Hex">Hex</Radio>
-          </RadioGroup>
-        </div>
-      </div>
-
-      <div className="flex items-center gap-2 justify-end">
-        <Button color="primary" variant="flat" onPress={handleEncrypt} startContent={<Lock className="w-4 h-4" />}>
-          {t("tools.hash.encrypt")}
-        </Button>
-        <Button color="secondary" variant="flat" onPress={handleDecrypt} startContent={<Unlock className="w-4 h-4" />}>
-          {t("tools.hash.decrypt")}
-        </Button>
-        <Button isIconOnly variant="light" color="danger" onPress={() => { setDesInput(""); setDesOutput(""); setDesKey(""); setDesIv(""); removeStoredItem(STORAGE_KEY); }} title={t("tools.hash.clearAll")}>
-          <Trash2 className="w-4 h-4" />
-        </Button>
-      </div>
-
-      <div className="relative group">
-        <Textarea
-          label={t("tools.hash.outputLabel")}
-          readOnly
-          minRows={4}
-          variant="bordered"
-          value={desOutput}
-          classNames={{
-            inputWrapper: "bg-default-100/30 group-hover:bg-default-100/50 transition-colors font-mono text-tiny"
-          }}
-        />
-        <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-          <Button isIconOnly size="sm" variant="flat" onPress={() => copyToClipboard(desOutput)}>
-            <Copy className="w-4 h-4" />
-          </Button>
-        </div>
-      </div>
-    </div>
+      )}
+      actions={<><Button size="sm" color="primary" onPress={handleEncrypt} isDisabled={!desInput} startContent={<Lock className="h-4 w-4" />}>{t("tools.hash.encrypt")}</Button><Button size="sm" variant="flat" onPress={handleDecrypt} isDisabled={!desInput} startContent={<Unlock className="h-4 w-4" />}>{t("tools.hash.decrypt")}</Button></>}
+    />
   )
 }

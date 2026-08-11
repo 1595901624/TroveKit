@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react"
-import { Textarea, Button, RadioGroup, Radio } from "../../components/ui/base-ui"
-import { Copy, Trash2, Hash } from "lucide-react"
+import { Button, RadioGroup, Radio } from "../../components/ui/base-ui"
+import { Hash } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { useLog } from "../../contexts/LogContext"
 // @ts-ignore
 import { sm3 } from "sm-crypto"
 import { getStoredItem, setStoredItem, removeStoredItem } from "../../lib/store"
+import { HashWorkbench } from "./HashWorkbench"
 
 const STORAGE_KEY = "sm3-tool-state"
 
@@ -68,66 +69,24 @@ export function Sm3Tab() {
     }
   }
 
-  const copyToClipboard = (text: string) => {
-    if (!text) return
-    navigator.clipboard.writeText(text)
-  }
-
   return (
-    <div className="space-y-4">
-      <Textarea
-        label={t("tools.hash.inputLabel")}
-        placeholder={t("tools.hash.inputPlaceholder")}
-        minRows={6}
-        variant="bordered"
-        value={input}
-        onValueChange={setInput}
-        classNames={{
-          inputWrapper: "bg-default-100/50 hover:bg-default-100 focus-within:bg-background"
-        }}
-      />
-
-      <div className="flex flex-wrap items-center justify-between gap-4 py-2 px-1">
-          <div className="flex items-center gap-6">
-            <RadioGroup
-              orientation="horizontal"
-              value={caseOption}
-              onValueChange={setCaseOption}
-              label={t("tools.hash.case")}
-              size="sm"
-            >
-              <Radio value="lower">{t("tools.hash.lowercase")}</Radio>
-              <Radio value="upper">{t("tools.hash.uppercase")}</Radio>
-            </RadioGroup>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <Button color="primary" variant="flat" onPress={handleSm3Hash} startContent={<Hash className="w-4 h-4" />}>
-              {t("tools.hash.generate")}
-            </Button>
-            <Button isIconOnly variant="light" color="danger" onPress={() => { setInput(""); setOutput(""); setCaseOption("lower"); removeStoredItem(STORAGE_KEY); }} title={t("tools.hash.clearAll")}>
-              <Trash2 className="w-4 h-4" />
-            </Button>
-          </div>
-      </div>
-
-      <div className="relative group">
-        <Textarea
-          label={t("tools.hash.outputLabel")}
-          readOnly
-          minRows={4}
-          variant="bordered"
-          value={output}
-          classNames={{
-            inputWrapper: "bg-default-100/30 group-hover:bg-default-100/50 transition-colors font-mono text-tiny"
-          }}
-        />
-        <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-          <Button isIconOnly size="sm" variant="flat" onPress={() => copyToClipboard(output)}>
-            <Copy className="w-4 h-4" />
-          </Button>
-        </div>
-      </div>
-    </div>
+    <HashWorkbench
+      id="sm3"
+      input={input}
+      onInputChange={setInput}
+      output={output}
+      onClear={() => { setInput(""); setOutput(""); setCaseOption("lower"); removeStoredItem(STORAGE_KEY) }}
+      toolbarContent={(
+        <RadioGroup orientation="horizontal" value={caseOption} onValueChange={setCaseOption} label={t("tools.hash.case")} size="sm">
+          <Radio value="lower">{t("tools.hash.lowercase")}</Radio>
+          <Radio value="upper">{t("tools.hash.uppercase")}</Radio>
+        </RadioGroup>
+      )}
+      actions={(
+        <Button size="sm" color="primary" onPress={handleSm3Hash} isDisabled={!input} startContent={<Hash className="h-4 w-4" />}>
+          {t("tools.hash.generate")}
+        </Button>
+      )}
+    />
   )
 }

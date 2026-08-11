@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react"
-import { Textarea, Button, RadioGroup, Radio, Input, Select, SelectItem } from "../../components/ui/base-ui"
-import { Copy, Trash2, Lock, Unlock } from "lucide-react"
+import { Button, Input, Select, SelectItem } from "../../components/ui/base-ui"
+import { Lock, Unlock } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { useLog } from "../../contexts/LogContext"
 import CryptoJS from "crypto-js"
 import { getStoredItem, setStoredItem, removeStoredItem } from "../../lib/store"
+import { HashWorkbench } from "./HashWorkbench"
 
 const STORAGE_KEY = "rc4-tool-state"
 
@@ -129,95 +130,35 @@ export function Rc4Tab() {
     }
   }
 
-  const copyToClipboard = (text: string) => {
-    if (!text) return
-    navigator.clipboard.writeText(text)
-  }
-
   return (
-    <div className="space-y-4">
-      <Textarea
-        label={t("tools.hash.inputLabel")}
-        placeholder={t("tools.hash.aesInputPlaceholder")}
-        minRows={4}
-        variant="bordered"
-        value={rc4Input}
-        onValueChange={setRc4Input}
-        classNames={{
-          inputWrapper: "bg-default-100/50 hover:bg-default-100 focus-within:bg-background"
-        }}
-      />
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-2 bg-default-50 rounded-lg">
-          <div className="space-y-4">
-              <div className="flex gap-2">
-                    <Input 
-                      size="sm"
-                      label={t("tools.hash.key")}
-                      placeholder="Key"
-                      value={rc4Key}
-                      onValueChange={setRc4Key}
-                      className="flex-1"
-                    />
-                    <Select 
-                      size="sm" 
-                      label={t("tools.hash.text")}
-                      className="w-24" 
-                      selectedKeys={new Set([rc4KeyType])}
-                      onSelectionChange={(keys) => setRc4KeyType(Array.from(keys)[0] as string)}
-                      disallowEmptySelection
-                    >
-                      <SelectItem key="text">{t("tools.hash.text")}</SelectItem>
-                      <SelectItem key="hex">{t("tools.hash.hex")}</SelectItem>
-                    </Select>
-              </div>
-          </div>
-
-          <div className="space-y-2">
-                <RadioGroup
-                  orientation="horizontal"
-                  value={rc4Format}
-                  onValueChange={setRc4Format}
-                  label={t("tools.hash.format")}
-                  description={t("tools.hash.formatNote")}
-                  size="sm"
-                  className="text-tiny"
-                >
-                  <Radio value="Base64">Base64</Radio>
-                  <Radio value="Hex">Hex</Radio>
-                </RadioGroup>
-          </div>
-      </div>
-
-      <div className="flex items-center gap-2 justify-end">
-          <Button color="primary" variant="flat" onPress={handleRc4Encrypt} startContent={<Lock className="w-4 h-4" />}>
-          {t("tools.hash.encrypt")}
-          </Button>
-          <Button color="secondary" variant="flat" onPress={handleRc4Decrypt} startContent={<Unlock className="w-4 h-4" />}>
-          {t("tools.hash.decrypt")}
-          </Button>
-          <Button isIconOnly variant="light" color="danger" onPress={() => { setRc4Input(""); setRc4Output(""); setRc4Key(""); removeStoredItem(STORAGE_KEY); }} title={t("tools.hash.clearAll")}>
-          <Trash2 className="w-4 h-4" />
-          </Button>
-      </div>
-
-      <div className="relative group">
-        <Textarea
-          label={t("tools.hash.outputLabel")}
-          readOnly
-          minRows={4}
-          variant="bordered"
-          value={rc4Output}
-          classNames={{
-            inputWrapper: "bg-default-100/30 group-hover:bg-default-100/50 transition-colors font-mono text-tiny"
-          }}
-        />
-        <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-          <Button isIconOnly size="sm" variant="flat" onPress={() => copyToClipboard(rc4Output)}>
-            <Copy className="w-4 h-4" />
-          </Button>
+    <HashWorkbench
+      id="rc4"
+      input={rc4Input}
+      onInputChange={setRc4Input}
+      inputPlaceholder={t("tools.hash.aesInputPlaceholder")}
+      output={rc4Output}
+      onClear={() => { setRc4Input(""); setRc4Output(""); setRc4Key(""); removeStoredItem(STORAGE_KEY) }}
+      toolbarContent={(
+        <Select aria-label={t("tools.hash.format")} className="w-28" classNames={{ trigger: "h-8 bg-background px-2.5 text-xs" }} selectedKeys={[rc4Format]} onChange={(event) => setRc4Format(event.target.value)}>
+          <SelectItem key="Base64">Base64</SelectItem>
+          <SelectItem key="Hex">Hex</SelectItem>
+        </Select>
+      )}
+      configContent={(
+        <div className="grid grid-cols-[minmax(0,1fr)_112px] gap-2">
+          <Input size="sm" label={t("tools.hash.key")} placeholder="Key" value={rc4Key} onValueChange={setRc4Key} className="min-w-0" classNames={{ inputWrapper: "h-9 min-h-9 bg-background" }} />
+          <Select size="sm" label={t("tools.hash.keyType")} className="w-28" selectedKeys={[rc4KeyType]} onChange={(event) => setRc4KeyType(event.target.value)} disallowEmptySelection>
+            <SelectItem key="text">{t("tools.hash.text")}</SelectItem>
+            <SelectItem key="hex">{t("tools.hash.hex")}</SelectItem>
+          </Select>
         </div>
-      </div>
-    </div>
+      )}
+      actions={(
+        <>
+          <Button size="sm" color="primary" onPress={handleRc4Encrypt} isDisabled={!rc4Input} startContent={<Lock className="h-4 w-4" />}>{t("tools.hash.encrypt")}</Button>
+          <Button size="sm" variant="flat" onPress={handleRc4Decrypt} isDisabled={!rc4Input} startContent={<Unlock className="h-4 w-4" />}>{t("tools.hash.decrypt")}</Button>
+        </>
+      )}
+    />
   )
 }
