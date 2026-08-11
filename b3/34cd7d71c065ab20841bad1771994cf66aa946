@@ -1,0 +1,150 @@
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.0.8",
+  "base_commit_sha": "b334cd7d71c065ab20841bad1771994cf66aa946",
+  "prompts": {
+    "da0e50ae28a62e5d": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019fec42-fb53-7562-9e92-d27af7a7f79f",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "luhaoyu <haoyu3@163.com>",
+      "messages": [],
+      "total_additions": 0,
+      "total_deletions": 0,
+      "accepted_lines": 109,
+      "overriden_lines": 0
+    }
+  },
+  "commit_stats": {
+    "git_diff_added_lines": 310,
+    "git_diff_deleted_lines": 351,
+    "ai_additions": 0,
+    "ai_accepted": 0,
+    "BYMC": 309,
+    "mixed_additions": 0,
+    "BYAC": 0,
+    "BYRC": 0,
+    "per_file": {
+      "src/locales/en.json": {
+        "BYMC": [
+          "463-464"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/locales/ja.json": {
+        "BYMC": [
+          "463-464"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/locales/zh-HK.json": {
+        "BYMC": [
+          "463-464"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/locales/zh-TW.json": {
+        "BYMC": [
+          "463-464"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/locales/zh.json": {
+        "BYMC": [
+          "463-464"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/ConverterTool.tsx": {
+        "BYMC": [
+          "29-32"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/converter/ConverterWorkbench.tsx": {
+        "BYMC": [
+          "1-120"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/converter/JsonXmlTab.tsx": {
+        "BYMC": [
+          "2",
+          "6-7",
+          "128-131",
+          "135-144"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/converter/JsonYamlTab.tsx": {
+        "BYMC": [
+          "2",
+          "6-7",
+          "118-122",
+          "125-134"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/converter/SubnetTab.tsx": {
+        "BYMC": [
+          "310",
+          "312-313",
+          "319",
+          "321",
+          "329-331",
+          "342",
+          "450-451",
+          "454-455",
+          "473-474",
+          "476",
+          "492",
+          "524",
+          "583-593"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/converter/TimestampTab.tsx": {
+        "BYMC": [
+          "2",
+          "5",
+          "9",
+          "72-82",
+          "170",
+          "172-173",
+          "181",
+          "183",
+          "190-197",
+          "199-206",
+          "208-214",
+          "217-224",
+          "226-230",
+          "232-240",
+          "242-247",
+          "249",
+          "251-252",
+          "254-277",
+          "279-290",
+          "292-293"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      }
+    }
+  },
+  "ipa_account": "luhaoyu",
+  "commit_timestamp": 1786457781,
+  "requirement_id": ""
+}
