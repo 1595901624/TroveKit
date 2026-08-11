@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react"
-import { Textarea, Button, Input, Select, SelectItem, Tabs, Tab, Card, CardBody, CardHeader } from "../../components/ui/base-ui"
-import { Copy, Trash2, Lock, Unlock, FileUp, FolderOpen } from "lucide-react"
+import { Button, Input, Select, SelectItem, Card, CardBody, CardHeader } from "../../components/ui/base-ui"
+import { Trash2, Lock, Unlock, FileUp, FolderOpen } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { useLog } from "../../contexts/LogContext"
 import CryptoJS from "crypto-js"
@@ -8,6 +8,7 @@ import { open as openDialog } from "@tauri-apps/plugin-dialog"
 import { writeFile } from "@tauri-apps/plugin-fs"
 import { desktopDir, join } from "@tauri-apps/api/path"
 import { getStoredItem, setStoredItem, removeStoredItem } from "../../lib/store"
+import { HashOperationSwitch, HashWorkbench } from "./HashWorkbench"
 
 const STORAGE_KEY = "aes-tool-state"
 const MAX_FILE_SIZE = 30 * 1024 * 1024
@@ -383,11 +384,6 @@ export function AesTab2() {
     }
   }
 
-  const copyToClipboard = (text: string) => {
-    if (!text) return
-    navigator.clipboard.writeText(text)
-  }
-
   const handleRun = () => {
     if (operation === "encrypt") handleAesEncrypt()
     else handleAesDecrypt()
@@ -646,225 +642,40 @@ export function AesTab2() {
   }
 
   return (
-    <div className="flex h-full min-h-0 flex-col gap-3 overflow-y-auto pb-1">
-      <div className="flex shrink-0 flex-wrap items-center justify-between gap-2 rounded-xl border border-default-200 bg-default-50/70 p-1.5">
-        <Tabs
-        aria-label="AES"
-        color="primary"
-        selectedKey={activeTab}
-        onSelectionChange={(k) => {
-          const selected = k as "encrypt" | "decrypt" | "fileEncrypt" | "fileDecrypt"
-          setActiveTab(selected)
-          if (selected === "encrypt") {
-            setOperation("encrypt")
-          } else if (selected === "decrypt") {
-            setOperation("decrypt")
-          } else if (selected === "fileEncrypt") {
-            setFileOperation("fileEncrypt")
-          } else if (selected === "fileDecrypt") {
-            setFileOperation("fileDecrypt")
-          }
-        }}
-        className="min-w-0"
-      >
-        <Tab key="encrypt" title={t("tools.hash.encrypt")} />
-        <Tab key="decrypt" title={t("tools.hash.decrypt")} />
-        {/* <Tab key="fileEncrypt" title={t("tools.hash.fileEncrypt")} /> */}
-        {/* <Tab key="fileDecrypt" title={t("tools.hash.fileDecrypt")} /> */}
-      </Tabs>
-        {(activeTab === "encrypt" || activeTab === "decrypt") && (
-          <div className="flex items-center gap-2">
-            <Button
-              size="sm"
-              color="primary"
-              onPress={handleRun}
-              isDisabled={!aesInput}
-              startContent={operation === "encrypt" ? <Lock className="h-4 w-4" /> : <Unlock className="h-4 w-4" />}
-            >
-              {operation === "encrypt" ? t("tools.hash.encrypt") : t("tools.hash.decrypt")}
-            </Button>
-            <Button size="sm" variant="light" className="text-default-500 hover:bg-danger/10 hover:text-danger" onPress={clearAll} startContent={<Trash2 className="h-4 w-4" />}>
-              {t("tools.hash.clearAll")}
-            </Button>
-          </div>
-        )}
-      </div>
-
+    <div className={`h-full min-h-0 ${activeTab === "encrypt" || activeTab === "decrypt" ? "overflow-hidden" : "overflow-y-auto pb-1"}`}>
       {(activeTab === "encrypt" || activeTab === "decrypt") && (
-      <>
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <Card className="overflow-hidden rounded-xl border border-default-200 shadow-none">
-          <CardHeader className="flex gap-2 items-center justify-between">
-            <div className="text-sm font-medium">{t("tools.hash.inputLabel")}</div>
-            <div className="flex items-center gap-2">
-              <Select
-                size="sm"
-                label={t("tools.hash.inputFormat")}
-                className="w-40"
-                selectedKeys={new Set([aesInputFormat])}
-                onSelectionChange={(keys) => updateAesInputFormat(Array.from(keys)[0] as string)}
-                disallowEmptySelection
-              >
-                <SelectItem key="String" isDisabled={operation !== "encrypt"}>{t("tools.hash.text")}</SelectItem>
-                <SelectItem key="Base64">Base64</SelectItem>
-                <SelectItem key="Hex">Hex</SelectItem>
-              </Select>
-              <Button
-                isIconOnly
-                size="sm"
-                variant="flat"
-                color="danger"
-                onPress={() => setAesInput("")}
-                title={t("tools.hash.clear")}
-              >
-                <Trash2 className="w-4 h-4" />
-              </Button>
-            </div>
-          </CardHeader>
-          <CardBody className="pt-0">
-            <Textarea
-              placeholder={t("tools.hash.aesInputPlaceholder")}
-              minRows={8}
-              variant="bordered"
-              value={aesInput}
-              onValueChange={setAesInput}
-              classNames={{
-                inputWrapper: "bg-default-100/50 hover:bg-default-100 focus-within:bg-background"
-              }}
-            />
-          </CardBody>
-        </Card>
-
-        <Card className="overflow-hidden rounded-xl border border-default-200 shadow-none">
-          <CardHeader className="flex gap-2 items-center justify-between">
-            <div className="text-sm font-medium">{t("tools.hash.outputLabel")}</div>
-            <div className="flex items-center gap-2">
-              <Select
-                size="sm"
-                label={t("tools.hash.outputFormat")}
-                className="w-40"
-                selectedKeys={new Set([aesOutputFormat])}
-                onSelectionChange={(keys) => updateAesOutputFormat(Array.from(keys)[0] as string)}
-                disallowEmptySelection
-              >
-                <SelectItem key="String" isDisabled={operation !== "decrypt"}>{t("tools.hash.text")}</SelectItem>
-                <SelectItem key="Base64">Base64</SelectItem>
-                <SelectItem key="Hex">Hex</SelectItem>
-              </Select>
-              <Button isIconOnly size="sm" variant="flat" onPress={() => copyToClipboard(aesOutput)} title={t("tools.hash.copy")}>
-                <Copy className="w-4 h-4" />
-              </Button>
-            </div>
-          </CardHeader>
-          <CardBody className="pt-0">
-            <Textarea
-              isReadOnly
-              minRows={8}
-              variant="bordered"
-              value={aesOutput}
-              classNames={{
-                inputWrapper: "bg-default-100/30 transition-colors font-mono text-tiny"
-              }}
-            />
-          </CardBody>
-        </Card>
-      </div>
-
-      <div className="rounded-xl border border-default-200 bg-default-50/50 p-3">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          <div className="space-y-3">
-            <div className="flex gap-2">
-              <Input
-                size="sm"
-                label={t("tools.hash.key")}
-                placeholder={t("tools.hash.keyPlaceholder")}
-                value={aesKey}
-                onValueChange={setAesKey}
-                className="flex-1"
+        <HashWorkbench
+          id="aes"
+          input={aesInput}
+          onInputChange={setAesInput}
+          inputPlaceholder={t("tools.hash.aesInputPlaceholder")}
+          output={aesOutput}
+          onClear={clearAll}
+          toolbarContent={(
+            <>
+              <HashOperationSwitch
+                ariaLabel="AES"
+                value={operation}
+                onChange={(selected) => { setActiveTab(selected); setOperation(selected) }}
+                options={[{ value: "encrypt", label: t("tools.hash.encrypt") }, { value: "decrypt", label: t("tools.hash.decrypt") }]}
               />
-              <Select
-                size="sm"
-                label={t("tools.hash.keySize")}
-                className="w-28"
-                selectedKeys={new Set([aesKeySize])}
-                onSelectionChange={(keys) => setAesKeySize(Array.from(keys)[0] as string)}
-                disallowEmptySelection
-              >
-                <SelectItem key="128">{t("tools.hash.bit128")}</SelectItem>
-                <SelectItem key="192">{t("tools.hash.bit192")}</SelectItem>
-                <SelectItem key="256">{t("tools.hash.bit256")}</SelectItem>
-              </Select>
-              <Select
-                size="sm"
-                label={t("tools.hash.type")}
-                className="w-24"
-                selectedKeys={new Set([aesKeyType])}
-                onSelectionChange={(keys) => setAesKeyType(Array.from(keys)[0] as string)}
-                disallowEmptySelection
-              >
-                <SelectItem key="text">{t("tools.hash.text")}</SelectItem>
-                <SelectItem key="hex">{t("tools.hash.hex")}</SelectItem>
-              </Select>
+              <Select aria-label={t("tools.hash.inputFormat")} className="w-28" classNames={{ trigger: "h-8 bg-background px-2.5 text-xs" }} selectedKeys={[aesInputFormat]} onChange={(event) => updateAesInputFormat(event.target.value)}><SelectItem key="String" isDisabled={operation !== "encrypt"}>{t("tools.hash.text")}</SelectItem><SelectItem key="Base64">Base64</SelectItem><SelectItem key="Hex">Hex</SelectItem></Select>
+              <Select aria-label={t("tools.hash.outputFormat")} className="w-28" classNames={{ trigger: "h-8 bg-background px-2.5 text-xs" }} selectedKeys={[aesOutputFormat]} onChange={(event) => updateAesOutputFormat(event.target.value)}><SelectItem key="String" isDisabled={operation !== "decrypt"}>{t("tools.hash.text")}</SelectItem><SelectItem key="Base64">Base64</SelectItem><SelectItem key="Hex">Hex</SelectItem></Select>
+            </>
+          )}
+          configContent={(
+            <div className="grid gap-2 lg:grid-cols-[minmax(0,1fr)_104px_88px_minmax(0,1fr)_88px_104px_144px]">
+              <Input size="sm" label={t("tools.hash.key")} placeholder={t("tools.hash.keyPlaceholder")} value={aesKey} onValueChange={setAesKey} classNames={{ inputWrapper: "h-9 min-h-9 bg-background" }} />
+              <Select size="sm" label={t("tools.hash.keySize")} selectedKeys={[aesKeySize]} onChange={(event) => setAesKeySize(event.target.value)}><SelectItem key="128">{t("tools.hash.bit128")}</SelectItem><SelectItem key="192">{t("tools.hash.bit192")}</SelectItem><SelectItem key="256">{t("tools.hash.bit256")}</SelectItem></Select>
+              <Select size="sm" label={t("tools.hash.type")} selectedKeys={[aesKeyType]} onChange={(event) => setAesKeyType(event.target.value)}><SelectItem key="text">{t("tools.hash.text")}</SelectItem><SelectItem key="hex">{t("tools.hash.hex")}</SelectItem></Select>
+              <Input size="sm" label={t("tools.hash.iv")} placeholder={t("tools.hash.iv")} value={aesIv} onValueChange={setAesIv} isDisabled={aesMode === "ECB"} classNames={{ inputWrapper: "h-9 min-h-9 bg-background" }} />
+              <Select size="sm" label={t("tools.hash.type")} selectedKeys={[aesIvType]} onChange={(event) => setAesIvType(event.target.value)} isDisabled={aesMode === "ECB"}><SelectItem key="text">{t("tools.hash.text")}</SelectItem><SelectItem key="hex">{t("tools.hash.hex")}</SelectItem></Select>
+              <Select size="sm" label={t("tools.hash.mode")} selectedKeys={[aesMode]} onChange={(event) => setAesMode(event.target.value)}>{['CBC', 'ECB', 'CTR', 'OFB', 'CFB'].map((mode) => <SelectItem key={mode}>{mode}</SelectItem>)}</Select>
+              <Select size="sm" label={t("tools.hash.padding")} selectedKeys={[aesPadding]} onChange={(event) => setAesPadding(event.target.value)}><SelectItem key="Pkcs7">{t("tools.hash.pkcs7")}</SelectItem><SelectItem key="ZeroPadding">{t("tools.hash.zeroPadding")}</SelectItem><SelectItem key="AnsiX923">{t("tools.hash.ansiX923")}</SelectItem><SelectItem key="Iso10126">{t("tools.hash.iso10126")}</SelectItem><SelectItem key="NoPadding">{t("tools.hash.noPadding")}</SelectItem></Select>
             </div>
-
-            <div className="flex gap-2">
-              <Input
-                size="sm"
-                label={t("tools.hash.iv")}
-                placeholder={t("tools.hash.iv")}
-                value={aesIv}
-                onValueChange={setAesIv}
-                isDisabled={aesMode === "ECB"}
-                className="flex-1"
-              />
-              <Select
-                size="sm"
-                label={t("tools.hash.type")}
-                className="w-24"
-                selectedKeys={new Set([aesIvType])}
-                onSelectionChange={(keys) => setAesIvType(Array.from(keys)[0] as string)}
-                isDisabled={aesMode === "ECB"}
-                disallowEmptySelection
-              >
-                <SelectItem key="text">{t("tools.hash.text")}</SelectItem>
-                <SelectItem key="hex">{t("tools.hash.hex")}</SelectItem>
-              </Select>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-            <Select
-              size="sm"
-              label={t("tools.hash.mode")}
-              selectedKeys={new Set([aesMode])}
-              onSelectionChange={(keys) => setAesMode(Array.from(keys)[0] as string)}
-              disallowEmptySelection
-            >
-              <SelectItem key="CBC">{t("tools.hash.cbc")}</SelectItem>
-              <SelectItem key="ECB">{t("tools.hash.ecb")}</SelectItem>
-              <SelectItem key="CTR">{t("tools.hash.ctr")}</SelectItem>
-              <SelectItem key="OFB">{t("tools.hash.ofb")}</SelectItem>
-              <SelectItem key="CFB">{t("tools.hash.cfb")}</SelectItem>
-            </Select>
-
-            <Select
-              size="sm"
-              label={t("tools.hash.padding")}
-              selectedKeys={new Set([aesPadding])}
-              onSelectionChange={(keys) => setAesPadding(Array.from(keys)[0] as string)}
-              disallowEmptySelection
-            >
-              <SelectItem key="Pkcs7">{t("tools.hash.pkcs7")}</SelectItem>
-              <SelectItem key="ZeroPadding">{t("tools.hash.zeroPadding")}</SelectItem>
-              <SelectItem key="AnsiX923">{t("tools.hash.ansiX923")}</SelectItem>
-              <SelectItem key="Iso10126">{t("tools.hash.iso10126")}</SelectItem>
-              <SelectItem key="NoPadding">{t("tools.hash.noPadding")}</SelectItem>
-            </Select>
-          </div>
-        </div>
-      </div>
-
-      </>
+          )}
+          actions={<Button size="sm" color="primary" variant="solid" className="h-8 min-w-[88px]" onPress={handleRun} isDisabled={!aesInput} startContent={operation === "encrypt" ? <Lock className="h-4 w-4" /> : <Unlock className="h-4 w-4" />}>{operation === "encrypt" ? t("tools.hash.encrypt") : t("tools.hash.decrypt")}</Button>}
+        />
       )}
 
       {(activeTab === "fileEncrypt" || activeTab === "fileDecrypt") && (

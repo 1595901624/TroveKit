@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react"
-import { Button, Input, Select, SelectItem, Tabs, Tab } from "../../components/ui/base-ui"
+import { Button, Input, Select, SelectItem } from "../../components/ui/base-ui"
 import { Lock, Unlock } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { useLog } from "../../contexts/LogContext"
 import CryptoJS from "crypto-js"
 import { getStoredItem, setStoredItem, removeStoredItem } from "../../lib/store"
-import { HashWorkbench } from "./HashWorkbench"
+import { HashOperationSwitch, HashWorkbench } from "./HashWorkbench"
 
 const STORAGE_KEY = "des-tool-state"
 
@@ -241,7 +241,12 @@ export function DesTab() {
       onClear={() => { setDesInput(""); setDesOutput(""); setDesKey(""); setDesIv(""); removeStoredItem(STORAGE_KEY) }}
       toolbarContent={(
         <>
-          <Tabs aria-label="DES" color="primary" selectedKey={activeTab} onSelectionChange={(key) => { const selected = key as "encrypt" | "decrypt"; setActiveTab(selected); setOperation(selected) }}><Tab key="encrypt" title={t("tools.hash.encrypt")} /><Tab key="decrypt" title={t("tools.hash.decrypt")} /></Tabs>
+          <HashOperationSwitch
+            ariaLabel="DES"
+            value={activeTab}
+            onChange={(selected) => { setActiveTab(selected); setOperation(selected) }}
+            options={[{ value: "encrypt", label: t("tools.hash.encrypt") }, { value: "decrypt", label: t("tools.hash.decrypt") }]}
+          />
           <Select aria-label={t("tools.hash.inputFormat")} className="w-28" classNames={{ trigger: "h-8 bg-background px-2.5 text-xs" }} selectedKeys={[desInputFormat]} onChange={(event) => setDesInputFormat(event.target.value)}><SelectItem key="String" isDisabled={operation !== "encrypt"}>{t("tools.hash.text")}</SelectItem><SelectItem key="Base64">Base64</SelectItem><SelectItem key="Hex">Hex</SelectItem></Select>
           <Select aria-label={t("tools.hash.outputFormat")} className="w-28" classNames={{ trigger: "h-8 bg-background px-2.5 text-xs" }} selectedKeys={[desOutputFormat]} onChange={(event) => setDesOutputFormat(event.target.value)}><SelectItem key="String" isDisabled={operation !== "decrypt"}>{t("tools.hash.text")}</SelectItem><SelectItem key="Base64">Base64</SelectItem><SelectItem key="Hex">Hex</SelectItem></Select>
         </>
@@ -254,7 +259,7 @@ export function DesTab() {
           <Select size="sm" label={t("tools.hash.padding")} selectedKeys={[desPadding]} onChange={(event) => setDesPadding(event.target.value)}><SelectItem key="Pkcs7">{t("tools.hash.pkcs7")}</SelectItem><SelectItem key="ZeroPadding">{t("tools.hash.zeroPadding")}</SelectItem><SelectItem key="AnsiX923">{t("tools.hash.ansiX923")}</SelectItem><SelectItem key="Iso10126">{t("tools.hash.iso10126")}</SelectItem><SelectItem key="NoPadding">{t("tools.hash.noPadding")}</SelectItem></Select>
         </div>
       )}
-      actions={<Button size="sm" color="primary" onPress={handleRun} isDisabled={!desInput} startContent={operation === "encrypt" ? <Lock className="h-4 w-4" /> : <Unlock className="h-4 w-4" />}>{operation === "encrypt" ? t("tools.hash.encrypt") : t("tools.hash.decrypt")}</Button>}
+      actions={<Button size="sm" color="primary" variant="solid" className="h-8 min-w-[88px]" onPress={handleRun} isDisabled={!desInput} startContent={operation === "encrypt" ? <Lock className="h-4 w-4" /> : <Unlock className="h-4 w-4" />}>{operation === "encrypt" ? t("tools.hash.encrypt") : t("tools.hash.decrypt")}</Button>}
     />
   )
 }

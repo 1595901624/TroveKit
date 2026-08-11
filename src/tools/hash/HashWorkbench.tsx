@@ -1,7 +1,39 @@
 import type { ReactNode } from "react"
 import { ArrowDown, ArrowRight, Copy, Trash2 } from "lucide-react"
 import { useTranslation } from "react-i18next"
-import { Button, Textarea } from "../../components/ui/base-ui"
+import { Button, ButtonGroup, Textarea } from "../../components/ui/base-ui"
+
+interface HashOperationSwitchProps<T extends string> {
+  value: T
+  onChange: (value: T) => void
+  options: Array<{ value: T; label: string }>
+  ariaLabel: string
+}
+
+export function HashOperationSwitch<T extends string>({ value, onChange, options, ariaLabel }: HashOperationSwitchProps<T>) {
+  return (
+    <ButtonGroup aria-label={ariaLabel} className="rounded-lg bg-default-100 p-0.5">
+      {options.map((option) => {
+        const selected = option.value === value
+        return (
+          <Button
+            key={option.value}
+            size="sm"
+            variant={selected ? "flat" : "light"}
+            color={selected ? "primary" : "default"}
+            className={selected
+              ? "h-8 min-w-[72px] bg-primary/10 text-primary dark:bg-blue-400/15 dark:text-blue-300"
+              : "h-8 min-w-[72px] text-default-600"}
+            aria-pressed={selected}
+            onPress={() => onChange(option.value)}
+          >
+            {option.label}
+          </Button>
+        )
+      })}
+    </ButtonGroup>
+  )
+}
 
 interface HashWorkbenchProps {
   id: string
