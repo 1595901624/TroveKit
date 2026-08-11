@@ -460,6 +460,8 @@
       "timestampToDate": "タイムスタンプから日付",
       "dateToTimestamp": "日付からタイムスタンプ",
       "currentTime": "現在時刻",
+      "pause": "更新を一時停止",
+      "resume": "更新を再開",
       "seconds": "秒",
       "milliseconds": "ミリ秒",
       "microseconds": "マイクロ秒",

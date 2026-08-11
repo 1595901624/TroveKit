@@ -460,6 +460,8 @@
       "timestampToDate": "Timestamp to Date",
       "dateToTimestamp": "Date to Timestamp",
       "currentTime": "Current Time",
+      "pause": "Pause Updates",
+      "resume": "Resume Updates",
       "seconds": "Seconds",
       "milliseconds": "Milliseconds",
       "microseconds": "Microseconds",

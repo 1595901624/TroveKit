@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react"
-import { Card, CardBody, Input, Select, SelectItem, Button, DatePicker, addToast } from "../../components/ui/base-ui"
+import { Input, Select, SelectItem, Button, DatePicker, addToast } from "../../components/ui/base-ui"
 import { invoke } from "@tauri-apps/api/core"
 import { useTranslation } from "react-i18next"
-import { Clock, ArrowRightLeft, Copy, RefreshCw, Calendar } from "lucide-react"
+import { Clock, ArrowRightLeft, Copy, Pause, Play, Calendar, Trash2 } from "lucide-react"
 import { useLog } from "../../contexts/LogContext"
 import { getLocalTimeZone } from "@internationalized/date"
 import type { DateValue } from "@internationalized/date"
-import { getStoredItem, setStoredItem } from "../../lib/store"
+import { getStoredItem, removeStoredItem, setStoredItem } from "../../lib/store"
 
 const STORAGE_KEY = "timestamp-tool-state"
 
@@ -69,8 +69,17 @@ export function TimestampTab({ isVisible = true }: { isVisible?: boolean }) {
             try {
                 const info = await invoke<TimeInfo>("get_system_time")
                 if (active) setCurrentTime(info)
-            } catch (e) {
-                console.error(e)
+            } catch {
+                // 浏览器开发环境没有 Tauri IPC，回退到毫秒精度的本地时间。
+                const millis = BigInt(Date.now())
+                if (active) {
+                    setCurrentTime({
+                        secs: (millis / 1000n).toString(),
+                        millis: millis.toString(),
+                        micros: (millis * 1000n).toString(),
+                        nanos: (millis * 1000000n).toString(),
+                    })
+                }
             }
         }
         
@@ -158,10 +167,10 @@ export function TimestampTab({ isVisible = true }: { isVisible?: boolean }) {
     }, [dateInput])
 
     const CurrentTimeItem = ({ label, value, enLabel }: { label: string, value: string, enLabel: string }) => (
-        <div className="flex items-start justify-between p-3 rounded-lg bg-default-100 hover:bg-default-200 transition-colors group">
+        <div className="flex min-w-0 items-center justify-between gap-2 rounded-lg border border-default-200 bg-background p-2.5">
             <div className="flex flex-col gap-1 min-w-0 flex-1">
-                <span className="text-xs text-default-500 font-medium uppercase tracking-wider">{label}</span>
-                <span className="font-mono text-sm lg:text-base font-semibold text-primary break-all">
+                <span className="text-[10px] font-medium uppercase tracking-wider text-default-500">{label}</span>
+                <span className="truncate font-mono text-sm font-semibold text-primary" title={value}>
                     {value}
                 </span>
             </div>
@@ -169,167 +178,119 @@ export function TimestampTab({ isVisible = true }: { isVisible?: boolean }) {
                 isIconOnly
                 size="sm"
                 variant="light"
-                className="opacity-0 group-hover:opacity-100 transition-opacity text-default-400 hover:text-primary shrink-0 ml-2 mt-0.5"
+                className="h-8 w-8 min-w-8 shrink-0 text-default-400 hover:text-primary"
                 onPress={() => copyToClipboard(value, { method: `Copy Current Time (${enLabel})` })}
+                aria-label={`${t("tools.converter.copy")} ${label}`}
             >
                 <Copy className="w-3.5 h-3.5" />
             </Button>
         </div>
     )
 
+    const handleClear = () => {
+        setTsInput("")
+        setTsOutput("")
+        setDateInput("")
+        setDateOutput(null)
+        removeStoredItem(STORAGE_KEY)
+    }
+
     return (
-        <div className="flex flex-col gap-6 p-2 sm:p-4 md:p-6 animate-in fade-in duration-500">
-            {/* Current Time Section */}
-            <Card className="border-none bg-gradient-to-br from-primary/5 to-secondary/5 dark:from-primary/10 dark:to-secondary/10">
-                <CardBody className="p-4 sm:p-6 space-y-6">
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                        <div className="flex items-center gap-3">
-                            <div className="p-2.5 rounded-xl bg-primary/10 text-primary shrink-0">
-                                <Clock className="w-6 h-6" />
-                            </div>
-                            <div className="min-w-0">
-                                <h3 className="text-lg font-bold">{t("tools.converter.currentTime")}</h3>
-                                <p className="text-sm text-default-500 font-mono mt-0.5 break-all">
-                                    {formatDate(currentTime.millis)}
-                                </p>
-                            </div>
+        <div className="flex h-full min-h-0 flex-col gap-3 overflow-hidden">
+            <section className="shrink-0 rounded-xl border border-default-200 bg-default-50/60 p-3">
+                <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
+                    <div className="flex min-w-0 items-center gap-3">
+                        <div className="rounded-lg bg-primary/10 p-2 text-primary"><Clock className="h-5 w-5" /></div>
+                        <div className="min-w-0">
+                            <h2 className="text-sm font-semibold text-foreground">{t("tools.converter.currentTime")}</h2>
+                            <p className="truncate font-mono text-xs text-default-500">{formatDate(currentTime.millis)}</p>
                         </div>
-                        <Button
-                            isIconOnly
-                            size="sm"
-                            variant="light"
-                            onPress={() => setIsPaused(!isPaused)}
-                            className={isPaused ? "text-warning" : "text-success"}
-                        >
-                            <RefreshCw className={`w-4 h-4 ${!isPaused && "animate-spin"}`} style={{ animationDuration: "3s" }} />
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                        <Button size="sm" variant="flat" className="h-8" onPress={() => setIsPaused(!isPaused)} startContent={isPaused ? <Play className="h-4 w-4" /> : <Pause className="h-4 w-4" />}>
+                            {isPaused ? t("tools.converter.resume") : t("tools.converter.pause")}
+                        </Button>
+                        <Button size="sm" variant="light" className="h-8 text-default-500 hover:bg-danger/10 hover:text-danger" onPress={handleClear} isDisabled={!tsInput && !dateInput} startContent={<Trash2 className="h-4 w-4" />}>
+                            {t("tools.converter.clearAll")}
                         </Button>
                     </div>
+                </div>
+                <div className="grid grid-cols-2 gap-2 xl:grid-cols-4">
+                    <CurrentTimeItem label={t("tools.converter.seconds")} value={currentTime.secs} enLabel="s" />
+                    <CurrentTimeItem label={t("tools.converter.milliseconds")} value={currentTime.millis} enLabel="ms" />
+                    <CurrentTimeItem label={t("tools.converter.microseconds")} value={currentTime.micros} enLabel="us" />
+                    <CurrentTimeItem label={t("tools.converter.nanoseconds")} value={currentTime.nanos} enLabel="ns" />
+                </div>
+            </section>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
-                        <CurrentTimeItem label={t("tools.converter.seconds")} value={currentTime.secs} enLabel="s" />
-                        <CurrentTimeItem label={t("tools.converter.milliseconds")} value={currentTime.millis} enLabel="ms" />
-                        <CurrentTimeItem label={t("tools.converter.microseconds")} value={currentTime.micros} enLabel="us" />
-                        <CurrentTimeItem label={t("tools.converter.nanoseconds")} value={currentTime.nanos} enLabel="ns" />
+            <div className="grid min-h-0 flex-1 gap-3 lg:grid-cols-2">
+                <section className="flex min-h-0 flex-col overflow-hidden rounded-xl border border-default-200 bg-background">
+                    <div className="flex h-11 shrink-0 items-center gap-2 border-b border-default-200 px-3.5">
+                        <ArrowRightLeft className="h-4 w-4 text-primary" />
+                        <h2 className="text-sm font-semibold">{t("tools.converter.timestampToDate")}</h2>
                     </div>
-                </CardBody>
-            </Card>
-
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {/* Timestamp to Date */}
-                <Card className="flex-1 border-none shadow-md bg-background/60 backdrop-blur-md">
-                    <CardBody className="p-6 space-y-6">
-                        <div className="flex items-center gap-3 pb-2 border-b border-divider/50">
-                            <div className="p-2 rounded-lg bg-orange-500/10 text-orange-500">
-                                <ArrowRightLeft className="w-5 h-5" />
-                            </div>
-                            <h3 className="font-semibold text-lg">{t("tools.converter.timestampToDate")}</h3>
+                    <div className="min-h-0 flex-1 space-y-4 overflow-auto p-4">
+                        <div className="grid grid-cols-[minmax(0,1fr)_104px] gap-2">
+                            <Input size="sm" label={t("tools.converter.timestamp")} placeholder={t("tools.converter.timestampPlaceholder")} value={tsInput} onValueChange={setTsInput} classNames={{ inputWrapper: "bg-background" }} />
+                            <Select size="sm" label={t("tools.converter.unit")} selectedKeys={[tsUnit]} onChange={(e) => setTsUnit(e.target.value)} classNames={{ trigger: "bg-background" }}>
+                                <SelectItem key="s" textValue="s">s</SelectItem>
+                                <SelectItem key="ms" textValue="ms">ms</SelectItem>
+                                <SelectItem key="us" textValue="us">μs</SelectItem>
+                                <SelectItem key="ns" textValue="ns">ns</SelectItem>
+                            </Select>
                         </div>
-
-                        <div className="space-y-4">
-                            <div className="flex gap-3">
-                                <Input
-                                    label={t("tools.converter.timestamp")}
-                                    placeholder={t("tools.converter.timestampPlaceholder")}
-                                    value={tsInput}
-                                    onValueChange={setTsInput}
-                                    classNames={{ inputWrapper: "bg-default-100" }}
-                                    className="flex-1"
-                                />
-                                <Select 
-                                    label={t("tools.converter.unit")} 
-                                    selectedKeys={[tsUnit]} 
-                                    onChange={(e) => setTsUnit(e.target.value)}
-                                    className="w-32"
-                                    classNames={{ trigger: "bg-default-100" }}
-                                >
-                                    <SelectItem key="s" textValue="s">s</SelectItem>
-                                    <SelectItem key="ms" textValue="ms">ms</SelectItem>
-                                    <SelectItem key="us" textValue="us">μs</SelectItem>
-                                    <SelectItem key="ns" textValue="ns">ns</SelectItem>
-                                </Select>
-                            </div>
-
-                            <div className="p-4 rounded-xl bg-default-50 space-y-2 border border-default-100">
-                                <div className="text-xs text-default-500 uppercase font-medium">{t("tools.converter.output")}</div>
-                                <div className="font-mono text-lg text-primary break-all min-h-[1.75rem]">
-                                    {tsOutput}
+                        <div className={`rounded-xl border p-3 ${tsOutput === t("tools.converter.invalidTimestamp") ? "border-danger/30 bg-danger/5" : "border-default-200 bg-default-50/40"}`}>
+                            <div className="mb-1 text-[10px] font-medium uppercase tracking-wide text-default-500">{t("tools.converter.output")}</div>
+                            <div className={`min-h-7 break-all font-mono text-base ${tsOutput === t("tools.converter.invalidTimestamp") ? "text-danger" : "text-primary"}`}>{tsOutput || "—"}</div>
+                            {tsOutput && tsOutput !== t("tools.converter.invalidTimestamp") && (
+                                <div className="mt-2 flex justify-end">
+                                    <Button size="sm" variant="light" color="primary" className="h-8" startContent={<Copy className="h-4 w-4" />} onPress={() => copyToClipboard(tsOutput, { method: "Timestamp to Date", input: `${tsInput} ${tsUnit}` })}>{t("tools.converter.copy")}</Button>
                                 </div>
-                                {tsOutput && tsOutput !== t("tools.converter.invalidTimestamp") && (
-                                    <div className="pt-2 flex justify-end">
-                                        <Button size="sm" variant="flat" startContent={<Copy className="w-3.5 h-3.5"/>} onPress={() => copyToClipboard(tsOutput, { method: "Timestamp to Date", input: `${tsInput} ${tsUnit}` })}>
-                                            {t("tools.converter.copy")}
-                                        </Button>
-                                    </div>
-                                )}
-                            </div>
+                            )}
                         </div>
-                    </CardBody>
-                </Card>
+                    </div>
+                </section>
 
-                {/* Date to Timestamp */}
-                <Card className="flex-1 border-none shadow-md bg-background/60 backdrop-blur-md">
-                    <CardBody className="p-6 space-y-6">
-                        <div className="flex items-center gap-3 pb-2 border-b border-divider/50">
-                            <div className="p-2 rounded-lg bg-blue-500/10 text-blue-500">
-                                <ArrowRightLeft className="w-5 h-5" />
-                            </div>
-                            <h3 className="font-semibold text-lg">{t("tools.converter.dateToTimestamp")}</h3>
+                <section className="flex min-h-0 flex-col overflow-hidden rounded-xl border border-default-200 bg-background">
+                    <div className="flex h-11 shrink-0 items-center gap-2 border-b border-default-200 px-3.5">
+                        <ArrowRightLeft className="h-4 w-4 text-primary" />
+                        <h2 className="text-sm font-semibold">{t("tools.converter.dateToTimestamp")}</h2>
+                    </div>
+                    <div className="min-h-0 flex-1 space-y-4 overflow-auto p-4">
+                        <div className="grid gap-2 xl:grid-cols-[minmax(0,1fr)_220px]">
+                            <Input size="sm" label={t("tools.converter.input")} placeholder={t("tools.converter.datePlaceholder")} value={dateInput} onValueChange={setDateInput} description={`${t("tools.converter.format")}: YYYY-MM-DD HH:mm:ss`} classNames={{ inputWrapper: "bg-background" }} />
+                            <DatePicker
+                                label={t("tools.converter.selectDate")}
+                                granularity="second"
+                                hideTimeZone
+                                hourCycle={24}
+                                showMonthAndYearPickers
+                                onChange={(value: DateValue | null) => {
+                                    if (value) {
+                                        const date = value.toDate(getLocalTimeZone())
+                                        const pad = (n: number, z: number = 2) => ('00' + n).slice(-z)
+                                        setDateInput(`${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`)
+                                    }
+                                }}
+                                selectorIcon={<Calendar className="h-4 w-4" />}
+                                classNames={{ inputWrapper: "bg-background" }}
+                            />
                         </div>
-
-                        <div className="space-y-4">
-                            <div className="flex gap-2">
-                                <Input
-                                    label={t("tools.converter.input")}
-                                    placeholder={t("tools.converter.datePlaceholder")}
-                                    value={dateInput}
-                                    onValueChange={setDateInput}
-                                    description={t("tools.converter.format") + ": YYYY-MM-DD HH:mm:ss"}
-                                    classNames={{ inputWrapper: "bg-default-100" }}
-                                    className="flex-1"
-                                />
-                                <DatePicker
-                                    label={t("tools.converter.selectDate")}
-                                    granularity="second"
-                                    hideTimeZone
-                                    hourCycle={24}
-                                    showMonthAndYearPickers
-                                    onChange={(value: DateValue | null) => {
-                                        if (value) {
-                                            const date = value.toDate(getLocalTimeZone())
-                                            const pad = (n: number, z: number = 2) => ('00' + n).slice(-z)
-                                            const formatted = `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`
-                                            setDateInput(formatted)
-                                        }
-                                    }}
-                                    selectorIcon={<Calendar className="w-4 h-4" />}
-                                    classNames={{ base: "w-64", inputWrapper: "bg-default-100" }}
-                                />
-                            </div>
-                            
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                {[
-                                    { k: "s", v: dateOutput?.secs, l: t("tools.converter.seconds") },
-                                    { k: "ms", v: dateOutput?.millis, l: t("tools.converter.milliseconds") },
-                                    { k: "us", v: dateOutput?.micros, l: t("tools.converter.microseconds") },
-                                    { k: "ns", v: dateOutput?.nanos, l: t("tools.converter.nanoseconds") },
-                                ].map((item) => (
-                                    <div key={item.k} 
-                                        className="relative p-3 rounded-xl bg-default-50 border border-default-100 hover:border-primary/30 transition-colors cursor-pointer group"
-                                        onClick={() => item.v && copyToClipboard(item.v, { method: `Date to Timestamp (${item.k})`, input: dateInput })}
-                                    >
-                                        <div className="text-[10px] text-default-400 uppercase font-bold mb-1">{item.l}</div>
-                                        <div className="font-mono text-sm font-semibold text-foreground break-all pr-4">{item.v || "-"}</div>
-                                        {item.v && (
-                                            <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                                <Copy className="w-3 h-3 text-primary" />
-                                            </div>
-                                        )}
-                                    </div>
-                                ))}
-                            </div>
+                        <div className="grid grid-cols-2 gap-2">
+                            {[
+                                { k: "s", v: dateOutput?.secs, l: t("tools.converter.seconds") },
+                                { k: "ms", v: dateOutput?.millis, l: t("tools.converter.milliseconds") },
+                                { k: "us", v: dateOutput?.micros, l: t("tools.converter.microseconds") },
+                                { k: "ns", v: dateOutput?.nanos, l: t("tools.converter.nanoseconds") },
+                            ].map((item) => (
+                                <button key={item.k} type="button" disabled={!item.v} className="min-w-0 rounded-lg border border-default-200 bg-default-50/40 p-2.5 text-left transition-colors enabled:hover:border-primary/40 enabled:hover:bg-primary/5 disabled:cursor-default" onClick={() => item.v && copyToClipboard(item.v, { method: `Date to Timestamp (${item.k})`, input: dateInput })}>
+                                    <div className="mb-1 flex items-center justify-between gap-2 text-[10px] font-medium uppercase tracking-wide text-default-500"><span>{item.l}</span>{item.v && <Copy className="h-3 w-3 text-primary" />}</div>
+                                    <div className="truncate font-mono text-sm font-semibold text-foreground" title={item.v}>{item.v || "—"}</div>
+                                </button>
+                            ))}
                         </div>
-                    </CardBody>
-                </Card>
+                    </div>
+                </section>
             </div>
         </div>
     )

@@ -460,6 +460,8 @@
       "timestampToDate": "時間戳轉日期",
       "dateToTimestamp": "日期轉時間戳",
       "currentTime": "當前時間",
+      "pause": "暫停更新",
+      "resume": "繼續更新",
       "seconds": "秒",
       "milliseconds": "毫秒",
       "microseconds": "微秒",

@@ -1,11 +1,10 @@
 import { useEffect, useState } from "react"
-import { Button, addToast } from "../../components/ui/base-ui"
-import CodeEditor from "../../components/CodeEditor"
-import { ArrowRight, ArrowLeft, Copy, Trash2, BookOpen } from "lucide-react"
+import { addToast } from "../../components/ui/base-ui"
 import { useTranslation } from "react-i18next"
 import { XMLParser, XMLBuilder } from "fast-xml-parser"
 import { useLog } from "../../contexts/LogContext"
-import { getStoredItem, setStoredItem } from "../../lib/store"
+import { getStoredItem, removeStoredItem, setStoredItem } from "../../lib/store"
+import { ConverterWorkbench } from "./ConverterWorkbench"
 
 const STORAGE_KEY = "json-xml-tool-state"
 
@@ -126,94 +125,22 @@ export function JsonXmlTab() {
     }
   }
 
-  const copyToClipboard = (text: string) => {
-    if (!text) return
-    navigator.clipboard.writeText(text)
+  const handleClearAll = () => {
+    setJsonCode("")
+    setXmlCode("")
+    removeStoredItem(STORAGE_KEY)
   }
 
   return (
-    <div className="flex flex-col h-full gap-4">
-      {/* Controls */}
-      <div className="flex justify-center items-center gap-4 py-2 relative">
-         <div className="flex gap-4">
-            <Button 
-                color="primary" 
-                endContent={<ArrowRight className="w-4 h-4" />}
-                onPress={handleJsonToXml}
-            >
-                {t("tools.converter.jsonToXml")}
-            </Button>
-            
-            <Button 
-                color="secondary"
-                startContent={<ArrowLeft className="w-4 h-4" />}
-                onPress={handleXmlToJson}
-            >
-                {t("tools.converter.xmlToJson")}
-            </Button>
-         </div>
-
-         <div className="absolute right-0 top-1/2 -translate-y-1/2">
-            <Button
-                variant="flat"
-                color="warning"
-                onPress={handleLoadExample}
-                startContent={<BookOpen className="w-4 h-4" />}
-                size="sm"
-            >
-                {t("tools.formatter.example")}
-            </Button>
-         </div>
-      </div>
-
-      {/* Editors Area */}
-      <div className="flex-1 min-h-0 flex flex-col md:flex-row gap-4">
-        {/* JSON Editor */}
-        <div className="flex-1 flex flex-col gap-2 min-w-0">
-            <div className="flex justify-between items-center px-1">
-                <span className="text-sm font-medium text-default-600">JSON</span>
-                <div className="flex gap-1">
-                    <Button isIconOnly size="sm" variant="light" onPress={() => copyToClipboard(jsonCode)} title={t("tools.converter.copy")}>
-                        <Copy className="w-3.5 h-3.5" />
-                    </Button>
-                    <Button isIconOnly size="sm" variant="light" color="danger" onPress={() => setJsonCode("")} title={t("tools.converter.clear")}>
-                        <Trash2 className="w-3.5 h-3.5" />
-                    </Button>
-                </div>
-            </div>
-            <div className="flex-1 border border-default-200 rounded-xl overflow-hidden shadow-sm bg-content1">
-                <CodeEditor
-                    language="json"
-                    value={jsonCode}
-                    onChange={setJsonCode}
-                    ariaLabel="JSON"
-                />
-            </div>
-        </div>
-
-        {/* XML Editor */}
-        <div className="flex-1 flex flex-col gap-2 min-w-0">
-            <div className="flex justify-between items-center px-1">
-                <span className="text-sm font-medium text-default-600">XML</span>
-                <div className="flex gap-1">
-                    <Button isIconOnly size="sm" variant="light" onPress={() => copyToClipboard(xmlCode)} title={t("tools.converter.copy")}>
-                        <Copy className="w-3.5 h-3.5" />
-                    </Button>
-                    <Button isIconOnly size="sm" variant="light" color="danger" onPress={() => setXmlCode("")} title={t("tools.converter.clear")}>
-                        <Trash2 className="w-3.5 h-3.5" />
-                    </Button>
-                </div>
-            </div>
-            <div className="flex-1 border border-default-200 rounded-xl overflow-hidden shadow-sm bg-content1">
-                <CodeEditor
-                    language="xml"
-                    value={xmlCode}
-                    onChange={setXmlCode}
-                    ariaLabel="XML"
-                />
-            </div>
-        </div>
-      </div>
-    </div>
+    <ConverterWorkbench
+      left={{ id: "json-xml-json", label: "JSON", language: "json", value: jsonCode, onChange: setJsonCode, onClear: () => setJsonCode(""), jsonDiagnostics: true }}
+      right={{ id: "json-xml-xml", label: "XML", language: "xml", value: xmlCode, onChange: setXmlCode, onClear: () => setXmlCode("") }}
+      onLeftToRight={handleJsonToXml}
+      onRightToLeft={handleXmlToJson}
+      leftToRightLabel={t("tools.converter.jsonToXml")}
+      rightToLeftLabel={t("tools.converter.xmlToJson")}
+      onExample={handleLoadExample}
+      onClearAll={handleClearAll}
+    />
   )
 }

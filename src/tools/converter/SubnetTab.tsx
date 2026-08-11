@@ -1,7 +1,5 @@
 import { useEffect, useMemo, useState } from "react"
 import {
-  Card,
-  CardBody,
   Input,
   Select,
   SelectItem,
@@ -309,17 +307,18 @@ export function SubnetTab() {
     value: string
     copyLabel: string
   }) => (
-    <div className="flex items-start justify-between p-3 rounded-lg bg-default-100 hover:bg-default-200 transition-colors group">
+    <div className="flex min-w-0 items-center justify-between gap-2 rounded-lg border border-default-200 bg-default-50/40 p-2.5 transition-colors hover:border-primary/30">
       <div className="flex flex-col gap-1 min-w-0 flex-1">
-        <span className="text-xs text-default-500 font-medium uppercase tracking-wider">{label}</span>
-        <span className="font-mono text-sm lg:text-base font-semibold text-primary break-all">{value}</span>
+        <span className="text-[10px] text-default-500 font-medium uppercase tracking-wider">{label}</span>
+        <span className="truncate font-mono text-sm font-semibold text-primary" title={value}>{value}</span>
       </div>
       <Button
         isIconOnly
         size="sm"
         variant="light"
-        className="opacity-0 group-hover:opacity-100 transition-opacity text-default-400 hover:text-primary shrink-0 ml-2 mt-0.5"
+        className="h-8 w-8 min-w-8 shrink-0 text-default-400 hover:text-primary"
         onPress={() => copyToClipboard(value, { method: copyLabel, input: summary || undefined })}
+        aria-label={`${t("tools.converter.copy")} ${label}`}
       >
         <Copy className="w-3.5 h-3.5" />
       </Button>
@@ -327,9 +326,9 @@ export function SubnetTab() {
   )
 
   return (
-    <div className="flex flex-col gap-6 p-2 sm:p-4 md:p-6 animate-in fade-in duration-500">
-      <Card className="border-none bg-gradient-to-br from-primary/5 to-secondary/5 dark:from-primary/10 dark:to-secondary/10">
-        <CardBody className="p-4 sm:p-6 space-y-5">
+    <div className="flex h-full min-h-0 flex-col gap-3 overflow-hidden">
+      <section className="shrink-0 rounded-xl border border-default-200 bg-default-50/60 p-3">
+        <div className="space-y-3">
           <div className="flex items-center gap-3">
             <div className="p-2.5 rounded-xl bg-primary/10 text-primary shrink-0">
               <Network className="w-6 h-6" />
@@ -340,7 +339,7 @@ export function SubnetTab() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-3 lg:grid-cols-[minmax(0,1.35fr)_minmax(280px,0.65fr)]">
             <div className="space-y-3">
               <Select
                 label={t("tools.converter.subnetInputMode")}
@@ -448,13 +447,12 @@ export function SubnetTab() {
               </div>
             </div>
           </div>
-        </CardBody>
-      </Card>
+        </div>
+      </section>
 
       {result && (
-        <Card className="border-none shadow-md bg-background/60 backdrop-blur-md">
-          <CardBody className="p-4 sm:p-6 space-y-4">
-            <div className="flex items-center justify-between gap-3">
+        <section className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-xl border border-default-200 bg-background">
+            <div className="flex min-h-11 shrink-0 flex-wrap items-center justify-between gap-2 border-b border-default-200 px-3.5 py-1.5">
               <h3 className="font-semibold text-lg">{t("tools.converter.output")}</h3>
               <div className="flex items-center gap-2 flex-wrap justify-end">
                 <Button size="sm" variant="flat" startContent={<ListPlus className="w-4 h-4" />} onPress={handleAddToLog}>
@@ -472,8 +470,10 @@ export function SubnetTab() {
               </div>
             </div>
 
+            <div className="min-h-0 flex-1 space-y-3 overflow-auto p-3">
+
             {result.version === 4 ? (
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 gap-2 lg:grid-cols-2">
                 <ResultRow label={t("tools.converter.ipAddress")} value={result.ip} copyLabel="Copy IP Address" />
                 <ResultRow label={t("tools.converter.cidr")} value={`/${result.prefix}`} copyLabel="Copy CIDR" />
                 <ResultRow label={t("tools.converter.networkAddress")} value={result.networkAddress} copyLabel="Copy Network Address" />
@@ -489,7 +489,7 @@ export function SubnetTab() {
                 <ResultRow label={t("tools.converter.isPrivate")} value={ipv4Meta ? (ipv4Meta.isPrivate ? t("common.yes", "Yes") : t("common.no", "No")) : "-"} copyLabel="Copy Is Private" />
               </div>
             ) : (
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 gap-2 lg:grid-cols-2">
                 <ResultRow
                   label={t("tools.converter.ipAddress")}
                   value={preferIpv6Expanded ? result.ipExpanded : result.ip}
@@ -521,7 +521,7 @@ export function SubnetTab() {
             )}
 
             {showBinary && (
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 pt-2">
+              <div className="grid grid-cols-1 gap-3 pt-1 lg:grid-cols-2">
                 {result.version === 4 ? (
                   <>
                     <Textarea
@@ -580,8 +580,17 @@ export function SubnetTab() {
                 )}
               </div>
             )}
-          </CardBody>
-        </Card>
+            </div>
+        </section>
+      )}
+
+      {!result && (
+        <section className="flex min-h-0 flex-1 items-center justify-center rounded-xl border border-dashed border-default-200 bg-default-50/25 p-6 text-center">
+          <div className="max-w-sm">
+            <Network className="mx-auto mb-3 h-8 w-8 text-default-300" />
+            <p className="text-sm font-medium text-default-500">{error || t("tools.converter.subnetDesc")}</p>
+          </div>
+        </section>
       )}
     </div>
   )
