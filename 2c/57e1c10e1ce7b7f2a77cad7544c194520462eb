@@ -1,0 +1,96 @@
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.0.8",
+  "base_commit_sha": "2c57e1c10e1ce7b7f2a77cad7544c194520462eb",
+  "prompts": {
+    "da0e50ae28a62e5d": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019fec42-fb53-7562-9e92-d27af7a7f79f",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "luhaoyu <haoyu3@163.com>",
+      "messages": [],
+      "total_additions": 0,
+      "total_deletions": 0,
+      "accepted_lines": 119,
+      "overriden_lines": 0
+    }
+  },
+  "commit_stats": {
+    "git_diff_added_lines": 106,
+    "git_diff_deleted_lines": 280,
+    "ai_additions": 0,
+    "ai_accepted": 0,
+    "BYMC": 105,
+    "mixed_additions": 0,
+    "BYAC": 0,
+    "BYRC": 0,
+    "per_file": {
+      "src/tools/ClassicalTool.tsx": {
+        "BYMC": [
+          "32-33"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/classical/BaconTab.tsx": {
+        "BYMC": [
+          "2-3",
+          "7",
+          "24",
+          "151",
+          "155-170",
+          "172-174"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/classical/CaesarTab.tsx": {
+        "BYMC": [
+          "2-3",
+          "7",
+          "19",
+          "88",
+          "99-113",
+          "115-117"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/classical/MorseTab.tsx": {
+        "BYMC": [
+          "2",
+          "5",
+          "9",
+          "25",
+          "101",
+          "109-127",
+          "129-131"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/hash/HashWorkbench.tsx": {
+        "BYMC": [
+          "2",
+          "49-52",
+          "70-73",
+          "78-80",
+          "83-84",
+          "117",
+          "125",
+          "138-148",
+          "155",
+          "174"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      }
+    }
+  },
+  "ipa_account": "luhaoyu",
+  "commit_timestamp": 1786430651,
+  "requirement_id": ""
+}
