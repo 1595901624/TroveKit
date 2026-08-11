@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react"
-import { Input, Button } from "../../components/ui/base-ui"
+import { Input, Switch } from "../../components/ui/base-ui"
 import { useTranslation } from "react-i18next"
-import { Search, Eye, EyeOff } from "lucide-react"
+import { Search } from "lucide-react"
 import { useFeatures } from "../../hooks/useFeatures"
 import { useFeaturePreferences } from "../../contexts/FeaturePreferencesContext"
 
@@ -67,88 +67,59 @@ export function FeatureManagement() {
   // }
 
   return (
-    <div className="flex flex-col h-full">
-      {/* 顶部搜索框 */}
-      <div className="px-6 py-4 border-b border-default-200 shrink-0">
+    <div className="flex h-full min-h-0 flex-col">
+      <div className="shrink-0 border-b border-default-200 bg-default-50/55 px-5 py-3">
         <Input
           placeholder={t("common.search")}
+          aria-label={t("common.search")}
           value={searchQuery}
           onValueChange={setSearchQuery}
-          startContent={<Search className="w-4 h-4 text-default-400" />}
+          startContent={<Search className="h-4 w-4 text-default-400" />}
           size="sm"
-          variant="faded"
+          classNames={{ inputWrapper: "bg-background" }}
         />
       </div>
-      {/* 分类列表 */}
-      <div className="flex-1 overflow-y-auto px-6 py-4">
-        <div className="space-y-6">
+      <div className="min-h-0 flex-1 overflow-y-auto p-4">
+        <div className="space-y-3">
           {Object.entries(groupedFeatures).map(([category, group]) => {
             const topLevelPref = group.topLevel ? getPreference(group.topLevel.id) : null;
             return (
-            <div key={category} className="space-y-3">
-              {/* 分类标题 + 一级功能显示开关 */}
-              <div className="flex items-center justify-between sticky top-0 backdrop-blur-sm py-1 z-10">
-                <h3 className="text-sm font-semibold text-default-500">
-                  {category}
-                </h3>
+            <section key={category} className="overflow-hidden rounded-xl border border-default-200 bg-background">
+              <div className="flex min-h-11 items-center justify-between gap-3 border-b border-default-200 bg-default-50/45 px-3.5 py-2">
+                <h3 className="text-sm font-semibold text-foreground">{category}</h3>
                 {group.topLevel && (
-                  <Button
+                  <Switch
                     size="sm"
-                    variant="flat"
-                    color={topLevelPref?.visible ? "primary" : "default"}
-                    onPress={() => toggleVisibility(group.topLevel!.id)}
-                    startContent={topLevelPref?.visible ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
+                    isSelected={Boolean(topLevelPref?.visible)}
+                    onValueChange={() => toggleVisibility(group.topLevel!.id)}
                   >
                     {topLevelPref?.visible ? t("settings.visible") : t("settings.hidden")}
-                  </Button>
+                  </Switch>
                 )}
               </div>
-              {/* 该分类下的具体功能卡片 */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 divide-y divide-default-200 sm:grid-cols-2 sm:divide-y-0">
                 {group.items.map(item => {
                   const pref = getPreference(item.id)
                   return (
                     <div 
                       key={item.id} 
-                      className="flex items-center justify-between p-3 rounded-lg border border-default-100 bg-default-50/50 hover:bg-default-100/50 transition-colors"
+                      className="flex min-h-12 items-center justify-between gap-3 border-default-200 px-3.5 py-2.5 odd:sm:border-r"
                     >
-                      <span className="text-sm font-medium truncate mr-2" title={item.label}>
+                      <span className="min-w-0 truncate text-sm text-foreground" title={item.label}>
                         {item.label}
                       </span>
-                      <div className="flex items-center gap-2 shrink-0">
-                        {/* <Button
-                          isIconOnly
-                          size="sm"
-                          variant="light"
-                          color={pref.isFavorite ? "warning" : "default"}
-                          onPress={() => toggleFavorite(item.id)}
-                          title={t("settings.toggleFavorite")}
-                        > */}
-                          {/* 常用开关 */}
-                          {/* <Star className={`w-4 h-4 ${pref.isFavorite ? "fill-current" : ""}`} /> */}
-                        {/* </Button> */}
-                        <Button
-                          isIconOnly
-                          size="sm"
-                          variant="light"
-                          color={pref.visible ? "primary" : "default"}
-                          onPress={() => toggleVisibility(item.id)}
-                          title={t("settings.toggleVisibility")}
-                        >
-                          {/* 显示/隐藏开关 */}
-                          {pref.visible ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
-                        </Button>
-                      </div>
+                      <Switch size="sm" isSelected={pref.visible} onValueChange={() => toggleVisibility(item.id)} aria-label={`${item.label}: ${t("settings.toggleVisibility")}`}>
+                        <span className="hidden text-[11px] sm:inline">{pref.visible ? t("settings.visible") : t("settings.hidden")}</span>
+                      </Switch>
                     </div>
                   )
                 })}
               </div>
-            </div>
+            </section>
             )
           })}
-          {/* 没有搜索结果时的提示 */}
           {Object.keys(groupedFeatures).length === 0 && (
-            <div className="text-center text-default-400 py-8">
+            <div className="py-12 text-center text-sm text-default-400">
               {t("common.noResults")}
             </div>
           )}

@@ -1,8 +1,8 @@
-import { Button, Card, CardBody, CardHeader, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from "../components/ui/base-ui"
+import { Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from "../components/ui/base-ui"
 import { getVersion } from "@tauri-apps/api/app"
 import { openUrl } from "@tauri-apps/plugin-opener"
 import { Store } from "@tauri-apps/plugin-store"
-import { Github, RefreshCw, Settings2 } from "lucide-react"
+import { Database, ExternalLink, Github, Languages, Palette, RefreshCw, Settings2, SlidersHorizontal } from "lucide-react"
 import { useEffect, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { LanguageSelector } from "../components/LanguageSelector"
@@ -13,14 +13,14 @@ import { FeatureManagement } from "./settings/FeatureManagement"
 export function Settings() {
   const { t } = useTranslation()
   const { addLog } = useLog()
-  const [version, setVersion] = useState("v0.1.0")
+  const [version, setVersion] = useState("0.1.0")
   
   const cacheModal = useDisclosure()
   const featureModal = useDisclosure()
   // const logsModal = useDisclosure()
 
   useEffect(() => {
-    getVersion().then(setVersion).catch(() => setVersion("v0.1.0"))
+    getVersion().then((value) => setVersion(value.replace(/^v/i, ""))).catch(() => setVersion("0.1.0"))
   }, [])
 
   const handleGithubClick = async () => {
@@ -63,112 +63,94 @@ export function Settings() {
   // }
 
   return (
-    <div className="max-w-5xl mx-auto">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="space-y-6">
-          <Card className="shadow-sm border border-default-200">
-            <CardHeader className="flex flex-col items-start px-6 pt-6 pb-0">
-              <h2 className="text-lg font-bold">{t("settings.appearance")}</h2>
-              <p className="text-default-500 text-small mt-1">{t("settings.appearanceDesc")}</p>
-            </CardHeader>
-            <CardBody className="px-6 py-6 gap-6">
-              <div className="flex items-center justify-between">
-                <div className="flex flex-col">
-                  <span className="text-medium font-medium">{t("settings.theme")}</span>
-                  <span className="text-tiny text-default-400">{t("settings.themeDesc")}</span>
+    <div className="h-full min-h-0 overflow-y-auto">
+      <div className="mx-auto flex w-full max-w-5xl flex-col gap-4 pb-3">
+        <section className="overflow-hidden rounded-xl border border-default-200 bg-background" aria-labelledby="appearance-settings-heading">
+          <div className="flex items-start gap-3 border-b border-default-200 bg-default-50/55 px-4 py-3">
+            <div className="rounded-lg bg-primary/10 p-2 text-primary"><Palette className="h-4 w-4" /></div>
+            <div>
+              <h2 id="appearance-settings-heading" className="text-sm font-semibold text-foreground">{t("settings.appearance")}</h2>
+              <p className="mt-0.5 text-xs text-default-400">{t("settings.appearanceDesc")}</p>
+            </div>
+          </div>
+          <div className="divide-y divide-default-200">
+            <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3.5">
+              <div className="flex min-w-0 items-start gap-3">
+                <Palette className="mt-0.5 h-4 w-4 shrink-0 text-default-400" />
+                <div>
+                  <div className="text-sm font-medium text-foreground">{t("settings.theme")}</div>
+                  <div className="mt-0.5 text-xs text-default-400">{t("settings.themeDesc")}</div>
                 </div>
-                <ThemeToggle />
               </div>
-            </CardBody>
-          </Card>
-
-          <Card className="shadow-sm border border-default-200">
-            <CardHeader className="flex flex-col items-start px-6 pt-6 pb-0">
-              <h2 className="text-lg font-bold">{t("settings.language")}</h2>
-              <p className="text-default-500 text-small mt-1">{t("settings.languageDesc")}</p>
-            </CardHeader>
-            <CardBody className="px-6 py-6">
-              <LanguageSelector />
-            </CardBody>
-          </Card>
-        </div>
-
-        <div className="space-y-6">
-          <Card className="shadow-sm border border-default-200">
-            <CardHeader className="flex flex-col items-start px-6 pt-6 pb-0">
-              <h2 className="text-lg font-bold">{t("settings.features")}</h2>
-              <p className="text-default-500 text-small mt-1">{t("settings.featuresDesc")}</p>
-            </CardHeader>
-            <CardBody className="px-6 py-6 gap-6">
-              <div className="flex items-center justify-between">
-                <div className="flex flex-col">
-                  <span className="text-medium font-medium">{t("settings.featureManagement")}</span>
-                  <span className="text-tiny text-default-400">{t("settings.featureManagementDesc")}</span>
+              <ThemeToggle showLabel variant="bordered" className="h-8 min-w-28 justify-start" />
+            </div>
+            <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3.5">
+              <div className="flex min-w-0 items-start gap-3">
+                <Languages className="mt-0.5 h-4 w-4 shrink-0 text-default-400" />
+                <div>
+                  <div className="text-sm font-medium text-foreground">{t("settings.language")}</div>
+                  <div className="mt-0.5 text-xs text-default-400">{t("settings.languageDesc")}</div>
                 </div>
-                <Button
-                  color="primary"
-                  variant="flat"
-                  startContent={<Settings2 size={18} />}
-                  onPress={featureModal.onOpen}
-                >
+              </div>
+              <div className="w-full sm:w-64"><LanguageSelector /></div>
+            </div>
+          </div>
+        </section>
+
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+          <section className="overflow-hidden rounded-xl border border-default-200 bg-background" aria-labelledby="feature-settings-heading">
+            <div className="flex h-full flex-col">
+              <div className="flex items-start gap-3 border-b border-default-200 bg-default-50/55 px-4 py-3">
+                <div className="rounded-lg bg-primary/10 p-2 text-primary"><SlidersHorizontal className="h-4 w-4" /></div>
+                <div>
+                  <h2 id="feature-settings-heading" className="text-sm font-semibold text-foreground">{t("settings.features")}</h2>
+                  <p className="mt-0.5 text-xs text-default-400">{t("settings.featuresDesc")}</p>
+                </div>
+              </div>
+              <div className="flex flex-1 items-center justify-between gap-4 p-4">
+                <div className="min-w-0">
+                  <div className="text-sm font-medium text-foreground">{t("settings.featureManagement")}</div>
+                  <p className="mt-1 text-xs leading-5 text-default-400">{t("settings.featureManagementDesc")}</p>
+                </div>
+                <Button size="sm" color="primary" className="shrink-0" startContent={<Settings2 className="h-4 w-4" />} onPress={featureModal.onOpen}>
                   {t("settings.manage")}
                 </Button>
               </div>
-            </CardBody>
-          </Card>
+            </div>
+          </section>
 
-          <Card className="shadow-sm border border-default-200">
-            <CardHeader className="flex flex-col items-start px-6 pt-6 pb-0">
-              <h2 className="text-lg font-bold">{t("settings.dataManagement")}</h2>
-              <p className="text-default-500 text-small mt-1">{t("settings.dataManagementDesc")}</p>
-            </CardHeader>
-            <CardBody className="px-6 py-6 gap-6">
-              <div className="flex items-center justify-between">
-                <div className="flex flex-col">
-                  <span className="text-medium font-medium">{t("settings.clearCache")}</span>
-                  <span className="text-tiny text-default-400">{t("settings.clearCacheDesc")}</span>
-                </div>
-                <Button
-                  color="warning"
-                  variant="flat"
-                  startContent={<RefreshCw size={18} />}
-                  onPress={cacheModal.onOpen}
-                >
-                  {t("settings.clearCache")}
-                </Button>
+          <section className="overflow-hidden rounded-xl border border-warning/35 bg-background" aria-labelledby="data-settings-heading">
+            <div className="flex items-start gap-3 border-b border-warning/25 bg-warning/5 px-4 py-3">
+              <div className="rounded-lg bg-warning/10 p-2 text-warning"><Database className="h-4 w-4" /></div>
+              <div>
+                <h2 id="data-settings-heading" className="text-sm font-semibold text-foreground">{t("settings.dataManagement")}</h2>
+                <p className="mt-0.5 text-xs text-default-400">{t("settings.dataManagementDesc")}</p>
               </div>
-              
-              {/* <div className="flex items-center justify-between border-t border-default-100 pt-6">
-                <div className="flex flex-col">
-                  <span className="text-medium font-medium">{t("settings.clearLogs")}</span>
-                  <span className="text-tiny text-default-400">{t("settings.clearLogsDesc")}</span>
-                </div>
-                <Button
-                  color="danger"
-                  variant="flat"
-                  startContent={<Trash2 size={18} />}
-                  onPress={logsModal.onOpen}
-                >
-                  {t("settings.clearLogs")}
-                </Button>
-              </div> */}
-            </CardBody>
-          </Card>
+            </div>
+            <div className="flex items-center justify-between gap-4 p-4">
+              <div className="min-w-0">
+                <div className="text-sm font-medium text-foreground">{t("settings.clearCache")}</div>
+                <p className="mt-1 text-xs leading-5 text-default-400">{t("settings.clearCacheDesc")}</p>
+              </div>
+              <Button size="sm" color="warning" variant="flat" className="shrink-0" startContent={<RefreshCw className="h-4 w-4" />} onPress={cacheModal.onOpen}>
+                {t("settings.clearCache")}
+              </Button>
+            </div>
+          </section>
         </div>
-      </div>
 
-      <div className="text-center text-xs text-default-400 mt-8 flex items-center justify-center gap-2">
-        <span>TroveKit v{version} © Cloris 2026</span>
-        <Button
-          isIconOnly
-          size="sm"
-          variant="light"
-          className="min-w-0 w-6 h-6 text-default-400 hover:text-foreground"
-          onPress={handleGithubClick}
-          title="GitHub Repository"
-        >
-          <Github size={14} />
-        </Button>
+        <section className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-default-200 bg-default-50/40 px-4 py-3" aria-label={t("settings.about")}>
+          <div className="flex items-center gap-3">
+            <div className="rounded-lg border border-default-200 bg-background p-2 text-default-500"><Github className="h-4 w-4" /></div>
+            <div>
+              <div className="text-sm font-medium text-foreground">TroveKit v{version}</div>
+              <div className="text-xs text-default-400">© Cloris 2026</div>
+            </div>
+          </div>
+          <Button size="sm" variant="bordered" onPress={handleGithubClick} startContent={<Github className="h-4 w-4" />} endContent={<ExternalLink className="h-3.5 w-3.5 text-default-400" />}>
+            GitHub
+          </Button>
+        </section>
       </div>
 
       {/* Feature Management Modal */}

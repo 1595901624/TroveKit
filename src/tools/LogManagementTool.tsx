@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react"
 import { invoke } from "@tauri-apps/api/core"
-import { Button, Card, Input, Spinner, Chip, ScrollShadow, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure, Tooltip } from "../components/ui/base-ui"
+import { Button, Input, Spinner, Chip, ScrollShadow, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure, Tooltip } from "../components/ui/base-ui"
 import { Trash2, RefreshCw, Search, Archive, Clock, AlertCircle, CheckCircle2, Info, AlertTriangle, Edit, X, Check, MessageSquare, Copy, Eye } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { useLog, type LogEntry } from "../contexts/LogContext"
@@ -338,35 +338,41 @@ export function LogManagementTool() {
   }
 
   return (
-    <div className="flex h-[calc(100vh-140px)] gap-4 w-full">
+    <div className="grid h-full min-h-0 w-full grid-cols-1 grid-rows-[240px_minmax(0,1fr)] overflow-hidden rounded-xl border border-default-200 bg-background md:grid-cols-[300px_minmax(0,1fr)] md:grid-rows-1">
       {/* Sidebar: Sessions List */}
-      <Card className="w-72 h-full flex-none bg-content1/50">
-        <div className="p-3 border-b border-divider flex items-center justify-between bg-content1/50 backdrop-blur-md">
-          <div className="text-sm font-semibold flex items-center gap-2">
-            <Archive className="w-4 h-4" />
+      <section className="flex min-h-0 min-w-0 flex-col border-b border-default-200 bg-default-50/30 md:border-b-0 md:border-r" aria-label={t("logManagement.sessions")}>
+        <div className="flex h-12 shrink-0 items-center justify-between border-b border-default-200 bg-background px-3.5">
+          <div className="flex items-center gap-2 text-sm font-semibold">
+            <Archive className="h-4 w-4 text-default-400" />
             {t("logManagement.sessions")}
+            <Chip className="bg-default-100 text-[10px] text-default-500">{sessions.length}</Chip>
           </div>
-          <Button isIconOnly size="sm" variant="light" onPress={() => reloadSessions(true)} isLoading={loadingSessions}>
-            <RefreshCw className="w-4 h-4" />
+          <Button isIconOnly size="sm" variant="light" className="h-8 min-w-8" onPress={() => reloadSessions(true)} isLoading={loadingSessions} title={t("common.refresh")} aria-label={t("common.refresh")}>
+            <RefreshCw className="h-4 w-4" />
           </Button>
         </div>
         
-        <ScrollShadow className="flex-1 p-2 space-y-1">
+        <ScrollShadow className="min-h-0 flex-1 p-2">
           {sessions.length === 0 && !loadingSessions && (
-             <div className="text-center text-default-400 text-xs py-4">
+             <div className="py-10 text-center text-xs text-default-400">
                {t("logManagement.noSessions")}
              </div>
           )}
-          
+          <div className="space-y-1">
           {sessions.map((s) => (
             <div
               key={s.sessionId}
               onClick={() => setActiveSessionId(s.sessionId)}
+              onKeyDown={(event) => {
+                if (event.key === "Enter" || event.key === " ") setActiveSessionId(s.sessionId)
+              }}
+              role="button"
+              tabIndex={0}
               className={cn(
-                "group flex flex-col gap-1 p-3 rounded-lg cursor-pointer transition-all border border-transparent",
+                "group flex cursor-pointer flex-col gap-1 rounded-lg border p-2.5 outline-none transition-colors focus-visible:ring-2 focus-visible:ring-primary/30",
                 activeSessionId === s.sessionId 
-                  ? "bg-primary/10 border-primary/20 shadow-sm"
-                  : "hover:bg-content2 hover:border-default-200"
+                  ? "border-primary/35 bg-primary/10"
+                  : "border-transparent hover:border-default-200 hover:bg-background"
               )}
             >
               <div className="flex items-start justify-between gap-1">
@@ -389,6 +395,7 @@ export function LogManagementTool() {
                           variant="light"
                           className="w-5 h-5 min-w-5"
                           onClick={(e) => handleCancelEditSessionNote(e)}
+                          aria-label={t("common.cancel")}
                         >
                           <X className="w-3 h-3" />
                         </Button>
@@ -399,6 +406,7 @@ export function LogManagementTool() {
                           color="primary"
                           className="w-5 h-5 min-w-5"
                           onClick={(e) => handleSaveSessionNote(s.sessionId, e)}
+                          aria-label={t("settings.confirm")}
                         >
                           <Check className="w-3 h-3" />
                         </Button>
@@ -406,22 +414,23 @@ export function LogManagementTool() {
                     </div>
                   ) : (
                     <div className={cn(
-                      "text-xs font-bold truncate",
+                      "truncate text-xs font-semibold",
                       s.note ? "text-warning-600 dark:text-warning" : "text-default-500 font-mono"
                     )}>
                       {s.note ? `💡 ${s.note}` : `# ${s.sessionId.slice(0, 8)}`}
                     </div>
                   )}
                 </div>
-                <div className="flex gap-0.5 shrink-0">
+                <div className="flex shrink-0 gap-0.5">
                   <Tooltip content={t("logManagement.switchToSession")}>
                     <Button
                         isIconOnly
                         size="sm"
                         variant="light"
-                        className="w-6 h-6 min-w-6 opacity-0 group-hover:opacity-100 transition-opacity"
+                        className={cn("h-7 min-w-7", currentSessionId === s.sessionId && "bg-primary/10 text-primary")}
                         onClick={(e) => handleSwitchToSession(s.sessionId, e)}
                         color="primary"
+                        aria-label={t("logManagement.switchToSession")}
                     >
                         <Eye className="w-3 h-3" />
                     </Button>
@@ -431,8 +440,9 @@ export function LogManagementTool() {
                         isIconOnly
                         size="sm"
                         variant="light"
-                        className="w-6 h-6 min-w-6 opacity-0 group-hover:opacity-100 transition-opacity"
+                        className="h-7 min-w-7"
                         onClick={(e) => handleStartEditSessionNote(s.sessionId, s.note, e)}
+                        aria-label={t("logManagement.editSessionNote")}
                     >
                         {s.note ? <MessageSquare className="w-3 h-3 text-warning" /> : <Edit className="w-3 h-3" />}
                     </Button>
@@ -441,16 +451,17 @@ export function LogManagementTool() {
                       isIconOnly
                       size="sm"
                       variant="light"
-                      className="w-6 h-6 min-w-6 opacity-0 group-hover:opacity-100 transition-opacity"
+                      className="h-7 min-w-7 text-danger"
                       onClick={(e) => handleDeleteSession(s.sessionId, e)}
                       color="danger"
+                      aria-label={t("logManagement.deleteSessionTitle")}
                   >
                       <Trash2 className="w-3 h-3" />
                   </Button>
                 </div>
               </div>
               
-              <div className="flex items-center justify-between text-tiny text-default-400 mt-0.5">
+              <div className="mt-0.5 flex items-center justify-between text-[10px] text-default-400">
                  <div className="flex items-center gap-1 truncate">
                     <Clock className="w-3 h-3 shrink-0" />
                     <span className="truncate">
@@ -463,33 +474,40 @@ export function LogManagementTool() {
               </div>
             </div>
           ))}
+          </div>
         </ScrollShadow>
-      </Card>
+      </section>
 
       {/* Main Content: Logs List */}
-      <Card className="flex-1 h-full bg-content1/50 flex flex-col overflow-hidden">
+      <section className="flex min-h-0 min-w-0 flex-col overflow-hidden" aria-label={t("log.title")}>
         {/* Toolbar */}
-        <div className="p-3 border-b border-divider flex items-center justify-between gap-4 bg-content1/50 backdrop-blur-md shrink-0">
+        <div className="flex min-h-12 shrink-0 items-center justify-between gap-3 border-b border-default-200 bg-background px-3 py-2">
              <Input
                 size="sm"
-                startContent={<Search className="w-4 h-4 text-default-400" />}
+                aria-label={t("logManagement.searchPlaceholder")}
+                startContent={<Search className="h-4 w-4 text-default-400" />}
                 placeholder={t("logManagement.searchPlaceholder")}
                 value={query}
                 onValueChange={setQuery}
-                className="max-w-md"
+                className="max-w-lg flex-1"
+                classNames={{ inputWrapper: "bg-default-50/60" }}
                 isClearable
              />
-             
-             {error && (
-                <div className="text-tiny text-danger flex items-center gap-1 bg-danger/10 px-2 py-1 rounded">
-                   <AlertCircle className="w-3 h-3" />
-                   {error}
-                </div>
-             )}
+
+             <div className="flex min-w-0 items-center gap-2">
+               {error ? (
+                  <div className="flex max-w-64 min-w-0 items-center gap-1 rounded-lg bg-danger/10 px-2 py-1 text-[11px] text-danger" title={error}>
+                     <AlertCircle className="h-3.5 w-3.5 shrink-0" />
+                     <span className="truncate">{error}</span>
+                  </div>
+               ) : (
+                 <span className="whitespace-nowrap text-[11px] text-default-400">{filteredLogs.length} / {logs.length}</span>
+               )}
+             </div>
         </div>
 
         {/* Logs List */}
-        <ScrollShadow className="flex-1 p-4">
+        <ScrollShadow className="min-h-0 flex-1 p-3">
            {loadingLogs ? (
              <div className="flex justify-center py-10">
                 <Spinner label={t("common.loading")} />
@@ -500,9 +518,9 @@ export function LogManagementTool() {
                 <p>{t("logManagement.empty")}</p>
              </div>
            ) : (
-            <div className="space-y-3">
+            <div className="space-y-2">
                {filteredLogs.map((log) => (
-                 <div key={log.id} className="group relative p-4 rounded-xl border border-divider bg-content1 hover:bg-content2 transition-colors">
+                 <article key={log.id} className="group relative rounded-xl border border-default-200 bg-background p-3 transition-colors hover:border-default-300">
                     {/* Header */}
                     <div className="flex items-start justify-between gap-2 mb-2">
                         <div className="flex items-center gap-2">
@@ -512,7 +530,7 @@ export function LogManagementTool() {
                             </time>
                         </div>
                         
-                        <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <div className="flex items-center gap-1">
                             {/* Copy Message Button for non-method logs */}
                             {!log.method && (
                                 <Button
@@ -521,6 +539,7 @@ export function LogManagementTool() {
                                     variant="light"
                                     className="h-6 w-6 min-w-6"
                                     onPress={() => navigator.clipboard.writeText(log.message || '')}
+                                    aria-label={t("tools.encoder.copy")}
                                 >
                                     <Copy className="w-3 h-3 text-default-500" />
                                 </Button>
@@ -532,6 +551,7 @@ export function LogManagementTool() {
                                 color="danger"
                                 className="h-6 w-6 min-w-6"
                                 onClick={(e) => handleDeleteLog(log.id, e)}
+                                aria-label={t("logManagement.deleteLogTitle")}
                             >
                                 <Trash2 className="w-3 h-3" />
                             </Button>
@@ -634,7 +654,7 @@ export function LogManagementTool() {
                                 )}
 
                                 {/* Input */}
-                                <div className="group/input relative p-3 rounded bg-default-100/50 hover:bg-default-100 transition-colors">
+                                <div className="group/input relative rounded-lg border border-default-200 bg-default-50/45 p-3">
                                     <div className="text-xs text-default-400 font-semibold mb-1 select-none">{t('log.input')}</div>
                                     <div className="text-sm font-mono text-default-600 break-all pr-8 whitespace-pre-wrap">
                                         {renderHighlightedText(log.input)}
@@ -643,15 +663,16 @@ export function LogManagementTool() {
                                         isIconOnly
                                         size="sm"
                                         variant="light"
-                                        className="absolute top-2 right-2 h-6 w-6 min-w-6 opacity-0 group-hover/input:opacity-100"
+                                        className="absolute right-2 top-2 h-6 w-6 min-w-6"
                                         onPress={() => navigator.clipboard.writeText(log.input || '')}
+                                        aria-label={`${t("tools.encoder.copy")} ${t("log.input")}`}
                                     >
                                         <Copy className="w-3 h-3 text-default-400" />
                                     </Button>
                                 </div>
 
                                 {/* Output */}
-                                <div className="group/output relative p-3 rounded bg-default-100/50 hover:bg-default-100 transition-colors">
+                                <div className="group/output relative rounded-lg border border-default-200 bg-default-50/45 p-3">
                                     <div className="text-xs text-success/80 font-semibold mb-1 select-none">{t('log.output')}</div>
                                     <div className="text-sm font-mono text-foreground break-all pr-8 whitespace-pre-wrap">
                                         {renderHighlightedText(log.output)}
@@ -660,8 +681,9 @@ export function LogManagementTool() {
                                         isIconOnly
                                         size="sm"
                                         variant="light"
-                                        className="absolute top-2 right-2 h-6 w-6 min-w-6 opacity-0 group-hover/output:opacity-100"
+                                        className="absolute right-2 top-2 h-6 w-6 min-w-6"
                                         onPress={() => navigator.clipboard.writeText(log.output || '')}
+                                        aria-label={`${t("tools.encoder.copy")} ${t("log.output")}`}
                                     >
                                         <Copy className="w-3 h-3 text-default-400" />
                                     </Button>
@@ -688,12 +710,12 @@ export function LogManagementTool() {
                             </div>
                         )}
                     </div>
-                 </div>
+                 </article>
                ))}
              </div>
            )}
         </ScrollShadow>
-      </Card>
+      </section>
 
       <Modal isOpen={isOpen} onOpenChange={onOpenChange} backdrop="blur">
         <ModalContent>
