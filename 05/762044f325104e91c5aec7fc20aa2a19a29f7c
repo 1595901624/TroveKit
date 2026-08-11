@@ -1,0 +1,111 @@
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.0.8",
+  "base_commit_sha": "05762044f325104e91c5aec7fc20aa2a19a29f7c",
+  "prompts": {
+    "da0e50ae28a62e5d": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019fec42-fb53-7562-9e92-d27af7a7f79f",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "luhaoyu <haoyu3@163.com>",
+      "messages": [],
+      "total_additions": 0,
+      "total_deletions": 0,
+      "accepted_lines": 109,
+      "overriden_lines": 0
+    }
+  },
+  "commit_stats": {
+    "git_diff_added_lines": 239,
+    "git_diff_deleted_lines": 240,
+    "ai_additions": 0,
+    "ai_accepted": 0,
+    "BYMC": 233,
+    "mixed_additions": 0,
+    "BYAC": 0,
+    "BYRC": 0,
+    "per_file": {
+      "src/tools/GeneratorTool.tsx": {
+        "BYMC": [
+          "30-33"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/generator/UuidTab.tsx": {
+        "BYMC": [
+          "2",
+          "122-124",
+          "131-132",
+          "136-137",
+          "139-142",
+          "144-146",
+          "150-152",
+          "155-160",
+          "162",
+          "167",
+          "169-174",
+          "176-184",
+          "187-193",
+          "197-215",
+          "218",
+          "221",
+          "223"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/qr/QrTool.tsx": {
+        "BYMC": [
+          "88-108",
+          "111",
+          "117-118",
+          "120-122",
+          "124",
+          "126-128",
+          "132-133",
+          "447-470",
+          "472-475",
+          "477-493",
+          "496-504",
+          "506-514",
+          "516-520",
+          "522-526",
+          "528-530",
+          "533-538",
+          "546",
+          "548-551",
+          "554-583",
+          "585"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/qr/TextTab.tsx": {
+        "BYMC": [
+          "14",
+          "23-24"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/qr/WifiTab.tsx": {
+        "BYMC": [
+          "27",
+          "42",
+          "44",
+          "46",
+          "48"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      }
+    }
+  },
+  "ipa_account": "luhaoyu",
+  "commit_timestamp": 1786461080,
+  "requirement_id": ""
+}
