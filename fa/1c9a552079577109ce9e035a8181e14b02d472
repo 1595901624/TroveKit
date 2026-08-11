@@ -1,0 +1,67 @@
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.0.8",
+  "base_commit_sha": "fa1c9a552079577109ce9e035a8181e14b02d472",
+  "prompts": {
+    "da0e50ae28a62e5d": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019fec42-fb53-7562-9e92-d27af7a7f79f",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "luhaoyu <haoyu3@163.com>",
+      "messages": [],
+      "total_additions": 0,
+      "total_deletions": 0,
+      "accepted_lines": 119,
+      "overriden_lines": 0
+    }
+  },
+  "commit_stats": {
+    "git_diff_added_lines": 7,
+    "git_diff_deleted_lines": 7,
+    "ai_additions": 0,
+    "ai_accepted": 0,
+    "BYMC": 7,
+    "mixed_additions": 0,
+    "BYAC": 0,
+    "BYRC": 0,
+    "per_file": {
+      "src/tools/encoder/EncoderWorkbench.tsx": {
+        "BYMC": [
+          "154",
+          "208"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/encoder/JwtTab.tsx": {
+        "BYMC": [
+          "453"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/encoder/UrlTab.tsx": {
+        "BYMC": [
+          "245",
+          "303"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/hash/HashWorkbench.tsx": {
+        "BYMC": [
+          "118",
+          "158"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      }
+    }
+  },
+  "ipa_account": "luhaoyu",
+  "commit_timestamp": 1786429622,
+  "requirement_id": ""
+}
