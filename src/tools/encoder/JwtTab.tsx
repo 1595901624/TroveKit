@@ -1,10 +1,9 @@
 import { useState, useEffect, useRef } from "react"
 import { Textarea, Button, ButtonGroup, Input, Select, SelectItem } from "../../components/ui/base-ui"
-import Editor from "../../components/MonacoEditor"
+import CodeEditor from "../../components/CodeEditor"
 import { Copy, Trash2, ArrowDown, ArrowRight, ShieldCheck, ShieldAlert, KeyRound, RefreshCw, Wand2 } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import * as jose from "jose"
-import { useTheme } from "../../components/theme-provider"
 import { useLog } from "../../contexts/LogContext"
 import { useStorageLoader } from "../../hooks/usePersistentState"
 import { setStoredItem, removeStoredItem } from "../../lib/store"
@@ -51,7 +50,6 @@ const EXAMPLE_PAYLOADS = [
 
 export function JwtTab() {
   const { t } = useTranslation()
-  const { theme } = useTheme()
   const { addLog } = useLog()
   
   const [savedState, isLoaded] = useStorageLoader<any>(STORAGE_KEY)
@@ -493,13 +491,12 @@ export function JwtTab() {
               </Button>
             </div>
             <div className="min-h-0 flex-1 border-t border-default-200 bg-default-50/30">
-              <Editor
-                height="100%"
-                defaultLanguage="json"
+              <CodeEditor
+                language="json"
                 value={header}
-                onChange={(value) => setHeader(value || "")}
-                theme={theme === "dark" ? "vs-dark" : "light"}
-                options={{ minimap: { enabled: false }, fontSize: 13, lineNumbers: "off", folding: false, wordWrap: "on", scrollBeyondLastLine: false }}
+                onChange={setHeader}
+                lineNumbers={false}
+                ariaLabel={t("tools.encoder.header")}
               />
             </div>
           </div>
@@ -512,13 +509,12 @@ export function JwtTab() {
               </Button>
             </div>
             <div className="min-h-0 flex-1 border-t border-default-200 bg-default-50/30">
-              <Editor
-                height="100%"
-                defaultLanguage="json"
+              <CodeEditor
+                language="json"
                 value={payload}
-                onChange={(value) => setPayload(value || "")}
-                theme={theme === "dark" ? "vs-dark" : "light"}
-                options={{ minimap: { enabled: false }, fontSize: 13, lineNumbers: "off", folding: false, wordWrap: "on", scrollBeyondLastLine: false }}
+                onChange={setPayload}
+                lineNumbers={false}
+                ariaLabel={t("tools.encoder.payload")}
               />
             </div>
           </div>

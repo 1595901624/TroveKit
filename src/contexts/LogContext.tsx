@@ -282,7 +282,7 @@ export function LogProvider({ children }: { children: React.ReactNode }) {
     }, [])
 
   // IMPORTANT: Split UI state from log data so toggling the panel doesn't re-render
-  // every component that only needs addLog/refresh/etc (e.g., Monaco editors).
+  // every component that only needs addLog/refresh/etc (e.g., code editors).
   const uiValue = useMemo<LogUIContextType>(() => ({
     isOpen,
     setIsOpen,

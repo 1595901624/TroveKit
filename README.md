@@ -39,7 +39,7 @@ Built with [Tauri v2](https://v2.tauri.app/) + [React](https://react.dev/), Trov
 - Logs & toasts: history, error feedback, copy buttons with **note functionality**
 - **State Persistence**: auto-save tool states (never lose your input)
 - **Regex Tool**: Real-time regular expression testing with syntax highlighting, match groups, highlighting and flag support (updated in v0.3.0).
-- **Memory optimization**: tool pages, Monaco editors, logs, persisted state, and regex results are loaded and retained more conservatively in v0.3.0.
+- **Memory optimization**: tool pages, CodeMirror editors, logs, persisted state, and regex results are loaded and retained more conservatively in v0.3.0.
 
 ## 🧰 Utilities
 
@@ -104,7 +104,7 @@ Built with [Tauri v2](https://v2.tauri.app/) + [React](https://react.dev/), Trov
 ### ⚙️ Performance & Memory
 
 - Tool pages and tabs are mounted on demand, reducing hidden component trees and editor instances.
-- Monaco editor loading is deferred until first use; editor models and view-state caches are explicitly released when tools unmount.
+- CodeMirror loading is deferred until first use; editor views and observers are explicitly released when tools unmount.
 - Tool state is persisted in Tauri Store only; old `localStorage` state is migrated once and then removed to avoid duplicate large text caches.
 - Regex match rendering is capped at 1,000 items, and replace-all counting no longer allocates a full match array.
 

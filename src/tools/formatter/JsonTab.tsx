@@ -1,7 +1,6 @@
-import { useState, useRef, useEffect } from "react"
+import { useState, useEffect } from "react"
 import { Button, Card, CardBody, ButtonGroup } from "../../components/ui/base-ui"
-import Editor from "../../components/MonacoEditor"
-import type { OnMount } from "@monaco-editor/react"
+import CodeEditor from "../../components/CodeEditor"
 import { Copy, Trash2, CheckCircle2, AlertCircle, Minimize2, Maximize2, AlignLeft, Network, ChevronsUpDown, ChevronsDownUp, BookOpen } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import ReactJson from 'react-json-view'
@@ -23,15 +22,6 @@ export function JsonTab() {
   const [viewMode, setViewMode] = useState<"text" | "graph">("text")
   const [collapsed, setCollapsed] = useState<boolean | number>(false)
 
-  const editorRef = useRef<any>(null)
-
-  useEffect(() => {
-    return () => {
-      // Monaco 实例由封装组件 dispose，这里只断开页面侧引用，避免卸载后继续持有旧 editor。
-      editorRef.current = null
-    }
-  }, [])
-
   useEffect(() => {
     if (isLoaded && savedState) {
         if (savedState.code) setCode(savedState.code)
@@ -45,17 +35,6 @@ export function JsonTab() {
       setStoredItem(STORAGE_KEY, JSON.stringify({ code, viewMode, collapsed }))
     }
   }, [code, viewMode, collapsed, isLoaded])
-
-  const handleEditorDidMount: OnMount = (editor, monaco) => {
-    editorRef.current = editor
-    // Configure JSON defaults if needed
-    monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
-      validate: true,
-      allowComments: false,
-      schemas: [],
-      enableSchemaRequest: false,
-    });
-  }
 
   // --- Editor Operations ---
   const handleFormatEditor = () => {
@@ -306,22 +285,14 @@ export function JsonTab() {
 
       <div className="flex-1 min-h-0 border border-default-200 rounded-xl overflow-hidden shadow-sm relative group bg-content1 flex flex-row">
         <div className={`h-full ${viewMode === "graph" ? "w-1/2 border-r border-default-200" : "w-full"}`}>
-            <Editor
-            height="100%"
-            defaultLanguage="json"
+            <CodeEditor
+            language="json"
             value={code}
-            onChange={(value) => setCode(value || "")}
-            onMount={handleEditorDidMount}
-            theme={theme === "dark" ? "vs-dark" : "light"}
-            options={{
-                minimap: { enabled: false },
-                fontSize: 14,
-                wordWrap: "on",
-                formatOnPaste: true,
-                formatOnType: true,
-                scrollBeyondLastLine: false,
-                padding: { top: 16, bottom: 16 },
-            }}
+            onChange={setCode}
+            fontSize={14}
+            contentPadding={16}
+            jsonDiagnostics
+            ariaLabel="JSON"
             />
         </div>
         

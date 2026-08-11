@@ -135,7 +135,7 @@ export function LogPanel() {
   }
 
   return (
-        // 性能优化：避免在 flex 布局里做 width 动画（会迫使主内容/Monaco 每帧重排）
+        // 性能优化：避免在 flex 布局里做 width 动画（会迫使主内容和代码编辑器每帧重排）
         // 改为覆盖式侧栏 + transform 动画（GPU 友好），并在动画期间禁用 backdrop blur（非常耗性能）。
         <motion.div
             initial={false}

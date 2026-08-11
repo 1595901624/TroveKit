@@ -17,9 +17,12 @@ import {
 import { defaultKeymap, history, historyKeymap, indentWithTab } from "@codemirror/commands"
 import { bracketMatching, HighlightStyle, syntaxHighlighting } from "@codemirror/language"
 import { searchKeymap } from "@codemirror/search"
-import { json } from "@codemirror/lang-json"
+import { json, jsonParseLinter } from "@codemirror/lang-json"
 import { xml } from "@codemirror/lang-xml"
 import { yaml } from "@codemirror/lang-yaml"
+import { css } from "@codemirror/lang-css"
+import { sql } from "@codemirror/lang-sql"
+import { linter } from "@codemirror/lint"
 import { tags } from "@lezer/highlight"
 import type { CodeEditorHandle, CodeEditorHighlight, CodeEditorLanguage, CodeEditorProps } from "./CodeEditor"
 
@@ -54,13 +57,14 @@ const highlightField = StateField.define<DecorationSet>({
   provide: (field) => EditorView.decorations.from(field),
 })
 
-const editorTheme = EditorView.theme({
+function createEditorTheme(fontSize: number, contentPadding: number) {
+  return EditorView.theme({
   "&": {
     height: "100%",
     minHeight: "0",
     color: "rgb(var(--foreground))",
     backgroundColor: "rgb(var(--content-1))",
-    fontSize: "13px",
+    fontSize: `${fontSize}px`,
   },
   "&.cm-focused": { outline: "none" },
   ".cm-scroller": {
@@ -71,10 +75,10 @@ const editorTheme = EditorView.theme({
   },
   ".cm-content": {
     minHeight: "100%",
-    padding: "12px 0",
+    padding: `${contentPadding}px 0`,
     caretColor: "rgb(var(--primary))",
   },
-  ".cm-line": { padding: "0 12px" },
+  ".cm-line": { padding: `0 ${contentPadding}px` },
   ".cm-gutters": {
     color: "rgb(var(--default-400))",
     backgroundColor: "rgb(var(--default-50))",
@@ -94,7 +98,8 @@ const editorTheme = EditorView.theme({
     backgroundColor: "rgb(var(--warning) / 0.24)",
     borderBottom: "1px solid rgb(var(--warning) / 0.8)",
   },
-})
+  })
+}
 
 const codeHighlightStyle = HighlightStyle.define([
   { tag: [tags.keyword, tags.operatorKeyword], color: "rgb(var(--secondary))" },
@@ -110,6 +115,8 @@ function languageExtension(language: CodeEditorLanguage): Extension {
   if (language === "json") return json()
   if (language === "xml") return xml()
   if (language === "yaml") return yaml()
+  if (language === "css") return css()
+  if (language === "sql") return sql()
   return []
 }
 
@@ -120,6 +127,10 @@ const CodeMirrorEditorImpl = forwardRef<CodeEditorHandle, CodeEditorProps>(funct
     language = "plaintext",
     readOnly = false,
     highlights = [],
+    lineNumbers: showLineNumbers = true,
+    fontSize = 13,
+    contentPadding = 12,
+    jsonDiagnostics = false,
     ariaLabel = "Editor content",
     className = "",
   },
@@ -141,8 +152,7 @@ const CodeMirrorEditorImpl = forwardRef<CodeEditorHandle, CodeEditorProps>(funct
     const state = EditorState.create({
       doc: value,
       extensions: [
-        lineNumbers(),
-        highlightActiveLineGutter(),
+        ...(showLineNumbers ? [lineNumbers(), highlightActiveLineGutter()] : []),
         highlightSpecialChars(),
         history(),
         drawSelection(),
@@ -155,8 +165,9 @@ const CodeMirrorEditorImpl = forwardRef<CodeEditorHandle, CodeEditorProps>(funct
         EditorView.lineWrapping,
         keymap.of([...defaultKeymap, ...historyKeymap, ...searchKeymap, indentWithTab]),
         syntaxHighlighting(codeHighlightStyle),
-        editorTheme,
+        createEditorTheme(fontSize, contentPadding),
         highlightField,
+        ...(jsonDiagnostics ? [linter(jsonParseLinter())] : []),
         EditorView.contentAttributes.of({ "aria-label": ariaLabel }),
         languageCompartment.of(languageExtension(language)),
         readOnlyCompartment.of([EditorState.readOnly.of(readOnly), EditorView.editable.of(!readOnly)]),
@@ -170,10 +181,13 @@ const CodeMirrorEditorImpl = forwardRef<CodeEditorHandle, CodeEditorProps>(funct
     })
 
     const view = new EditorView({ state, parent: hostRef.current })
+    const resizeObserver = new ResizeObserver(() => view.requestMeasure())
+    resizeObserver.observe(hostRef.current)
     viewRef.current = view
     if (highlights.length > 0) view.dispatch({ effects: replaceHighlights.of(highlights) })
 
     return () => {
+      resizeObserver.disconnect()
       view.destroy()
       viewRef.current = null
     }

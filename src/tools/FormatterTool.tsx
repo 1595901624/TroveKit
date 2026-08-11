@@ -27,7 +27,7 @@ export function FormatterTool({ activeTab }: FormatterToolProps) {
     return <div className="flex items-center justify-center h-full text-default-500">{t("common.noFeatures")}</div>
   }
 
-  // 只挂载当前选中的 Tab 内容，尤其避免多个 Monaco 编辑器同时常驻。
+  // 只挂载当前选中的 Tab 内容，避免多个代码编辑器同时常驻。
   const activeTabConfig = visibleTabs.find(tab => tab.id === activeTab) ?? visibleTabs[0]
 
   return (

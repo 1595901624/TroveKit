@@ -1,6 +1,6 @@
 import { Suspense, forwardRef, lazy } from "react"
 
-export type CodeEditorLanguage = "plaintext" | "json" | "xml" | "yaml"
+export type CodeEditorLanguage = "plaintext" | "json" | "xml" | "yaml" | "css" | "sql"
 
 export interface CodeEditorHighlight {
   from: number
@@ -19,6 +19,10 @@ export interface CodeEditorProps {
   language?: CodeEditorLanguage
   readOnly?: boolean
   highlights?: CodeEditorHighlight[]
+  lineNumbers?: boolean
+  fontSize?: number
+  contentPadding?: number
+  jsonDiagnostics?: boolean
   ariaLabel?: string
   className?: string
 }

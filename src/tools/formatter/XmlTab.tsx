@@ -1,10 +1,8 @@
-import { useState, useRef, useEffect } from "react"
+import { useState, useEffect } from "react"
 import { Button, Card, CardBody, ButtonGroup } from "../../components/ui/base-ui"
-import Editor from "../../components/MonacoEditor"
-import type { OnMount } from "@monaco-editor/react"
+import CodeEditor from "../../components/CodeEditor"
 import { Copy, Trash2, CheckCircle2, AlertCircle, Minimize2, Maximize2, BookOpen } from "lucide-react"
 import { useTranslation } from "react-i18next"
-import { useTheme } from "../../components/theme-provider"
 import format from 'xml-formatter'
 import { getStoredItem, setStoredItem, removeStoredItem } from "../../lib/store"
 
@@ -12,21 +10,11 @@ const STORAGE_KEY = "xml-tool-state"
 
 export function XmlTab() {
   const { t } = useTranslation()
-  const { theme } = useTheme()
 
   const [code, setCode] = useState("")
   const [isValid, setIsValid] = useState<boolean | null>(null)
   const [errorMsg, setErrorMsg] = useState<string>("")
   const [isLoaded, setIsLoaded] = useState(false)
-
-  const editorRef = useRef<any>(null)
-
-  useEffect(() => {
-    return () => {
-      // Monaco 实例由封装组件 dispose，这里只断开页面侧引用，避免卸载后继续持有旧 editor。
-      editorRef.current = null
-    }
-  }, [])
 
   useEffect(() => {
     let mounted = true
@@ -53,10 +41,6 @@ export function XmlTab() {
   }, [code, isValid, errorMsg, isLoaded])
 
   // ... later in the file, replace clear handler (handled below)
-
-  const handleEditorDidMount: OnMount = (editor) => {
-    editorRef.current = editor
-  }
 
   const handleFormatEditor = () => {
     if (!code) return
@@ -175,22 +159,13 @@ export function XmlTab() {
 
       <div className="flex-1 min-h-0 border border-default-200 rounded-xl overflow-hidden shadow-sm relative group bg-content1 flex flex-row">
         <div className="w-full h-full">
-            <Editor
-            height="100%"
-            defaultLanguage="xml"
+            <CodeEditor
+            language="xml"
             value={code}
-            onChange={(value) => setCode(value || "")}
-            onMount={handleEditorDidMount}
-            theme={theme === "dark" ? "vs-dark" : "light"}
-            options={{
-                minimap: { enabled: false },
-                fontSize: 14,
-                wordWrap: "on",
-                formatOnPaste: true,
-                formatOnType: true,
-                scrollBeyondLastLine: false,
-                padding: { top: 16, bottom: 16 },
-            }}
+            onChange={setCode}
+            fontSize={14}
+            contentPadding={16}
+            ariaLabel="XML"
             />
         </div>
       </div>
