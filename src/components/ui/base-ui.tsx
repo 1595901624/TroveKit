@@ -294,9 +294,32 @@ export function ScrollShadow({ children, className, ...props }: AnyProps) {
   return <ScrollArea.Root {...native} className={cx("min-h-0 min-w-0 overflow-hidden", className)}><ScrollArea.Viewport className="h-full w-full"><ScrollArea.Content>{children}</ScrollArea.Content></ScrollArea.Viewport></ScrollArea.Root>
 }
 
-export function RadioGroup({ children, value, defaultValue, onValueChange, className, ...props }: RadioGroupProps) {
+export function RadioGroup({ children, value, defaultValue, onValueChange, className, label, ...props }: RadioGroupProps) {
   const { orientation: _orientation, size: _size, color: _color, ...native } = props
-  return <BaseRadioGroup {...native} value={value} defaultValue={defaultValue} onValueChange={onValueChange} className={cx("flex flex-wrap gap-3", className)}>{children}</BaseRadioGroup>
+  const accessibleLabel = native["aria-label"] ?? (typeof label === "string" ? label : undefined)
+  const group = (
+    <BaseRadioGroup
+      {...native}
+      aria-label={accessibleLabel}
+      value={value}
+      defaultValue={defaultValue}
+      onValueChange={onValueChange}
+      className={cx("flex flex-wrap gap-3", className)}
+    >
+      {children}
+    </BaseRadioGroup>
+  )
+
+  if (!label) return group
+
+  return (
+    <div className="flex min-h-8 shrink-0 items-center gap-2 rounded-lg border border-default-200 bg-background px-2.5">
+      <span className="whitespace-nowrap text-[11px] font-medium text-default-500">
+        {label}
+      </span>
+      {group}
+    </div>
+  )
 }
 export function Radio({ children, value, className, isDisabled, ...props }: AnyProps) {
   const { size: _size, color: _color, ...native } = props
