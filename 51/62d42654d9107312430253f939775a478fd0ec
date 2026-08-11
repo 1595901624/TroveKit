@@ -1,0 +1,49 @@
+src/components/Sidebar.tsx
+  8df0dfbee926a8a2 145-146,154,163,171-172,176-179
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.0.8",
+  "base_commit_sha": "5162d42654d9107312430253f939775a478fd0ec",
+  "prompts": {
+    "8df0dfbee926a8a2": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019ff183-210c-7821-86da-254c78eb401c",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "luhaoyu <haoyu3@163.com>",
+      "messages": [],
+      "total_additions": 10,
+      "total_deletions": 6,
+      "accepted_lines": 10,
+      "overriden_lines": 0
+    }
+  },
+  "commit_stats": {
+    "git_diff_added_lines": 10,
+    "git_diff_deleted_lines": 6,
+    "ai_additions": 10,
+    "ai_accepted": 10,
+    "BYMC": 0,
+    "mixed_additions": 0,
+    "BYAC": 10,
+    "BYRC": 0,
+    "per_file": {
+      "src/components/Sidebar.tsx": {
+        "BYMC": [],
+        "BYAC": [
+          "145-146",
+          "154",
+          "163",
+          "171-172",
+          "176-179"
+        ],
+        "BYRC": []
+      }
+    }
+  },
+  "ipa_account": "luhaoyu",
+  "commit_timestamp": 1786465987,
+  "requirement_id": ""
+}
