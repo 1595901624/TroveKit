@@ -24,7 +24,7 @@ export function WifiTab({ value, onChange }: WifiTabProps) {
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
       <Input
         label={t("tools.qr.ssid")}
         variant="bordered"
@@ -39,12 +39,13 @@ export function WifiTab({ value, onChange }: WifiTabProps) {
             value={value.password || ""}
             onValueChange={(v) => update("password", v)}
             type={isVisible ? "text" : "password"}
+            isDisabled={value.encryption === "nopass"}
             endContent={
-              <Button isIconOnly size="sm" variant="light" className="h-7 min-w-7 w-7" onPress={() => setIsVisible(!isVisible)} aria-label={isVisible ? "Hide password" : "Show password"}>
+              <Button isIconOnly size="sm" variant="light" className="h-7 min-w-7 w-7" onPress={() => setIsVisible(!isVisible)} aria-label={t("tools.qr.password")}>
                 {isVisible ? (
-                  <EyeOff className="text-2xl text-default-400 pointer-events-none" />
+                  <EyeOff className="h-4 w-4 text-default-400 pointer-events-none" />
                 ) : (
-                  <Eye className="text-2xl text-default-400 pointer-events-none" />
+                  <Eye className="h-4 w-4 text-default-400 pointer-events-none" />
                 )}
               </Button>
             }

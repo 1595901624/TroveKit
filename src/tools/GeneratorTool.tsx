@@ -27,10 +27,10 @@ export function GeneratorTool({ activeTab }: GeneratorToolProps) {
   const activeTabConfig = visibleTabs.find(tab => tab.id === activeTab) ?? visibleTabs[0]
 
   return (
-    <div className="h-full min-h-0 overflow-y-auto pb-2">
-        <div className="h-full">
-          {activeTabConfig.component}
-        </div>
+    <div className="h-full min-h-0 overflow-hidden">
+      <div className="h-full min-h-0">
+        {activeTabConfig.component}
+      </div>
     </div>
   )
 }

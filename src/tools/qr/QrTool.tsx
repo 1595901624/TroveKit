@@ -85,57 +85,52 @@ function ColorPicker({ label, color, onChange, t }: ColorPickerProps) {
     };
 
     return (
-        <div className="flex flex-col gap-2 p-2 border border-default-200 rounded-lg bg-default-50/50">
-            <div className="flex items-center justify-between">
-                <span className="text-[10px] font-medium text-default-600">{label}</span>
-                <Popover placement="bottom" showArrow={true}>
-                    <PopoverTrigger>
-                        <Button
-                            isIconOnly
-                            size="sm"
-                            variant="bordered"
-                            className="w-6 min-w-6 h-6 rounded-full border-default-300 p-0 shadow-sm transition-transform hover:scale-110 active:scale-95"
-                            style={{ backgroundColor: color }}
-                            aria-label={t("tools.qr.pickColor")}
-                        />
-                    </PopoverTrigger>
-                    <PopoverContent className="p-0 border-none shadow-xl">
-                        <HexAlphaColorPicker color={color} onChange={onChange} />
-                    </PopoverContent>
-                </Popover>
-            </div>
-            
-            <div className="space-y-1.5">
-                <Input 
-                    size="sm" 
-                    label={t("tools.qr.hexa")} 
-                    value={hexInput} 
-                    onValueChange={handleHexChange} 
+        <Popover placement="bottom" showArrow={true}>
+            <PopoverTrigger>
+                <Button
+                    variant="bordered"
+                    className="h-11 w-full justify-start gap-2.5 bg-background px-2.5"
+                    aria-label={`${t("tools.qr.pickColor")}: ${label}`}
+                >
+                    <span className="h-6 w-6 shrink-0 rounded-md border border-default-300 shadow-sm" style={{ backgroundColor: color }} />
+                    <span className="min-w-0 text-left">
+                        <span className="block text-[11px] font-medium text-default-600">{label}</span>
+                        <span className="block truncate font-mono text-[10px] text-default-400">{color.toUpperCase()}</span>
+                    </span>
+                </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-[270px] space-y-3 p-3 shadow-xl">
+                <HexAlphaColorPicker color={color} onChange={onChange} className="!w-full" />
+                <Input
+                    size="sm"
+                    label={t("tools.qr.hexa")}
+                    value={hexInput}
+                    onValueChange={handleHexChange}
                     classNames={{ input: "font-mono text-xs", label: "text-xs" }}
                 />
-                <div className="grid grid-cols-2 gap-1">
+                <div className="grid grid-cols-4 gap-1.5">
                     {[
                         { key: 'r', label: t("tools.qr.red") },
                         { key: 'g', label: t("tools.qr.green") },
                         { key: 'b', label: t("tools.qr.blue") },
                         { key: 'a', label: t("tools.qr.alpha") }
-                    ].map(({ key, label }) => (
-                         <Input 
+                    ].map(({ key, label: channelLabel }) => (
+                        <Input
                             key={key}
-                            size="sm" 
-                            label={label} 
-                            type="number" 
+                            size="sm"
+                            label={channelLabel}
+                            type="number"
                             step={key === 'a' ? 0.1 : 1}
-                            max={key === 'a' ? 1 : 255} 
+                            max={key === 'a' ? 1 : 255}
                             min={0}
-                            value={key === 'a' ? rgba.a.toFixed(2) : rgba[key as keyof typeof rgba].toString()} 
-                            onValueChange={(v) => handleRgbaChange(key as keyof typeof rgba, v)}
-                            classNames={{ input: "text-xs", label: "text-xs" }}
+                            value={key === 'a' ? rgba.a.toFixed(2) : rgba[key as keyof typeof rgba].toString()}
+                            onValueChange={(value) => handleRgbaChange(key as keyof typeof rgba, value)}
+                            classNames={{ input: "px-1 text-center text-[10px]", label: "text-[10px]" }}
                         />
                     ))}
                 </div>
-            </div>
-        </div>
+            </PopoverContent>
+        </Popover>
     )
 }
 
@@ -449,147 +444,145 @@ export function QrTool() {
   }
 
   return (
-    <div className="flex flex-col lg:flex-row h-full gap-4 overflow-hidden">
-      {/* Left Panel: Controls */}
-      <div className="flex-1 flex flex-col min-w-0 overflow-y-auto pr-2 space-y-4 scrollbar-hide">
-        
-        {/* Mode Selection & Reset */}
-        <div className="flex items-center justify-between">
-            <ButtonGroup variant="flat">
-                <Button
-                    onPress={() => setSelectedMode("text")}
-                    color={selectedMode === "text" ? "primary" : "default"}
-                    startContent={<Type className="w-4 h-4" />}
-                >
-                    {t("tools.qr.text")}
-                </Button>
-                <Button
-                    onPress={() => setSelectedMode("wifi")}
-                    color={selectedMode === "wifi" ? "primary" : "default"}
-                    startContent={<Wifi className="w-4 h-4" />}
-                >
-                    {t("tools.qr.wifi")}
-                </Button>
-            </ButtonGroup>
-            <Button size="sm" variant="light" color="warning" onPress={handleReset} startContent={<RotateCcw className="w-3 h-3" />}>
-                 {t("tools.qr.reset")}
-            </Button>
-        </div>
-        
-        {/* Content Section */}
-        <div className="p-1">
-             {selectedMode === "text" && <TextTab value={text} onChange={handleTextChange} />}
-             {selectedMode === "wifi" && <WifiTab value={wifi} onChange={setWifi} />}
-        </div>
+    <div className="flex h-full min-h-0 flex-col gap-3 overflow-hidden">
+      <div className="flex min-h-[46px] shrink-0 flex-wrap items-center gap-2 rounded-xl border border-default-200 bg-default-50/70 p-1.5">
+        <ButtonGroup size="sm" variant="light" className="rounded-lg border border-default-200 bg-background p-0.5">
+          <Button
+            size="sm"
+            color={selectedMode === "text" ? "primary" : "default"}
+            variant={selectedMode === "text" ? "flat" : "light"}
+            className="h-7 px-3"
+            onPress={() => setSelectedMode("text")}
+            startContent={<Type className="h-4 w-4" />}
+          >
+            {t("tools.qr.text")}
+          </Button>
+          <Button
+            size="sm"
+            color={selectedMode === "wifi" ? "primary" : "default"}
+            variant={selectedMode === "wifi" ? "flat" : "light"}
+            className="h-7 px-3"
+            onPress={() => setSelectedMode("wifi")}
+            startContent={<Wifi className="h-4 w-4" />}
+          >
+            {t("tools.qr.wifi")}
+          </Button>
+        </ButtonGroup>
 
-        {/* Configuration Section */}
-        <div className="space-y-3 border-t border-divider pt-3">
-             <h3 className="text-[10px] font-semibold text-default-400 uppercase tracking-wider">{t("settings.title")}</h3>
-             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                 <Select 
-                    label={t("tools.qr.correction")} 
-                    size="sm" 
-                    variant="bordered"
-                    selectedKeys={[correction]}
-                    onChange={(e) => setCorrection(e.target.value as any)}
-                 >
-                    <SelectItem key="L">{t("tools.qr.low")}</SelectItem>
-                    <SelectItem key="M">{t("tools.qr.medium")}</SelectItem>
-                    <SelectItem key="Q">{t("tools.qr.quartile")}</SelectItem>
-                    <SelectItem key="H">{t("tools.qr.high")}</SelectItem>
-                 </Select>
+        <div className="hidden h-5 w-px bg-default-200 sm:block" />
+        <Switch size="sm" isSelected={realTime} onValueChange={setRealTime} className="h-8 rounded-lg border border-default-200 bg-background px-3">
+          {t("tools.qr.realtime")}
+        </Switch>
 
-                 <div className="flex items-center gap-2 border border-default-200 rounded-xl px-3 bg-default-50/50 h-10">
-                    {logo ? (
-                        <div className="flex items-center gap-2 w-full justify-between">
-                            <img src={logo} alt={t("tools.qr.logoAlt")} className="w-6 h-6 object-contain" />
-                            <Button isIconOnly size="sm" variant="light" color="danger" onPress={() => setLogo("")}>
-                                <X className="w-3 h-3" />
-                            </Button>
-                        </div>
-                    ) : (
-                        <Button 
-                            variant="light" 
-                            size="sm"
-                            className="w-full justify-start text-default-500 px-0" 
-                            startContent={<Upload className="w-3 h-3" />}
-                            onPress={handleLogoSelect}
-                        >
-                            {t("tools.qr.uploadLogo")}
-                        </Button>
-                    )}
-                 </div>
+        <Button
+          size="sm"
+          variant="light"
+          className="ml-auto h-8 text-default-500"
+          onPress={handleReset}
+          startContent={<RotateCcw className="h-4 w-4" />}
+        >
+          {t("tools.qr.reset")}
+        </Button>
+      </div>
+
+      <div className="grid min-h-0 flex-1 grid-rows-[minmax(0,1fr)_auto] overflow-hidden rounded-xl border border-default-200 bg-background lg:grid-cols-[minmax(420px,1fr)_360px] lg:grid-rows-1">
+        <section className="min-h-0 min-w-0 overflow-y-auto" aria-label={t("tools.qr.content")}>
+          <div className="space-y-5 p-4">
+            <div className="space-y-2">
+              {selectedMode === "text" && <TextTab value={text} onChange={handleTextChange} />}
+              {selectedMode === "wifi" && <WifiTab value={wifi} onChange={setWifi} />}
             </div>
-        </div>
 
-        {/* Style Section */}
-        <div className="space-y-3 border-t border-divider pt-3 pb-8">
-            <h3 className="text-[10px] font-semibold text-default-400 uppercase tracking-wider">{t("tools.qr.style")}</h3>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div className="space-y-3 border-t border-default-200 pt-4">
+              <h2 className="text-sm font-semibold text-foreground">{t("settings.title")}</h2>
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                <Select
+                  label={t("tools.qr.correction")}
+                  size="sm"
+                  variant="bordered"
+                  selectedKeys={[correction]}
+                  onChange={(event) => setCorrection(event.target.value as typeof correction)}
+                >
+                  <SelectItem key="L">{t("tools.qr.low")}</SelectItem>
+                  <SelectItem key="M">{t("tools.qr.medium")}</SelectItem>
+                  <SelectItem key="Q">{t("tools.qr.quartile")}</SelectItem>
+                  <SelectItem key="H">{t("tools.qr.high")}</SelectItem>
+                </Select>
+
+                <div className="flex flex-col gap-1">
+                  <span className="px-0.5 text-[11px] text-default-500">{t("tools.qr.logo")}</span>
+                  <div className="flex h-8 items-center rounded-lg border border-default-200 bg-background px-1.5">
+                    {logo ? (
+                      <>
+                        <img src={logo} alt={t("tools.qr.logoAlt")} className="h-6 w-6 shrink-0 object-contain" />
+                        <span className="min-w-0 flex-1 truncate px-2 text-xs text-default-500">{t("tools.qr.logo")}</span>
+                        <Button isIconOnly size="sm" variant="light" className="h-7 min-w-7 text-danger" onPress={() => setLogo("")} title={t("tools.qr.removeLogo")}>
+                          <X className="h-4 w-4" />
+                        </Button>
+                      </>
+                    ) : (
+                      <Button variant="light" size="sm" className="h-7 w-full justify-start px-1.5 text-default-500" startContent={<Upload className="h-4 w-4" />} onPress={handleLogoSelect}>
+                        {t("tools.qr.uploadLogo")}
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-3 border-t border-default-200 pt-4">
+              <div>
+                <h2 className="text-sm font-semibold text-foreground">{t("tools.qr.style")}</h2>
+                <p className="mt-0.5 text-[11px] text-default-400">{t("tools.qr.pickColor")}</p>
+              </div>
+              <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
                 <ColorPicker label={t("tools.qr.dots")} color={qrColor} onChange={setQrColor} t={t} />
                 <ColorPicker label={t("tools.qr.background")} color={bgColor} onChange={setBgColor} t={t} />
                 <ColorPicker label={t("tools.qr.corners")} color={cornersColor} onChange={setCornersColor} t={t} />
                 <ColorPicker label={t("tools.qr.cornerDots")} color={dotsColor} onChange={setDotsColor} t={t} />
-            </div>
-        </div>
-      </div>
-
-      {/* Right Panel: Preview & Actions */}
-      <div className="flex-none w-full lg:w-[350px] flex flex-col gap-4">
-          {/* Actions Bar (Moved from Left) */}
-          <div className="bg-default-50/50 p-4 rounded-xl border border-default-200 space-y-4">
-             {/* Row 1: Size & Realtime */}
-             <div className="flex items-center justify-between">
-                 <div className="flex items-center gap-2">
-                    <span className="text-xs text-default-600">{t("tools.qr.width")}</span>
-                    <Input 
-                        type="number" 
-                        size="sm" 
-                        variant="bordered"
-                        value={width.toString()} 
-                        onValueChange={(v) => setWidth(Number(v))}
-                        className="w-20"
-                        classNames={{ input: "text-right" }}
-                    />
-                 </div>
-                 <Switch size="sm" isSelected={realTime} onValueChange={setRealTime}>
-                    <span className="text-xs text-default-600">{t("tools.qr.realtime")}</span>
-                 </Switch>
-             </div>
-
-             {/* Row 2: Actions */}
-             <div className="grid grid-cols-2 gap-2">
-                 <Button 
-                    className="w-full" 
-                    color="primary" 
-                    onPress={handleGenerate}
-                    isDisabled={realTime}
-                    startContent={<Zap className="w-4 h-4" />}
-                >
-                    {t("tools.qr.generate")}
-                </Button>
-                <Button 
-                    className="w-full" 
-                    color="secondary" 
-                    onPress={handleDownload}
-                    startContent={<Download className="w-4 h-4" />}
-                >
-                    {t("tools.qr.download")}
-                </Button>
-             </div>
-          </div>
-
-          {/* Preview Box */}
-          <div className="flex-1 bg-default-50/50 rounded-2xl border border-default-200 flex flex-col items-center justify-center p-6 relative min-h-[300px]">
-              <div className="absolute inset-0 bg-grid-slate-200/50 [mask-image:linear-gradient(0deg,white,rgba(255,255,255,0.6))] pointer-events-none" />
-              
-              <div className="bg-white p-4 rounded-xl shadow-lg border border-default-100 relative z-10 transition-all duration-300 hover:shadow-xl" ref={ref} />
-              
-              <div className="mt-4 text-center text-default-400 text-[10px] font-mono break-all px-4">
-                 {selectedMode === "wifi" ? t("tools.qr.wifiPreview", { ssid: wifi.ssid }) : t("tools.qr.preview")}
               </div>
+            </div>
           </div>
+        </section>
+
+        <section className="flex min-h-0 min-w-0 flex-col border-t border-default-200 bg-default-50/35 lg:border-l lg:border-t-0" aria-label={t("tools.qr.preview")}>
+          <div className="flex h-11 shrink-0 items-center justify-between gap-3 border-b border-default-200 bg-background px-3.5">
+            <h2 className="text-sm font-semibold text-foreground">{t("tools.qr.preview")}</h2>
+            <span className="text-[11px] text-default-400">250 × 250 SVG</span>
+          </div>
+
+          <div className="relative flex min-h-[290px] flex-1 flex-col items-center justify-center overflow-hidden p-5">
+            <div className="pointer-events-none absolute inset-0 bg-grid-slate-200/50 [mask-image:linear-gradient(0deg,white,rgba(255,255,255,0.6))]" />
+            <div className="relative z-10 rounded-xl border border-default-100 bg-white p-3 shadow-lg" ref={ref} />
+            <div className="relative z-10 mt-3 max-w-full truncate px-4 text-center font-mono text-[10px] text-default-400">
+              {selectedMode === "wifi" ? t("tools.qr.wifiPreview", { ssid: wifi.ssid }) : t("tools.qr.preview")}
+            </div>
+          </div>
+
+          <div className="shrink-0 space-y-3 border-t border-default-200 bg-background p-3">
+            <Input
+              type="number"
+              size="sm"
+              label={t("tools.qr.width")}
+              aria-label={t("tools.qr.width")}
+              value={width.toString()}
+              onValueChange={(value) => setWidth(Number(value))}
+              min={MIN_QR_SIZE}
+              max={MAX_QR_SIZE}
+              isInvalid={width < MIN_QR_SIZE || width > MAX_QR_SIZE}
+              classNames={{ input: "text-right font-mono text-xs", inputWrapper: "bg-background" }}
+              endContent={<span className="text-[10px] text-default-400">px</span>}
+            />
+            <div className="grid grid-cols-2 gap-2">
+              <Button variant="bordered" className="w-full" onPress={handleGenerate} isDisabled={realTime} startContent={<Zap className="h-4 w-4" />}>
+                {t("tools.qr.generate")}
+              </Button>
+              <Button color="primary" className="w-full" onPress={handleDownload} startContent={<Download className="h-4 w-4" />}>
+                {t("tools.qr.download")}
+              </Button>
+            </div>
+          </div>
+        </section>
       </div>
 
       {/* Hidden container for download generation */}

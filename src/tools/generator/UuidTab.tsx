@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react"
-import { Button, Input, Switch, RadioGroup, Radio, Textarea } from "../../components/ui/base-ui"
+import { Button, ButtonGroup, Input, Switch, Textarea } from "../../components/ui/base-ui"
 import { Copy, Trash2, RefreshCw } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { useLog } from "../../contexts/LogContext"
@@ -119,104 +119,108 @@ export function UuidTab() {
     return uuids.map(uuid => formatUuid(uuid, type, isUppercase, showHyphens)).join("\n")
   }, [uuids, type, showHyphens, isUppercase])
 
+  const parsedCount = Number.parseInt(count, 10)
+  const canGenerate = Number.isFinite(parsedCount) && parsedCount > 0
+
   const copyToClipboard = () => {
     if (!formattedOutput) return
     navigator.clipboard.writeText(formattedOutput)
   }
 
   return (
-    <div className="flex flex-col h-full gap-4">
-      <div className="flex flex-wrap items-end gap-4 p-4 bg-default-50 rounded-xl">
+    <div className="flex h-full min-h-0 flex-col gap-3 overflow-hidden">
+      <div className="flex min-h-[58px] shrink-0 flex-wrap items-end gap-2 rounded-xl border border-default-200 bg-default-50/70 p-2">
         <Input
           type="number"
           label={t("tools.generator.count")}
-          placeholder="1-5000"
+          aria-label={t("tools.generator.count")}
+          placeholder="1–5000"
           value={count}
-          onValueChange={(v) => {
-            // Enforce limits
-            if (v === "") {
-                setCount("")
-                return
+          onValueChange={(value) => {
+            if (value === "") {
+              setCount("")
+              return
             }
-            let n = parseInt(v)
-            if (n > 5000) n = 5000
-            setCount(n.toString())
+            let next = Number.parseInt(value, 10)
+            if (next > 5000) next = 5000
+            setCount(next.toString())
           }}
           min={1}
           max={5000}
-          className="w-32"
-          variant="bordered"
+          isInvalid={count !== "" && !canGenerate}
+          className="w-28 shrink-0"
+          classNames={{ inputWrapper: "bg-background" }}
           size="sm"
         />
-        
-        <Button 
-          color="primary" 
+
+        <Button
+          size="sm"
+          color="primary"
+          className="h-8 shrink-0"
+          isDisabled={!canGenerate}
           onPress={handleGenerate}
-          startContent={<RefreshCw className="w-4 h-4" />}
-          className="text-sm"
+          startContent={<RefreshCw className="h-4 w-4" />}
         >
           {t("tools.generator.generate")}
         </Button>
 
-        <div className="w-px h-8 bg-default-300 mx-2"></div>
+        <div className="hidden h-5 w-px bg-default-200 sm:block" />
 
-        <div className="flex flex-col gap-2">
-            <RadioGroup
-                orientation="horizontal"
-                value={type}
-                onValueChange={setType}
-                label={t("tools.generator.type")}
+        <div className="flex min-w-0 flex-col gap-1">
+          <span className="px-0.5 text-[11px] leading-none text-default-500">{t("tools.generator.type")}</span>
+          <ButtonGroup size="sm" variant="light" className="min-w-0 rounded-lg border border-default-200 bg-background p-0.5">
+            {["string", "hex", "base64", "binary"].map((format) => (
+              <Button
+                key={format}
                 size="sm"
-                className="text-tiny"
-            >
-                <Radio value="string">String</Radio>
-                <Radio value="hex">Hex</Radio>
-                <Radio value="base64">Base64</Radio>
-                <Radio value="binary">Binary</Radio>
-            </RadioGroup>
+                color={type === format ? "primary" : "default"}
+                variant={type === format ? "flat" : "light"}
+                className="h-7 min-w-0 px-2.5 text-xs"
+                onPress={() => setType(format)}
+              >
+                {format === "string" ? "String" : format === "base64" ? "Base64" : format === "binary" ? "Binary" : "Hex"}
+              </Button>
+            ))}
+          </ButtonGroup>
         </div>
 
-        <div className="flex flex-col gap-2 justify-center">
-             <Switch 
-                size="sm" 
-                isSelected={isUppercase} 
-                onValueChange={setIsUppercase}
-                isDisabled={type === "base64" || type === "binary"}
-            >
-                {t("tools.generator.uppercase")}
-            </Switch>
-             <Switch 
-                size="sm" 
-                isSelected={showHyphens} 
-                onValueChange={setShowHyphens}
-                isDisabled={type !== "string"}
-            >
-                {t("tools.generator.hyphens")}
-            </Switch>
+        <div className="ml-auto flex h-8 shrink-0 items-center gap-4 rounded-lg border border-default-200 bg-background px-3">
+          <Switch size="sm" isSelected={isUppercase} onValueChange={setIsUppercase} isDisabled={type === "base64" || type === "binary"}>
+            {t("tools.generator.uppercase")}
+          </Switch>
+          <Switch size="sm" isSelected={showHyphens} onValueChange={setShowHyphens} isDisabled={type !== "string"}>
+            {t("tools.generator.hyphens")}
+          </Switch>
         </div>
       </div>
 
-      <div className="flex-1 min-h-0 relative group">
-        <Textarea
-            classNames={{
-                base: "h-full",
-                input: "h-full font-mono resize-none",
-                inputWrapper: "h-full bg-default-100/50 hover:bg-default-100 focus-within:bg-background"
-            }}
+      <section className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-xl border border-default-200 bg-background" aria-labelledby="uuid-output-heading">
+        <div className="flex h-11 shrink-0 items-center justify-between gap-3 border-b border-default-200 px-3.5">
+          <div className="flex min-w-0 items-baseline gap-3">
+            <h2 id="uuid-output-heading" className="shrink-0 text-sm font-semibold text-foreground">{t("tools.encoder.output")}</h2>
+            <span className="truncate text-[11px] text-default-400">{uuids.length} UUID · {formattedOutput.length} {t("tools.formatter.characters")}</span>
+          </div>
+          <div className="flex shrink-0 items-center gap-1">
+            <Button size="sm" variant="light" color="primary" className="h-8 px-2.5" isDisabled={!formattedOutput} onPress={copyToClipboard} startContent={<Copy className="h-4 w-4" />}>
+              {t("tools.encoder.copy")}
+            </Button>
+            <Button size="sm" variant="light" className="h-8 px-2.5 text-default-500 hover:bg-danger/10 hover:text-danger" isDisabled={!uuids.length} onPress={() => setUuids([])} startContent={<Trash2 className="h-4 w-4" />}>
+              {t("tools.encoder.clearAll")}
+            </Button>
+          </div>
+        </div>
+        <div className="min-h-0 flex-1 bg-default-50/35 p-3">
+          <Textarea
+            className="h-full"
+            classNames={{ base: "flex h-full flex-col", input: "h-full resize-none font-mono text-xs", inputWrapper: "min-h-0 flex-1 bg-background" }}
             value={formattedOutput}
             readOnly
+            disableAutosize
             minRows={12}
             placeholder={t("tools.generator.outputPlaceholder")}
-        />
-        <div className="absolute top-2 right-2 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-            <Button isIconOnly size="sm" variant="flat" onPress={copyToClipboard} title={t("tools.encoder.copy")}>
-                <Copy className="w-4 h-4" />
-            </Button>
-            <Button isIconOnly size="sm" variant="flat" color="danger" onPress={() => setUuids([])} title={t("tools.encoder.clear")}>
-                <Trash2 className="w-4 h-4" />
-            </Button>
+          />
         </div>
-      </div>
+      </section>
     </div>
   )
 }

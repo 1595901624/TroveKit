@@ -11,7 +11,7 @@ export function TextTab({ value, onChange }: TextTabProps) {
   const byteCount = new TextEncoder().encode(value).length
 
   return (
-    <div className="space-y-4">
+    <div>
       <Textarea
         label={t("tools.qr.content")}
         placeholder={t("tools.classical.inputPlaceholder")}
@@ -20,7 +20,8 @@ export function TextTab({ value, onChange }: TextTabProps) {
         value={value}
         onValueChange={onChange}
         classNames={{
-          inputWrapper: "bg-default-100/50 hover:bg-default-100 focus-within:bg-background"
+          inputWrapper: "bg-background",
+          input: "font-mono text-xs"
         }}
         description={`${byteCount} / 2000 bytes`}
       />
