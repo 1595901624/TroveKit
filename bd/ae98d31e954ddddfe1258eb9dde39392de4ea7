@@ -1,0 +1,51 @@
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.0.8",
+  "base_commit_sha": "bdae98d31e954ddddfe1258eb9dde39392de4ea7",
+  "prompts": {
+    "da0e50ae28a62e5d": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019fec42-fb53-7562-9e92-d27af7a7f79f",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "luhaoyu <haoyu3@163.com>",
+      "messages": [],
+      "total_additions": 0,
+      "total_deletions": 0,
+      "accepted_lines": 119,
+      "overriden_lines": 0
+    }
+  },
+  "commit_stats": {
+    "git_diff_added_lines": 88,
+    "git_diff_deleted_lines": 56,
+    "ai_additions": 0,
+    "ai_accepted": 0,
+    "BYMC": 69,
+    "mixed_additions": 0,
+    "BYAC": 0,
+    "BYRC": 0,
+    "per_file": {
+      "src/tools/encoder/JwtTab.tsx": {
+        "BYMC": [
+          "325-330",
+          "332-340",
+          "342-347",
+          "357-359",
+          "361-372",
+          "374-375",
+          "379-387",
+          "392-405",
+          "410-417"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      }
+    }
+  },
+  "ipa_account": "luhaoyu",
+  "commit_timestamp": 1786417351,
+  "requirement_id": ""
+}
