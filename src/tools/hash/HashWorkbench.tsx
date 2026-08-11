@@ -115,7 +115,7 @@ export function HashWorkbench({
             onValueChange={onInputChange}
             className="min-h-0 flex-1"
             classNames={{
-              inputWrapper: "min-h-0 flex-1 rounded-none border-0 bg-transparent p-4 focus-within:border-transparent focus-within:ring-0",
+              inputWrapper: "min-h-0 flex-1 rounded-none border-0 bg-background p-4 focus-within:border-transparent focus-within:ring-0",
               input: "min-h-0 resize-none overflow-auto font-mono text-[13px] leading-6",
             }}
           />
@@ -155,7 +155,7 @@ export function HashWorkbench({
             value={output}
             className="min-h-0 flex-1"
             classNames={{
-              inputWrapper: "min-h-0 flex-1 rounded-none border-0 bg-default-50/40 p-4 focus-within:border-transparent focus-within:ring-0",
+              inputWrapper: "min-h-0 flex-1 rounded-none border-0 bg-background p-4 focus-within:border-transparent focus-within:ring-0",
               input: "min-h-0 resize-none overflow-auto font-mono text-[13px] leading-6",
             }}
           />
