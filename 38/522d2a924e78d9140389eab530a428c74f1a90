@@ -1,0 +1,138 @@
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.0.8",
+  "base_commit_sha": "38522d2a924e78d9140389eab530a428c74f1a90",
+  "prompts": {
+    "da0e50ae28a62e5d": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019fec42-fb53-7562-9e92-d27af7a7f79f",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "luhaoyu <haoyu3@163.com>",
+      "messages": [],
+      "total_additions": 0,
+      "total_deletions": 0,
+      "accepted_lines": 109,
+      "overriden_lines": 0
+    }
+  },
+  "commit_stats": {
+    "git_diff_added_lines": 187,
+    "git_diff_deleted_lines": 199,
+    "ai_additions": 0,
+    "ai_accepted": 0,
+    "BYMC": 183,
+    "mixed_additions": 0,
+    "BYAC": 0,
+    "BYRC": 0,
+    "per_file": {
+      "src/components/ThemeToggle.tsx": {
+        "BYMC": [
+          "1",
+          "9",
+          "12",
+          "19-33"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/LogManagementTool.tsx": {
+        "BYMC": [
+          "3",
+          "341",
+          "343-346",
+          "348",
+          "350-351",
+          "355",
+          "357",
+          "361",
+          "366-370",
+          "372",
+          "374-375",
+          "398",
+          "409",
+          "417",
+          "424",
+          "430",
+          "433",
+          "443",
+          "445",
+          "454",
+          "457",
+          "464",
+          "477",
+          "479",
+          "482",
+          "484",
+          "487-488",
+          "492-493",
+          "496-506",
+          "510",
+          "521",
+          "523",
+          "533",
+          "542",
+          "554",
+          "657",
+          "666",
+          "668",
+          "675",
+          "684",
+          "686",
+          "713",
+          "718"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/Settings.tsx": {
+        "BYMC": [
+          "1",
+          "5",
+          "16",
+          "23",
+          "66-82",
+          "85-92",
+          "95-98",
+          "100-107",
+          "110-113",
+          "115",
+          "119-120",
+          "122-127",
+          "129-139",
+          "142-153"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/settings/FeatureManagement.tsx": {
+        "BYMC": [
+          "2",
+          "4",
+          "70-71",
+          "74",
+          "77",
+          "79",
+          "82-83",
+          "87-89",
+          "91",
+          "93-94",
+          "97",
+          "100",
+          "106",
+          "108",
+          "111-113",
+          "118",
+          "122"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      }
+    }
+  },
+  "ipa_account": "luhaoyu",
+  "commit_timestamp": 1786462226,
+  "requirement_id": ""
+}
