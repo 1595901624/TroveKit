@@ -380,7 +380,10 @@
       "text": "Text",
       "graph": "Graph",
       "expand": "Expand",
-      "collapse": "Collapse"
+      "collapse": "Collapse",
+      "dialect": "SQL Dialect",
+      "lines": "lines",
+      "characters": "characters"
     },
     "generator": {
       "uuid": "UUID",

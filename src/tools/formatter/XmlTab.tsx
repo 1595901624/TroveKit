@@ -1,10 +1,8 @@
 import { useState, useEffect } from "react"
-import { Button, Card, CardBody, ButtonGroup } from "../../components/ui/base-ui"
-import CodeEditor from "../../components/CodeEditor"
-import { Copy, Trash2, CheckCircle2, AlertCircle, Minimize2, Maximize2, BookOpen } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import format from 'xml-formatter'
 import { getStoredItem, setStoredItem, removeStoredItem } from "../../lib/store"
+import { FormatterWorkbench } from "./FormatterWorkbench"
 
 const STORAGE_KEY = "xml-tool-state"
 
@@ -77,9 +75,17 @@ export function XmlTab() {
     }
   }
 
-  const copyToClipboard = () => {
-    if (!code) return
-    navigator.clipboard.writeText(code)
+  const handleCodeChange = (value: string) => {
+    setCode(value)
+    setIsValid(null)
+    setErrorMsg("")
+  }
+
+  const handleClear = () => {
+    setCode("")
+    setIsValid(null)
+    setErrorMsg("")
+    removeStoredItem(STORAGE_KEY)
   }
 
   // --- Example Operation ---
@@ -116,81 +122,20 @@ export function XmlTab() {
   }
 
   return (
-    <div className="flex flex-col h-full gap-4">
-      <div className="flex flex-wrap items-center gap-2 justify-between">
-        <div className="flex gap-2 items-center">
-            <ButtonGroup variant="flat">
-                <Button
-                    color="primary"
-                    variant="flat"
-                    onPress={handleFormatEditor}
-                    startContent={<Maximize2 className="w-4 h-4" />}
-                >
-                    {t("tools.formatter.format")}
-                </Button>
-                <Button
-                    color="secondary"
-                    variant="flat"
-                    onPress={handleMinifyEditor}
-                    startContent={<Minimize2 className="w-4 h-4" />}
-                >
-                    {t("tools.formatter.minify")}
-                </Button>
-                <Button
-                    color="warning"
-                    variant="flat"
-                    onPress={handleLoadExample}
-                    startContent={<BookOpen className="w-4 h-4" />}
-                >
-                    {t("tools.formatter.example")}
-                </Button>
-            </ButtonGroup>
-        </div>
-        
-        <div className="flex gap-2">
-          <Button isIconOnly variant="light" onPress={copyToClipboard} title={t("tools.encoder.copy")}>
-            <Copy className="w-4 h-4" />
-          </Button>
-          <Button isIconOnly variant="light" color="danger" onPress={() => { setCode(""); setIsValid(null); setErrorMsg(""); removeStoredItem(STORAGE_KEY); }} title={t("tools.encoder.clearAll")}>
-            <Trash2 className="w-4 h-4" />
-          </Button>
-        </div>
-      </div>
-
-      <div className="flex-1 min-h-0 border border-default-200 rounded-xl overflow-hidden shadow-sm relative group bg-content1 flex flex-row">
-        <div className="w-full h-full">
-            <CodeEditor
-            language="xml"
-            value={code}
-            onChange={setCode}
-            fontSize={14}
-            contentPadding={16}
-            ariaLabel="XML"
-            />
-        </div>
-      </div>
-
-      {isValid === false && (
-        <Card className="border-danger bg-danger-50 dark:bg-danger-900/20" shadow="sm">
-          <CardBody className="flex flex-row items-center gap-3 py-2">
-            <AlertCircle className="w-5 h-5 text-danger" />
-            <p className="text-danger font-medium text-xs">
-              {t("tools.formatter.invalidXml")}: {errorMsg}
-            </p>
-          </CardBody>
-        </Card>
-      )}
-
-      {isValid === true && (
-        <Card className="border-success bg-success-50 dark:bg-success-900/20" shadow="sm">
-          <CardBody className="flex flex-row items-center gap-3 py-2">
-            <CheckCircle2 className="w-5 h-5 text-success" />
-            <p className="text-success font-medium text-xs">
-              {t("tools.formatter.validXml")}
-            </p>
-          </CardBody>
-        </Card>
-      )}
-    </div>
+    <FormatterWorkbench
+      id="xml"
+      label={t("tools.formatter.xml")}
+      language="xml"
+      code={code}
+      onCodeChange={handleCodeChange}
+      onFormat={handleFormatEditor}
+      onMinify={handleMinifyEditor}
+      onExample={handleLoadExample}
+      onClear={handleClear}
+      status={isValid}
+      errorMessage={errorMsg}
+      validMessage={t("tools.formatter.validXml")}
+      invalidMessage={t("tools.formatter.invalidXml")}
+    />
   )
 }

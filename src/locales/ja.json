@@ -380,7 +380,10 @@
       "text": "テキスト",
       "graph": "グラフ",
       "expand": "展開",
-      "collapse": "折りたたむ"
+      "collapse": "折りたたむ",
+      "dialect": "SQL 方言",
+      "lines": "行",
+      "characters": "文字"
     },
     "generator": {
       "uuid": "UUID",

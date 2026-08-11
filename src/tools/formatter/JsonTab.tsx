@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react"
-import { Button, Card, CardBody, ButtonGroup } from "../../components/ui/base-ui"
-import CodeEditor from "../../components/CodeEditor"
-import { Copy, Trash2, CheckCircle2, AlertCircle, Minimize2, Maximize2, AlignLeft, Network, ChevronsUpDown, ChevronsDownUp, BookOpen } from "lucide-react"
+import { Button, ButtonGroup } from "../../components/ui/base-ui"
+import { AlignLeft, Network, ChevronsUpDown, ChevronsDownUp } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import ReactJson from 'react-json-view'
 import { useTheme } from "../../components/theme-provider"
 import { useStorageLoader } from "../../hooks/usePersistentState"
 import { setStoredItem, removeStoredItem } from "../../lib/store"
+import { FormatterWorkbench } from "./FormatterWorkbench"
 
 const STORAGE_KEY = "json-tool-state"
 
@@ -131,9 +131,19 @@ export function JsonTab() {
     }
   }
 
-  const copyToClipboard = () => {
-    if (!code) return
-    navigator.clipboard.writeText(code)
+  const handleCodeChange = (value: string) => {
+    setCode(value)
+    setIsValid(null)
+    setErrorMsg("")
+  }
+
+  const handleClear = () => {
+    setCode("")
+    setIsValid(null)
+    setErrorMsg("")
+    setViewMode("text")
+    setCollapsed(false)
+    removeStoredItem(STORAGE_KEY)
   }
 
   const getJsonObject = () => {
@@ -179,160 +189,71 @@ export function JsonTab() {
   }
 
   return (
-    <div className="flex flex-col h-full gap-4">
-      <div className="flex flex-wrap items-center gap-2 justify-between">
-        <div className="flex gap-2 items-center">
-            {/* View Switcher */}
-            <ButtonGroup variant="flat">
-                <Button 
-                    color={viewMode === "text" ? "primary" : "default"}
-                    onPress={() => toggleView("text")}
-                    startContent={<AlignLeft className="w-4 h-4" />}
-                >
-                    {t("tools.formatter.text")}
-                </Button>
-                <Button 
-                    color={viewMode === "graph" ? "primary" : "default"}
-                    onPress={() => toggleView("graph")}
-                    startContent={<Network className="w-4 h-4" />}
-                >
-                    {t("tools.formatter.graph")}
-                </Button>
-            </ButtonGroup>
-
-            <div className="w-px h-6 bg-default-300 mx-2"></div>
-
-            {/* Editor Controls */}
-            <ButtonGroup variant="flat">
-                <Button
-                    color="primary"
-                    variant="flat"
-                    onPress={handleFormatEditor}
-                    startContent={<Maximize2 className="w-4 h-4" />}
-                    title={t("tools.formatter.format")} // Tooltip since we might want compact buttons? No, stick to label
-                >
-                    {t("tools.formatter.format")}
-                </Button>
-                <Button
-                    color="secondary"
-                    variant="flat"
-                    onPress={handleMinifyEditor}
-                    startContent={<Minimize2 className="w-4 h-4" />}
-                >
-                    {t("tools.formatter.minify")}
-                </Button>
-                <Button
-                    color="success"
-                    variant="flat"
-                    onPress={handleValidateEditor}
-                    startContent={<CheckCircle2 className="w-4 h-4" />}
-                >
-                    {t("tools.formatter.validate")}
-                </Button>
-                <Button
-                    color="warning"
-                    variant="flat"
-                    onPress={handleLoadExample}
-                    startContent={<BookOpen className="w-4 h-4" />}
-                >
-                    {t("tools.formatter.example")}
-                </Button>
-            </ButtonGroup>
-
-            {/* Graph Controls (Visible only in Graph View) */}
-            {viewMode === "graph" && (
-                <>
-                    <div className="w-px h-6 bg-default-300 mx-2"></div>
-                    <ButtonGroup variant="flat">
-                        <Button
-                            color="primary"
-                            variant="flat"
-                            onPress={handleExpandGraph}
-                            startContent={<ChevronsUpDown className="w-4 h-4" />}
-                        >
-                            {t("tools.formatter.expand")}
-                        </Button>
-                        <Button
-                            color="secondary"
-                            variant="flat"
-                            onPress={handleCollapseGraph}
-                            startContent={<ChevronsDownUp className="w-4 h-4" />}
-                        >
-                            {t("tools.formatter.collapse")}
-                        </Button>
-                        <Button
-                            color="success"
-                            variant="flat"
-                            onPress={handleValidateGraph}
-                            startContent={<CheckCircle2 className="w-4 h-4" />}
-                        >
-                            {t("tools.formatter.validateGraphStructure")}
-                        </Button>
-                    </ButtonGroup>
-                </>
-            )}
-        </div>
-        
-        <div className="flex gap-2">
-          <Button isIconOnly variant="light" onPress={copyToClipboard} title={t("tools.encoder.copy")}>
-            <Copy className="w-4 h-4" />
+    <FormatterWorkbench
+      id="json"
+      label={t("tools.formatter.json")}
+      language="json"
+      code={code}
+      onCodeChange={handleCodeChange}
+      onFormat={handleFormatEditor}
+      onMinify={handleMinifyEditor}
+      onValidate={viewMode === "graph" ? handleValidateGraph : handleValidateEditor}
+      onExample={handleLoadExample}
+      onClear={handleClear}
+      status={isValid}
+      errorMessage={errorMsg}
+      validMessage={t("tools.formatter.validJson")}
+      invalidMessage={t("tools.formatter.invalidJson")}
+      jsonDiagnostics
+      toolbarStart={(
+        <ButtonGroup aria-label={`${t("tools.formatter.text")} / ${t("tools.formatter.graph")}`} className="rounded-lg bg-default-100 p-0.5">
+          <Button
+            size="sm"
+            variant={viewMode === "text" ? "flat" : "light"}
+            color={viewMode === "text" ? "primary" : "default"}
+            className={viewMode === "text" ? "h-8 bg-primary/10 text-primary" : "h-8 text-default-600"}
+            aria-pressed={viewMode === "text"}
+            onPress={() => toggleView("text")}
+            startContent={<AlignLeft className="h-4 w-4" />}
+          >
+            {t("tools.formatter.text")}
           </Button>
-          <Button isIconOnly variant="light" color="danger" onPress={() => { setCode(""); setIsValid(null); setErrorMsg(""); removeStoredItem(STORAGE_KEY); }} title={t("tools.encoder.clearAll")}>
-            <Trash2 className="w-4 h-4" />
+          <Button
+            size="sm"
+            variant={viewMode === "graph" ? "flat" : "light"}
+            color={viewMode === "graph" ? "primary" : "default"}
+            className={viewMode === "graph" ? "h-8 bg-primary/10 text-primary" : "h-8 text-default-600"}
+            aria-pressed={viewMode === "graph"}
+            onPress={() => toggleView("graph")}
+            startContent={<Network className="h-4 w-4" />}
+          >
+            {t("tools.formatter.graph")}
           </Button>
-        </div>
-      </div>
-
-      <div className="flex-1 min-h-0 border border-default-200 rounded-xl overflow-hidden shadow-sm relative group bg-content1 flex flex-row">
-        <div className={`h-full ${viewMode === "graph" ? "w-1/2 border-r border-default-200" : "w-full"}`}>
-            <CodeEditor
-            language="json"
-            value={code}
-            onChange={setCode}
-            fontSize={14}
-            contentPadding={16}
-            jsonDiagnostics
-            ariaLabel="JSON"
-            />
-        </div>
-        
-        {viewMode === "graph" && (
-            <div className="w-1/2 h-full overflow-auto p-4 text-left bg-content1">
-                <ReactJson 
-                    src={getJsonObject()} 
-                    theme={theme === "dark" ? "monokai" : "rjv-default"}
-                    onEdit={handleGraphEdit}
-                    onAdd={handleGraphEdit}
-                    onDelete={handleGraphEdit}
-                    displayDataTypes={false}
-                    collapsed={collapsed}
-                    style={{ backgroundColor: 'transparent' }}
-                />
-            </div>
-        )}
-      </div>
-
-      {isValid === false && (
-        <Card className="border-danger bg-danger-50 dark:bg-danger-900/20" shadow="sm">
-          <CardBody className="flex flex-row items-center gap-3 py-2">
-            <AlertCircle className="w-5 h-5 text-danger" />
-            <p className="text-danger font-medium text-xs">
-              {t("tools.formatter.invalidJson")}: {errorMsg}
-            </p>
-          </CardBody>
-        </Card>
+        </ButtonGroup>
       )}
-
-      {isValid === true && (
-        <Card className="border-success bg-success-50 dark:bg-success-900/20" shadow="sm">
-          <CardBody className="flex flex-row items-center gap-3 py-2">
-            <CheckCircle2 className="w-5 h-5 text-success" />
-            <p className="text-success font-medium text-xs">
-              {t("tools.formatter.validJson")}
-            </p>
-          </CardBody>
-        </Card>
-      )}
-    </div>
+      secondaryLabel={t("tools.formatter.graph")}
+      secondaryActions={viewMode === "graph" ? (
+        <>
+          <Button size="sm" variant="light" className="h-8 px-2" onPress={handleExpandGraph} startContent={<ChevronsUpDown className="h-4 w-4" />}>
+            {t("tools.formatter.expand")}
+          </Button>
+          <Button size="sm" variant="light" className="h-8 px-2" onPress={handleCollapseGraph} startContent={<ChevronsDownUp className="h-4 w-4" />}>
+            {t("tools.formatter.collapse")}
+          </Button>
+        </>
+      ) : undefined}
+      secondaryContent={viewMode === "graph" ? (
+        <ReactJson
+          src={getJsonObject()}
+          theme={theme === "dark" ? "monokai" : "rjv-default"}
+          onEdit={handleGraphEdit}
+          onAdd={handleGraphEdit}
+          onDelete={handleGraphEdit}
+          displayDataTypes={false}
+          collapsed={collapsed}
+          style={{ backgroundColor: 'transparent' }}
+        />
+      ) : undefined}
+    />
   )
 }

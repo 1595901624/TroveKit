@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react"
-import { Button, Card, CardBody, ButtonGroup, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem } from "../../components/ui/base-ui"
-import CodeEditor from "../../components/CodeEditor"
-import { Copy, Trash2, CheckCircle2, AlertCircle, Minimize2, Maximize2, BookOpen, Database } from "lucide-react"
+import { Select, SelectItem } from "../../components/ui/base-ui"
+import { Database } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { format as formatSql } from 'sql-formatter'
 import { getStoredItem, setStoredItem, removeStoredItem } from "../../lib/store"
+import { FormatterWorkbench } from "./FormatterWorkbench"
 
 const STORAGE_KEY = "sql-tool-state"
 
@@ -98,9 +98,23 @@ export function SqlTab() {
     }
   }
 
-  const copyToClipboard = () => {
-    if (!code) return
-    navigator.clipboard.writeText(code)
+  const handleCodeChange = (value: string) => {
+    setCode(value)
+    setIsValid(null)
+    setErrorMsg("")
+  }
+
+  const handleClear = () => {
+    setCode("")
+    setIsValid(null)
+    setErrorMsg("")
+    removeStoredItem(STORAGE_KEY)
+  }
+
+  const handleDialectChange = (value: string) => {
+    setDialect(value)
+    setIsValid(null)
+    setErrorMsg("")
   }
 
   // --- Example Operation ---
@@ -156,115 +170,36 @@ WHERE id = 1;`
   ]
 
   return (
-    <div className="flex flex-col h-full gap-4">
-      <div className="flex flex-wrap items-center gap-2 justify-between">
-        <div className="flex gap-2 items-center flex-wrap">
-            {/* Dialect Selector */}
-            <Dropdown>
-              <DropdownTrigger>
-                <Button 
-                  variant="flat" 
-                  startContent={<Database className="w-4 h-4" />}
-                  className="min-w-[120px]"
-                >
-                  {dialects.find(d => d.key === dialect)?.label || "SQL"}
-                </Button>
-              </DropdownTrigger>
-              <DropdownMenu 
-                aria-label="SQL Dialects"
-                selectionMode="single"
-                selectedKeys={[dialect]}
-                onSelectionChange={(keys) => setDialect(Array.from(keys)[0] as string)}
-              >
-                {dialects.map((d) => (
-                  <DropdownItem key={d.key}>{d.label}</DropdownItem>
-                ))}
-              </DropdownMenu>
-            </Dropdown>
-
-            <div className="w-px h-6 bg-default-300 mx-2"></div>
-
-            {/* Editor Controls */}
-            <ButtonGroup variant="flat">
-                <Button
-                    color="primary"
-                    variant="flat"
-                    onPress={handleFormatEditor}
-                    startContent={<Maximize2 className="w-4 h-4" />}
-                >
-                    {t("tools.formatter.format")}
-                </Button>
-                <Button
-                    color="secondary"
-                    variant="flat"
-                    onPress={handleMinifyEditor}
-                    startContent={<Minimize2 className="w-4 h-4" />}
-                >
-                    {t("tools.formatter.minify")}
-                </Button>
-                <Button
-                    color="success"
-                    variant="flat"
-                    onPress={handleValidateEditor}
-                    startContent={<CheckCircle2 className="w-4 h-4" />}
-                >
-                    {t("tools.formatter.validate")}
-                </Button>
-                <Button
-                    color="warning"
-                    variant="flat"
-                    onPress={handleLoadExample}
-                    startContent={<BookOpen className="w-4 h-4" />}
-                >
-                    {t("tools.formatter.example")}
-                </Button>
-            </ButtonGroup>
+    <FormatterWorkbench
+      id="sql"
+      label={t("tools.formatter.sql")}
+      language="sql"
+      code={code}
+      onCodeChange={handleCodeChange}
+      onFormat={handleFormatEditor}
+      onMinify={handleMinifyEditor}
+      onValidate={handleValidateEditor}
+      onExample={handleLoadExample}
+      onClear={handleClear}
+      status={isValid}
+      errorMessage={errorMsg}
+      validMessage={t("tools.formatter.validSql")}
+      invalidMessage={t("tools.formatter.invalidSql")}
+      toolbarStart={(
+        <div className="flex shrink-0 items-center gap-1.5">
+          <Database className="h-4 w-4 text-default-400" />
+          <span className="whitespace-nowrap text-[11px] font-medium text-default-500">{t("tools.formatter.dialect")}</span>
+          <Select
+            aria-label={t("tools.formatter.dialect")}
+            className="w-36"
+            classNames={{ trigger: "h-8 bg-background px-2.5 text-xs" }}
+            selectedKeys={[dialect]}
+            onChange={(event) => handleDialectChange(event.target.value)}
+          >
+            {dialects.map((item) => <SelectItem key={item.key}>{item.label}</SelectItem>)}
+          </Select>
         </div>
-        
-        <div className="flex gap-2">
-          <Button isIconOnly variant="light" onPress={copyToClipboard} title={t("tools.encoder.copy")}>
-            <Copy className="w-4 h-4" />
-          </Button>
-          <Button isIconOnly variant="light" color="danger" onPress={() => { setCode(""); setIsValid(null); setErrorMsg(""); removeStoredItem(STORAGE_KEY); }} title={t("tools.encoder.clearAll")}>
-            <Trash2 className="w-4 h-4" />
-          </Button>
-        </div>
-      </div>
-
-      <div className="flex-1 min-h-0 border border-default-200 rounded-xl overflow-hidden shadow-sm relative group bg-content1 flex flex-row">
-        <div className="w-full h-full">
-            <CodeEditor
-            language="sql"
-            value={code}
-            onChange={setCode}
-            fontSize={14}
-            contentPadding={16}
-            ariaLabel="SQL"
-            />
-        </div>
-      </div>
-
-      {isValid === false && (
-        <Card className="border-danger bg-danger-50 dark:bg-danger-900/20" shadow="sm">
-          <CardBody className="flex flex-row items-center gap-3 py-2">
-            <AlertCircle className="w-5 h-5 text-danger" />
-            <p className="text-danger font-medium text-xs">
-              {t("tools.formatter.invalidSql")}: {errorMsg}
-            </p>
-          </CardBody>
-        </Card>
       )}
-
-      {isValid === true && (
-        <Card className="border-success bg-success-50 dark:bg-success-900/20" shadow="sm">
-          <CardBody className="flex flex-row items-center gap-3 py-2">
-            <CheckCircle2 className="w-5 h-5 text-success" />
-            <p className="text-success font-medium text-xs">
-              {t("tools.formatter.validSql")}
-            </p>
-          </CardBody>
-        </Card>
-      )}
-    </div>
+    />
   )
 }
