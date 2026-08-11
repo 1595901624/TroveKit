@@ -14,6 +14,7 @@ export function Settings() {
   const { t } = useTranslation()
   const { addLog } = useLog()
   const [version, setVersion] = useState("0.1.0")
+  const [activeSection, setActiveSection] = useState<"appearance" | "features" | "data" | "about">("appearance")
   
   const cacheModal = useDisclosure()
   const featureModal = useDisclosure()
@@ -53,6 +54,13 @@ export function Settings() {
     }
   }
 
+  const sections = [
+    { id: "appearance" as const, label: t("settings.appearance"), icon: Palette },
+    { id: "features" as const, label: t("settings.features"), icon: SlidersHorizontal },
+    { id: "data" as const, label: t("settings.dataManagement"), icon: Database },
+    { id: "about" as const, label: t("settings.about"), icon: Github },
+  ]
+
   // const handleClearLogs = () => {
   //   try {
   //     clearLogs()
@@ -63,94 +71,115 @@ export function Settings() {
   // }
 
   return (
-    <div className="h-full min-h-0 overflow-y-auto">
-      <div className="mx-auto flex w-full max-w-5xl flex-col gap-4 pb-3">
-        <section className="overflow-hidden rounded-xl border border-default-200 bg-background" aria-labelledby="appearance-settings-heading">
-          <div className="flex items-start gap-3 border-b border-default-200 bg-default-50/55 px-4 py-3">
-            <div className="rounded-lg bg-primary/10 p-2 text-primary"><Palette className="h-4 w-4" /></div>
-            <div>
-              <h2 id="appearance-settings-heading" className="text-sm font-semibold text-foreground">{t("settings.appearance")}</h2>
-              <p className="mt-0.5 text-xs text-default-400">{t("settings.appearanceDesc")}</p>
-            </div>
-          </div>
-          <div className="divide-y divide-default-200">
-            <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3.5">
-              <div className="flex min-w-0 items-start gap-3">
-                <Palette className="mt-0.5 h-4 w-4 shrink-0 text-default-400" />
-                <div>
-                  <div className="text-sm font-medium text-foreground">{t("settings.theme")}</div>
-                  <div className="mt-0.5 text-xs text-default-400">{t("settings.themeDesc")}</div>
-                </div>
-              </div>
-              <ThemeToggle showLabel variant="bordered" className="h-8 min-w-28 justify-start" />
-            </div>
-            <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3.5">
-              <div className="flex min-w-0 items-start gap-3">
-                <Languages className="mt-0.5 h-4 w-4 shrink-0 text-default-400" />
-                <div>
-                  <div className="text-sm font-medium text-foreground">{t("settings.language")}</div>
-                  <div className="mt-0.5 text-xs text-default-400">{t("settings.languageDesc")}</div>
-                </div>
-              </div>
-              <div className="w-full sm:w-64"><LanguageSelector /></div>
-            </div>
-          </div>
-        </section>
+    <div className="h-full min-h-0 overflow-hidden">
+      <div className="grid h-full min-h-0 grid-rows-[auto_minmax(0,1fr)] overflow-hidden rounded-xl border border-default-200 bg-background md:grid-cols-[210px_minmax(0,1fr)] md:grid-rows-1">
+        <nav className="flex shrink-0 gap-1 overflow-x-auto border-b border-default-200 bg-default-50/45 p-2 md:flex-col md:overflow-x-visible md:border-b-0 md:border-r md:p-3" aria-label={t("settings.title")}>
+          {sections.map(({ id, label, icon: Icon }) => (
+            <Button
+              key={id}
+              size="sm"
+              color={activeSection === id ? "primary" : "default"}
+              variant={activeSection === id ? "flat" : "light"}
+              className="h-9 shrink-0 justify-start px-3 md:w-full"
+              onPress={() => setActiveSection(id)}
+              startContent={<Icon className="h-4 w-4" />}
+            >
+              {label}
+            </Button>
+          ))}
+        </nav>
 
-        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-          <section className="overflow-hidden rounded-xl border border-default-200 bg-background" aria-labelledby="feature-settings-heading">
-            <div className="flex h-full flex-col">
-              <div className="flex items-start gap-3 border-b border-default-200 bg-default-50/55 px-4 py-3">
-                <div className="rounded-lg bg-primary/10 p-2 text-primary"><SlidersHorizontal className="h-4 w-4" /></div>
-                <div>
-                  <h2 id="feature-settings-heading" className="text-sm font-semibold text-foreground">{t("settings.features")}</h2>
-                  <p className="mt-0.5 text-xs text-default-400">{t("settings.featuresDesc")}</p>
+        <div className="min-h-0 overflow-y-auto">
+          {activeSection === "appearance" && (
+            <section aria-labelledby="appearance-settings-heading">
+              <div className="border-b border-default-200 px-5 py-4">
+                <h2 id="appearance-settings-heading" className="text-base font-semibold text-foreground">{t("settings.appearance")}</h2>
+                <p className="mt-1 text-xs text-default-400">{t("settings.appearanceDesc")}</p>
+              </div>
+              <div className="divide-y divide-default-200 px-5">
+                <div className="flex flex-wrap items-center justify-between gap-4 py-4">
+                  <div className="flex min-w-0 items-start gap-3">
+                    <Palette className="mt-0.5 h-4 w-4 shrink-0 text-default-400" />
+                    <div>
+                      <div className="text-sm font-medium text-foreground">{t("settings.theme")}</div>
+                      <div className="mt-1 text-xs text-default-400">{t("settings.themeDesc")}</div>
+                    </div>
+                  </div>
+                  <ThemeToggle showLabel variant="bordered" className="h-8 min-w-28 justify-start" />
+                </div>
+                <div className="flex flex-wrap items-center justify-between gap-4 py-4">
+                  <div className="flex min-w-0 items-start gap-3">
+                    <Languages className="mt-0.5 h-4 w-4 shrink-0 text-default-400" />
+                    <div>
+                      <div className="text-sm font-medium text-foreground">{t("settings.language")}</div>
+                      <div className="mt-1 text-xs text-default-400">{t("settings.languageDesc")}</div>
+                    </div>
+                  </div>
+                  <div className="w-full sm:w-64"><LanguageSelector /></div>
                 </div>
               </div>
-              <div className="flex flex-1 items-center justify-between gap-4 p-4">
+            </section>
+          )}
+
+          {activeSection === "features" && (
+            <section aria-labelledby="feature-settings-heading">
+              <div className="border-b border-default-200 px-5 py-4">
+                <h2 id="feature-settings-heading" className="text-base font-semibold text-foreground">{t("settings.features")}</h2>
+                <p className="mt-1 text-xs text-default-400">{t("settings.featuresDesc")}</p>
+              </div>
+              <div className="flex items-center justify-between gap-6 p-5">
                 <div className="min-w-0">
                   <div className="text-sm font-medium text-foreground">{t("settings.featureManagement")}</div>
-                  <p className="mt-1 text-xs leading-5 text-default-400">{t("settings.featureManagementDesc")}</p>
+                  <p className="mt-1.5 max-w-xl text-xs leading-5 text-default-400">{t("settings.featureManagementDesc")}</p>
                 </div>
                 <Button size="sm" color="primary" className="shrink-0" startContent={<Settings2 className="h-4 w-4" />} onPress={featureModal.onOpen}>
                   {t("settings.manage")}
                 </Button>
               </div>
-            </div>
-          </section>
+            </section>
+          )}
 
-          <section className="overflow-hidden rounded-xl border border-warning/35 bg-background" aria-labelledby="data-settings-heading">
-            <div className="flex items-start gap-3 border-b border-warning/25 bg-warning/5 px-4 py-3">
-              <div className="rounded-lg bg-warning/10 p-2 text-warning"><Database className="h-4 w-4" /></div>
-              <div>
-                <h2 id="data-settings-heading" className="text-sm font-semibold text-foreground">{t("settings.dataManagement")}</h2>
-                <p className="mt-0.5 text-xs text-default-400">{t("settings.dataManagementDesc")}</p>
+          {activeSection === "data" && (
+            <section aria-labelledby="data-settings-heading">
+              <div className="border-b border-default-200 px-5 py-4">
+                <h2 id="data-settings-heading" className="text-base font-semibold text-foreground">{t("settings.dataManagement")}</h2>
+                <p className="mt-1 text-xs text-default-400">{t("settings.dataManagementDesc")}</p>
               </div>
-            </div>
-            <div className="flex items-center justify-between gap-4 p-4">
-              <div className="min-w-0">
-                <div className="text-sm font-medium text-foreground">{t("settings.clearCache")}</div>
-                <p className="mt-1 text-xs leading-5 text-default-400">{t("settings.clearCacheDesc")}</p>
+              <div className="m-5 flex items-center justify-between gap-6 rounded-xl border border-warning/35 bg-warning/5 p-4">
+                <div className="flex min-w-0 items-start gap-3">
+                  <Database className="mt-0.5 h-4 w-4 shrink-0 text-warning" />
+                  <div>
+                    <div className="text-sm font-medium text-foreground">{t("settings.clearCache")}</div>
+                    <p className="mt-1.5 max-w-xl text-xs leading-5 text-default-400">{t("settings.clearCacheDesc")}</p>
+                  </div>
+                </div>
+                <Button size="sm" color="warning" variant="flat" className="shrink-0" startContent={<RefreshCw className="h-4 w-4" />} onPress={cacheModal.onOpen}>
+                  {t("settings.clearCache")}
+                </Button>
               </div>
-              <Button size="sm" color="warning" variant="flat" className="shrink-0" startContent={<RefreshCw className="h-4 w-4" />} onPress={cacheModal.onOpen}>
-                {t("settings.clearCache")}
-              </Button>
-            </div>
-          </section>
+            </section>
+          )}
+
+          {activeSection === "about" && (
+            <section aria-labelledby="about-settings-heading">
+              <div className="border-b border-default-200 px-5 py-4">
+                <h2 id="about-settings-heading" className="text-base font-semibold text-foreground">{t("settings.about")}</h2>
+              </div>
+              <div className="flex flex-wrap items-center justify-between gap-4 p-5">
+                <div className="flex items-center gap-3">
+                  <div className="rounded-lg border border-default-200 bg-default-50 p-2.5 text-default-500"><Github className="h-5 w-5" /></div>
+                  <div>
+                    <div className="text-sm font-medium text-foreground">TroveKit v{version}</div>
+                    <div className="mt-0.5 text-xs text-default-400">© Cloris 2026</div>
+                  </div>
+                </div>
+                <Button size="sm" variant="bordered" onPress={handleGithubClick} startContent={<Github className="h-4 w-4" />} endContent={<ExternalLink className="h-3.5 w-3.5 text-default-400" />}>
+                  GitHub
+                </Button>
+              </div>
+            </section>
+          )}
         </div>
-
-        <section className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-default-200 bg-default-50/40 px-4 py-3" aria-label={t("settings.about")}>
-          <div className="flex items-center gap-3">
-            <div className="rounded-lg border border-default-200 bg-background p-2 text-default-500"><Github className="h-4 w-4" /></div>
-            <div>
-              <div className="text-sm font-medium text-foreground">TroveKit v{version}</div>
-              <div className="text-xs text-default-400">© Cloris 2026</div>
-            </div>
-          </div>
-          <Button size="sm" variant="bordered" onPress={handleGithubClick} startContent={<Github className="h-4 w-4" />} endContent={<ExternalLink className="h-3.5 w-3.5 text-default-400" />}>
-            GitHub
-          </Button>
-        </section>
       </div>
 
       {/* Feature Management Modal */}
