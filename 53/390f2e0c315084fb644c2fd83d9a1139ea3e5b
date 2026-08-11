@@ -1,0 +1,128 @@
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.0.8",
+  "base_commit_sha": "53390f2e0c315084fb644c2fd83d9a1139ea3e5b",
+  "prompts": {
+    "da0e50ae28a62e5d": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019fec42-fb53-7562-9e92-d27af7a7f79f",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "luhaoyu <haoyu3@163.com>",
+      "messages": [],
+      "total_additions": 0,
+      "total_deletions": 0,
+      "accepted_lines": 109,
+      "overriden_lines": 0
+    }
+  },
+  "commit_stats": {
+    "git_diff_added_lines": 366,
+    "git_diff_deleted_lines": 445,
+    "ai_additions": 0,
+    "ai_accepted": 0,
+    "BYMC": 356,
+    "mixed_additions": 0,
+    "BYAC": 0,
+    "BYRC": 0,
+    "per_file": {
+      "src/locales/en.json": {
+        "BYMC": [
+          "383-386"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/locales/ja.json": {
+        "BYMC": [
+          "383-386"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/locales/zh-HK.json": {
+        "BYMC": [
+          "383-386"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/locales/zh-TW.json": {
+        "BYMC": [
+          "383-386"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/locales/zh.json": {
+        "BYMC": [
+          "383-386"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/FormatterTool.tsx": {
+        "BYMC": [
+          "34-37"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/formatter/CssTab.tsx": {
+        "BYMC": [
+          "5",
+          "83-93",
+          "175-189"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/formatter/FormatterWorkbench.tsx": {
+        "BYMC": [
+          "1-160"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/formatter/JsonTab.tsx": {
+        "BYMC": [
+          "2-3",
+          "9",
+          "134-146",
+          "192-219",
+          "221-230",
+          "232",
+          "234-245",
+          "256-257"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/formatter/SqlTab.tsx": {
+        "BYMC": [
+          "2-3",
+          "7",
+          "101-117",
+          "173-200",
+          "203"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/formatter/XmlTab.tsx": {
+        "BYMC": [
+          "5",
+          "78-88",
+          "125-139"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      }
+    }
+  },
+  "ipa_account": "luhaoyu",
+  "commit_timestamp": 1786455541,
+  "requirement_id": ""
+}
