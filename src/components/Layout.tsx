@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useState } from "react"
 import { Sidebar, ToolId } from "./Sidebar"
 import TitleBar from "./TitleBar"
 import { ThemeToggle } from "./ThemeToggle"
@@ -7,6 +7,8 @@ import { useLogUI } from "../contexts/LogContext"
 import { Button, Tooltip } from "../components/ui/base-ui"
 import { Terminal } from "lucide-react"
 import { useTranslation } from "react-i18next"
+import { detectDesktopPlatform } from "../lib/platform"
+import { usePersistentState } from "../hooks/usePersistentState"
 
 interface LayoutProps {
   children: React.ReactNode
@@ -20,11 +22,14 @@ interface LayoutProps {
 export function Layout({ children, activeTool, activeTab, onToolChange, onNavigate, title }: LayoutProps) {
   const { togglePanel, isOpen } = useLogUI()
   const { t } = useTranslation()
+  const [isMacOS] = useState(() => detectDesktopPlatform() === "macos")
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = usePersistentState<boolean>("sidebar-collapsed", false)
+  const toggleSidebar = () => setIsSidebarCollapsed((collapsed) => !collapsed)
 
   return (
     <div className="flex h-screen w-screen flex-col overflow-hidden bg-[#f3f3f3] text-foreground dark:bg-[#202020]">
       {/* Global TitleBar (Window Controls) */}
-      <TitleBar onNavigate={onNavigate} />
+      <TitleBar onNavigate={onNavigate} onToggleSidebar={toggleSidebar} />
       
       <div
         className="relative flex flex-1 overflow-hidden"
@@ -33,22 +38,25 @@ export function Layout({ children, activeTool, activeTab, onToolChange, onNaviga
         style={{ paddingRight: isOpen ? 320 : 0 }}
       >
         {/* Sidebar Navigation */}
-        <Sidebar activeTool={activeTool} activeTab={activeTab} onToolChange={onToolChange} onNavigate={onNavigate} />
+        <Sidebar macOSOverlay={isMacOS} isCollapsed={isSidebarCollapsed} activeTool={activeTool} activeTab={activeTab} onToolChange={onToolChange} onNavigate={onNavigate} />
         
         {/* Main Content Area */}
-        <main className="relative flex min-w-0 flex-1 flex-col overflow-hidden rounded-tl-[12px] rounded-tr-[12px] border-l border-t border-default-200/80 bg-background shadow-[-2px_-1px_10px_rgba(0,0,0,0.025)]">
+        <main className="relative flex min-w-0 flex-1 flex-col overflow-hidden rounded-tl-[8px] rounded-tr-[8px] border-l border-t border-default-200/80 bg-background shadow-[-2px_-1px_10px_rgba(0,0,0,0.025)]">
           {/* Tool Header */}
-          <header className="flex h-[45px] shrink-0 items-center justify-between border-b border-divider/80 px-4">
+          <header
+            data-tauri-drag-region={isMacOS ? true : undefined}
+            className={`flex h-[var(--titlebar-height)] shrink-0 items-center justify-between border-b border-divider/80 transition-[padding] duration-200 ${isMacOS && isSidebarCollapsed ? "pl-[132px] pr-4" : "px-4"}`}
+          >
             <div className="min-w-0">
               <h1 className="truncate text-[13px] font-medium tracking-[-0.01em]">{title}</h1>
             </div>
             <div className="flex items-center gap-1.5">
               <Tooltip content={t('log.toggle', 'Toggle Logs')}>
-                <Button isIconOnly variant="bordered" radius="full" className="h-7 w-7 min-w-7 border-default-200 bg-background shadow-sm" onPress={togglePanel} aria-label={t('log.toggle', 'Toggle Logs')}>
-                  <Terminal className="h-3.5 w-3.5 text-default-500" />
+                <Button isIconOnly variant="bordered" radius="full" className="h-6 w-6 min-w-6 border-default-200 bg-background shadow-sm" onPress={togglePanel} aria-label={t('log.toggle', 'Toggle Logs')}>
+                  <Terminal className="h-3 w-3 text-default-500" />
                 </Button>
               </Tooltip>
-              <ThemeToggle variant="bordered" className="h-7 w-7 min-w-7 border-default-200 bg-background shadow-sm" />
+              <ThemeToggle compact variant="bordered" className="h-6 w-6 min-w-6 border-default-200 bg-background shadow-sm" />
             </div>
           </header>
           

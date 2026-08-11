@@ -18,6 +18,8 @@ import { Button, Tooltip } from "./ui/base-ui"
 export type ToolId = "home" | "encoder" | "crypto" | "classical" | "formatters" | "generators" | "converter" | "others" | "logManagement" | "settings"
 
 interface SidebarProps {
+  macOSOverlay?: boolean
+  isCollapsed: boolean
   activeTool: ToolId
   activeTab?: string
   onToolChange: (id: ToolId) => void
@@ -31,9 +33,8 @@ const SIDEBAR_DEFAULT_WIDTH = 280
 
 const clampSidebarWidth = (width: number) => Math.min(SIDEBAR_MAX_WIDTH, Math.max(SIDEBAR_MIN_WIDTH, width))
 
-export function Sidebar({ activeTool, activeTab, onToolChange, onNavigate }: SidebarProps) {
+export function Sidebar({ macOSOverlay = false, isCollapsed, activeTool, activeTab, onToolChange, onNavigate }: SidebarProps) {
   const { t } = useTranslation()
-  const [isCollapsed, setIsCollapsed] = usePersistentState<boolean>("sidebar-collapsed", false)
   const [storedWidth, setStoredWidth, , isStoredWidthLoaded] = usePersistentState<number>("sidebar-width", SIDEBAR_DEFAULT_WIDTH)
   const [sidebarWidth, setSidebarWidth] = useState(SIDEBAR_DEFAULT_WIDTH)
   const [isResizing, setIsResizing] = useState(false)
@@ -73,12 +74,6 @@ export function Sidebar({ activeTool, activeTab, onToolChange, onNavigate }: Sid
       visible: (!topLevel || getPreference(topLevel.id).visible) && children.length > 0,
     }
   }).filter(group => group.visible), [features, getPreference])
-
-  useEffect(() => {
-    const toggleSidebar = () => setIsCollapsed(current => !current)
-    window.addEventListener("trovekit:toggle-sidebar", toggleSidebar)
-    return () => window.removeEventListener("trovekit:toggle-sidebar", toggleSidebar)
-  }, [setIsCollapsed])
 
   const getWidthFromPointer = (event: React.PointerEvent<HTMLDivElement>) => {
     const sidebarLeft = event.currentTarget.parentElement?.getBoundingClientRect().left ?? 0
@@ -128,7 +123,8 @@ export function Sidebar({ activeTool, activeTab, onToolChange, onNavigate }: Sid
       !isResizing && "transition-[width] duration-200",
     )} style={{ width: isCollapsed ? 0 : sidebarWidth }}>
       <div className="flex h-full flex-col" style={{ width: sidebarWidth }}>
-        <div className="flex h-[45px] shrink-0 items-center gap-0.5 border-b border-black/[0.055] px-2 dark:border-white/[0.07]">
+        {macOSOverlay && <div data-tauri-drag-region className="h-10 shrink-0" />}
+        <div className="flex h-[var(--titlebar-height)] shrink-0 items-center gap-0.5 border-b border-black/[0.055] px-2 dark:border-white/[0.07]">
           <Button
             variant="light"
             className={cn(

@@ -4,6 +4,7 @@
 
 :root {
     color-scheme: light;
+    --titlebar-height: clamp(40px, 4.8vh, 56px);
     --background: 255 255 255;
     --foreground: 17 24 39;
     --content-1: 255 255 255;

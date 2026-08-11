@@ -7,9 +7,10 @@ interface ThemeToggleProps {
   className?: string
   variant?: string
   showLabel?: boolean
+  compact?: boolean
 }
 
-export function ThemeToggle({ className, variant = "light", showLabel = false }: ThemeToggleProps = {}) {
+export function ThemeToggle({ className, variant = "light", showLabel = false, compact = false }: ThemeToggleProps = {}) {
   const { setTheme, theme } = useTheme()
   const { t } = useTranslation()
 
@@ -27,8 +28,8 @@ export function ThemeToggle({ className, variant = "light", showLabel = false }:
         >
           {showLabel ? t(`settings.${theme}`) : (
             <>
-              <Sun className="h-3.5 w-3.5 rotate-0 scale-100 text-default-500 transition-all dark:-rotate-90 dark:scale-0" />
-              <Moon className="absolute h-3.5 w-3.5 rotate-90 scale-0 text-default-500 transition-all dark:rotate-0 dark:scale-100" />
+              <Sun className={`${compact ? "h-3 w-3" : "h-3.5 w-3.5"} rotate-0 scale-100 text-default-500 transition-all dark:-rotate-90 dark:scale-0`} />
+              <Moon className={`absolute ${compact ? "h-3 w-3" : "h-3.5 w-3.5"} rotate-90 scale-0 text-default-500 transition-all dark:rotate-0 dark:scale-100`} />
             </>
           )}
         </Button>
