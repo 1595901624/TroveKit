@@ -1,0 +1,118 @@
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.0.8",
+  "base_commit_sha": "86afcf51e90b4ccb19fae69a006402cb940ee8c1",
+  "prompts": {
+    "92fbe7946799b261": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019febd4-82dc-7792-b4b6-1d6c90c4fdb6",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "luhaoyu <haoyu3@163.com>",
+      "messages": [],
+      "total_additions": 0,
+      "total_deletions": 10,
+      "accepted_lines": 0,
+      "overriden_lines": 0
+    },
+    "da0e50ae28a62e5d": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019fec42-fb53-7562-9e92-d27af7a7f79f",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "luhaoyu <haoyu3@163.com>",
+      "messages": [],
+      "total_additions": 0,
+      "total_deletions": 0,
+      "accepted_lines": 109,
+      "overriden_lines": 0
+    }
+  },
+  "commit_stats": {
+    "git_diff_added_lines": 321,
+    "git_diff_deleted_lines": 164,
+    "ai_additions": 0,
+    "ai_accepted": 0,
+    "BYMC": 321,
+    "mixed_additions": 0,
+    "BYAC": 0,
+    "BYRC": 0,
+    "per_file": {
+      "package.json": {
+        "BYMC": [
+          "16-23",
+          "25"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src-tauri/tauri.conf.json": {
+        "BYMC": [
+          "4"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/components/CodeEditor.tsx": {
+        "BYMC": [
+          "1-36"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/components/CodeMirrorEditorImpl.tsx": {
+        "BYMC": [
+          "1-230"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/converter/JsonXmlTab.tsx": {
+        "BYMC": [
+          "3",
+          "185-186",
+          "188-189",
+          "208-209",
+          "211-212"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/converter/JsonYamlTab.tsx": {
+        "BYMC": [
+          "3",
+          "170-171",
+          "173-174",
+          "193-194",
+          "196-197"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/regex/RegexTool.tsx": {
+        "BYMC": [
+          "16",
+          "48",
+          "52",
+          "80-81",
+          "271-278",
+          "291-292",
+          "361",
+          "405",
+          "549-551",
+          "553-555",
+          "773-774",
+          "776-777"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      }
+    }
+  },
+  "ipa_account": "luhaoyu",
+  "commit_timestamp": 1786433396,
+  "requirement_id": ""
+}
