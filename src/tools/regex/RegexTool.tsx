@@ -1,8 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react"
 import {
   Button,
-  Card,
-  CardBody,
   Dropdown,
   DropdownItem,
   DropdownMenu,
@@ -14,7 +12,7 @@ import {
   addToast,
 } from "../../components/ui/base-ui"
 import CodeEditor, { type CodeEditorHandle } from "../../components/CodeEditor"
-import { AlertCircle, Copy, FileDown, Trash2, ListPlus, ChevronDown } from "lucide-react"
+import { AlertCircle, CheckCircle2, ChevronDown, Copy, FileDown, ListPlus, Search, Trash2 } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { getStoredItem, removeStoredItem, setStoredItem } from "../../lib/store"
 import { save } from "@tauri-apps/plugin-dialog"
@@ -140,11 +138,6 @@ export function RegexTool() {
     if (lang === "zh" || lang.startsWith("zh-")) return "cn"
     if (lang.startsWith("ja")) return "jp"
     return null
-  }, [i18n.language])
-
-  const isEnglish = useMemo(() => {
-    const lang = (i18n.language || "").toLowerCase()
-    return lang.startsWith("en")
   }, [i18n.language])
 
   const presetGroups = useMemo(() => {
@@ -402,384 +395,323 @@ export function RegexTool() {
   } // 执行全局替换操作
 
   return (
-    // 布局约定：使用 flex-1 + min-h-0 让右侧 Tab 内容、代码编辑器能正确撑满剩余高度
-    <div className="flex flex-col h-full gap-4">
-      <div className="flex-1 min-h-0 flex flex-col lg:flex-row gap-4">
-        <div className="flex-1 min-h-0 flex flex-col gap-4 min-w-0">
-          <div className="flex flex-col gap-3">
-            <Input
-              label={t("tools.regex.pattern")}
-              placeholder={t("tools.regex.patternPlaceholder")}
-              value={pattern}
-              onValueChange={setPattern}
-              onBlur={handlePatternBlur}
-              classNames={{ input: "font-mono text-xs" }}
-              startContent={<span className="font-mono text-xs text-default-500">/</span>}
-              endContent={
-                <div className="flex items-center gap-1">
-                  <Dropdown isOpen={isFlagsOpen} onOpenChange={setIsFlagsOpen}>
-                    <DropdownTrigger>
-                      <Button
-                        size="sm"
-                        variant="bordered"
-                        color="secondary"
-                        className="min-w-0 px-2 font-mono text-xs"
-                        endContent={<ChevronDown className="w-3.5 h-3.5" />}
-                      >
-                        {flagsLabel || "flags"}
-                      </Button>
-                    </DropdownTrigger>
-                    <DropdownMenu
-                      aria-label={t("tools.regex.flags")}
-                      selectionMode="multiple"
-                      selectedKeys={new Set(flagsLabel.split(""))}
-                      closeOnSelect={false as any}
-                      onSelectionChange={(keys) => {
-                        const selected = Array.from(keys as Set<string>)
-                        setFlags(normalizeFlags(selected.join("")))
-                        window.setTimeout(() => setIsFlagsOpen(true), 0)
-                      }}
-                    >
-                      {FLAG_ORDER.map((f) => (
-                        <DropdownItem key={f} textValue={`${f} ${flagTooltips[f]}`}>
-                          <div className="flex flex-col gap-0.5">
-                            <div className="font-mono text-xs">{f}</div>
-                            <div className="text-[10px] text-default-500">{flagTooltips[f]}</div>
-                          </div>
-                        </DropdownItem>
-                      ))}
-                    </DropdownMenu>
-                  </Dropdown>
-
-                  <Button
-                    isIconOnly
-                    size="sm"
-                    variant="light"
-                    onPress={() => handleCopy(`/${pattern}/${flagsLabel}`)}
-                    title={t("tools.regex.copyPattern")}
-                  >
-                    <Copy className="w-4 h-4" />
-                  </Button>
-                </div>
-              }
-            />
-          </div>
-
-          <div className="flex-1 min-h-0 flex flex-col gap-2 min-w-0">
-            <div className="flex justify-between items-center px-1">
-              <span className="text-sm font-medium text-default-600">{t("tools.regex.testString")}</span>
-              <div className="flex items-center gap-1">
-                <Button isIconOnly size="sm" variant="light" onPress={() => handleCopy(input)} title={t("tools.regex.copy")}>
-                  <Copy className="w-3.5 h-3.5" />
-                </Button>
-                <Button
-                  isIconOnly
-                  size="sm"
-                  variant="light"
-                  color="danger"
-                  onPress={handleClearAll}
-                  title={t("tools.regex.clear")}
-                >
-                  <Trash2 className="w-3.5 h-3.5" />
-                </Button>
-                <div className="relative" ref={presetPopoverRef}>
-                  {/* 常用正则：按钮位于测试文本右侧，弹层右对齐按钮 */}
-                  <Button
-                    size="sm"
-                    variant="flat"
-                    color="primary"
-                    startContent={<ListPlus className="w-4 h-4" />}
-                    onPress={() => {
-                      setIsPresetOpen((v) => !v)
-                      setPresetQuery("")
-                    }}
-                  >
-                    {t("tools.regex.presets.title")}
-                  </Button>
-
-                  {isPresetOpen && (
-                    <div className="absolute right-0 mt-2 w-[360px] max-w-[calc(100vw-2rem)] z-50 border border-divider rounded-xl bg-background shadow-2xl overflow-hidden">
-                      <div className="p-2 border-b border-divider">
-                        <Input
-                          size="sm"
-                          placeholder={t("tools.regex.presets.searchPlaceholder")}
-                          value={presetQuery}
-                          onValueChange={setPresetQuery}
-                          classNames={{ input: "text-xs" }}
-                        />
-                      </div>
-                      <div className="max-h-[340px] overflow-auto p-2 space-y-2">
-                        {presetItemsFiltered.length === 0 ? (
-                          <div className="p-6 text-center text-default-400 text-sm">
-                            {t("tools.regex.presets.noResults")}
-                          </div>
-                        ) : (
-                          presetItemsFiltered.map((group) => (
-                            <div key={group.id} className="space-y-1">
-                              <div className="px-2 pt-2 pb-1 text-[10px] font-semibold text-default-400 uppercase tracking-wider">
-                                {group.title}
-                              </div>
-                              {group.items.map((it) => (
-                                <Button
-                                  key={it.id}
-                                  variant="light"
-                                  className="h-auto w-full justify-start text-left px-3 py-2 rounded-lg hover:bg-default-100"
-                                  onPress={() => {
-                                    setPattern(it.pattern)
-                                    setPanelTab("matchInfo")
-                                    setIsPresetOpen(false)
-                                  }}
-                                >
-                                  <div className="text-xs font-medium text-foreground">{it.label}</div>
-                                  <div className="mt-0.5 font-mono text-[11px] text-default-600 whitespace-pre-wrap break-words">
-                                    {it.pattern}
-                                  </div>
-                                </Button>
-                              ))}
-                            </div>
-                          ))
-                        )}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-            <div className="flex-1 min-h-0 border border-default-200 rounded-xl overflow-hidden shadow-sm bg-content1">
-              <CodeEditor
-                ref={editorRef}
-                language="plaintext"
-                value={input}
-                onChange={setInput}
-                highlights={editorHighlights}
-                ariaLabel={t("tools.regex.testString")}
-              />
-            </div>
-          </div>
+    <div className="flex h-full min-h-0 flex-col gap-3 overflow-hidden">
+      <div className="relative z-20 flex min-h-[58px] shrink-0 flex-wrap items-end gap-2 rounded-xl border border-default-200 bg-default-50/70 p-2">
+        <div className="min-w-[260px] flex-1">
+          <Input
+            size="sm"
+            label={t("tools.regex.pattern")}
+            aria-label={t("tools.regex.pattern")}
+            placeholder={t("tools.regex.patternPlaceholder")}
+            value={pattern}
+            onValueChange={setPattern}
+            onBlur={handlePatternBlur}
+            classNames={{ input: "font-mono text-xs", inputWrapper: "bg-background" }}
+            startContent={<span className="font-mono text-xs text-default-400">/</span>}
+          />
         </div>
 
-        {/* 如果语言是英文 lg:w-[530px], 其他语言 lg:w-[420px] */}
-        <div className={`${isEnglish ? "lg:w-[530px]" : "lg:w-[420px]"} w-full flex flex-col gap-3 min-h-0 min-w-0`}>
-          <Tabs
-            aria-label={t("tools.regex.panelsAria")}
-            color="primary"
-            selectedKey={panelTab}
-            onSelectionChange={(k) => setPanelTab(k as PanelTab)}
-            classNames={{ tabList: "text-sm w-full", tab: "text-xs" }}
+        <div className="flex shrink-0 flex-col gap-1">
+          <span className="px-0.5 text-[11px] leading-none text-default-500">{t("tools.regex.flags")}</span>
+          <Dropdown isOpen={isFlagsOpen} onOpenChange={setIsFlagsOpen}>
+            <DropdownTrigger>
+              <Button
+                size="sm"
+                variant="bordered"
+                className="h-8 min-w-[84px] justify-between bg-background px-2.5 font-mono text-xs"
+                endContent={<ChevronDown className="h-3.5 w-3.5 text-default-400" />}
+              >
+                {flagsLabel || "—"}
+              </Button>
+            </DropdownTrigger>
+            <DropdownMenu
+              aria-label={t("tools.regex.flags")}
+              selectionMode="multiple"
+              selectedKeys={new Set(flagsLabel.split(""))}
+              closeOnSelect={false as any}
+              onSelectionChange={(keys) => {
+                const selected = Array.from(keys as Set<string>)
+                setFlags(normalizeFlags(selected.join("")))
+                window.setTimeout(() => setIsFlagsOpen(true), 0)
+              }}
+            >
+              {FLAG_ORDER.map((flag) => (
+                <DropdownItem key={flag} textValue={`${flag} ${flagTooltips[flag]}`}>
+                  <div className="flex items-center gap-3">
+                    <span className="w-4 font-mono text-xs font-semibold">{flag}</span>
+                    <span className="text-[11px] text-default-500">{flagTooltips[flag]}</span>
+                  </div>
+                </DropdownItem>
+              ))}
+            </DropdownMenu>
+          </Dropdown>
+        </div>
+
+        <div className="relative" ref={presetPopoverRef}>
+          <Button
+            size="sm"
+            variant="flat"
+            className="h-8"
+            startContent={<ListPlus className="h-4 w-4" />}
+            onPress={() => {
+              setIsPresetOpen((open) => !open)
+              setPresetQuery("")
+            }}
           >
-            <Tab key="matchInfo" title={t("tools.regex.matchInfo")} />
-            <Tab key="extract" title={t("tools.regex.extractExpr")} />
-            <Tab key="replaceResult" title={t("tools.regex.replaceResult")} />
-          </Tabs>
+            {t("tools.regex.presets.title")}
+          </Button>
+
+          {isPresetOpen && (
+            <div className="absolute right-0 top-full z-50 mt-2 w-[380px] max-w-[calc(100vw-2rem)] overflow-hidden rounded-xl border border-default-200 bg-background shadow-2xl">
+              <div className="border-b border-default-200 p-2">
+                <Input
+                  size="sm"
+                  aria-label={t("tools.regex.presets.searchPlaceholder")}
+                  placeholder={t("tools.regex.presets.searchPlaceholder")}
+                  value={presetQuery}
+                  onValueChange={setPresetQuery}
+                  startContent={<Search className="h-4 w-4 text-default-400" />}
+                  classNames={{ input: "text-xs" }}
+                />
+              </div>
+              <div className="max-h-[360px] space-y-2 overflow-auto p-2">
+                {presetItemsFiltered.length === 0 ? (
+                  <div className="p-6 text-center text-sm text-default-400">{t("tools.regex.presets.noResults")}</div>
+                ) : presetItemsFiltered.map((group) => (
+                  <div key={group.id} className="space-y-1">
+                    <div className="px-2 pb-1 pt-2 text-[10px] font-semibold uppercase tracking-wider text-default-400">{group.title}</div>
+                    {group.items.map((item) => (
+                      <Button
+                        key={item.id}
+                        variant="light"
+                        className="h-auto w-full justify-start rounded-lg px-3 py-2 text-left hover:bg-default-100"
+                        onPress={() => {
+                          setPattern(item.pattern)
+                          setPanelTab("matchInfo")
+                          setIsPresetOpen(false)
+                        }}
+                      >
+                        <div className="min-w-0">
+                          <div className="text-xs font-medium text-foreground">{item.label}</div>
+                          <div className="mt-0.5 break-all font-mono text-[11px] text-default-500">{item.pattern}</div>
+                        </div>
+                      </Button>
+                    ))}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+
+        <div className="hidden h-5 w-px bg-default-200 sm:block" />
+        <Button
+          size="sm"
+          variant="light"
+          className="h-8 px-2.5"
+          isDisabled={!pattern}
+          onPress={() => handleCopy(`/${pattern}/${flagsLabel}`)}
+          startContent={<Copy className="h-4 w-4" />}
+        >
+          {t("tools.regex.copyPattern")}
+        </Button>
+        <Button
+          size="sm"
+          variant="light"
+          className="h-8 px-2.5 text-default-500 hover:bg-danger/10 hover:text-danger"
+          isDisabled={!pattern && !input && !replacement && !output}
+          onPress={handleClearAll}
+          startContent={<Trash2 className="h-4 w-4" />}
+        >
+          {t("tools.regex.clear")}
+        </Button>
+      </div>
+
+      <div className="grid min-h-0 flex-1 grid-rows-2 overflow-hidden rounded-xl border border-default-200 bg-background lg:grid-cols-[minmax(0,1.1fr)_minmax(380px,.9fr)] lg:grid-rows-1">
+        <section className="flex min-h-0 min-w-0 flex-col" aria-labelledby="regex-input-heading">
+          <div className="flex h-11 shrink-0 items-center justify-between gap-3 border-b border-default-200 px-3.5">
+            <div className="flex min-w-0 items-baseline gap-3">
+              <h2 id="regex-input-heading" className="shrink-0 text-sm font-semibold text-foreground">{t("tools.regex.testString")}</h2>
+              <span className="truncate text-[11px] text-default-400">{input.length} {t("tools.formatter.characters")}</span>
+            </div>
+            <Button
+              size="sm"
+              variant="light"
+              color="primary"
+              className="h-8 min-w-0 px-2.5"
+              isDisabled={!input}
+              onPress={() => handleCopy(input)}
+              startContent={<Copy className="h-4 w-4" />}
+            >
+              {t("tools.regex.copy")}
+            </Button>
+          </div>
+          <div className="min-h-0 flex-1">
+            <CodeEditor
+              ref={editorRef}
+              language="plaintext"
+              value={input}
+              onChange={setInput}
+              highlights={editorHighlights}
+              fontSize={13}
+              contentPadding={16}
+              ariaLabel={t("tools.regex.testString")}
+            />
+          </div>
+        </section>
+
+        <section className="flex min-h-0 min-w-0 flex-col border-t border-default-200 lg:border-l lg:border-t-0" aria-label={t("tools.regex.panelsAria")}>
+          <div className="flex h-11 shrink-0 items-center justify-between gap-2 border-b border-default-200 pr-3">
+            <Tabs
+              aria-label={t("tools.regex.panelsAria")}
+              selectedKey={panelTab}
+              onSelectionChange={(key) => setPanelTab(key as PanelTab)}
+              className="min-w-0"
+              classNames={{ tabList: "min-w-0 border-0 px-1", tab: "whitespace-nowrap px-2.5 py-3 text-xs" }}
+            >
+              <Tab key="matchInfo" title={t("tools.regex.matchInfo")} />
+              <Tab key="extract" title={t("tools.regex.extractExpr")} />
+              <Tab key="replaceResult" title={t("tools.regex.replaceResult")} />
+            </Tabs>
+
+            <div
+              className={`flex min-w-0 shrink items-center gap-1.5 text-[11px] ${regexError ? "text-danger" : "text-default-400"}`}
+              title={regexError ? `${t("tools.regex.invalidRegex")}: ${regexError}` : undefined}
+            >
+              {regexError ? <AlertCircle className="h-3.5 w-3.5 shrink-0" /> : <CheckCircle2 className="h-3.5 w-3.5 shrink-0 text-success" />}
+              <span className="max-w-40 truncate">
+                {regexError ? `${t("tools.regex.invalidRegex")}: ${regexError}` : `${t("tools.regex.matches")}: ${matches.length} · ${elapsedMs.toFixed(2)} ms`}
+              </span>
+            </div>
+          </div>
 
           {panelTab === "matchInfo" && (
-            <div className="flex-1 min-h-0 flex flex-col gap-3">
-              {regexError && (
-                <Card className="border-danger bg-danger-50 dark:bg-danger-900/20" shadow="sm">
-                  <CardBody className="flex flex-row items-center gap-3 py-2">
-                    <AlertCircle className="w-5 h-5 text-danger" />
-                    <p className="text-danger font-medium text-xs">
-                      {t("tools.regex.invalidRegex")}: {regexError}
-                    </p>
-                  </CardBody>
-                </Card>
-              )}
+            <div className="flex min-h-0 flex-1 flex-col">
+              <div className="flex min-h-11 shrink-0 flex-wrap items-center justify-between gap-2 border-b border-default-200 bg-default-50/35 px-3 py-1.5">
+                <span className="text-xs text-default-500">{t("tools.regex.matches")}: <strong className="text-foreground">{matches.length}</strong></span>
+                <div className="flex flex-wrap items-center justify-end gap-1">
+                  <Button size="sm" variant="light" className="h-8 px-2.5" isDisabled={!matchResultsText} onPress={() => handleCopy(matchResultsText)}>
+                    {t("tools.regex.copyResultsOnly")}
+                  </Button>
+                  <Button size="sm" variant="light" className="h-8 px-2.5" isDisabled={!matches.length} onPress={() => handleCopy(matchInfoJson)}>
+                    {t("tools.regex.copyMatches")}
+                  </Button>
+                  <Dropdown>
+                    <DropdownTrigger>
+                      <Button size="sm" variant="light" className="h-8 px-2.5" isDisabled={!matches.length} startContent={<FileDown className="h-4 w-4" />}>
+                        {t("tools.regex.export")}
+                      </Button>
+                    </DropdownTrigger>
+                    <DropdownMenu aria-label={t("tools.regex.exportMenu")}>
+                      <DropdownItem key="txt" onPress={() => writeTextFile("regex-results.txt", "txt", matchResultsText)}>{t("tools.regex.exportResultsOnly")}</DropdownItem>
+                      <DropdownItem key="json" onPress={() => handleExportMatches("json")}>{t("tools.regex.exportMatchesJson")}</DropdownItem>
+                      <DropdownItem key="csv" onPress={() => handleExportMatches("csv")}>{t("tools.regex.exportMatchesCsv")}</DropdownItem>
+                    </DropdownMenu>
+                  </Dropdown>
+                </div>
+              </div>
 
-              <Card shadow="sm" className="border border-default-200">
-                <CardBody className="flex flex-col gap-2">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-semibold text-default-600">
-                      {t("tools.regex.matches")}: {matches.length}
-                    </span>
-                    <span className="text-[10px] text-default-400">{elapsedMs.toFixed(2)} ms</span>
+              <div className="min-h-0 flex-1 overflow-auto p-2">
+                {matches.length === 0 ? (
+                  <div className="flex h-full min-h-28 items-center justify-center px-6 text-center text-sm text-default-400">
+                    {regexError ? `${t("tools.regex.invalidRegex")}: ${regexError}` : t("tools.regex.noMatches")}
                   </div>
-                  <div className="flex gap-2">
-                    <Button size="sm" variant="flat" onPress={() => handleCopy(matchResultsText)}>
-                      {t("tools.regex.copyResultsOnly")}
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="flat"
-                      startContent={<FileDown className="w-4 h-4" />}
-                      onPress={() => writeTextFile("regex-results.txt", "txt", matchResultsText)}
-                    >
-                      {t("tools.regex.exportResultsOnly")}
-                    </Button>
-                    <Button size="sm" variant="flat" onPress={() => handleCopy(matchInfoJson)}>
-                      {t("tools.regex.copyMatches")}
-                    </Button>
-                    <Dropdown>
-                      <DropdownTrigger>
-                        <Button size="sm" variant="flat" startContent={<FileDown className="w-4 h-4" />}>
-                          {t("tools.regex.export")}
-                        </Button>
-                      </DropdownTrigger>
-                      <DropdownMenu aria-label={t("tools.regex.exportMenu")}>
-                        <DropdownItem key="json" onPress={() => handleExportMatches("json")}>
-                          {t("tools.regex.exportMatchesJson")}
-                        </DropdownItem>
-                        <DropdownItem key="csv" onPress={() => handleExportMatches("csv")}>
-                          {t("tools.regex.exportMatchesCsv")}
-                        </DropdownItem>
-                      </DropdownMenu>
-                    </Dropdown>
-                  </div>
-                </CardBody>
-              </Card>
-              <div className="flex-1 min-h-0 border border-default-200 rounded-xl bg-content1 overflow-hidden">
-                <div className="h-full overflow-auto p-2 space-y-1">
-                  {matches.length === 0 ? (
-                    <div className="p-6 text-center text-default-400 text-sm">{t("tools.regex.noMatches")}</div>
-                  ) : (
-                    matches.map((m) => (
-                      <Button
-                        key={`${m.matchIndex}-${m.start}-${m.end}`}
-                        variant="light"
-                        className={`h-auto w-full justify-start text-left px-3 py-2 rounded-lg ${selectedMatchIndex === m.matchIndex ? "bg-primary/10 text-primary" : "hover:bg-default-100"
-                          }`}
-                        onPress={() => jumpToMatch(m.matchIndex)}
-                      >
-                        <div className="flex items-center justify-between gap-3">
-                          <span className="text-xs font-semibold">#{m.matchIndex}</span>
-                          <span className="text-[10px] text-default-400">
-                            {m.start}–{m.end}
-                          </span>
-                        </div>
-                        <div className="mt-1 font-mono text-[11px] whitespace-pre-wrap break-words text-default-700">
-                          {m.text.length > 120 ? `${m.text.slice(0, 120)}…` : m.text}
-                        </div>
-                        {(m.groups.length > 0 || (m.namedGroups && Object.keys(m.namedGroups).length > 0)) && (
-                          <div className="mt-1 text-[10px] text-default-500">
-                            {m.groups.length > 0 && <div>{t("tools.regex.groupsLabel")}: {JSON.stringify(m.groups)}</div>}
-                            {m.namedGroups && Object.keys(m.namedGroups).length > 0 && (
-                              <div>{t("tools.regex.namedLabel")}: {JSON.stringify(m.namedGroups)}</div>
+                ) : (
+                  <div className="space-y-1">
+                    {matches.map((match) => {
+                      const isActive = selectedMatchIndex === match.matchIndex
+                      return (
+                        <Button
+                          key={`${match.matchIndex}-${match.start}-${match.end}`}
+                          variant="light"
+                          className={`h-auto w-full justify-start rounded-lg border px-3 py-2 text-left ${isActive ? "border-primary/40 bg-primary/10" : "border-transparent hover:border-default-200 hover:bg-default-50"}`}
+                          onPress={() => jumpToMatch(match.matchIndex)}
+                        >
+                          <div className="min-w-0 flex-1">
+                            <div className="flex items-center justify-between gap-3">
+                              <span className={`text-xs font-semibold ${isActive ? "text-primary" : "text-foreground"}`}>#{match.matchIndex}</span>
+                              <span className="font-mono text-[10px] text-default-400">{match.start}–{match.end}</span>
+                            </div>
+                            <div className="mt-1 break-words font-mono text-[11px] text-default-700">
+                              {match.text.length > 160 ? `${match.text.slice(0, 160)}…` : match.text}
+                            </div>
+                            {(match.groups.length > 0 || (match.namedGroups && Object.keys(match.namedGroups).length > 0)) && (
+                              <div className="mt-1.5 space-y-0.5 border-t border-default-200/70 pt-1.5 text-[10px] text-default-500">
+                                {match.groups.length > 0 && <div>{t("tools.regex.groupsLabel")}: <span className="font-mono">{JSON.stringify(match.groups)}</span></div>}
+                                {match.namedGroups && Object.keys(match.namedGroups).length > 0 && <div>{t("tools.regex.namedLabel")}: <span className="font-mono">{JSON.stringify(match.namedGroups)}</span></div>}
+                              </div>
                             )}
                           </div>
-                        )}
-                      </Button>
-                    ))
-                  )}
-                </div>
+                        </Button>
+                      )
+                    })}
+                  </div>
+                )}
               </div>
             </div>
           )}
 
           {panelTab === "extract" && (
-            <div className="flex-1 min-h-0 flex flex-col gap-3">
-              {regexError && (
-                <Card className="border-danger bg-danger-50 dark:bg-danger-900/20" shadow="sm">
-                  <CardBody className="flex flex-row items-center gap-3 py-2">
-                    <AlertCircle className="w-5 h-5 text-danger" />
-                    <p className="text-danger font-medium text-xs">
-                      {t("tools.regex.invalidRegex")}: {regexError}
-                    </p>
-                  </CardBody>
-                </Card>
-              )}
-
-              <Card shadow="sm" className="border border-default-200 flex-1 min-h-0">
-                <CardBody className="flex flex-col gap-2 flex-1 min-h-0">
-                  <Input
-                    size="sm"
-                    label={t("tools.regex.extractExpr")}
-                    placeholder={t("tools.regex.extractExprPlaceholder")}
-                    value={extractExpr}
-                    onValueChange={setExtractExpr}
-                    description={t(
-                      "tools.regex.extractExprHelp",
-                      "支持 $0（整段匹配）、$1…$99、${name} / $<name>（命名分组）、$$（字面 $）"
-                    )}
-                    classNames={{ input: "font-mono text-xs", description: "text-[10px]" }}
-                  />
-
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="text-[10px] text-default-400">
-                      {t("tools.regex.extractLines")}: {matches.length}
-                    </span>
-                    <div className="flex gap-2">
-                      <Button size="sm" variant="flat" onPress={() => handleCopy(extractedResultsText)} isDisabled={!extractedResultsText}>
-                        {t("tools.regex.copyExtracted")}
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="flat"
-                        startContent={<FileDown className="w-4 h-4" />}
-                        onPress={() => writeTextFile("regex-extract.txt", "txt", extractedResultsText)}
-                        isDisabled={!extractedResultsText}
-                      >
-                        {t("tools.regex.exportExtracted")}
-                      </Button>
-                    </div>
-                  </div>
-
-                  <div className="flex-1 min-h-0">
-                    {/* 关闭自动高度，让文本框配合 flex 布局填满可用空间。 */}
-                    <Textarea
-                      value={extractedResultsText}
-                      isReadOnly
-                      disableAutosize
-                      minRows={4}
-                      placeholder={t("tools.regex.extractEmpty")}
-                      className="h-full"
-                      classNames={{
-                        base: "h-full flex flex-col",
-                        inputWrapper: "flex-1 min-h-0 bg-default-50/50",
-                        input: "h-full font-mono text-xs",
-                      }}
-                    />
-                  </div>
-                </CardBody>
-              </Card>
-            </div>
-          )}
-
-          {panelTab === "replaceResult" && (
-            <div className="flex-1 min-h-0 flex flex-col gap-3">
-              <Textarea
-                label={t("tools.regex.replaceWith")}
-                placeholder={t("tools.regex.replacePlaceholder")}
-                value={replacement}
-                onValueChange={setReplacement}
-                classNames={{ input: "font-mono text-xs" }}
-                minRows={2}
-              />
-
-              <div className="flex flex-wrap gap-2 items-center justify-between">
-                <div className="text-xs text-default-500">
-                  {t("tools.regex.replacements")}: {replaceCount}
-                </div>
-                <div className="flex gap-2">
-                  <Button size="sm" color="secondary" variant="flat" onPress={handleReplace}>
-                    {t("tools.regex.replace")}
-                  </Button>
-                  <Button size="sm" color="secondary" variant="flat" onPress={handleReplaceAll}>
-                    {t("tools.regex.replaceAll")}
-                  </Button>
-                  <Button size="sm" variant="flat" onPress={() => handleCopy(output)}>
-                    {t("tools.regex.copyOutput")}
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="flat"
-                    startContent={<FileDown className="w-4 h-4" />}
-                    onPress={() => writeTextFile("regex-output.txt", "txt", output)}
-                  >
-                    {t("tools.regex.exportOutput")}
-                  </Button>
+            <div className="flex min-h-0 flex-1 flex-col">
+              <div className="shrink-0 border-b border-default-200 bg-default-50/35 p-3">
+                <Input
+                  size="sm"
+                  label={t("tools.regex.extractExpr")}
+                  placeholder={t("tools.regex.extractExprPlaceholder")}
+                  value={extractExpr}
+                  onValueChange={setExtractExpr}
+                  description={t("tools.regex.extractExprHelp")}
+                  classNames={{ input: "font-mono text-xs", description: "text-[10px]" }}
+                />
+              </div>
+              <div className="flex h-11 shrink-0 items-center justify-between gap-2 border-b border-default-200 px-3">
+                <span className="text-xs text-default-500">{t("tools.regex.extractLines")}: <strong className="text-foreground">{matches.length}</strong></span>
+                <div className="flex items-center gap-1">
+                  <Button size="sm" variant="light" className="h-8 px-2.5" onPress={() => handleCopy(extractedResultsText)} isDisabled={!extractedResultsText}>{t("tools.regex.copyExtracted")}</Button>
+                  <Button size="sm" variant="light" className="h-8 px-2.5" startContent={<FileDown className="h-4 w-4" />} onPress={() => writeTextFile("regex-extract.txt", "txt", extractedResultsText)} isDisabled={!extractedResultsText}>{t("tools.regex.exportExtracted")}</Button>
                 </div>
               </div>
-
-              <div className="flex-1 min-h-0 border border-default-200 rounded-xl overflow-hidden shadow-sm bg-content1">
-                <CodeEditor
-                  language="plaintext"
-                  value={output}
-                  onChange={setOutput}
-                  ariaLabel={t("tools.regex.replaceResult")}
+              <div className="min-h-0 flex-1 bg-default-50/35 p-3">
+                <Textarea
+                  value={extractedResultsText}
+                  isReadOnly
+                  disableAutosize
+                  minRows={4}
+                  placeholder={t("tools.regex.extractEmpty")}
+                  className="h-full"
+                  classNames={{ base: "flex h-full flex-col", inputWrapper: "min-h-0 flex-1 bg-background", input: "h-full font-mono text-xs" }}
                 />
               </div>
             </div>
           )}
-        </div>
+
+          {panelTab === "replaceResult" && (
+            <div className="flex min-h-0 flex-1 flex-col">
+              <div className="shrink-0 border-b border-default-200 bg-default-50/35 p-3">
+                <Textarea
+                  label={t("tools.regex.replaceWith")}
+                  placeholder={t("tools.regex.replacePlaceholder")}
+                  value={replacement}
+                  onValueChange={setReplacement}
+                  minRows={2}
+                  classNames={{ inputWrapper: "bg-background", input: "font-mono text-xs" }}
+                />
+                <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
+                  <span className="text-xs text-default-500">{t("tools.regex.replacements")}: <strong className="text-foreground">{replaceCount}</strong></span>
+                  <div className="flex flex-wrap items-center justify-end gap-1">
+                    <Button size="sm" variant="bordered" className="h-8" isDisabled={!pattern} onPress={handleReplace}>{t("tools.regex.replace")}</Button>
+                    <Button size="sm" color="primary" className="h-8" isDisabled={!pattern} onPress={handleReplaceAll}>{t("tools.regex.replaceAll")}</Button>
+                    <Button size="sm" variant="light" className="h-8 px-2.5" isDisabled={!output} onPress={() => handleCopy(output)}>{t("tools.regex.copyOutput")}</Button>
+                    <Button size="sm" variant="light" className="h-8 px-2.5" isDisabled={!output} startContent={<FileDown className="h-4 w-4" />} onPress={() => writeTextFile("regex-output.txt", "txt", output)}>{t("tools.regex.exportOutput")}</Button>
+                  </div>
+                </div>
+              </div>
+              <div className="min-h-0 flex-1">
+                <CodeEditor language="plaintext" value={output} onChange={setOutput} fontSize={13} contentPadding={16} ariaLabel={t("tools.regex.replaceResult")} />
+              </div>
+            </div>
+          )}
+        </section>
       </div>
     </div>
   )
