@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react"
 import { Button, Input, Select, SelectItem, Card, CardBody, CardHeader } from "../../components/ui/base-ui"
 import { Trash2, Lock, Unlock, FileUp, FolderOpen } from "lucide-react"
 import { useTranslation } from "react-i18next"
-import { useLog } from "../../contexts/LogContext"
+import { useLogActions } from "../../contexts/LogContext"
 import CryptoJS from "crypto-js"
 import { open as openDialog } from "@tauri-apps/plugin-dialog"
 import { writeFile } from "@tauri-apps/plugin-fs"
@@ -93,7 +93,7 @@ const formatBytes = (bytes: number) => {
 
 export function AesTab2() {
   const { t } = useTranslation()
-  const { addLog } = useLog()
+  const { addLog } = useLogActions()
 
   const [activeTab, setActiveTab] = useState<"encrypt" | "decrypt" | "fileEncrypt" | "fileDecrypt">("encrypt")
   const [operation, setOperation] = useState<TextOperation>("encrypt")

@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react"
 import { invoke } from "@tauri-apps/api/core"
 import { useTranslation } from "react-i18next"
 import { Select, SelectItem } from "../../components/ui/base-ui"
-import { useLog } from "../../contexts/LogContext"
+import { useLogActions } from "../../contexts/LogContext"
 import { getStoredItem, removeStoredItem, setStoredItem } from "../../lib/store"
 import { EncoderWorkbench } from "./EncoderWorkbench"
 
@@ -12,7 +12,7 @@ type BaseXMode = "encode" | "decode"
 
 export function BaseXTab() {
   const { t } = useTranslation()
-  const { addLog } = useLog()
+  const { addLog } = useLogActions()
   const [baseXInput, setBaseXInput] = useState("")
   const [baseXOutput, setBaseXOutput] = useState("")
   const [activeMode, setActiveMode] = useState<BaseXMode>("encode")

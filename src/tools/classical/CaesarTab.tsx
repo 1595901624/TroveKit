@@ -2,7 +2,7 @@ import { useState, useEffect } from "react"
 import { Button, Input, Select, SelectItem } from "../../components/ui/base-ui"
 import { Shield, ShieldAlert } from "lucide-react"
 import { useTranslation } from "react-i18next"
-import { useLog } from "../../contexts/LogContext"
+import { useLogActions } from "../../contexts/LogContext"
 import { getStoredItem, setStoredItem, removeStoredItem } from "../../lib/store"
 import { HashOperationSwitch, HashWorkbench } from "../hash/HashWorkbench"
 
@@ -10,7 +10,7 @@ const STORAGE_KEY = "caesar-tool-state"
 
 export function CaesarTab() {
   const { t } = useTranslation()
-  const { addLog } = useLog()
+  const { addLog } = useLogActions()
 
   const [input, setInput] = useState("")
   const [output, setOutput] = useState("")

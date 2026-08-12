@@ -2,7 +2,7 @@ import { useState, useEffect } from "react"
 import { Textarea, Button, RadioGroup, Radio } from "../../components/ui/base-ui"
 import { Lock, Unlock, KeyRound } from "lucide-react"
 import { useTranslation } from "react-i18next"
-import { useLog } from "../../contexts/LogContext"
+import { useLogActions } from "../../contexts/LogContext"
 // @ts-ignore
 import { CipherMode, sm2 } from "sm-crypto"
 import { getStoredItem, setStoredItem, removeStoredItem } from "../../lib/store"
@@ -12,7 +12,7 @@ const STORAGE_KEY = "sm2-tool-state"
 
 export function Sm2Tab() {
   const { t } = useTranslation()
-  const { addLog } = useLog()
+  const { addLog } = useLogActions()
 
   const [input, setInput] = useState("")
   const [output, setOutput] = useState("")

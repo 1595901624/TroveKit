@@ -662,7 +662,8 @@
     "trailingTab": "Trailing tab",
     "trailingNewline": "Trailing newline",
     "addSessionNote": "Add Session Note",
-    "sessionNotePlaceholder": "Enter session note..."
+    "sessionNotePlaceholder": "Enter session note...",
+    "recentLimit": "Showing the latest {{count}} logs. Open Log Management for the full history."
   },
   "logManagement": {
     "sessions": "Sessions",

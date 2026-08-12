@@ -2,7 +2,7 @@ import { useState, useEffect } from "react"
 import { Button, RadioGroup, Radio } from "../../components/ui/base-ui"
 import { Hash } from "lucide-react"
 import { useTranslation } from "react-i18next"
-import { useLog } from "../../contexts/LogContext"
+import { useLogActions } from "../../contexts/LogContext"
 import md4 from "../../lib/md4"
 import { getStoredItem, setStoredItem, removeStoredItem } from "../../lib/store"
 import { HashWorkbench } from "./HashWorkbench"
@@ -11,7 +11,7 @@ const MD4_STORAGE_KEY = "md4_state"
 
 export function Md4Tab() {
   const { t } = useTranslation()
-  const { addLog } = useLog()
+  const { addLog } = useLogActions()
 
   const [input, setInput] = useState("")
   const [output, setOutput] = useState("")

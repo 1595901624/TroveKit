@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { Select, SelectItem } from "../../components/ui/base-ui"
-import { useLog } from "../../contexts/LogContext"
+import { useLogActions } from "../../contexts/LogContext"
 import { useStorageLoader } from "../../hooks/usePersistentState"
 import { removeStoredItem, setStoredItem } from "../../lib/store"
 import { EncoderWorkbench } from "./EncoderWorkbench"
@@ -32,7 +32,7 @@ function transformHex(value: string, mode: HexMode, newlineMode: NewlineMode) {
 
 export function HexTab() {
   const { t } = useTranslation()
-  const { addLog } = useLog()
+  const { addLog } = useLogActions()
   const [savedState, isLoaded] = useStorageLoader<any>(STORAGE_KEY)
   const [hexInput, setHexInput] = useState("")
   const [hexOutput, setHexOutput] = useState("")

@@ -2,7 +2,7 @@ import { useState, useEffect } from "react"
 import { Button, Input, Select, SelectItem } from "../../components/ui/base-ui"
 import { Lock, Unlock } from "lucide-react"
 import { useTranslation } from "react-i18next"
-import { useLog } from "../../contexts/LogContext"
+import { useLogActions } from "../../contexts/LogContext"
 import CryptoJS from "crypto-js"
 import { getStoredItem, setStoredItem, removeStoredItem } from "../../lib/store"
 import { HashToolbarField, HashWorkbench } from "./HashWorkbench"
@@ -11,7 +11,7 @@ const STORAGE_KEY = "rc4-tool-state"
 
 export function Rc4Tab() {
   const { t } = useTranslation()
-  const { addLog } = useLog()
+  const { addLog } = useLogActions()
 
   const [rc4Input, setRc4Input] = useState("")
   const [rc4Output, setRc4Output] = useState("")

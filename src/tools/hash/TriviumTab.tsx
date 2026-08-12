@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import { Button, Input, Radio, RadioGroup, Select, SelectItem } from "../../components/ui/base-ui"
 import { Lock, Unlock, RefreshCw } from "lucide-react"
 import { useTranslation } from "react-i18next"
-import { useLog } from "../../contexts/LogContext"
+import { useLogActions } from "../../contexts/LogContext"
 import { getStoredItem, removeStoredItem, setStoredItem } from "../../lib/store"
 import { invoke } from "@tauri-apps/api/core"
 import { HashToolbarField, HashWorkbench } from "./HashWorkbench"
@@ -73,7 +73,7 @@ function reverseBytes10(bytes: Uint8Array): Uint8Array {
 
 export function TriviumTab() {
   const { t } = useTranslation()
-  const { addLog } = useLog()
+  const { addLog } = useLogActions()
 
   const [input, setInput] = useState("")
   const [output, setOutput] = useState("")

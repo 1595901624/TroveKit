@@ -269,7 +269,7 @@ function HomeView({ onNavigate }: { onNavigate: (toolId: ToolId, tabId?: string)
       </div>
 
       {/* 工具卡片网格区域 - 使用响应式布局 */}
-      <div className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">
+      <div className="home-tool-grid grid grid-cols-1 gap-3">
         {tools.map((item) => (
           <Card
             key={item.id}
@@ -299,7 +299,7 @@ function HomeView({ onNavigate }: { onNavigate: (toolId: ToolId, tabId?: string)
       {favoriteFeatures.length > 0 && (
         <div className="space-y-4 border-t border-default-200/70 pt-7">
           <h3 className="text-[17px] font-semibold tracking-tight">{t("home.frequentlyUsed", "常用功能")}</h3>
-          <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4">
+          <div className="home-favorite-grid grid grid-cols-2 gap-3">
             {favoriteFeatures.map(f => (
               <Card
                 key={f.id}

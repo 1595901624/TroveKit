@@ -4,7 +4,7 @@ import CodeEditor from "../../components/CodeEditor"
 import { Copy, Trash2, ArrowDown, ArrowRight, ShieldCheck, ShieldAlert, KeyRound, RefreshCw, Wand2 } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import * as jose from "jose"
-import { useLog } from "../../contexts/LogContext"
+import { useLogActions } from "../../contexts/LogContext"
 import { useStorageLoader } from "../../hooks/usePersistentState"
 import { setStoredItem, removeStoredItem } from "../../lib/store"
 
@@ -50,7 +50,7 @@ const EXAMPLE_PAYLOADS = [
 
 export function JwtTab() {
   const { t } = useTranslation()
-  const { addLog } = useLog()
+  const { addLog } = useLogActions()
   
   const [savedState, isLoaded] = useStorageLoader<any>(STORAGE_KEY)
 

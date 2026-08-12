@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react"
 import { addToast } from "../../components/ui/base-ui"
 import { useTranslation } from "react-i18next"
-import { useLog } from "../../contexts/LogContext"
+import { useLogActions } from "../../contexts/LogContext"
 import { getStoredItem } from "../../lib/store"
 import { useDebouncedStoredValue } from "../../hooks/useDebouncedStoredValue"
 import { useConverterWorker } from "../../hooks/useConverterWorker"
@@ -11,7 +11,7 @@ const STORAGE_KEY = "json-yaml-tool-state"
 
 export function JsonYamlTab() {
   const { t } = useTranslation()
-  const { addLog } = useLog()
+  const { addLog } = useLogActions()
 
   const [jsonCode, setJsonCode] = useState("")
   const [yamlCode, setYamlCode] = useState("")

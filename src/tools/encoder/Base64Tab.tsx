@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
-import { useLog } from "../../contexts/LogContext"
+import { useLogActions } from "../../contexts/LogContext"
 import { getStoredItem, removeStoredItem, setStoredItem } from "../../lib/store"
 import { EncoderWorkbench } from "./EncoderWorkbench"
 
@@ -22,7 +22,7 @@ function transformBase64(value: string, mode: Base64Mode) {
 
 export function Base64Tab() {
   const { t } = useTranslation()
-  const { addLog } = useLog()
+  const { addLog } = useLogActions()
   const [base64Input, setBase64Input] = useState("")
   const [base64Output, setBase64Output] = useState("")
   const [activeMode, setActiveMode] = useState<Base64Mode>("encode")

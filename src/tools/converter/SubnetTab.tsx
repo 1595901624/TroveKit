@@ -10,7 +10,7 @@ import {
 } from "../../components/ui/base-ui"
 import { Copy, Network, Settings2, FileDown, FileJson, ListPlus, Dices } from "lucide-react"
 import { useTranslation } from "react-i18next"
-import { useLog } from "../../contexts/LogContext"
+import { useLogActions } from "../../contexts/LogContext"
 import { getStoredItem, setStoredItem } from "../../lib/store"
 import type { Ipv4HostRule, SubnetResult } from "../../lib/ip_subnet"
 import { SubnetError, calcFromCidr, calcFromIpv4Netmask, getIpv4AddressMeta, ipv4PrefixToMaskString } from "../../lib/ip_subnet"
@@ -33,7 +33,7 @@ const STORAGE_KEY = "subnet-tool-state"
 
 export function SubnetTab() {
   const { t } = useTranslation()
-  const { addLog } = useLog()
+  const { addLog } = useLogActions()
 
   const [mode, setMode] = useState<InputMode>("cidr")
   const [cidr, setCidr] = useState("")

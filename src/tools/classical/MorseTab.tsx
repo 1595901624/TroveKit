@@ -1,7 +1,7 @@
 import { useState, useMemo, useEffect } from "react"
 import { Button, Select, SelectItem, Input, addToast } from "../../components/ui/base-ui"
 import { useTranslation } from "react-i18next"
-import { useLog } from "../../contexts/LogContext"
+import { useLogActions } from "../../contexts/LogContext"
 import { Replace } from "lucide-react"
 // @ts-ignore
 import { encode as morseEncode, decode as morseDecode } from "xmorse"
@@ -12,7 +12,7 @@ const STORAGE_KEY = "morse-tool-state"
 
 export function MorseTab() {
   const { t } = useTranslation()
-  const { addLog } = useLog()
+  const { addLog } = useLogActions()
 
   const [input, setInput] = useState("")
   const [output, setOutput] = useState("")

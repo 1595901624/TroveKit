@@ -2,7 +2,7 @@ import { useState, useEffect } from "react"
 import { Textarea, Button, Select, SelectItem } from "../../components/ui/base-ui"
 import { Lock, Unlock, KeyRound } from "lucide-react"
 import { useTranslation } from "react-i18next"
-import { useLog } from "../../contexts/LogContext"
+import { useLogActions } from "../../contexts/LogContext"
 import JSEncrypt from "jsencrypt"
 import { getStoredItem, setStoredItem, removeStoredItem } from "../../lib/store"
 import { HashToolbarField, HashWorkbench } from "./HashWorkbench"
@@ -11,7 +11,7 @@ const STORAGE_KEY = "rsa-tool-state"
 
 export function RsaTab() {
   const { t } = useTranslation()
-  const { addLog } = useLog()
+  const { addLog } = useLogActions()
 
   const [input, setInput] = useState("")
   const [output, setOutput] = useState("")

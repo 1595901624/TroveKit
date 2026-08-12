@@ -2,7 +2,7 @@ import { useState, useEffect } from "react"
 import { Textarea, Button, RadioGroup, Radio, Input, Select, SelectItem } from "../../components/ui/base-ui"
 import { Copy, Trash2, Lock, Unlock } from "lucide-react"
 import { useTranslation } from "react-i18next"
-import { useLog } from "../../contexts/LogContext"
+import { useLogActions } from "../../contexts/LogContext"
 import CryptoJS from "crypto-js"
 import { getStoredItem, setStoredItem, removeStoredItem } from "../../lib/store"
 
@@ -10,7 +10,7 @@ const STORAGE_KEY = "aes-tool-state"
 
 export function AesTab() {
   const { t } = useTranslation()
-  const { addLog } = useLog()
+  const { addLog } = useLogActions()
 
   const [aesInput, setAesInput] = useState("")
   const [aesOutput, setAesOutput] = useState("")

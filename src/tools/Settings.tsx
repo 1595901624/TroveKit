@@ -7,12 +7,12 @@ import { useEffect, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { LanguageSelector } from "../components/LanguageSelector"
 import { ThemeToggle } from "../components/ThemeToggle"
-import { useLog } from "../contexts/LogContext"
+import { useLogActions } from "../contexts/LogContext"
 import { FeatureManagement } from "./settings/FeatureManagement"
 
 export function Settings() {
   const { t } = useTranslation()
-  const { addLog } = useLog()
+  const { addLog } = useLogActions()
   const [version, setVersion] = useState("0.1.0")
   const [activeSection, setActiveSection] = useState<"appearance" | "features" | "data" | "about">("appearance")
   const isTestVersion = /-\d+$/.test(version)

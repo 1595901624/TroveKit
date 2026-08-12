@@ -3,7 +3,7 @@ import { Input, Select, SelectItem, Button, DatePicker, addToast } from "../../c
 import { invoke } from "@tauri-apps/api/core"
 import { useTranslation } from "react-i18next"
 import { Clock, ArrowRightLeft, Copy, Pause, Play, Calendar, Trash2 } from "lucide-react"
-import { useLog } from "../../contexts/LogContext"
+import { useLogActions } from "../../contexts/LogContext"
 import { getLocalTimeZone } from "@internationalized/date"
 import type { DateValue } from "@internationalized/date"
 import { getStoredItem, removeStoredItem, setStoredItem } from "../../lib/store"
@@ -19,7 +19,7 @@ interface TimeInfo {
 
 export function TimestampTab({ isVisible = true }: { isVisible?: boolean }) {
     const { t } = useTranslation()
-    const { addLog } = useLog()
+  const { addLog } = useLogActions()
     const [currentTime, setCurrentTime] = useState<TimeInfo>({ secs: "0", millis: "0", micros: "0", nanos: "0" })
     const [tsInput, setTsInput] = useState("")
     const [tsUnit, setTsUnit] = useState("s")

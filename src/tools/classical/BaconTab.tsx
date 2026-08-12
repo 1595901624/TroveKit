@@ -2,7 +2,7 @@ import { useState, useEffect } from "react"
 import { Button, Input, Select, SelectItem } from "../../components/ui/base-ui"
 import { Shield, ShieldAlert } from "lucide-react"
 import { useTranslation } from "react-i18next"
-import { useLog } from "../../contexts/LogContext"
+import { useLogActions } from "../../contexts/LogContext"
 import { getStoredItem, setStoredItem, removeStoredItem } from "../../lib/store"
 import { HashOperationSwitch, HashWorkbench } from "../hash/HashWorkbench"
 
@@ -13,7 +13,7 @@ const BACON_TRADITIONAL_ALPHABET = "ABCDEFGHIKLMNOPQRSTUWXYZ" // skips J and V
 
 export function BaconTab() {
   const { t } = useTranslation()
-  const { addLog } = useLog()
+  const { addLog } = useLogActions()
 
   const [input, setInput] = useState("")
   const [output, setOutput] = useState("")

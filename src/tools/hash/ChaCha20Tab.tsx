@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import { Button, Input, Radio, RadioGroup, Select, SelectItem } from "../../components/ui/base-ui"
 import { Lock, Unlock, RefreshCw } from "lucide-react"
 import { useTranslation } from "react-i18next"
-import { useLog } from "../../contexts/LogContext"
+import { useLogActions } from "../../contexts/LogContext"
 import { getStoredItem, removeStoredItem, setStoredItem } from "../../lib/store"
 import { chacha20 } from "@noble/ciphers/chacha.js"
 import { HashToolbarField, HashWorkbench } from "./HashWorkbench"
@@ -70,7 +70,7 @@ function generateRandomString(length: number): string {
 
 export function ChaCha20Tab() {
   const { t } = useTranslation()
-  const { addLog } = useLog()
+  const { addLog } = useLogActions()
 
   const [input, setInput] = useState<string>(() => t("tools.hash.defaultInput"))
   const [output, setOutput] = useState("")

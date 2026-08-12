@@ -138,7 +138,9 @@ export function Sidebar({ macOSOverlay = false, isCollapsed, activeTool, activeT
           </Button>
           <div className="flex shrink-0 items-center gap-0.5">
             <SidebarIcon label={t("common.search", "搜索")} onClick={() => window.dispatchEvent(new Event("trovekit:open-search"))}><Search className="h-[15px] w-[15px]" /></SidebarIcon>
-            <SidebarIcon label={t("log.toggle", "日志")} onClick={togglePanel}><Terminal className="h-[15px] w-[15px]" /></SidebarIcon>
+            {activeTool !== "logManagement" && (
+              <SidebarIcon label={t("log.toggle", "日志")} onClick={togglePanel}><Terminal className="h-[15px] w-[15px]" /></SidebarIcon>
+            )}
           </div>
         </div>
 

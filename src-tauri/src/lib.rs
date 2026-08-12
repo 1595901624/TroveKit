@@ -2,10 +2,10 @@
 use tauri::Manager;
 
 mod basex;
-mod log_manager;
-mod time_utils;
 mod command;
 mod crypto;
+mod log_manager;
+mod time_utils;
 
 #[tauri::command]
 fn greet(name: &str) -> String {
@@ -43,6 +43,8 @@ pub fn run() {
             log_manager::remove_log_note,
             log_manager::list_log_sessions,
             log_manager::get_logs_by_session,
+            log_manager::get_logs_page,
+            log_manager::get_log_detail,
             log_manager::delete_log,
             log_manager::delete_log_session,
             log_manager::update_log_fields,

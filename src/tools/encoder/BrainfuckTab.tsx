@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
-import { useLog } from "../../contexts/LogContext"
+import { useLogActions } from "../../contexts/LogContext"
 import { getStoredItem, setStoredItem, removeStoredItem } from "../../lib/store"
 import { EncoderWorkbench } from "./EncoderWorkbench"
 
@@ -196,7 +196,7 @@ const LOG_METHODS: Record<BrainfuckMode, string> = {
 
 export function BrainfuckTab() {
   const { t } = useTranslation()
-  const { addLog } = useLog()
+  const { addLog } = useLogActions()
   const [bfInput, setBfInput] = useState("")
   const [bfOutput, setBfOutput] = useState("")
   const [activeMode, setActiveMode] = useState<BrainfuckMode>("bf-encode")

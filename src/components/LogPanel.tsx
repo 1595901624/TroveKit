@@ -13,8 +13,23 @@ type FilterType = LogEntry['type'] | 'all'
 const LOG_PANEL_MIN_WIDTH = 280
 const LOG_PANEL_MAX_WIDTH = 640
 const LOG_PANEL_DEFAULT_WIDTH = 320
+const MAX_VISIBLE_PANEL_LOGS = 50
+const LOG_PANEL_TRANSITION_MS = 200
 
 const clampLogPanelWidth = (width: number) => Math.min(LOG_PANEL_MAX_WIDTH, Math.max(LOG_PANEL_MIN_WIDTH, width))
+
+type ResizeOrigin = { pointerX: number; width: number }
+
+/** @internal Exported for the clamp/reverse-drag regression test. */
+export const resolveLogPanelResize = (origin: ResizeOrigin, pointerX: number) => {
+  const rawWidth = origin.width + origin.pointerX - pointerX
+  const width = clampLogPanelWidth(rawWidth)
+  return {
+    width,
+    // 命中边界后以当前指针为新原点，反向拖动一像素即可立即恢复，不产生回拖死区。
+    origin: rawWidth === width ? origin : { pointerX, width },
+  }
+}
 
 // 日志面板组件
 export function LogPanel() {
@@ -34,8 +49,11 @@ export function LogPanel() {
   const [storedWidth, setStoredWidth, , isStoredWidthLoaded] = usePersistentState<number>("log-panel-width", LOG_PANEL_DEFAULT_WIDTH)
   const [panelWidth, setPanelWidth] = useState(LOG_PANEL_DEFAULT_WIDTH)
   const [isResizing, setIsResizing] = useState(false)
+  const [shouldRenderContent, setShouldRenderContent] = useState(isOpen)
   const panelWidthRef = useRef(LOG_PANEL_DEFAULT_WIDTH)
-  const resizeOriginRef = useRef<{ pointerX: number; width: number } | null>(null)
+  const resizeOriginRef = useRef<ResizeOrigin | null>(null)
+  const panelRef = useRef<HTMLElement | null>(null)
+  const panelContentRef = useRef<HTMLDivElement | null>(null)
 
   const updatePanelWidth = (width: number) => {
     const nextWidth = clampLogPanelWidth(width)
@@ -48,6 +66,17 @@ export function LogPanel() {
       updatePanelWidth(typeof storedWidth === "number" && Number.isFinite(storedWidth) ? storedWidth : LOG_PANEL_DEFAULT_WIDTH)
     }
   }, [isStoredWidthLoaded, storedWidth])
+
+  useEffect(() => {
+    if (isOpen) {
+      setShouldRenderContent(true)
+      return
+    }
+
+    // 先让宽度过渡完成，再卸载长日志 DOM，兼顾关闭动画和内存回收。
+    const timer = window.setTimeout(() => setShouldRenderContent(false), LOG_PANEL_TRANSITION_MS)
+    return () => window.clearTimeout(timer)
+  }, [isOpen])
 
   useEffect(() => () => {
     document.body.style.cursor = ""
@@ -66,7 +95,14 @@ export function LogPanel() {
 
   const resize = (event: React.PointerEvent<HTMLDivElement>) => {
     const origin = resizeOriginRef.current
-    if (origin) updatePanelWidth(origin.width + origin.pointerX - event.clientX)
+    if (!origin) return
+
+    // 拖拽时直接修改两个容器宽度，避免每个 pointermove 都让整份日志列表重渲染。
+    const next = resolveLogPanelResize(origin, event.clientX)
+    resizeOriginRef.current = next.origin
+    panelWidthRef.current = next.width
+    if (panelRef.current) panelRef.current.style.width = `${next.width}px`
+    if (panelContentRef.current) panelContentRef.current.style.width = `${next.width}px`
   }
 
   const finishResize = (event: React.PointerEvent<HTMLDivElement>) => {
@@ -78,6 +114,7 @@ export function LogPanel() {
     document.body.style.cursor = ""
     document.body.style.userSelect = ""
     setIsResizing(false)
+    setPanelWidth(panelWidthRef.current)
     setStoredWidth(panelWidthRef.current)
     window.dispatchEvent(new Event("resize"))
   }
@@ -94,10 +131,16 @@ export function LogPanel() {
   }
 
   // 使用 useMemo 优化性能，根据过滤器筛选日志
-  const filteredLogs = useMemo(() => {
-    if (filter === 'all') return logs // 显示所有日志
-    return logs.filter(log => log.type === filter) // 按类型过滤
+  const matchingLogs = useMemo(() => {
+    if (filter === 'all') return logs
+    return logs.filter(log => log.type === filter)
   }, [logs, filter])
+
+  // 侧栏定位为“近期活动”，完整历史由日志管理页分页承载。
+  const visibleLogs = useMemo(
+    () => matchingLogs.slice(0, MAX_VISIBLE_PANEL_LOGS),
+    [matchingLogs],
+  )
 
   // 开始编辑备注
   const handleStartEditNote = (logId: string, currentNote?: string) => {
@@ -202,14 +245,18 @@ export function LogPanel() {
 
   return (
         <aside
+            ref={panelRef}
             className={cn(
                 "relative h-full shrink-0 overflow-hidden bg-background",
                 !isResizing && "transition-[width] duration-200",
+                !isOpen && "pointer-events-none",
             )}
             style={{ width: isOpen ? panelWidth : 0 }}
+            aria-label={t('log.title', 'Operation Log')}
             aria-hidden={!isOpen}
         >
-            <div className="h-full flex flex-col border-l border-divider" style={{ width: panelWidth }}>
+            {shouldRenderContent && (
+            <div ref={panelContentRef} className="flex h-full min-w-0 flex-col border-l border-divider" style={{ width: panelWidth }}>
             {/* 面板头部：标题和操作按钮 */}
             <div className="h-14 border-b border-divider flex items-center justify-between px-4 shrink-0 bg-background/40">
                 {/* 标题区域 */}
@@ -221,18 +268,18 @@ export function LogPanel() {
                 <div className="flex items-center gap-1">
                     {/* 新建日志按钮 */}
                     <Tooltip content={t('tools.logManager.newLog', 'New Log')}>
-                        <Button isIconOnly size="sm" variant="light" onPress={createNewLog}>
+                        <Button isIconOnly size="sm" variant="light" onPress={createNewLog} aria-label={t('tools.logManager.newLog', 'New Log')}>
                             <Plus className="w-4 h-4 text-default-500" />
                         </Button>
                     </Tooltip>
                     {/* 清空日志按钮 */}
                     <Tooltip content={t('log.clear', 'Clear logs')}>
-                        <Button isIconOnly size="sm" variant="light" onPress={clearLogs}>
+                        <Button isIconOnly size="sm" variant="light" onPress={clearLogs} aria-label={t('log.clear', 'Clear logs')}>
                             <Trash2 className="w-4 h-4 text-default-500" />
                         </Button>
                     </Tooltip>
                     {/* 关闭面板按钮 */}
-                    <Button isIconOnly size="sm" variant="light" onPress={() => setIsOpen(false)}>
+                    <Button isIconOnly size="sm" variant="light" onPress={() => setIsOpen(false)} aria-label={t('common.close', 'Close')}>
                         <X className="w-4 h-4 text-default-500" />
                     </Button>
                 </div>
@@ -255,22 +302,23 @@ export function LogPanel() {
                                 if (e.key === 'Escape') handleCancelEditSessionNote()
                             }}
                         />
-                        <Button isIconOnly size="sm" variant="light" onPress={handleCancelEditSessionNote}>
+                        <Button isIconOnly size="sm" variant="light" onPress={handleCancelEditSessionNote} aria-label={t('common.cancel', 'Cancel')}>
                             <X className="w-3.5 h-3.5" />
                         </Button>
-                        <Button isIconOnly size="sm" variant="flat" color="primary" onPress={handleSaveSessionNote}>
+                        <Button isIconOnly size="sm" variant="flat" color="primary" onPress={handleSaveSessionNote} aria-label={t('common.save', 'Save')}>
                             <Check className="w-3.5 h-3.5" />
                         </Button>
                     </div>
                 ) : sessionNote ? (
-                    <div 
-                        className="flex items-center gap-2 text-tiny text-amber-700 dark:text-warning bg-warning/10 px-2 py-1.5 rounded cursor-pointer hover:bg-warning/20 transition-colors"
+                    <button
+                        type="button"
+                        className="flex w-full items-center gap-2 rounded bg-warning/10 px-2 py-1.5 text-left text-tiny text-amber-700 transition-colors hover:bg-warning/20 dark:text-warning"
                         onClick={handleStartEditSessionNote}
                     >
                         <MessageSquare className="w-3.5 h-3.5 shrink-0" />
                         <span className="truncate flex-1">{sessionNote}</span>
                         <Edit className="w-3 h-3 opacity-50" />
-                    </div>
+                    </button>
                 ) : (
                     <Button
                         size="sm"
@@ -301,19 +349,22 @@ export function LogPanel() {
             </div>
             
             {/* 日志列表区域：可滚动 */}
-            <ScrollShadow className="flex-1 p-3 overflow-y-auto">
-                <div className="space-y-3">
+            <ScrollShadow className="min-w-0 flex-1 overflow-y-auto p-3">
+                <div className="min-w-0 space-y-3">
                     {/* 空状态处理 */}
-                    {filteredLogs.length === 0 ? (
+                    {matchingLogs.length === 0 ? (
                          <div className="text-center text-default-400 py-8 text-small">
                             {/* 根据当前过滤器显示不同的空状态文本 */}
                             {filter === 'all' ? t('log.empty', 'No logs yet') : t('log.emptyFilter', 'No logs match this filter')}
                          </div>
                     ) : (
                         // 日志列表渲染
-                        filteredLogs.map((log) => (
+                        visibleLogs.map((log) => (
                             // 单个日志项容器
-                            <div key={log.id} className="p-3 rounded-medium bg-content2/50 border border-transparent hover:border-divider transition-colors group">
+                            <div
+                                key={log.id}
+                                className="group min-w-0 rounded-medium border border-transparent bg-content2/50 p-3 transition-colors hover:border-divider"
+                            >
                                 {/* 日志头部：类型图标、时间戳、复制按钮 */}
                                 <div className="flex items-start justify-between gap-2 mb-1">
                                     <div className="flex items-center gap-1.5 text-tiny text-default-500">
@@ -326,8 +377,9 @@ export function LogPanel() {
                                             isIconOnly
                                             size="sm"
                                             variant="light"
-                                            className="h-5 w-5 min-w-5 opacity-0 group-hover:opacity-100 data-[hover=true]:bg-default/40" // 默认隐藏，悬停显示
+                                            className="h-5 w-5 min-w-5 opacity-0 group-hover:opacity-100 focus-visible:opacity-100 data-[hover=true]:bg-default/40" // 默认隐藏，悬停或聚焦显示
                                             onPress={() => navigator.clipboard.writeText(log.message || '')} // 复制消息内容
+                                            aria-label={t('tools.encoder.copy', 'Copy')}
                                         >
                                             <Copy className="w-3 h-3 text-default-500" />
                                         </Button>
@@ -411,7 +463,7 @@ export function LogPanel() {
                                                 {log.cryptoParams.key && (
                                                     <div className="col-span-2 text-tiny">
                                                         <span className="text-default-500 font-semibold">{t('tools.hash.key')}</span>
-                                                        <span className="font-mono ml-1 text-default-700 break-all">{log.cryptoParams.key}</span>
+                                                        <span className="font-mono ml-1 text-default-700 select-none">••••••••</span>
                                                     </div>
                                                 )}
                                                 {log.cryptoParams.publicKey && (
@@ -423,7 +475,7 @@ export function LogPanel() {
                                                 {log.cryptoParams.privateKey && (
                                                     <div className="col-span-2 text-tiny">
                                                         <span className="text-default-500 font-semibold">{t('tools.hash.privateKey')}</span>
-                                                        <span className="font-mono ml-1 text-default-700 break-all">{log.cryptoParams.privateKey}</span>
+                                                        <span className="font-mono ml-1 text-default-700 select-none">••••••••</span>
                                                     </div>
                                                 )}
                                             </div>
@@ -432,9 +484,9 @@ export function LogPanel() {
                                         {/* 输入和输出区域 */}
                                         <div className="space-y-1.5">
                                             {/* 输入部分 */}
-                                            <div className="group/input relative p-2 rounded bg-default-100/50 hover:bg-default-100 transition-colors">
+                                            <div className="group/input relative min-w-0 rounded bg-default-100/50 p-2 transition-colors hover:bg-default-100">
                                                 <div className="text-tiny text-default-400 font-semibold mb-0.5 select-none">{t('log.input', 'Input')}</div>
-                                                <div className="text-small font-mono text-default-600 break-all pr-6 whitespace-pre-wrap">
+                                                <div className="min-w-0 whitespace-pre-wrap break-all pr-6 font-mono text-small text-default-600">
                                                     {renderHighlightedText(log.input)}
                                                 </div>
                                                 {/* 复制输入按钮 */}
@@ -442,17 +494,18 @@ export function LogPanel() {
                                                     isIconOnly
                                                     size="sm"
                                                     variant="light"
-                                                    className="absolute top-1 right-1 h-5 w-5 min-w-5 opacity-0 group-hover/input:opacity-100"
+                                                    className="absolute top-1 right-1 h-5 w-5 min-w-5 opacity-0 group-hover/input:opacity-100 focus-visible:opacity-100"
                                                     onPress={() => navigator.clipboard.writeText(log.input || '')}
+                                                    aria-label={`${t('tools.encoder.copy', 'Copy')} ${t('log.input', 'Input')}`}
                                                 >
                                                     <Copy className="w-3 h-3 text-default-400" />
                                                 </Button>
                                             </div>
 
                                             {/* 输出部分 */}
-                                            <div className="group/output relative p-2 rounded bg-default-100/50 hover:bg-default-100 transition-colors">
+                                            <div className="group/output relative min-w-0 rounded bg-default-100/50 p-2 transition-colors hover:bg-default-100">
                                                 <div className="text-tiny text-success/80 font-semibold mb-0.5 select-none">{t('log.output', 'Output')}</div>
-                                                <div className="text-small font-mono text-foreground break-all pr-6 whitespace-pre-wrap">
+                                                <div className="min-w-0 whitespace-pre-wrap break-all pr-6 font-mono text-small text-foreground">
                                                     {renderHighlightedText(log.output)}
                                                 </div>
                                                 {/* 复制输出按钮 */}
@@ -460,8 +513,9 @@ export function LogPanel() {
                                                     isIconOnly
                                                     size="sm"
                                                     variant="light"
-                                                    className="absolute top-1 right-1 h-5 w-5 min-w-5 opacity-0 group-hover/output:opacity-100"
+                                                    className="absolute top-1 right-1 h-5 w-5 min-w-5 opacity-0 group-hover/output:opacity-100 focus-visible:opacity-100"
                                                     onPress={() => navigator.clipboard.writeText(log.output || '')}
+                                                    aria-label={`${t('tools.encoder.copy', 'Copy')} ${t('log.output', 'Output')}`}
                                                 >
                                                     <Copy className="w-3 h-3 text-default-400" />
                                                 </Button>
@@ -470,14 +524,14 @@ export function LogPanel() {
                                     </div>
                                 ) : (
                                     // 普通日志格式：直接显示消息
-                                    <div className="text-small break-all font-mono leading-relaxed text-foreground/90 whitespace-pre-wrap">
+                                    <div className="min-w-0 whitespace-pre-wrap break-all font-mono text-small leading-relaxed text-foreground/90">
                                         {renderHighlightedText(log.message)}
                                     </div>
                                 )}
                                 
                                 {/* 详情信息：如果有则显示 */}
                                 {log.details && (
-                                    <div className="mt-1.5 pt-1.5 border-t border-divider/50 text-tiny text-default-400 break-all font-mono whitespace-pre-wrap">
+                                    <div className="mt-1.5 min-w-0 whitespace-pre-wrap break-all border-t border-divider/50 pt-1.5 font-mono text-tiny text-default-400">
                                         {renderHighlightedText(log.details)}
                                     </div>
                                 )}
@@ -498,6 +552,7 @@ export function LogPanel() {
                                                         variant="light"
                                                         className="h-5 w-5 min-w-5"
                                                         onPress={() => handleStartEditNote(log.id, log.note)}
+                                                        aria-label={t('log.editNote', 'Edit Note')}
                                                     >
                                                         <Edit className="w-3 h-3 text-default-500" />
                                                     </Button>
@@ -509,6 +564,7 @@ export function LogPanel() {
                                                         variant="light"
                                                         className="h-5 w-5 min-w-5"
                                                         onPress={() => handleRemoveNote(log.id)}
+                                                        aria-label={t('log.removeNote', 'Remove Note')}
                                                     >
                                                         <X className="w-3 h-3 text-danger" />
                                                     </Button>
@@ -556,7 +612,7 @@ export function LogPanel() {
                                             <Button
                                                 size="sm"
                                                 variant="light"
-                                                className="h-6 px-2 text-tiny opacity-0 group-hover:opacity-100 transition-opacity"
+                                                className="h-6 px-2 text-tiny opacity-0 group-hover:opacity-100 focus-visible:opacity-100 transition-opacity"
                                                 startContent={<Plus className="w-3 h-3" />}
                                                 onPress={() => handleStartEditNote(log.id)}
                                             >
@@ -568,9 +624,15 @@ export function LogPanel() {
                             </div>
                         ))
                     )}
+                    {matchingLogs.length > visibleLogs.length && (
+                        <div className="px-2 py-3 text-center text-tiny text-default-400">
+                            {t('log.recentLimit', { count: MAX_VISIBLE_PANEL_LOGS })}
+                        </div>
+                    )}
                 </div>
             </ScrollShadow>
             </div>
+            )}
 
             {isOpen && (
                 <div

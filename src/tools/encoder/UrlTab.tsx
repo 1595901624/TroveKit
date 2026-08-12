@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react"
 import { ArrowDownUp, ArrowLeftRight, Copy, Play, Trash2 } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { Button, ButtonGroup, Switch, Textarea } from "../../components/ui/base-ui"
-import { useLog } from "../../contexts/LogContext"
+import { useLogActions } from "../../contexts/LogContext"
 import { getStoredItem, removeStoredItem, setStoredItem } from "../../lib/store"
 
 const STORAGE_KEY = "url-tool-state"
@@ -19,7 +19,7 @@ function transformUrl(value: string, mode: UrlMode) {
 
 export function UrlTab() {
   const { t } = useTranslation()
-  const { addLog } = useLog()
+  const { addLog } = useLogActions()
 
   const [urlInput, setUrlInput] = useState("")
   const [urlOutput, setUrlOutput] = useState("")

@@ -2,7 +2,7 @@ import { useState, useEffect } from "react"
 import { Button, Input, Select, SelectItem } from "../../components/ui/base-ui"
 import { Lock, Unlock } from "lucide-react"
 import { useTranslation } from "react-i18next"
-import { useLog } from "../../contexts/LogContext"
+import { useLogActions } from "../../contexts/LogContext"
 import CryptoJS from "crypto-js"
 import { getStoredItem, setStoredItem, removeStoredItem } from "../../lib/store"
 import { HashToolbarField, HashWorkbench } from "./HashWorkbench"
@@ -11,7 +11,7 @@ const STORAGE_KEY = "triple-des-tool-state"
 
 export function TripleDesTab() {
   const { t } = useTranslation()
-  const { addLog } = useLog()
+  const { addLog } = useLogActions()
 
   const [desInput, setDesInput] = useState("")
   const [desOutput, setDesOutput] = useState("")

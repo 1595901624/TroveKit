@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useCallback, useEffect, useMemo } from "react"
+import React, { createContext, useContext, useState, useCallback, useEffect, useMemo, useRef } from "react"
 import { addToast } from "../components/ui/base-ui"
 import { invoke } from "@tauri-apps/api/core"
 import { useTranslation } from "react-i18next"
@@ -80,14 +80,20 @@ interface LogContextType {
 
 type LogUIContextType = Pick<LogContextType, "isOpen" | "setIsOpen" | "togglePanel">
 type LogDataContextType = Omit<LogContextType, "isOpen" | "setIsOpen" | "togglePanel">
+type LogActionsContextType = Pick<LogContextType, "addLog">
+type LogSessionContextType = Pick<LogContextType, "currentSessionId" | "refresh" | "switchToSession">
 
 const LogUIContext = createContext<LogUIContextType | undefined>(undefined)
 const LogDataContext = createContext<LogDataContextType | undefined>(undefined)
+const LogActionsContext = createContext<LogActionsContextType | undefined>(undefined)
+const LogSessionContext = createContext<LogSessionContextType | undefined>(undefined)
 
-const MAX_LOGS_IN_MEMORY = 200
+// 右侧面板只承担近期活动浏览；历史日志留在 SQLite 并由管理页分页读取。
+const MAX_LOGS_IN_MEMORY = 100
 const MAX_LOG_TEXT_LENGTH = 4000
 const MAX_LOG_PARAM_LENGTH = 1000
 const TRUNCATED_SUFFIX = "\n...[truncated]"
+const LOG_PANEL_CLOSE_TRANSITION_MS = 200
 const isTauriRuntime = typeof window !== "undefined" && "__TAURI_INTERNALS__" in window
 
 // 日志里经常包含完整输入/输出，统一截断后再进入 React state，降低长期驻留内存。
@@ -138,6 +144,8 @@ export function LogProvider({ children }: { children: React.ReactNode }) {
   // 现改为使用 `usePersistentState`（基于 Tauri store）进行异步持久化与恢复。
   // `src/lib/store.ts` 含有从 localStorage 到 store 的迁移逻辑，首次读取时会自动迁移旧数据以保持向后兼容性。
   const [isOpen, setIsOpen] = usePersistentState<boolean>('logPanelIsOpen', false)
+  const isOpenRef = useRef(isOpen)
+  isOpenRef.current = isOpen
 
   const [sessionNote, setSessionNote] = useState("")
   const [currentSessionId, setCurrentSessionId] = useState<string | null>(null)
@@ -145,8 +153,10 @@ export function LogProvider({ children }: { children: React.ReactNode }) {
   const refresh = useCallback(async () => {
     if (!isTauriRuntime) return
     try {
-      const newLogs = await invoke<LogEntry[]>("load_logs")
-      setLogs(normalizeLogs(newLogs))
+      if (isOpenRef.current) {
+        const newLogs = await invoke<LogEntry[]>("load_logs")
+        setLogs(normalizeLogs(newLogs))
+      }
       
       const info = await invoke<{ sessionId: string; note: string | null }>("get_current_session_info")
       setCurrentSessionId(info.sessionId)
@@ -156,17 +166,28 @@ export function LogProvider({ children }: { children: React.ReactNode }) {
     }
   }, [])
 
-  // Load logs and session note from backend on mount
+  // 启动时读取会话信息；关闭时等宽度动画完成后再释放近期日志。
   useEffect(() => {
     refresh()
-  }, [refresh]);
+    if (isOpen) return
+
+    const timer = window.setTimeout(() => {
+      setLogs((currentLogs) => currentLogs.length === 0 ? currentLogs : [])
+    }, LOG_PANEL_CLOSE_TRANSITION_MS)
+    return () => window.clearTimeout(timer)
+  }, [refresh, isOpen]);
 
   useEffect(() => {
+    let refreshTimer: number | undefined
     const handleLogsChanged = () => {
-      refresh()
+      window.clearTimeout(refreshTimer)
+      refreshTimer = window.setTimeout(refresh, 150)
     }
     window.addEventListener('logs-changed', handleLogsChanged)
-    return () => window.removeEventListener('logs-changed', handleLogsChanged)
+    return () => {
+      window.clearTimeout(refreshTimer)
+      window.removeEventListener('logs-changed', handleLogsChanged)
+    }
   }, [refresh])
 
     const addLog = useCallback((content: LogContent, type: LogEntry["type"] = "info", details?: string) => {
@@ -188,7 +209,9 @@ export function LogProvider({ children }: { children: React.ReactNode }) {
         newLog.message = content.method
       }
   
-      setLogs((prev) => [newLog, ...prev].slice(0, MAX_LOGS_IN_MEMORY))
+      if (isOpenRef.current) {
+        setLogs((prev) => [newLog, ...prev].slice(0, MAX_LOGS_IN_MEMORY))
+      }
       
       // Persist to backend
       invoke("append_log", { entry: newLog })
@@ -275,8 +298,12 @@ export function LogProvider({ children }: { children: React.ReactNode }) {
       try {
         await invoke("switch_to_session", { sessionId })
         setCurrentSessionId(sessionId)
-        const newLogs = await invoke<LogEntry[]>("load_logs")
-        setLogs(normalizeLogs(newLogs))
+        if (isOpenRef.current) {
+          const newLogs = await invoke<LogEntry[]>("load_logs")
+          setLogs(normalizeLogs(newLogs))
+        } else {
+          setLogs((currentLogs) => currentLogs.length === 0 ? currentLogs : [])
+        }
         const info = await invoke<{ sessionId: string; note: string | null }>("get_current_session_info")
         setSessionNote(info.note || "")
         window.dispatchEvent(new CustomEvent('logs-changed'))
@@ -321,11 +348,23 @@ export function LogProvider({ children }: { children: React.ReactNode }) {
     switchToSession,
   ])
 
+  // 高频工具页只需要稳定的 addLog 回调，不应订阅日志数组本身。
+  const actionsValue = useMemo<LogActionsContextType>(() => ({ addLog }), [addLog])
+  const sessionValue = useMemo<LogSessionContextType>(() => ({
+    currentSessionId,
+    refresh,
+    switchToSession,
+  }), [currentSessionId, refresh, switchToSession])
+
   return (
     <LogUIContext.Provider value={uiValue}>
-      <LogDataContext.Provider value={dataValue}>
-        {children}
-      </LogDataContext.Provider>
+      <LogActionsContext.Provider value={actionsValue}>
+        <LogSessionContext.Provider value={sessionValue}>
+          <LogDataContext.Provider value={dataValue}>
+            {children}
+          </LogDataContext.Provider>
+        </LogSessionContext.Provider>
+      </LogActionsContext.Provider>
     </LogUIContext.Provider>
   )
 }
@@ -342,6 +381,22 @@ export function useLogData() {
   const context = useContext(LogDataContext)
   if (context === undefined) {
     throw new Error("useLogData must be used within a LogProvider")
+  }
+  return context
+}
+
+export function useLogActions() {
+  const context = useContext(LogActionsContext)
+  if (context === undefined) {
+    throw new Error("useLogActions must be used within a LogProvider")
+  }
+  return context
+}
+
+export function useLogSession() {
+  const context = useContext(LogSessionContext)
+  if (context === undefined) {
+    throw new Error("useLogSession must be used within a LogProvider")
   }
   return context
 }

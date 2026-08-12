@@ -662,7 +662,8 @@
     "trailingTab": "尾部制表符",
     "trailingNewline": "尾部换行符",
     "addSessionNote": "添加会话备注",
-    "sessionNotePlaceholder": "输入会话备注..."
+    "sessionNotePlaceholder": "输入会话备注...",
+    "recentLimit": "仅显示最近 {{count}} 条，完整记录请前往日志管理"
   },
   "logManagement": {
     "sessions": "会话",

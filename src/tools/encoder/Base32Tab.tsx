@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
-import { useLog } from "../../contexts/LogContext"
+import { useLogActions } from "../../contexts/LogContext"
 import { base32Decode, base32Encode } from "../../lib/base32"
 import { getStoredItem, removeStoredItem, setStoredItem } from "../../lib/store"
 import { EncoderWorkbench } from "./EncoderWorkbench"
@@ -15,7 +15,7 @@ function transformBase32(value: string, mode: Base32Mode) {
 
 export function Base32Tab() {
   const { t } = useTranslation()
-  const { addLog } = useLog()
+  const { addLog } = useLogActions()
   const [base32Input, setBase32Input] = useState("")
   const [base32Output, setBase32Output] = useState("")
   const [activeMode, setActiveMode] = useState<Base32Mode>("encode")

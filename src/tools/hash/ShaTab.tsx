@@ -2,7 +2,7 @@ import { useState, useEffect } from "react"
 import { Button, RadioGroup, Radio, Select, SelectItem } from "../../components/ui/base-ui"
 import { Hash } from "lucide-react"
 import { useTranslation } from "react-i18next"
-import { useLog } from "../../contexts/LogContext"
+import { useLogActions } from "../../contexts/LogContext"
 import CryptoJS from "crypto-js"
 import { getStoredItem, setStoredItem, removeStoredItem } from "../../lib/store"
 import { HashToolbarField, HashWorkbench } from "./HashWorkbench"
@@ -11,7 +11,7 @@ const STORAGE_KEY = "sha-tool-state"
 
 export function ShaTab() {
   const { t } = useTranslation()
-  const { addLog } = useLog()
+  const { addLog } = useLogActions()
 
   const [shaInput, setShaInput] = useState("")
   const [shaOutput, setShaOutput] = useState("")

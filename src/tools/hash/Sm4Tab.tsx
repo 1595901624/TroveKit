@@ -2,7 +2,7 @@ import { useState, useEffect } from "react"
 import { Button, Input, Select, SelectItem } from "../../components/ui/base-ui"
 import { Lock, Unlock } from "lucide-react"
 import { useTranslation } from "react-i18next"
-import { useLog } from "../../contexts/LogContext"
+import { useLogActions } from "../../contexts/LogContext"
 import { invoke } from "@tauri-apps/api/core"
 import { getStoredItem, setStoredItem, removeStoredItem } from "../../lib/store"
 import { HashToolbarField, HashWorkbench } from "./HashWorkbench"
@@ -11,7 +11,7 @@ const STORAGE_KEY = "sm4-tool-state"
 
 export function Sm4Tab() {
   const { t } = useTranslation()
-  const { addLog } = useLog()
+  const { addLog } = useLogActions()
 
   const [sm4Input, setSm4Input] = useState("")
   const [sm4Output, setSm4Output] = useState("")

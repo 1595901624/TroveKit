@@ -2,7 +2,7 @@ import { useState, useEffect } from "react"
 import { Button, RadioGroup, Radio } from "../../components/ui/base-ui"
 import { Hash } from "lucide-react"
 import { useTranslation } from "react-i18next"
-import { useLog } from "../../contexts/LogContext"
+import { useLogActions } from "../../contexts/LogContext"
 import CryptoJS from "crypto-js"
 import { getStoredItem, setStoredItem, removeStoredItem } from "../../lib/store"
 import { HashWorkbench } from "./HashWorkbench"
@@ -12,7 +12,7 @@ const MD5_STORAGE_KEY = "md5_state"
 
 export function Md5Tab() {
   const { t } = useTranslation()
-  const { addLog } = useLog()
+  const { addLog } = useLogActions()
 
   const [input, setInput] = useState("")
   const [output, setOutput] = useState("")

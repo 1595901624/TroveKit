@@ -1,9 +1,9 @@
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { invoke } from "@tauri-apps/api/core"
 import { Button, Input, Spinner, Chip, ScrollShadow, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure, Tooltip } from "../components/ui/base-ui"
-import { Trash2, RefreshCw, Search, Archive, Clock, AlertCircle, CheckCircle2, Info, AlertTriangle, Edit, X, Check, MessageSquare, Copy, Eye } from "lucide-react"
+import { Trash2, RefreshCw, Search, Archive, Clock, AlertCircle, CheckCircle2, Info, AlertTriangle, Edit, X, Check, MessageSquare, Copy, Eye, EyeOff, ChevronDown, ChevronLeft, ChevronRight } from "lucide-react"
 import { useTranslation } from "react-i18next"
-import { useLog, type LogEntry } from "../contexts/LogContext"
+import { useLogSession, type LogEntry } from "../contexts/LogContext"
 import { cn } from "../lib/utils"
 
 /** 日志会话摘要信息 */
@@ -18,13 +18,27 @@ type LogSessionSummary = {
   note?: string
 }
 
+type LogCursor = {
+  timestamp: number
+  id: string
+}
+
+type LogPage = {
+  logs: LogEntry[]
+  nextCursor: LogCursor | null
+  total: number
+}
+
+const LOG_PAGE_SIZE = 40
+
 /**
  * 日志管理工具组件
  * 提供日志会话管理、日志查看、搜索、删除等功能
  */
 export function LogManagementTool() {
   const { t } = useTranslation()
-  const { currentSessionId, refresh: refreshCurrentSession, switchToSession } = useLog()
+  // 只订阅日志数据，避免打开/关闭全局日志面板时重渲染整个管理页。
+  const { currentSessionId, refresh: refreshCurrentSession, switchToSession } = useLogSession()
 
   // 加载状态
   const [loadingSessions, setLoadingSessions] = useState(true)
@@ -34,7 +48,19 @@ export function LogManagementTool() {
   const [activeSessionId, setActiveSessionId] = useState<string>("")
   const [logs, setLogs] = useState<LogEntry[]>([])
   const [query, setQuery] = useState("")
+  const [debouncedQuery, setDebouncedQuery] = useState("")
+  const [totalLogs, setTotalLogs] = useState(0)
+  const [nextCursor, setNextCursor] = useState<LogCursor | null>(null)
+  const [cursorHistory, setCursorHistory] = useState<Array<LogCursor | null>>([null])
+  const [pageIndex, setPageIndex] = useState(0)
+  const [expandedLogId, setExpandedLogId] = useState<string | null>(null)
+  const [logDetails, setLogDetails] = useState<Record<string, LogEntry>>({})
+  const [loadingDetailId, setLoadingDetailId] = useState<string | null>(null)
+  const [revealedSecretLogIds, setRevealedSecretLogIds] = useState<Set<string>>(() => new Set())
   const [error, setError] = useState<string | null>(null)
+  const logRequestIdRef = useRef(0)
+  const activeSessionIdRef = useRef("")
+  activeSessionIdRef.current = activeSessionId
 
   // 编辑会话备注的状态
   const [editingSessionNote, setEditingSessionNote] = useState<string | null>(null)
@@ -79,23 +105,11 @@ export function LogManagementTool() {
     return text
   }
 
-  /** 根据搜索查询条件过滤日志 */
-  const filteredLogs = useMemo(() => {
-    const q = query.trim().toLowerCase()
-    if (!q) return logs
-    return logs.filter((l) => {
-      const hay = [
-        l.message, 
-        l.method, 
-        l.details, 
-        l.note, 
-        l.input, 
-        l.output,
-        l.type
-      ].filter(Boolean).join("\n").toLowerCase()
-      return hay.includes(q)
-    })
-  }, [logs, query])
+  // 搜索放到 SQLite 执行，并延迟触发，避免每次按键扫描所有长字符串。
+  useEffect(() => {
+    const timer = window.setTimeout(() => setDebouncedQuery(query.trim()), 220)
+    return () => window.clearTimeout(timer)
+  }, [query])
 
   /**
    * 重新加载会话列表
@@ -135,20 +149,36 @@ export function LogManagementTool() {
    * 重新加载指定会话的日志
    * @param sessionId 会话 ID
    */
-  const reloadLogs = async (sessionId: string) => {
+  const reloadLogs = async (
+    sessionId: string,
+    cursor: LogCursor | null = null,
+    searchQuery = debouncedQuery,
+  ) => {
     if (!sessionId) {
       setLogs([])
+      setTotalLogs(0)
+      setNextCursor(null)
       return
     }
+    const requestId = ++logRequestIdRef.current
     setError(null)
     setLoadingLogs(true)
     try {
-      const result = await invoke<LogEntry[]>("get_logs_by_session", { sessionId })
-      setLogs(result)
+      const result = await invoke<LogPage>("get_logs_page", {
+        sessionId,
+        cursor,
+        query: searchQuery || null,
+        limit: LOG_PAGE_SIZE,
+      })
+      if (requestId !== logRequestIdRef.current) return
+      setLogs(result.logs)
+      setTotalLogs(result.total)
+      setNextCursor(result.nextCursor)
     } catch (e: any) {
+      if (requestId !== logRequestIdRef.current) return
       setError(typeof e === "string" ? e : (e?.toString?.() ?? "Unknown error"))
     } finally {
-      setLoadingLogs(false)
+      if (requestId === logRequestIdRef.current) setLoadingLogs(false)
     }
   }
 
@@ -158,25 +188,91 @@ export function LogManagementTool() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  // 当活动会话变化时加载对应日志
+  // 会话或搜索变化时回到第一页，前端始终只持有一页摘要。
   useEffect(() => {
     if (activeSessionId) {
-        reloadLogs(activeSessionId)
+        setCursorHistory([null])
+        setPageIndex(0)
+        setExpandedLogId(null)
+        setLogDetails({})
+        setRevealedSecretLogIds(new Set())
+        reloadLogs(activeSessionId, null, debouncedQuery)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeSessionId])
+  }, [activeSessionId, debouncedQuery])
 
   // 监听日志变化事件
   useEffect(() => {
+    let refreshTimer: number | undefined
     const handleLogsChanged = () => {
-      reloadSessions(true)
-      if (activeSessionId) {
-        reloadLogs(activeSessionId)
-      }
+      window.clearTimeout(refreshTimer)
+      refreshTimer = window.setTimeout(() => {
+        reloadSessions(true)
+        if (activeSessionId) {
+          setCursorHistory([null])
+          setPageIndex(0)
+          setExpandedLogId(null)
+          setLogDetails({})
+          setRevealedSecretLogIds(new Set())
+          reloadLogs(activeSessionId, null, debouncedQuery)
+        }
+      }, 150)
     }
     window.addEventListener('logs-changed', handleLogsChanged)
-    return () => window.removeEventListener('logs-changed', handleLogsChanged)
-  }, [activeSessionId])
+    return () => {
+      window.clearTimeout(refreshTimer)
+      window.removeEventListener('logs-changed', handleLogsChanged)
+    }
+  }, [activeSessionId, debouncedQuery])
+
+  const handleNextPage = () => {
+    if (!activeSessionId || !nextCursor || loadingLogs) return
+    const nextPageIndex = pageIndex + 1
+    setCursorHistory((history) => [...history.slice(0, nextPageIndex), nextCursor])
+    setPageIndex(nextPageIndex)
+    setExpandedLogId(null)
+    setLogDetails({})
+    setRevealedSecretLogIds(new Set())
+    reloadLogs(activeSessionId, nextCursor, debouncedQuery)
+  }
+
+  const handlePreviousPage = () => {
+    if (!activeSessionId || pageIndex === 0 || loadingLogs) return
+    const previousPageIndex = pageIndex - 1
+    const previousCursor = cursorHistory[previousPageIndex] ?? null
+    setCursorHistory((history) => history.slice(0, pageIndex))
+    setPageIndex(previousPageIndex)
+    setExpandedLogId(null)
+    setLogDetails({})
+    setRevealedSecretLogIds(new Set())
+    reloadLogs(activeSessionId, previousCursor, debouncedQuery)
+  }
+
+  const handleToggleLogDetails = async (log: LogEntry) => {
+    if (expandedLogId === log.id) {
+      setExpandedLogId(null)
+      return
+    }
+
+    setExpandedLogId(log.id)
+    if (logDetails[log.id] || !activeSessionId) return
+
+    const requestedSessionId = activeSessionId
+    setLoadingDetailId(log.id)
+    try {
+      const detail = await invoke<LogEntry>("get_log_detail", {
+        sessionId: requestedSessionId,
+        id: log.id,
+      })
+      if (requestedSessionId === activeSessionIdRef.current) {
+        setLogDetails((details) => ({ ...details, [log.id]: detail }))
+      }
+    } catch (e: any) {
+      setError(typeof e === "string" ? e : (e?.toString?.() ?? "Unknown error"))
+    } finally {
+      setLoadingDetailId((id) => id === log.id ? null : id)
+    }
+  }
 
   // 删除确认弹窗控制
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure()
@@ -204,11 +300,14 @@ export function LogManagementTool() {
       await invoke("delete_log", { id })
       // 乐观更新
       setLogs(prev => prev.filter(l => l.id !== id))
+      setTotalLogs((total) => Math.max(0, total - 1))
+      setExpandedLogId((expandedId) => expandedId === id ? null : expandedId)
+      setLogDetails((details) => {
+        const { [id]: _removed, ...remaining } = details
+        return remaining
+      })
       // 更新会话计数或重新加载
       await reloadSessions(true)
-      
-      // 通知其他组件
-      window.dispatchEvent(new CustomEvent('logs-changed'))
       
       // 如果属于当前会话，刷新日志面板
       if (activeSessionId === currentSessionId) {
@@ -227,9 +326,6 @@ export function LogManagementTool() {
     try {
       await invoke("delete_log_session", { sessionId })
       await reloadSessions()
-      
-      // 通知其他组件
-      window.dispatchEvent(new CustomEvent('logs-changed'))
 
       // 如果是当前会话，刷新日志面板
       if (sessionId === currentSessionId) {
@@ -312,9 +408,6 @@ export function LogManagementTool() {
       setEditingSessionNote(null)
       setSessionNoteInput("")
       
-      // 通知其他组件
-      window.dispatchEvent(new CustomEvent('logs-changed'))
-      
       // 如果是当前会话，同步到日志面板
       if (sessionId === currentSessionId) {
         refreshCurrentSession()
@@ -338,9 +431,9 @@ export function LogManagementTool() {
   }
 
   return (
-    <div className="grid h-full min-h-0 w-full grid-cols-1 grid-rows-[240px_minmax(0,1fr)] overflow-hidden rounded-xl border border-default-200 bg-background md:grid-cols-[300px_minmax(0,1fr)] md:grid-rows-1">
+    <div className="grid h-full min-h-0 w-full grid-cols-1 grid-rows-[220px_minmax(0,1fr)] overflow-hidden rounded-xl border border-default-200 bg-background lg:grid-cols-[minmax(250px,300px)_minmax(0,1fr)] lg:grid-rows-1">
       {/* Sidebar: Sessions List */}
-      <section className="flex min-h-0 min-w-0 flex-col border-b border-default-200 bg-default-50/30 md:border-b-0 md:border-r" aria-label={t("logManagement.sessions")}>
+      <section className="flex min-h-0 min-w-0 flex-col border-b border-default-200 bg-default-50/30 lg:border-b-0 lg:border-r" aria-label={t("logManagement.sessions")}>
         <div className="flex h-12 shrink-0 items-center justify-between border-b border-default-200 bg-background px-3.5">
           <div className="flex items-center gap-2 text-sm font-semibold">
             <Archive className="h-4 w-4 text-default-400" />
@@ -364,10 +457,13 @@ export function LogManagementTool() {
               key={s.sessionId}
               onClick={() => setActiveSessionId(s.sessionId)}
               onKeyDown={(event) => {
+                if (event.target !== event.currentTarget) return
                 if (event.key === "Enter" || event.key === " ") setActiveSessionId(s.sessionId)
               }}
               role="button"
               tabIndex={0}
+              aria-pressed={activeSessionId === s.sessionId}
+              style={{ contentVisibility: "auto", containIntrinsicSize: "70px" }}
               className={cn(
                 "group flex cursor-pointer flex-col gap-1 rounded-lg border p-2.5 outline-none transition-colors focus-visible:ring-2 focus-visible:ring-primary/30",
                 activeSessionId === s.sessionId 
@@ -494,17 +590,49 @@ export function LogManagementTool() {
                 isClearable
              />
 
-             <div className="flex min-w-0 items-center gap-2">
-               {error ? (
-                  <div className="flex max-w-64 min-w-0 items-center gap-1 rounded-lg bg-danger/10 px-2 py-1 text-[11px] text-danger" title={error}>
-                     <AlertCircle className="h-3.5 w-3.5 shrink-0" />
-                     <span className="truncate">{error}</span>
-                  </div>
-               ) : (
-                 <span className="whitespace-nowrap text-[11px] text-default-400">{filteredLogs.length} / {logs.length}</span>
-               )}
+             <div className="flex shrink-0 items-center gap-1">
+               <span className="mr-1 whitespace-nowrap text-[11px] text-default-400">
+                 {totalLogs === 0 ? 0 : pageIndex * LOG_PAGE_SIZE + 1}–{Math.min((pageIndex + 1) * LOG_PAGE_SIZE, totalLogs)} / {totalLogs}
+               </span>
+               <Button
+                 isIconOnly
+                 size="sm"
+                 variant="light"
+                 className="h-7 min-w-7"
+                 onPress={handlePreviousPage}
+                 isDisabled={pageIndex === 0 || loadingLogs}
+                 aria-label={t("common.previous", "上一页")}
+               >
+                 <ChevronLeft className="h-4 w-4" />
+               </Button>
+               <Button
+                 isIconOnly
+                 size="sm"
+                 variant="light"
+                 className="h-7 min-w-7"
+                 onPress={handleNextPage}
+                 isDisabled={!nextCursor || loadingLogs}
+                 aria-label={t("common.next", "下一页")}
+               >
+                 <ChevronRight className="h-4 w-4" />
+               </Button>
              </div>
         </div>
+
+        {error && (
+          <div className="flex shrink-0 items-start gap-2 border-b border-danger/20 bg-danger/10 px-3 py-2 text-xs text-danger" role="alert">
+            <AlertCircle className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+            <span className="min-w-0 break-words">{error}</span>
+            <Button
+              size="sm"
+              variant="light"
+              className="ml-auto h-6 shrink-0 px-2 text-xs"
+              onPress={() => reloadLogs(activeSessionId, cursorHistory[pageIndex] ?? null, debouncedQuery)}
+            >
+              {t("common.retry", "重试")}
+            </Button>
+          </div>
+        )}
 
         {/* Logs List */}
         <ScrollShadow className="min-h-0 flex-1 p-3">
@@ -512,15 +640,23 @@ export function LogManagementTool() {
              <div className="flex justify-center py-10">
                 <Spinner label={t("common.loading")} />
              </div>
-           ) : filteredLogs.length === 0 ? (
+           ) : logs.length === 0 ? (
              <div className="text-center text-default-400 py-20 flex flex-col items-center gap-2">
                 <Search className="w-10 h-10 opacity-20" />
                 <p>{t("logManagement.empty")}</p>
              </div>
            ) : (
             <div className="space-y-2">
-               {filteredLogs.map((log) => (
-                 <article key={log.id} className="group relative rounded-xl border border-default-200 bg-background p-3 transition-colors hover:border-default-300">
+               {logs.map((summaryLog) => {
+                 const log = logDetails[summaryLog.id] ?? summaryLog
+                 const isExpanded = expandedLogId === summaryLog.id
+                 const secretsRevealed = revealedSecretLogIds.has(summaryLog.id)
+                 return (
+                 <article
+                   key={log.id}
+                   className="group relative rounded-xl border border-default-200 bg-background p-3 transition-colors hover:border-default-300"
+                   style={{ contentVisibility: "auto", containIntrinsicSize: "180px" }}
+                 >
                     {/* Header */}
                     <div className="flex items-start justify-between gap-2 mb-2">
                         <div className="flex items-center gap-2">
@@ -529,8 +665,20 @@ export function LogManagementTool() {
                                 {new Date(log.timestamp).toLocaleDateString()} {new Date(log.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                             </time>
                         </div>
-                        
+
                         <div className="flex items-center gap-1">
+                            <Button
+                                isIconOnly
+                                size="sm"
+                                variant="light"
+                                className="h-6 w-6 min-w-6"
+                                onPress={() => handleToggleLogDetails(summaryLog)}
+                                isLoading={loadingDetailId === summaryLog.id}
+                                aria-expanded={isExpanded}
+                                aria-label={isExpanded ? t("common.collapse", "收起详情") : t("common.expand", "展开详情")}
+                            >
+                                <ChevronDown className={cn("h-3.5 w-3.5 transition-transform", isExpanded && "rotate-180")} />
+                            </Button>
                             {/* Copy Message Button for non-method logs */}
                             {!log.method && (
                                 <Button
@@ -559,14 +707,33 @@ export function LogManagementTool() {
                     </div>
 
                     {/* Content */}
-                    <div className="pl-6">
+                    <div className={cn(
+                      "pl-6",
+                      !isExpanded && "max-h-32 overflow-hidden [mask-image:linear-gradient(to_bottom,black_75%,transparent)]",
+                    )}>
                         {log.method ? (
                             <div className="flex flex-col gap-3">
                                 {/* Method Name */}
-                                <div>
+                                <div className="flex items-center justify-between gap-2">
                                     <span className="text-primary font-bold font-mono text-small px-2 py-0.5 bg-primary/10 rounded">
                                         {log.method}
                                     </span>
+                                    {(log.cryptoParams?.key || log.cryptoParams?.privateKey) && isExpanded && (
+                                      <Button
+                                        size="sm"
+                                        variant="light"
+                                        className="h-6 px-2 text-[11px] text-default-500"
+                                        startContent={secretsRevealed ? <EyeOff className="h-3 w-3" /> : <Eye className="h-3 w-3" />}
+                                        onPress={() => setRevealedSecretLogIds((current) => {
+                                          const next = new Set(current)
+                                          if (next.has(summaryLog.id)) next.delete(summaryLog.id)
+                                          else next.add(summaryLog.id)
+                                          return next
+                                        })}
+                                      >
+                                        {secretsRevealed ? t('common.hide', '隐藏敏感参数') : t('common.reveal', '显示敏感参数')}
+                                      </Button>
+                                    )}
                                 </div>
 
                                 {/* Crypto Params */}
@@ -635,7 +802,7 @@ export function LogManagementTool() {
                                         {log.cryptoParams.key && (
                                             <div className="col-span-2 flex flex-col">
                                                 <span className="text-default-500 font-semibold">{t('tools.hash.key')}</span>
-                                                <span className="font-mono text-default-700 break-all">{log.cryptoParams.key}</span>
+                                                <span className="font-mono text-default-700 break-all">{secretsRevealed ? log.cryptoParams.key : '••••••••'}</span>
                                             </div>
                                         )}
                                         {log.cryptoParams.publicKey && (
@@ -647,7 +814,7 @@ export function LogManagementTool() {
                                         {log.cryptoParams.privateKey && (
                                             <div className="col-span-2 flex flex-col">
                                                 <span className="text-default-500 font-semibold">{t('tools.hash.privateKey')}</span>
-                                                <span className="font-mono text-default-700 break-all">{log.cryptoParams.privateKey}</span>
+                                                <span className="font-mono text-default-700 break-all">{secretsRevealed ? log.cryptoParams.privateKey : '••••••••'}</span>
                                             </div>
                                         )}
                                     </div>
@@ -711,7 +878,8 @@ export function LogManagementTool() {
                         )}
                     </div>
                  </article>
-               ))}
+                 )
+               })}
              </div>
            )}
         </ScrollShadow>

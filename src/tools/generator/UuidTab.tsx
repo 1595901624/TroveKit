@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo } from "react"
 import { Button, ButtonGroup, Input, Switch, Textarea } from "../../components/ui/base-ui"
 import { Copy, Trash2, RefreshCw } from "lucide-react"
 import { useTranslation } from "react-i18next"
-import { useLog } from "../../contexts/LogContext"
+import { useLogActions } from "../../contexts/LogContext"
 import CryptoJS from "crypto-js"
 import { getStoredItem, setStoredItem } from "../../lib/store"
 
@@ -48,7 +48,7 @@ const formatUuid = (uuid: string, type: string, isUppercase: boolean, showHyphen
 
 export function UuidTab() {
   const { t } = useTranslation()
-  const { addLog } = useLog()
+  const { addLog } = useLogActions()
   
   const [count, setCount] = useState<string>("5")
   const [uuids, setUuids] = useState<string[]>([])
