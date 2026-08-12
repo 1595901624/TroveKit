@@ -82,6 +82,97 @@ button {
     -webkit-tap-highlight-color: transparent;
 }
 
+/* Toasts live outside the app layout, so placement and motion stay consistent
+   across tool pages, resizable panels, themes, and compact windows. */
+.trove-toast-viewport {
+    display: flex;
+    flex-direction: column;
+    gap: 0.625rem;
+    pointer-events: none;
+}
+
+.trove-toast-viewport[data-placement="bottom-right"] {
+    right: 0.875rem;
+    bottom: 0.875rem;
+}
+
+.trove-toast-viewport[data-placement="top-right"] {
+    right: 0.875rem;
+    top: calc(var(--titlebar-height) + 0.75rem);
+}
+
+.trove-toast-viewport[data-placement="top-center"],
+.trove-toast-viewport[data-placement="bottom-center"] {
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.trove-toast-viewport[data-placement="top-center"] {
+    top: calc(var(--titlebar-height) + 0.75rem);
+}
+
+.trove-toast-viewport[data-placement="bottom-center"] {
+    bottom: 0.875rem;
+}
+
+.trove-toast {
+    --toast-accent: var(--primary);
+    pointer-events: auto;
+    color: rgb(var(--foreground));
+    transition:
+        opacity 180ms ease,
+        transform 260ms cubic-bezier(0.22, 1, 0.36, 1);
+    transform: translateX(var(--toast-swipe-movement-x));
+}
+
+.trove-toast[data-type="success"] { --toast-accent: var(--success); }
+.trove-toast[data-type="warning"] { --toast-accent: var(--warning); }
+.trove-toast[data-type="danger"] { --toast-accent: var(--danger); }
+
+.trove-toast[data-starting-style] {
+    opacity: 0;
+    transform: translateX(calc(1rem + var(--toast-swipe-movement-x))) scale(0.98);
+}
+
+.trove-toast[data-ending-style] {
+    opacity: 0;
+    transform: translateX(calc(1.5rem + var(--toast-swipe-movement-x))) scale(0.98);
+}
+
+.trove-toast[data-ending-style][data-swipe-direction="right"] {
+    transform: translateX(calc(100% + var(--toast-swipe-movement-x)));
+}
+
+.trove-toast[data-limited] {
+    display: none;
+}
+
+.trove-toast__progress {
+    background: rgb(var(--toast-accent));
+    animation: trove-toast-progress var(--toast-duration) linear forwards;
+}
+
+.trove-toast-viewport:hover .trove-toast__progress,
+.trove-toast-viewport:focus-within .trove-toast__progress {
+    animation-play-state: paused;
+}
+
+@keyframes trove-toast-progress {
+    from { transform: scaleX(1); }
+    to { transform: scaleX(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .trove-toast {
+        transition: opacity 100ms linear;
+    }
+
+    .trove-toast__progress {
+        animation: none;
+        display: none;
+    }
+}
+
 input {
     outline: none;
 }
@@ -124,5 +215,38 @@ body {
 
     .home-favorite-grid {
         grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+}
+
+/* QR layout follows the space left inside the tool area. Viewport breakpoints
+   cannot react when the resizable log panel opens beside the page. */
+.qr-workbench {
+    display: block;
+    overflow-y: auto;
+}
+
+.qr-settings {
+    overflow: visible;
+}
+
+.qr-color-grid {
+    grid-template-columns: repeat(auto-fit, minmax(min(9.5rem, 100%), 1fr));
+}
+
+@container (min-width: 820px) {
+    .qr-workbench {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(300px, 0.72fr);
+        grid-template-rows: minmax(0, 1fr);
+        overflow: hidden;
+    }
+
+    .qr-settings {
+        overflow-y: auto;
+    }
+
+    .qr-preview {
+        border-top-width: 0;
+        border-left-width: 1px;
     }
 }

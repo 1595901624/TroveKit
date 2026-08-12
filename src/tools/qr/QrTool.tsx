@@ -89,12 +89,12 @@ function ColorPicker({ label, color, onChange, t }: ColorPickerProps) {
             <PopoverTrigger>
                 <Button
                     variant="bordered"
-                    className="h-11 w-full justify-start gap-2.5 bg-background px-2.5"
+                    className="h-11 w-full min-w-0 justify-start gap-2.5 bg-background px-2.5"
                     aria-label={`${t("tools.qr.pickColor")}: ${label}`}
                 >
                     <span className="h-6 w-6 shrink-0 rounded-md border border-default-300 shadow-sm" style={{ backgroundColor: color }} />
-                    <span className="min-w-0 text-left">
-                        <span className="block text-[11px] font-medium text-default-600">{label}</span>
+                    <span className="min-w-0 flex-1 text-left">
+                        <span className="block truncate whitespace-nowrap text-[11px] font-medium text-default-600">{label}</span>
                         <span className="block truncate font-mono text-[10px] text-default-400">{color.toUpperCase()}</span>
                     </span>
                 </Button>
@@ -190,7 +190,8 @@ export function QrTool() {
 
   // Init QR Code instance
   useEffect(() => {
-    qrCode.current = new QRCodeStyling({
+    const previewContainer = ref.current
+    const instance = new QRCodeStyling({
         width: 250,
         height: 250,
         type: "svg", // SVG is better for sharp rendering in preview
@@ -200,10 +201,19 @@ export function QrTool() {
         }
     })
     // Initial render
-    if (ref.current) {
-        qrCode.current.append(ref.current)
+    qrCode.current = instance
+    if (previewContainer) {
+        // React Strict Mode mounts effects twice in development. Clear a stale
+        // preview before appending so two fixed-width SVGs cannot sit side by side.
+        previewContainer.replaceChildren()
+        instance.append(previewContainer)
     }
     updateQr()
+
+    return () => {
+        previewContainer?.replaceChildren()
+        if (qrCode.current === instance) qrCode.current = null
+    }
   }, [])
 
   useEffect(() => {
@@ -485,8 +495,8 @@ export function QrTool() {
         </Button>
       </div>
 
-      <div className="grid min-h-0 flex-1 grid-rows-[minmax(0,1fr)_auto] overflow-hidden rounded-xl border border-default-200 bg-background lg:grid-cols-[minmax(420px,1fr)_360px] lg:grid-rows-1">
-        <section className="min-h-0 min-w-0 overflow-y-auto" aria-label={t("tools.qr.content")}>
+      <div className="qr-workbench grid min-h-0 flex-1 overflow-hidden rounded-xl border border-default-200 bg-background">
+        <section className="qr-settings min-h-0 min-w-0" aria-label={t("tools.qr.content")}>
           <div className="space-y-5 p-4">
             <div className="space-y-2">
               {selectedMode === "text" && <TextTab value={text} onChange={handleTextChange} />}
@@ -535,7 +545,7 @@ export function QrTool() {
                 <h2 className="text-sm font-semibold text-foreground">{t("tools.qr.style")}</h2>
                 <p className="mt-0.5 text-[11px] text-default-400">{t("tools.qr.pickColor")}</p>
               </div>
-              <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+              <div className="qr-color-grid grid gap-2">
                 <ColorPicker label={t("tools.qr.dots")} color={qrColor} onChange={setQrColor} t={t} />
                 <ColorPicker label={t("tools.qr.background")} color={bgColor} onChange={setBgColor} t={t} />
                 <ColorPicker label={t("tools.qr.corners")} color={cornersColor} onChange={setCornersColor} t={t} />
@@ -545,15 +555,15 @@ export function QrTool() {
           </div>
         </section>
 
-        <section className="flex min-h-0 min-w-0 flex-col border-t border-default-200 bg-default-50/35 lg:border-l lg:border-t-0" aria-label={t("tools.qr.preview")}>
+        <section className="qr-preview flex min-h-0 min-w-0 flex-col border-t border-default-200 bg-default-50/35" aria-label={t("tools.qr.preview")}>
           <div className="flex h-11 shrink-0 items-center justify-between gap-3 border-b border-default-200 bg-background px-3.5">
             <h2 className="text-sm font-semibold text-foreground">{t("tools.qr.preview")}</h2>
             <span className="text-[11px] text-default-400">250 × 250 SVG</span>
           </div>
 
-          <div className="relative flex min-h-[290px] flex-1 flex-col items-center justify-center overflow-hidden p-5">
+          <div className="relative flex min-h-[290px] flex-1 flex-col items-center justify-center overflow-hidden p-4">
             <div className="pointer-events-none absolute inset-0 bg-grid-slate-200/50 [mask-image:linear-gradient(0deg,white,rgba(255,255,255,0.6))]" />
-            <div className="relative z-10 rounded-xl border border-default-100 bg-white p-3 shadow-lg" ref={ref} />
+            <div className="relative z-10 max-w-full overflow-hidden rounded-xl border border-default-100 bg-white p-3 shadow-lg [&>canvas]:h-auto [&>canvas]:max-w-full [&>svg]:h-auto [&>svg]:max-w-full" ref={ref} />
             <div className="relative z-10 mt-3 max-w-full truncate px-4 text-center font-mono text-[10px] text-default-400">
               {selectedMode === "wifi" ? t("tools.qr.wifiPreview", { ssid: wifi.ssid }) : t("tools.qr.preview")}
             </div>

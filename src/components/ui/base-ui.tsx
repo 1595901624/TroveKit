@@ -7,7 +7,6 @@ import { Dialog as BaseDialog } from "@base-ui/react/dialog"
 import { Menu as BaseMenu } from "@base-ui/react/menu"
 import { Popover as BasePopover } from "@base-ui/react/popover"
 import { Tooltip as BaseTooltip } from "@base-ui/react/tooltip"
-import { Toast as BaseToast } from "@base-ui/react/toast"
 import { Switch as BaseSwitch } from "@base-ui/react/switch"
 import { Checkbox as BaseCheckbox } from "@base-ui/react/checkbox"
 import { Radio as BaseRadio } from "@base-ui/react/radio"
@@ -16,6 +15,9 @@ import { ScrollArea } from "@base-ui/react/scroll-area"
 import { CalendarDateTime } from "@internationalized/date"
 import { Check, ChevronDown, LoaderCircle, X } from "lucide-react"
 import { twMerge } from "tailwind-merge"
+
+export { addToast, ToastProvider } from "./toast"
+export type { ToastOptions, ToastSeverity } from "./toast"
 
 type AnyProps = Record<string, any>
 type Selection = Set<React.Key>
@@ -399,10 +401,4 @@ export function DatePicker({ label, className, classNames, onChange, isDisabled,
   return <Input {...native} type="datetime-local" label={label} className={cx(className, classNames?.base)} classNames={classNames} isDisabled={isDisabled} endContent={selectorIcon} onChange={(event: React.ChangeEvent<HTMLInputElement>) => { const match = event.target.value.match(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})(?::(\d{2}))?/); if (match) onChange?.(new CalendarDateTime(+match[1], +match[2], +match[3], +match[4], +match[5], +(match[6] ?? 0))) }} />
 }
 
-const toastManager = BaseToast.createToastManager()
-export function addToast({ title, description, severity = "default", timeout }: AnyProps) { return toastManager.add({ title, description, type: severity, timeout }) }
-export function ToastProvider({ placement = "bottom-right" }: AnyProps) {
-  return <BaseToast.Provider toastManager={toastManager}><BaseToast.Portal><BaseToast.Viewport data-placement={placement} className="fixed bottom-4 right-4 z-[200] flex w-[min(24rem,calc(100vw-2rem))] flex-col gap-2 outline-none"><ToastList /></BaseToast.Viewport></BaseToast.Portal></BaseToast.Provider>
-}
-function ToastList() { const { toasts } = BaseToast.useToastManager(); return toasts.map(toast => <BaseToast.Root key={toast.id} toast={toast} className="flex items-start gap-3 rounded-xl border border-default-200 bg-background p-4 shadow-xl data-[type=danger]:border-danger/40 data-[type=success]:border-success/40"><BaseToast.Content className="min-w-0 flex-1"><BaseToast.Title className="font-medium" /><BaseToast.Description className="mt-1 text-sm text-default-500" /></BaseToast.Content><BaseToast.Close className="rounded p-1 hover:bg-default-100" aria-label="Close"><X className="h-4 w-4" /></BaseToast.Close></BaseToast.Root>) }
 export function BaseUIProvider({ children }: { children: React.ReactNode }) { return <BaseTooltip.Provider>{children}</BaseTooltip.Provider> }

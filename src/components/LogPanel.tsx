@@ -1,6 +1,6 @@
 // 导入必要的依赖
 import { useLogData, useLogUI, LogEntry } from "../contexts/LogContext" // 日志上下文
-import { Terminal, Info, CheckCircle, AlertTriangle, AlertCircle, Copy, Search, CircleX } from "lucide-react" // 图标
+import { Info, CheckCircle, AlertTriangle, AlertCircle, Copy, Search, CircleX } from "lucide-react" // 图标
 import { Button, ScrollShadow } from "../components/ui/base-ui" // UI 组件
 import { useTranslation } from "react-i18next" // 国际化
 import { useDeferredValue, useEffect, useMemo, useRef, useState } from "react" // React hooks
@@ -224,17 +224,12 @@ export function LogPanel() {
         >
             {shouldRenderContent && (
             <div ref={panelContentRef} className="flex h-full min-w-0 flex-col border-l border-divider" style={{ width: panelWidth }}>
-            <div className="flex h-14 shrink-0 items-center justify-between border-b border-divider/80 px-4">
-                <div className="flex min-w-0 items-center gap-2.5">
-                    <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-default-100 text-default-600">
-                        <Terminal className="h-3.5 w-3.5" />
-                    </span>
-                    <div className="min-w-0">
-                        <div className="truncate font-semibold text-small">{t('log.title', 'Operation Log')}</div>
-                        <div className="text-[11px] leading-4 text-default-400">
-                            {t('log.recentActivity', 'Recent activity')} · {logs.length}
-                        </div>
-                    </div>
+            <div className="flex h-10 shrink-0 items-center gap-3 border-b border-divider/80 px-3.5">
+                <div className="min-w-0 flex-1 truncate text-[13px] font-semibold">
+                    {t('log.title', 'Operation Log')}
+                </div>
+                <div className="shrink-0 whitespace-nowrap text-[11px] tabular-nums text-default-400">
+                    {t('log.recentActivity', 'Recent activity')} · {logs.length}
                 </div>
             </div>
 
