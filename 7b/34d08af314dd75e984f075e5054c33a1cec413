@@ -1,0 +1,508 @@
+src-tauri/src/lib.rs
+  620aeba3605e9e88 7-8,46-47
+src-tauri/src/log_manager.rs
+  620aeba3605e9e88 9,11-13,109-152,175,192-204,246,289-292,295,380,405-408,417-421,452-453,517,540-713,731-735,779,784-855,869-873,876-880
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.0.8",
+  "base_commit_sha": "7b34d08af314dd75e984f075e5054c33a1cec413",
+  "prompts": {
+    "620aeba3605e9e88": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019ff64c-bb9c-79e0-b72c-521e4d68e423",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "luhaoyu <haoyu3@163.com>",
+      "messages": [],
+      "total_additions": 461,
+      "total_deletions": 146,
+      "accepted_lines": 403,
+      "overriden_lines": 0
+    }
+  },
+  "commit_stats": {
+    "git_diff_added_lines": 878,
+    "git_diff_deleted_lines": 223,
+    "ai_additions": 347,
+    "ai_accepted": 347,
+    "BYMC": 521,
+    "mixed_additions": 0,
+    "BYAC": 347,
+    "BYRC": 0,
+    "per_file": {
+      "src-tauri/src/lib.rs": {
+        "BYMC": [],
+        "BYAC": [
+          "7-8",
+          "46-47"
+        ],
+        "BYRC": []
+      },
+      "src-tauri/src/log_manager.rs": {
+        "BYMC": [
+          "714-715"
+        ],
+        "BYAC": [
+          "9",
+          "11-13",
+          "109-152",
+          "175",
+          "192-204",
+          "246",
+          "289-292",
+          "295",
+          "380",
+          "405-408",
+          "417-421",
+          "452-453",
+          "517",
+          "540-713",
+          "731-735",
+          "779",
+          "784-855",
+          "869-873",
+          "876-880"
+        ],
+        "BYRC": []
+      },
+      "src/App.tsx": {
+        "BYMC": [
+          "272",
+          "302"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/components/Layout.tsx": {
+        "BYMC": [
+          "28",
+          "42",
+          "52-58",
+          "64",
+          "71"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/components/LogPanel.test.ts": {
+        "BYMC": [
+          "1-22"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/components/LogPanel.tsx": {
+        "BYMC": [
+          "16-17",
+          "21-32",
+          "52",
+          "54-56",
+          "70-79",
+          "98-105",
+          "117",
+          "134-136",
+          "139-143",
+          "248",
+          "252",
+          "255",
+          "258-259",
+          "271",
+          "277",
+          "282",
+          "305",
+          "308",
+          "313-315",
+          "321",
+          "352-353",
+          "355",
+          "362",
+          "364-367",
+          "380",
+          "382",
+          "466",
+          "478",
+          "487",
+          "489",
+          "497",
+          "499",
+          "506",
+          "508",
+          "516",
+          "518",
+          "527",
+          "534",
+          "555",
+          "567",
+          "615",
+          "627-631",
+          "635"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/components/Sidebar.tsx": {
+        "BYMC": [
+          "141-143"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/contexts/LogContext.tsx": {
+        "BYMC": [
+          "1",
+          "83-84",
+          "88-89",
+          "91-92",
+          "96",
+          "147-148",
+          "156-159",
+          "169",
+          "172-178",
+          "181",
+          "183-184",
+          "187-190",
+          "212-214",
+          "301-306",
+          "351-358",
+          "361-367",
+          "388-399"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/locales/en.json": {
+        "BYMC": [
+          "665-666"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/locales/zh.json": {
+        "BYMC": [
+          "665-666"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/styles/globals.css": {
+        "BYMC": [
+          "103-128"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/LogManagementTool.tsx": {
+        "BYMC": [
+          "1",
+          "4",
+          "6",
+          "21-33",
+          "40-41",
+          "51-59",
+          "61-63",
+          "108-112",
+          "152-156",
+          "159-160",
+          "163",
+          "167-176",
+          "178",
+          "181",
+          "191",
+          "194-199",
+          "202",
+          "206",
+          "208-219",
+          "222-275",
+          "303-308",
+          "434",
+          "436",
+          "460",
+          "465-466",
+          "593-618",
+          "622-635",
+          "643",
+          "650-659",
+          "668",
+          "670-681",
+          "710-713",
+          "717",
+          "721-736",
+          "805",
+          "817",
+          "881-882"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/Settings.tsx": {
+        "BYMC": [
+          "10",
+          "15"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/classical/BaconTab.tsx": {
+        "BYMC": [
+          "5",
+          "16"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/classical/CaesarTab.tsx": {
+        "BYMC": [
+          "5",
+          "13"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/classical/MorseTab.tsx": {
+        "BYMC": [
+          "4",
+          "15"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/converter/JsonXmlTab.tsx": {
+        "BYMC": [
+          "4",
+          "14"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/converter/JsonYamlTab.tsx": {
+        "BYMC": [
+          "4",
+          "14"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/converter/SubnetTab.tsx": {
+        "BYMC": [
+          "13",
+          "36"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/converter/TimestampTab.tsx": {
+        "BYMC": [
+          "6",
+          "22"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/encoder/Base32Tab.tsx": {
+        "BYMC": [
+          "3",
+          "18"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/encoder/Base64Tab.tsx": {
+        "BYMC": [
+          "3",
+          "25"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/encoder/BaseXTab.tsx": {
+        "BYMC": [
+          "5",
+          "15"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/encoder/BrainfuckTab.tsx": {
+        "BYMC": [
+          "3",
+          "199"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/encoder/HexTab.tsx": {
+        "BYMC": [
+          "4",
+          "35"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/encoder/JwtTab.tsx": {
+        "BYMC": [
+          "7",
+          "53"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/encoder/UrlTab.tsx": {
+        "BYMC": [
+          "5",
+          "22"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/generator/UuidTab.tsx": {
+        "BYMC": [
+          "5",
+          "51"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/hash/AesTab.tsx": {
+        "BYMC": [
+          "5",
+          "13"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/hash/AesTab2.tsx": {
+        "BYMC": [
+          "5",
+          "96"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/hash/BlakeTab.tsx": {
+        "BYMC": [
+          "5",
+          "15"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/hash/ChaCha20Tab.tsx": {
+        "BYMC": [
+          "5",
+          "73"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/hash/DesTab.tsx": {
+        "BYMC": [
+          "5",
+          "14"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/hash/HmacMd5Tab.tsx": {
+        "BYMC": [
+          "5",
+          "14"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/hash/Md2Tab.tsx": {
+        "BYMC": [
+          "5",
+          "15"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/hash/Md4Tab.tsx": {
+        "BYMC": [
+          "5",
+          "14"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/hash/Md5Tab.tsx": {
+        "BYMC": [
+          "5",
+          "15"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/hash/Rc4Tab.tsx": {
+        "BYMC": [
+          "5",
+          "14"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/hash/RsaTab.tsx": {
+        "BYMC": [
+          "5",
+          "14"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/hash/ShaTab.tsx": {
+        "BYMC": [
+          "5",
+          "14"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/hash/Sm2Tab.tsx": {
+        "BYMC": [
+          "5",
+          "15"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/hash/Sm3Tab.tsx": {
+        "BYMC": [
+          "5",
+          "15"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/hash/Sm4Tab.tsx": {
+        "BYMC": [
+          "5",
+          "14"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/hash/TripleDesTab.tsx": {
+        "BYMC": [
+          "5",
+          "14"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/hash/TriviumTab.tsx": {
+        "BYMC": [
+          "5",
+          "76"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      }
+    }
+  },
+  "ipa_account": "luhaoyu",
+  "commit_timestamp": 1786547846,
+  "requirement_id": ""
+}
