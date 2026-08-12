@@ -93,9 +93,13 @@ const isTauriRuntime = typeof window !== "undefined" && "__TAURI_INTERNALS__" in
 // 日志里经常包含完整输入/输出，统一截断后再进入 React state，降低长期驻留内存。
 function truncateText(value: string | undefined, limit = MAX_LOG_TEXT_LENGTH) {
   if (!value) return value
-  const chars = Array.from(value)
-  if (chars.length <= limit) return value
-  return `${chars.slice(0, limit).join("")}${TRUNCATED_SUFFIX}`
+  if (value.length <= limit) return value
+  // 只截取前缀，避免为多 MB 日志创建完整 Unicode 字符数组。
+  let end = limit
+  const lastCodeUnit = value.charCodeAt(end - 1)
+  const nextCodeUnit = value.charCodeAt(end)
+  if (lastCodeUnit >= 0xd800 && lastCodeUnit <= 0xdbff && nextCodeUnit >= 0xdc00 && nextCodeUnit <= 0xdfff) end -= 1
+  return `${value.slice(0, end)}${TRUNCATED_SUFFIX}`
 }
 
 // cryptoParams 可能嵌套保存密钥/参数/结果，递归截断字符串字段，避免隐藏的大对象绕过限制。

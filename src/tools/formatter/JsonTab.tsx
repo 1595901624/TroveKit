@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next"
 import ReactJson from 'react-json-view'
 import { useTheme } from "../../components/theme-provider"
 import { useStorageLoader } from "../../hooks/usePersistentState"
-import { setStoredItem, removeStoredItem } from "../../lib/store"
+import { useDebouncedStoredValue } from "../../hooks/useDebouncedStoredValue"
 import { FormatterWorkbench } from "./FormatterWorkbench"
 
 const STORAGE_KEY = "json-tool-state"
@@ -21,6 +21,7 @@ export function JsonTab() {
   const [errorMsg, setErrorMsg] = useState<string>("")
   const [viewMode, setViewMode] = useState<"text" | "graph">("text")
   const [collapsed, setCollapsed] = useState<boolean | number>(false)
+  const persistence = useDebouncedStoredValue(STORAGE_KEY, { code, viewMode, collapsed }, isLoaded, 1500, false)
 
   useEffect(() => {
     if (isLoaded && savedState) {
@@ -30,17 +31,11 @@ export function JsonTab() {
     }
   }, [isLoaded, savedState])
 
-  useEffect(() => {
-    if (isLoaded) {
-      setStoredItem(STORAGE_KEY, JSON.stringify({ code, viewMode, collapsed }))
-    }
-  }, [code, viewMode, collapsed, isLoaded])
-
   // --- Editor Operations ---
-  const handleFormatEditor = () => {
-    if (!code) return
+  const handleFormatEditor = (currentCode = code) => {
+    if (!currentCode) return
     try {
-      const parsed = JSON.parse(code)
+      const parsed = JSON.parse(currentCode)
       const formatted = JSON.stringify(parsed, null, 2)
       setCode(formatted)
       setIsValid(true)
@@ -51,10 +46,10 @@ export function JsonTab() {
     }
   }
 
-  const handleMinifyEditor = () => {
-    if (!code) return
+  const handleMinifyEditor = (currentCode = code) => {
+    if (!currentCode) return
     try {
-      const parsed = JSON.parse(code)
+      const parsed = JSON.parse(currentCode)
       const minified = JSON.stringify(parsed)
       setCode(minified)
       setIsValid(true)
@@ -65,14 +60,14 @@ export function JsonTab() {
     }
   }
 
-  const handleValidateEditor = () => {
-    if (!code) {
+  const handleValidateEditor = (currentCode = code) => {
+    if (!currentCode) {
       setIsValid(null)
       setErrorMsg("")
       return
     }
     try {
-      JSON.parse(code)
+      JSON.parse(currentCode)
       setIsValid(true)
       setErrorMsg("")
     } catch (e) {
@@ -90,11 +85,11 @@ export function JsonTab() {
     setCollapsed(true)
   }
 
-  const handleValidateGraph = () => {
+  const handleValidateGraph = (currentCode = code) => {
     // In graph mode, the source is always the 'code' state.
     // If 'code' is invalid JSON, the graph might behave weirdly or show error,
     // but here we just re-run validation to show the feedback card.
-    handleValidateEditor()
+    handleValidateEditor(currentCode)
   }
 
   const toggleView = (mode: "text" | "graph") => {
@@ -143,7 +138,7 @@ export function JsonTab() {
     setErrorMsg("")
     setViewMode("text")
     setCollapsed(false)
-    removeStoredItem(STORAGE_KEY)
+    persistence.remove()
   }
 
   const getJsonObject = () => {
@@ -200,6 +195,7 @@ export function JsonTab() {
       onValidate={viewMode === "graph" ? handleValidateGraph : handleValidateEditor}
       onExample={handleLoadExample}
       onClear={handleClear}
+      onCodeDispose={(value) => persistence.flush({ code: value, viewMode, collapsed })}
       status={isValid}
       errorMessage={errorMsg}
       validMessage={t("tools.formatter.validJson")}

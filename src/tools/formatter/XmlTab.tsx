@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react"
 import { useTranslation } from "react-i18next"
 import format from 'xml-formatter'
-import { getStoredItem, setStoredItem, removeStoredItem } from "../../lib/store"
+import { getStoredItem } from "../../lib/store"
+import { useDebouncedStoredValue } from "../../hooks/useDebouncedStoredValue"
 import { FormatterWorkbench } from "./FormatterWorkbench"
 
 const STORAGE_KEY = "xml-tool-state"
@@ -13,6 +14,7 @@ export function XmlTab() {
   const [isValid, setIsValid] = useState<boolean | null>(null)
   const [errorMsg, setErrorMsg] = useState<string>("")
   const [isLoaded, setIsLoaded] = useState(false)
+  const persistence = useDebouncedStoredValue(STORAGE_KEY, { code, isValid, errorMsg }, isLoaded, 1500, false)
 
   useEffect(() => {
     let mounted = true
@@ -32,18 +34,12 @@ export function XmlTab() {
     return () => { mounted = false }
   }, [])
 
-  useEffect(() => {
-    if (isLoaded) {
-      setStoredItem(STORAGE_KEY, JSON.stringify({ code, isValid, errorMsg }))
-    }
-  }, [code, isValid, errorMsg, isLoaded])
-
   // ... later in the file, replace clear handler (handled below)
 
-  const handleFormatEditor = () => {
-    if (!code) return
+  const handleFormatEditor = (currentCode = code) => {
+    if (!currentCode) return
     try {
-      const formatted = format(code, { 
+      const formatted = format(currentCode, {
         indentation: '  ', 
         filter: (node) => node.type !== 'Comment',
         collapseContent: true, 
@@ -58,10 +54,10 @@ export function XmlTab() {
     }
   }
 
-  const handleMinifyEditor = () => {
-    if (!code) return
+  const handleMinifyEditor = (currentCode = code) => {
+    if (!currentCode) return
     try {
-      const minified = format(code, { 
+      const minified = format(currentCode, {
         indentation: '', 
         lineSeparator: '',
         collapseContent: true
@@ -85,7 +81,7 @@ export function XmlTab() {
     setCode("")
     setIsValid(null)
     setErrorMsg("")
-    removeStoredItem(STORAGE_KEY)
+    persistence.remove()
   }
 
   // --- Example Operation ---
@@ -132,6 +128,7 @@ export function XmlTab() {
       onMinify={handleMinifyEditor}
       onExample={handleLoadExample}
       onClear={handleClear}
+      onCodeDispose={(value) => persistence.flush({ code: value, isValid, errorMsg })}
       status={isValid}
       errorMessage={errorMsg}
       validMessage={t("tools.formatter.validXml")}

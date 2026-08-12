@@ -3,7 +3,8 @@ import { Select, SelectItem } from "../../components/ui/base-ui"
 import { Database } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { format as formatSql } from 'sql-formatter'
-import { getStoredItem, setStoredItem, removeStoredItem } from "../../lib/store"
+import { getStoredItem } from "../../lib/store"
+import { useDebouncedStoredValue } from "../../hooks/useDebouncedStoredValue"
 import { FormatterWorkbench } from "./FormatterWorkbench"
 
 const STORAGE_KEY = "sql-tool-state"
@@ -16,6 +17,7 @@ export function SqlTab() {
   const [errorMsg, setErrorMsg] = useState<string>("")
   const [dialect, setDialect] = useState("sql")
   const [isLoaded, setIsLoaded] = useState(false)
+  const persistence = useDebouncedStoredValue(STORAGE_KEY, { code, dialect, isValid, errorMsg }, isLoaded, 1500, false)
 
   useEffect(() => {
     let mounted = true
@@ -36,18 +38,12 @@ export function SqlTab() {
     return () => { mounted = false }
   }, [])
 
-  useEffect(() => {
-    if (isLoaded) {
-      setStoredItem(STORAGE_KEY, JSON.stringify({ code, dialect, isValid, errorMsg }))
-    }
-  }, [code, dialect, isValid, errorMsg, isLoaded])
-
   // ... later replace clear handler
 
-  const handleFormatEditor = () => {
-    if (!code) return
+  const handleFormatEditor = (currentCode = code) => {
+    if (!currentCode) return
     try {
-      const formatted = formatSql(code, { 
+      const formatted = formatSql(currentCode, {
         language: dialect as any
       })
       setCode(formatted)
@@ -59,12 +55,12 @@ export function SqlTab() {
     }
   }
 
-  const handleMinifyEditor = () => {
-    if (!code) return
+  const handleMinifyEditor = (currentCode = code) => {
+    if (!currentCode) return
     try {
       // Simple SQL minification using regex for offline usage
       // Remove comments, collapse whitespace, and trim
-      let minified = code
+      let minified = currentCode
         .replace(/--.*$/gm, "") // Remove single-line comments
         .replace(/\/\*[\s\S]*?\*\//g, "") // Remove multi-line comments
         .replace(/\s+/g, " ") // Collapse whitespace
@@ -81,15 +77,15 @@ export function SqlTab() {
     }
   }
 
-  const handleValidateEditor = () => {
-    if (!code) {
+  const handleValidateEditor = (currentCode = code) => {
+    if (!currentCode) {
       setIsValid(null)
       setErrorMsg("")
       return
     }
     try {
       // Try to format to validate
-      formatSql(code, { language: dialect as any })
+      formatSql(currentCode, { language: dialect as any })
       setIsValid(true)
       setErrorMsg("")
     } catch (e) {
@@ -108,7 +104,7 @@ export function SqlTab() {
     setCode("")
     setIsValid(null)
     setErrorMsg("")
-    removeStoredItem(STORAGE_KEY)
+    persistence.remove()
   }
 
   const handleDialectChange = (value: string) => {
@@ -181,6 +177,7 @@ WHERE id = 1;`
       onValidate={handleValidateEditor}
       onExample={handleLoadExample}
       onClear={handleClear}
+      onCodeDispose={(value) => persistence.flush({ code: value, dialect, isValid, errorMsg })}
       status={isValid}
       errorMessage={errorMsg}
       validMessage={t("tools.formatter.validSql")}

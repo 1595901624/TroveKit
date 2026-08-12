@@ -24,11 +24,17 @@ import { css } from "@codemirror/lang-css"
 import { sql } from "@codemirror/lang-sql"
 import { linter } from "@codemirror/lint"
 import { tags } from "@lezer/highlight"
-import type { CodeEditorHandle, CodeEditorHighlight, CodeEditorLanguage, CodeEditorProps } from "./CodeEditor"
+import {
+  LARGE_DOCUMENT_THRESHOLD,
+  type CodeEditorHandle,
+  type CodeEditorHighlight,
+  type CodeEditorLanguage,
+  type CodeEditorProps,
+  type CodeEditorStats,
+} from "./CodeEditor"
 
 const externalUpdate = StateEffect.define<boolean>()
 const replaceHighlights = StateEffect.define<CodeEditorHighlight[]>()
-
 const matchDecoration = Decoration.mark({ class: "cm-regex-match" })
 const activeMatchDecoration = Decoration.mark({ class: "cm-regex-match-active" })
 
@@ -131,6 +137,9 @@ const CodeMirrorEditorImpl = forwardRef<CodeEditorHandle, CodeEditorProps>(funct
     fontSize = 13,
     contentPadding = 12,
     jsonDiagnostics = false,
+    largeDocumentChangeDelay = 0,
+    onDispose,
+    onStatsChange,
     ariaLabel = "Editor content",
     className = "",
   },
@@ -139,16 +148,31 @@ const CodeMirrorEditorImpl = forwardRef<CodeEditorHandle, CodeEditorProps>(funct
   const hostRef = useRef<HTMLDivElement | null>(null)
   const viewRef = useRef<EditorView | null>(null)
   const onChangeRef = useRef(onChange)
+  const onDisposeRef = useRef(onDispose)
+  const onStatsChangeRef = useRef(onStatsChange)
+  const diagnosticsEnabledRef = useRef(jsonDiagnostics)
+  const lastEmittedValueRef = useRef(value)
+  const changeTimerRef = useRef<number | null>(null)
   const languageCompartmentRef = useRef(new Compartment())
   const readOnlyCompartmentRef = useRef(new Compartment())
+  const wrappingCompartmentRef = useRef(new Compartment())
+  const diagnosticsCompartmentRef = useRef(new Compartment())
 
   onChangeRef.current = onChange
+  onDisposeRef.current = onDispose
+  onStatsChangeRef.current = onStatsChange
+  diagnosticsEnabledRef.current = jsonDiagnostics
+
+  const emitStats = (stats: CodeEditorStats) => onStatsChangeRef.current?.(stats)
 
   useEffect(() => {
     if (!hostRef.current) return
 
     const languageCompartment = languageCompartmentRef.current
     const readOnlyCompartment = readOnlyCompartmentRef.current
+    const wrappingCompartment = wrappingCompartmentRef.current
+    const diagnosticsCompartment = diagnosticsCompartmentRef.current
+    const startsLarge = value.length >= LARGE_DOCUMENT_THRESHOLD
     const state = EditorState.create({
       doc: value,
       extensions: [
@@ -162,20 +186,51 @@ const CodeMirrorEditorImpl = forwardRef<CodeEditorHandle, CodeEditorProps>(funct
         crosshairCursor(),
         highlightActiveLine(),
         bracketMatching(),
-        EditorView.lineWrapping,
         keymap.of([...defaultKeymap, ...historyKeymap, ...searchKeymap, indentWithTab]),
         syntaxHighlighting(codeHighlightStyle),
         createEditorTheme(fontSize, contentPadding),
         highlightField,
-        ...(jsonDiagnostics ? [linter(jsonParseLinter())] : []),
+        wrappingCompartment.of(startsLarge ? [] : EditorView.lineWrapping),
+        diagnosticsCompartment.of(jsonDiagnostics && !startsLarge ? linter(jsonParseLinter()) : []),
+        EditorState.transactionExtender.of((transaction) => {
+          if (!transaction.docChanged) return null
+          const wasLarge = transaction.startState.doc.length >= LARGE_DOCUMENT_THRESHOLD
+          const isLarge = transaction.newDoc.length >= LARGE_DOCUMENT_THRESHOLD
+          if (wasLarge === isLarge) return null
+          return {
+            effects: [
+              wrappingCompartment.reconfigure(isLarge ? [] : EditorView.lineWrapping),
+              diagnosticsCompartment.reconfigure(diagnosticsEnabledRef.current && !isLarge ? linter(jsonParseLinter()) : []),
+            ],
+          }
+        }),
         EditorView.contentAttributes.of({ "aria-label": ariaLabel }),
         languageCompartment.of(languageExtension(language)),
         readOnlyCompartment.of([EditorState.readOnly.of(readOnly), EditorView.editable.of(!readOnly)]),
         EditorView.updateListener.of((update) => {
+          if (update.docChanged) {
+            emitStats({
+              characters: update.state.doc.length,
+              lines: update.state.doc.length === 0 ? 0 : update.state.doc.lines,
+              largeDocument: update.state.doc.length >= LARGE_DOCUMENT_THRESHOLD,
+            })
+          }
           if (!update.docChanged || update.transactions.some((transaction) => transaction.effects.some((effect) => effect.is(externalUpdate)))) {
             return
           }
-          onChangeRef.current?.(update.state.doc.toString())
+          const emitValue = () => {
+            changeTimerRef.current = null
+            const nextValue = update.view.state.doc.toString()
+            lastEmittedValueRef.current = nextValue
+            onChangeRef.current?.(nextValue)
+          }
+          if (update.state.doc.length < LARGE_DOCUMENT_THRESHOLD || largeDocumentChangeDelay <= 0) {
+            if (changeTimerRef.current !== null) window.clearTimeout(changeTimerRef.current)
+            emitValue()
+          } else {
+            if (changeTimerRef.current !== null) window.clearTimeout(changeTimerRef.current)
+            changeTimerRef.current = window.setTimeout(emitValue, largeDocumentChangeDelay)
+          }
         }),
       ],
     })
@@ -184,9 +239,13 @@ const CodeMirrorEditorImpl = forwardRef<CodeEditorHandle, CodeEditorProps>(funct
     const resizeObserver = new ResizeObserver(() => view.requestMeasure())
     resizeObserver.observe(hostRef.current)
     viewRef.current = view
+    emitStats({ characters: state.doc.length, lines: state.doc.length === 0 ? 0 : state.doc.lines, largeDocument: startsLarge })
     if (highlights.length > 0) view.dispatch({ effects: replaceHighlights.of(highlights) })
 
     return () => {
+      if (changeTimerRef.current !== null) window.clearTimeout(changeTimerRef.current)
+      const latestValue = view.state.doc.toString()
+      onDisposeRef.current?.(latestValue)
       resizeObserver.disconnect()
       view.destroy()
       viewRef.current = null
@@ -195,7 +254,12 @@ const CodeMirrorEditorImpl = forwardRef<CodeEditorHandle, CodeEditorProps>(funct
 
   useEffect(() => {
     const view = viewRef.current
-    if (!view || view.state.doc.toString() === value) return
+    if (!view || value === lastEmittedValueRef.current) return
+    if (view.state.doc.length === value.length && view.state.doc.toString() === value) {
+      lastEmittedValueRef.current = value
+      return
+    }
+    lastEmittedValueRef.current = value
     view.dispatch({
       changes: { from: 0, to: view.state.doc.length, insert: value },
       effects: externalUpdate.of(true),
@@ -206,6 +270,15 @@ const CodeMirrorEditorImpl = forwardRef<CodeEditorHandle, CodeEditorProps>(funct
   useEffect(() => {
     viewRef.current?.dispatch({ effects: languageCompartmentRef.current.reconfigure(languageExtension(language)) })
   }, [language])
+
+  useEffect(() => {
+    const view = viewRef.current
+    if (!view) return
+    const isLarge = view.state.doc.length >= LARGE_DOCUMENT_THRESHOLD
+    view.dispatch({
+      effects: diagnosticsCompartmentRef.current.reconfigure(jsonDiagnostics && !isLarge ? linter(jsonParseLinter()) : []),
+    })
+  }, [jsonDiagnostics])
 
   useEffect(() => {
     viewRef.current?.dispatch({
@@ -223,6 +296,9 @@ const CodeMirrorEditorImpl = forwardRef<CodeEditorHandle, CodeEditorProps>(funct
   useImperativeHandle(ref, () => ({
     focus() {
       viewRef.current?.focus()
+    },
+    getValue() {
+      return viewRef.current?.state.doc.toString() ?? value
     },
     revealRange(from, to) {
       const view = viewRef.current

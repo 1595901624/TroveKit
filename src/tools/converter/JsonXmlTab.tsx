@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { addToast } from "../../components/ui/base-ui"
 import { useTranslation } from "react-i18next"
-import { XMLParser, XMLBuilder } from "fast-xml-parser"
 import { useLog } from "../../contexts/LogContext"
-import { getStoredItem, removeStoredItem, setStoredItem } from "../../lib/store"
+import { getStoredItem } from "../../lib/store"
+import { useConverterWorker } from "../../hooks/useConverterWorker"
+import { useDebouncedStoredValue } from "../../hooks/useDebouncedStoredValue"
 import { ConverterWorkbench } from "./ConverterWorkbench"
 
 const STORAGE_KEY = "json-xml-tool-state"
@@ -15,6 +16,11 @@ export function JsonXmlTab() {
   const [jsonCode, setJsonCode] = useState("")
   const [xmlCode, setXmlCode] = useState("")
   const [isLoaded, setIsLoaded] = useState(false)
+  const [isProcessing, setIsProcessing] = useState(false)
+  const convert = useConverterWorker()
+  const jsonCodeRef = useRef("")
+  const xmlCodeRef = useRef("")
+  const persistence = useDebouncedStoredValue(STORAGE_KEY, { jsonCode, xmlCode }, isLoaded, 1500, false)
 
   // 组件会在切换 Tab 时卸载，因此挂载时从持久化存储恢复左右编辑器内容。
   useEffect(() => {
@@ -23,64 +29,70 @@ export function JsonXmlTab() {
       if (mounted && stored) {
         try {
           const state = JSON.parse(stored)
-          if (typeof state.jsonCode === "string") setJsonCode(state.jsonCode)
-          if (typeof state.xmlCode === "string") setXmlCode(state.xmlCode)
+          if (typeof state.jsonCode === "string") {
+            jsonCodeRef.current = state.jsonCode
+            setJsonCode(state.jsonCode)
+          }
+          if (typeof state.xmlCode === "string") {
+            xmlCodeRef.current = state.xmlCode
+            setXmlCode(state.xmlCode)
+          }
         } catch (e) {
           console.error("Failed to parse JsonXmlTab state", e)
         }
       }
-      if (mounted) setIsLoaded(true)
+      if (mounted) {
+        setIsLoaded(true)
+      }
     })
     return () => { mounted = false }
   }, [])
 
-  // 恢复完成后再写入，避免初次挂载时用空状态覆盖已有编辑内容。
-  useEffect(() => {
-    if (isLoaded) {
-      setStoredItem(STORAGE_KEY, JSON.stringify({ jsonCode, xmlCode }))
-    }
-  }, [jsonCode, xmlCode, isLoaded])
+  const updateJsonCode = (value: string) => {
+    jsonCodeRef.current = value
+    setJsonCode(value)
+  }
 
-  const handleJsonToXml = () => {
-    if (!jsonCode) return
+  const updateXmlCode = (value: string) => {
+    xmlCodeRef.current = value
+    setXmlCode(value)
+  }
+
+  const handleJsonToXml = async (currentJson: string) => {
+    if (!currentJson) return
+    setIsProcessing(true)
     try {
-      const builder = new XMLBuilder({
-        format: true,
-        ignoreAttributes: false,
-        suppressEmptyNode: true,
-      })
-      const jsonObj = JSON.parse(jsonCode)
-      const xml = builder.build(jsonObj)
-      setXmlCode(xml)
+      const xml = await convert("jsonToXml", currentJson)
+      updateXmlCode(xml)
       addLog({
         method: "JSON to XML",
-        input: jsonCode,
+        input: currentJson,
         output: xml
       }, "success")
       addToast({ title: t("tools.converter.convertSuccessfully"), severity: "success" })
     } catch (e) {
       addToast({ title: `${t("tools.converter.invalidJson")}: ${(e as Error).message}`, severity: "danger" })
+    } finally {
+      setIsProcessing(false)
     }
   }
 
-  const handleXmlToJson = () => {
-    if (!xmlCode) return
+  const handleXmlToJson = async (_currentJson: string, currentXml: string) => {
+    if (!currentXml) return
+    setIsProcessing(true)
     try {
-      const parser = new XMLParser({
-        ignoreAttributes: false,
-        attributeNamePrefix: "@_"
-      })
-      const jsonObj = parser.parse(xmlCode)
-      const json = JSON.stringify(jsonObj, null, 2)
-      setJsonCode(json)
+      const json = await convert("xmlToJson", currentXml)
+      updateJsonCode(json)
       addLog({
         method: "XML to JSON",
-        input: xmlCode,
+        input: currentXml,
         output: json
       }, "success")
       addToast({ title: t("tools.converter.convertSuccessfully"), severity: "success" })
     } catch (e) {
       addToast({ title: `${t("tools.converter.invalidXml")}: ${(e as Error).message}`, severity: "danger" })
+    } finally {
+      setIsProcessing(false)
     }
   }
 
@@ -109,38 +121,28 @@ export function JsonXmlTab() {
         ]
       }
     }
-    setJsonCode(JSON.stringify(example, null, 2))
-    
-    // Auto convert to XML for the example
-    try {
-      const builder = new XMLBuilder({
-        format: true,
-        ignoreAttributes: false,
-        suppressEmptyNode: true,
-      })
-      const xml = builder.build(example)
-      setXmlCode(xml)
-    } catch (e) {
-      console.error("Failed to generate XML example", e)
-    }
+    const json = JSON.stringify(example, null, 2)
+    updateJsonCode(json)
+    void convert("jsonToXml", json).then(updateXmlCode).catch((e) => console.error("Failed to generate XML example", e))
   }
 
   const handleClearAll = () => {
-    setJsonCode("")
-    setXmlCode("")
-    removeStoredItem(STORAGE_KEY)
+    updateJsonCode("")
+    updateXmlCode("")
+    persistence.remove()
   }
 
   return (
     <ConverterWorkbench
-      left={{ id: "json-xml-json", label: "JSON", language: "json", value: jsonCode, onChange: setJsonCode, onClear: () => setJsonCode(""), jsonDiagnostics: true }}
-      right={{ id: "json-xml-xml", label: "XML", language: "xml", value: xmlCode, onChange: setXmlCode, onClear: () => setXmlCode("") }}
+      left={{ id: "json-xml-json", label: "JSON", language: "json", value: jsonCode, onChange: updateJsonCode, onDispose: (value) => { jsonCodeRef.current = value; persistence.flush({ jsonCode: value, xmlCode: xmlCodeRef.current }) }, onClear: () => updateJsonCode(""), jsonDiagnostics: true }}
+      right={{ id: "json-xml-xml", label: "XML", language: "xml", value: xmlCode, onChange: updateXmlCode, onDispose: (value) => { xmlCodeRef.current = value; persistence.flush({ jsonCode: jsonCodeRef.current, xmlCode: value }) }, onClear: () => updateXmlCode("") }}
       onLeftToRight={handleJsonToXml}
       onRightToLeft={handleXmlToJson}
       leftToRightLabel={t("tools.converter.jsonToXml")}
       rightToLeftLabel={t("tools.converter.xmlToJson")}
       onExample={handleLoadExample}
       onClearAll={handleClearAll}
+      isProcessing={isProcessing}
     />
   )
 }

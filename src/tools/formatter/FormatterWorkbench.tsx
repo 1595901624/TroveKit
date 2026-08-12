@@ -1,8 +1,8 @@
-import type { ReactNode } from "react"
+import { useRef, useState, type ReactNode } from "react"
 import { AlertCircle, BookOpen, CheckCircle2, Copy, Maximize2, Minimize2, Trash2 } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { Button } from "../../components/ui/base-ui"
-import CodeEditor, { type CodeEditorLanguage } from "../../components/CodeEditor"
+import CodeEditor, { type CodeEditorHandle, type CodeEditorLanguage, type CodeEditorStats } from "../../components/CodeEditor"
 
 interface FormatterWorkbenchProps {
   id: string
@@ -10,11 +10,12 @@ interface FormatterWorkbenchProps {
   language: CodeEditorLanguage
   code: string
   onCodeChange: (value: string) => void
-  onFormat: () => void
-  onMinify: () => void
-  onValidate?: () => void
+  onFormat: (code: string) => void
+  onMinify: (code: string) => void
+  onValidate?: (code: string) => void
   onExample: () => void
   onClear: () => void
+  onCodeDispose?: (code: string) => void
   status: boolean | null
   errorMessage: string
   validMessage: string
@@ -24,13 +25,6 @@ interface FormatterWorkbenchProps {
   secondaryLabel?: string
   secondaryActions?: ReactNode
   jsonDiagnostics?: boolean
-}
-
-function textStats(value: string) {
-  return {
-    lines: value ? value.split(/\r\n|\r|\n/).length : 0,
-    characters: value.length,
-  }
 }
 
 export function FormatterWorkbench({
@@ -44,6 +38,7 @@ export function FormatterWorkbench({
   onValidate,
   onExample,
   onClear,
+  onCodeDispose,
   status,
   errorMessage,
   validMessage,
@@ -55,10 +50,13 @@ export function FormatterWorkbench({
   jsonDiagnostics,
 }: FormatterWorkbenchProps) {
   const { t } = useTranslation()
-  const stats = textStats(code)
+  const editorRef = useRef<CodeEditorHandle>(null)
+  const [stats, setStats] = useState<CodeEditorStats>({ lines: code ? 1 : 0, characters: code.length, largeDocument: false })
+  const currentCode = () => editorRef.current?.getValue() ?? code
 
   const copyCode = () => {
-    if (code) navigator.clipboard.writeText(code)
+    const value = currentCode()
+    if (value) navigator.clipboard.writeText(value)
   }
 
   return (
@@ -72,14 +70,14 @@ export function FormatterWorkbench({
         )}
 
         <div className="flex min-w-0 flex-1 flex-wrap items-center gap-1.5">
-          <Button size="sm" color="primary" className="h-8" onPress={onFormat} isDisabled={!code} startContent={<Maximize2 className="h-4 w-4" />}>
+          <Button size="sm" color="primary" className="h-8" onPress={() => onFormat(currentCode())} isDisabled={stats.characters === 0} startContent={<Maximize2 className="h-4 w-4" />}>
             {t("tools.formatter.format")}
           </Button>
-          <Button size="sm" variant="flat" className="h-8" onPress={onMinify} isDisabled={!code} startContent={<Minimize2 className="h-4 w-4" />}>
+          <Button size="sm" variant="flat" className="h-8" onPress={() => onMinify(currentCode())} isDisabled={stats.characters === 0} startContent={<Minimize2 className="h-4 w-4" />}>
             {t("tools.formatter.minify")}
           </Button>
           {onValidate && (
-            <Button size="sm" variant="light" className="h-8" onPress={onValidate} isDisabled={!code} startContent={<CheckCircle2 className="h-4 w-4" />}>
+            <Button size="sm" variant="light" className="h-8" onPress={() => onValidate(currentCode())} isDisabled={stats.characters === 0} startContent={<CheckCircle2 className="h-4 w-4" />}>
               {t("tools.formatter.validate")}
             </Button>
           )}
@@ -93,7 +91,7 @@ export function FormatterWorkbench({
           variant="light"
           className="h-8 shrink-0 text-default-500 hover:bg-danger/10 hover:text-danger"
           onPress={onClear}
-          isDisabled={!code}
+          isDisabled={stats.characters === 0}
           startContent={<Trash2 className="h-4 w-4" />}
         >
           {t("tools.encoder.clearAll")}
@@ -110,6 +108,11 @@ export function FormatterWorkbench({
               <span className="truncate text-[11px] text-default-400">
                 {stats.lines} {t("tools.formatter.lines")} · {stats.characters} {t("tools.formatter.characters")}
               </span>
+              {stats.largeDocument && (
+                <span className="shrink-0 rounded-full bg-warning/15 px-2 py-0.5 text-[10px] font-medium text-warning">
+                  {t("common.largeDocumentMode", "Large document mode")}
+                </span>
+              )}
             </div>
 
             <div className="flex min-w-0 items-center gap-2">
@@ -132,12 +135,16 @@ export function FormatterWorkbench({
 
           <div className="min-h-0 flex-1">
             <CodeEditor
+              ref={editorRef}
               language={language}
               value={code}
               onChange={onCodeChange}
               fontSize={13}
               contentPadding={16}
               jsonDiagnostics={jsonDiagnostics}
+              largeDocumentChangeDelay={300}
+              onDispose={onCodeDispose}
+              onStatsChange={setStats}
               ariaLabel={label}
             />
           </div>

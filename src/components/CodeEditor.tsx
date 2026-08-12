@@ -11,8 +11,17 @@ export interface CodeEditorHighlight {
 
 export interface CodeEditorHandle {
   focus: () => void
+  getValue: () => string
   revealRange: (from: number, to: number) => void
 }
+
+export interface CodeEditorStats {
+  characters: number
+  lines: number
+  largeDocument: boolean
+}
+
+export const LARGE_DOCUMENT_THRESHOLD = 1024 * 1024
 
 export interface CodeEditorProps {
   value: string
@@ -24,6 +33,9 @@ export interface CodeEditorProps {
   fontSize?: number
   contentPadding?: number
   jsonDiagnostics?: boolean
+  largeDocumentChangeDelay?: number
+  onDispose?: (value: string) => void
+  onStatsChange?: (stats: CodeEditorStats) => void
   ariaLabel?: string
   className?: string
 }

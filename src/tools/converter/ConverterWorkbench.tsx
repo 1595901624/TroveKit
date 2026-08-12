@@ -1,8 +1,8 @@
-import type { ReactNode } from "react"
+import { useRef, useState, type ReactNode, type RefObject } from "react"
 import { ArrowDownUp, ArrowLeft, ArrowLeftRight, ArrowRight, BookOpen, Copy, Trash2 } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { Button } from "../../components/ui/base-ui"
-import CodeEditor, { type CodeEditorLanguage } from "../../components/CodeEditor"
+import CodeEditor, { type CodeEditorHandle, type CodeEditorLanguage, type CodeEditorStats } from "../../components/CodeEditor"
 
 interface ConverterPanel {
   id: string
@@ -11,34 +11,37 @@ interface ConverterPanel {
   value: string
   onChange: (value: string) => void
   onClear: () => void
-  onCopy?: () => void
+  onCopy?: (value: string) => void
+  onDispose?: (value: string) => void
   jsonDiagnostics?: boolean
 }
 
 interface ConverterWorkbenchProps {
   left: ConverterPanel
   right: ConverterPanel
-  onLeftToRight: () => void
-  onRightToLeft: () => void
+  onLeftToRight: (leftValue: string, rightValue: string) => void
+  onRightToLeft: (leftValue: string, rightValue: string) => void
   leftToRightLabel: string
   rightToLeftLabel: string
   onExample: () => void
   onClearAll: () => void
   toolbarStart?: ReactNode
+  isProcessing?: boolean
 }
 
-function stats(value: string) {
-  return { lines: value ? value.split(/\r\n|\r|\n/).length : 0, characters: value.length }
-}
-
-function EditorPanel({ panel }: { panel: ConverterPanel }) {
+function EditorPanel({ panel, editorRef }: { panel: ConverterPanel; editorRef: RefObject<CodeEditorHandle | null> }) {
   const { t } = useTranslation()
-  const valueStats = stats(panel.value)
+  const [valueStats, setValueStats] = useState<CodeEditorStats>({
+    lines: panel.value ? 1 : 0,
+    characters: panel.value.length,
+    largeDocument: false,
+  })
 
   const copy = () => {
-    if (!panel.value) return
-    if (panel.onCopy) panel.onCopy()
-    else navigator.clipboard.writeText(panel.value)
+    const currentValue = editorRef.current?.getValue() ?? panel.value
+    if (!currentValue) return
+    if (panel.onCopy) panel.onCopy(currentValue)
+    else navigator.clipboard.writeText(currentValue)
   }
 
   return (
@@ -49,24 +52,33 @@ function EditorPanel({ panel }: { panel: ConverterPanel }) {
           <span className="truncate text-[11px] text-default-400">
             {valueStats.lines} {t("tools.formatter.lines")} · {valueStats.characters} {t("tools.formatter.characters")}
           </span>
+          {valueStats.largeDocument && (
+            <span className="shrink-0 rounded-full bg-warning/15 px-2 py-0.5 text-[10px] font-medium text-warning">
+              {t("common.largeDocumentMode", "Large document mode")}
+            </span>
+          )}
         </div>
         <div className="flex items-center gap-1">
-          <Button isIconOnly size="sm" variant="light" className="h-8 w-8 min-w-8 text-default-500" onPress={copy} isDisabled={!panel.value} title={t("tools.converter.copy")} aria-label={`${t("tools.converter.copy")} ${panel.label}`}>
+          <Button isIconOnly size="sm" variant="light" className="h-8 w-8 min-w-8 text-default-500" onPress={copy} isDisabled={valueStats.characters === 0} title={t("tools.converter.copy")} aria-label={`${t("tools.converter.copy")} ${panel.label}`}>
             <Copy className="h-4 w-4" />
           </Button>
-          <Button isIconOnly size="sm" variant="light" className="h-8 w-8 min-w-8 text-default-500 hover:bg-danger/10 hover:text-danger" onPress={panel.onClear} isDisabled={!panel.value} title={t("tools.converter.clear")} aria-label={`${t("tools.converter.clear")} ${panel.label}`}>
+          <Button isIconOnly size="sm" variant="light" className="h-8 w-8 min-w-8 text-default-500 hover:bg-danger/10 hover:text-danger" onPress={panel.onClear} isDisabled={valueStats.characters === 0} title={t("tools.converter.clear")} aria-label={`${t("tools.converter.clear")} ${panel.label}`}>
             <Trash2 className="h-4 w-4" />
           </Button>
         </div>
       </div>
       <div className="min-h-0 flex-1">
         <CodeEditor
+          ref={editorRef}
           language={panel.language}
           value={panel.value}
           onChange={panel.onChange}
           fontSize={13}
           contentPadding={16}
           jsonDiagnostics={panel.jsonDiagnostics}
+          largeDocumentChangeDelay={300}
+          onDispose={panel.onDispose}
+          onStatsChange={setValueStats}
           ariaLabel={panel.label}
         />
       </div>
@@ -84,18 +96,25 @@ export function ConverterWorkbench({
   onExample,
   onClearAll,
   toolbarStart,
+  isProcessing = false,
 }: ConverterWorkbenchProps) {
   const { t } = useTranslation()
+  const leftEditorRef = useRef<CodeEditorHandle>(null)
+  const rightEditorRef = useRef<CodeEditorHandle>(null)
+  const currentValues = () => ({
+    left: leftEditorRef.current?.getValue() ?? left.value,
+    right: rightEditorRef.current?.getValue() ?? right.value,
+  })
 
   return (
     <div className="flex h-full min-h-0 flex-col gap-3 overflow-hidden">
       <div className="flex min-h-[46px] shrink-0 flex-wrap items-center gap-2 rounded-xl border border-default-200 bg-default-50/70 p-1.5">
         {toolbarStart}
         <div className="flex min-w-0 flex-1 flex-wrap items-center gap-1.5">
-          <Button size="sm" color="primary" className="h-8" onPress={onLeftToRight} isDisabled={!left.value} endContent={<ArrowRight className="h-4 w-4" />}>
+          <Button size="sm" color="primary" className="h-8" onPress={() => { const values = currentValues(); onLeftToRight(values.left, values.right) }} isDisabled={isProcessing || !left.value} endContent={<ArrowRight className="h-4 w-4" />}>
             {leftToRightLabel}
           </Button>
-          <Button size="sm" variant="flat" className="h-8" onPress={onRightToLeft} isDisabled={!right.value} startContent={<ArrowLeft className="h-4 w-4" />}>
+          <Button size="sm" variant="flat" className="h-8" onPress={() => { const values = currentValues(); onRightToLeft(values.left, values.right) }} isDisabled={isProcessing || !right.value} startContent={<ArrowLeft className="h-4 w-4" />}>
             {rightToLeftLabel}
           </Button>
           <Button size="sm" variant="light" className="h-8" onPress={onExample} startContent={<BookOpen className="h-4 w-4" />}>
@@ -108,12 +127,12 @@ export function ConverterWorkbench({
       </div>
 
       <div className="grid min-h-0 flex-1 grid-rows-[minmax(0,1fr)_40px_minmax(0,1fr)] overflow-hidden rounded-xl border border-default-200 bg-background md:grid-cols-[minmax(0,1fr)_48px_minmax(0,1fr)] md:grid-rows-1">
-        <EditorPanel panel={left} />
+        <EditorPanel panel={left} editorRef={leftEditorRef} />
         <div className="flex items-center justify-center border-y border-default-200 bg-default-50/60 md:border-x md:border-y-0">
           <ArrowDownUp className="h-4 w-4 text-default-400 md:hidden" />
           <ArrowLeftRight className="hidden h-4 w-4 text-default-400 md:block" />
         </div>
-        <EditorPanel panel={right} />
+        <EditorPanel panel={right} editorRef={rightEditorRef} />
       </div>
     </div>
   )

@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react"
 import { useTranslation } from "react-i18next"
 import { css as formatCss } from 'js-beautify'
-import { getStoredItem, setStoredItem, removeStoredItem } from "../../lib/store"
+import { getStoredItem } from "../../lib/store"
+import { useDebouncedStoredValue } from "../../hooks/useDebouncedStoredValue"
 import { FormatterWorkbench } from "./FormatterWorkbench"
 
 const STORAGE_KEY = "css-tool-state"
@@ -13,6 +14,7 @@ export function CssTab() {
   const [isValid, setIsValid] = useState<boolean | null>(null)
   const [errorMsg, setErrorMsg] = useState<string>("")
   const [isLoaded, setIsLoaded] = useState(false)
+  const persistence = useDebouncedStoredValue(STORAGE_KEY, { code, isValid, errorMsg }, isLoaded, 1500, false)
 
   useEffect(() => {
     let mounted = true
@@ -32,18 +34,12 @@ export function CssTab() {
     return () => { mounted = false }
   }, [])
 
-  useEffect(() => {
-    if (isLoaded) {
-      setStoredItem(STORAGE_KEY, JSON.stringify({ code, isValid, errorMsg }))
-    }
-  }, [code, isValid, errorMsg, isLoaded])
-
   // ... later replace clear handler
 
-  const handleFormatEditor = () => {
-    if (!code) return
+  const handleFormatEditor = (currentCode = code) => {
+    if (!currentCode) return
     try {
-      const formatted = formatCss(code, { 
+      const formatted = formatCss(currentCode, {
         indent_size: 2,
         space_around_combinator: true,
         newline_between_rules: true,
@@ -57,14 +53,14 @@ export function CssTab() {
     }
   }
 
-  const handleMinifyEditor = () => {
-    if (!code) return
+  const handleMinifyEditor = (currentCode = code) => {
+    if (!currentCode) return
     try {
       // Simple CSS minification using regex for offline usage without heavy deps
       // or use a minifier lib if available. js-beautify doesn't minify.
       // But we can just use a simple regex approach which is often enough for simple tools.
       
-      let minified = code
+      let minified = currentCode
         .replace(/\/\*[\s\S]*?\*\//g, "") // Remove comments
         .replace(/\s+/g, " ") // Collapse whitespace
         .replace(/\s*([{}:;,])\s*/g, "$1") // Remove space around separators
@@ -90,7 +86,7 @@ export function CssTab() {
     setCode("")
     setIsValid(null)
     setErrorMsg("")
-    removeStoredItem(STORAGE_KEY)
+    persistence.remove()
   }
 
   // --- Example Operation ---
@@ -182,6 +178,7 @@ export function CssTab() {
       onMinify={handleMinifyEditor}
       onExample={handleLoadExample}
       onClear={handleClear}
+      onCodeDispose={(value) => persistence.flush({ code: value, isValid, errorMsg })}
       status={isValid}
       errorMessage={errorMsg}
       validMessage={t("tools.formatter.validCss")}
