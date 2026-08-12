@@ -16,7 +16,14 @@
     "back": "戻る",
     "forward": "進む"
   },
-  "menu": { "file": "ファイル", "edit": "編集", "view": "表示", "help": "ヘルプ" },
+  "menu": {
+    "file": "ファイル", "edit": "編集", "view": "表示", "help": "ヘルプ",
+    "closeWindow": "ウインドウを閉じる", "quit": "{{app}}を終了", "undo": "取り消す", "redo": "やり直す",
+    "cut": "カット", "copy": "コピー", "paste": "ペースト", "selectAll": "すべてを選択",
+    "search": "ツールを検索…", "fullscreen": "フルスクリーンを切り替える", "aboutApp": "{{app}}について",
+    "aboutComments": "開発者向けの実用的なデスクトップツールボックスです。", "sourceCode": "ソースコード", "version": "バージョン",
+    "hideApp": "{{app}}を隠す", "hideOthers": "ほかを隠す", "showAll": "すべてを表示"
+  },
   "window": { "minimize": "最小化", "maximize": "最大化", "close": "閉じる" },
   "nav": {
     "home": "ホーム",
@@ -624,7 +631,7 @@
     "confirmClearLogs": "すべての操作ログを削除してもよろしいですか？この操作は取り消せません。",
     "light": "ライト",
     "dark": "ダーク",
-    "system": "システム",
+    "system": "システムに従う",
     "features": "機能設定",
     "featuresDesc": "ツールの表示/非表示を管理します。",
     "featureManagement": "機能管理",

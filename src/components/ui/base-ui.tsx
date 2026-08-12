@@ -367,13 +367,34 @@ export function Tooltip({ children, content, placement = "top", delay = 300, clo
   return <BaseTooltip.Provider delay={delay} closeDelay={closeDelay}><BaseTooltip.Root><BaseTooltip.Trigger render={child} /><BaseTooltip.Portal><BaseTooltip.Positioner side={side as any} align={(align ?? "center") as any} sideOffset={6}><BaseTooltip.Popup {...props} className={cx("z-[110] max-w-xs rounded-md bg-foreground px-2 py-1 text-xs text-background shadow-lg", className)}>{content}</BaseTooltip.Popup></BaseTooltip.Positioner></BaseTooltip.Portal></BaseTooltip.Root></BaseTooltip.Provider>
 }
 
-export function Dropdown({ children }: AnyProps) { return <BaseMenu.Root>{children}</BaseMenu.Root> }
+export function Dropdown({ children, isOpen, onOpenChange, ...props }: AnyProps) { return <BaseMenu.Root {...props} open={isOpen} onOpenChange={onOpenChange}>{children}</BaseMenu.Root> }
 export function DropdownTrigger({ children }: AnyProps) { return <BaseMenu.Trigger render={React.Children.only(children) as React.ReactElement} /> }
 export function DropdownItem(_props: AnyProps) { return null }
+export function DropdownSeparator(_props: AnyProps) { return null }
+export function DropdownSubmenu(_props: AnyProps) { return null }
 export function DropdownMenu({ children, className, selectedKeys, onSelectionChange, ...props }: DropdownMenuProps) {
   const items = collectionElements(children)
   const { selectionMode: _selectionMode, disallowEmptySelection: _disallow, ...native } = props
-  return <BaseMenu.Portal><BaseMenu.Positioner className="z-[100]" sideOffset={4}><BaseMenu.Popup {...native} className={cx("min-w-36 rounded-lg border border-default-200 bg-background p-1 text-sm shadow-xl outline-none", className)}>{items.map(item => { const value = collectionValue(item); return <BaseMenu.Item key={value} disabled={item.props.isDisabled} onClick={(event) => { item.props.onClick?.(event); item.props.onPress?.(); onSelectionChange?.(new Set([value])) }} className="flex cursor-default items-center gap-2 rounded-md px-2 py-2 outline-none data-[highlighted]:bg-default-100 data-[disabled]:opacity-40">{item.props.startContent}{item.props.children}{selectedKeys && Array.from(selectedKeys).map(String).includes(value) && <Check className="ml-auto h-4 w-4" />}</BaseMenu.Item> })}</BaseMenu.Popup></BaseMenu.Positioner></BaseMenu.Portal>
+  const renderItems = (menuItems: React.ReactElement<AnyProps>[]) => menuItems.map((item, index) => {
+    if (item.type === DropdownSeparator) return <BaseMenu.Separator key={`separator-${index}`} className="-mx-1 my-1 h-px bg-default-200" />
+    if (item.type === DropdownSubmenu) return (
+      <BaseMenu.SubmenuRoot key={collectionValue(item)}>
+        <BaseMenu.SubmenuTrigger openOnHover delay={80} className={cx("flex cursor-default items-center gap-2 rounded-md px-2 py-2 outline-none data-[highlighted]:bg-default-100", item.props.className)}>
+          {item.props.startContent}<span className="min-w-0 flex-1">{item.props.label}</span>{item.props.endContent}
+        </BaseMenu.SubmenuTrigger>
+        <BaseMenu.Portal>
+          <BaseMenu.Positioner className="z-[101]" side="right" align="start" sideOffset={4} alignOffset={-6}>
+            <BaseMenu.Popup className={cx("min-w-36 rounded-lg border border-default-200 bg-background p-1 text-sm shadow-xl outline-none", item.props.menuClassName)}>
+              {renderItems(collectionElements(item.props.children))}
+            </BaseMenu.Popup>
+          </BaseMenu.Positioner>
+        </BaseMenu.Portal>
+      </BaseMenu.SubmenuRoot>
+    )
+    const value = collectionValue(item)
+    return <BaseMenu.Item key={value} disabled={item.props.isDisabled} onClick={(event) => { item.props.onClick?.(event); item.props.onPress?.(); onSelectionChange?.(new Set([value])) }} className={cx("flex cursor-default items-center gap-2 rounded-md px-2 py-2 outline-none data-[highlighted]:bg-default-100 data-[disabled]:opacity-40", item.props.className)}>{item.props.startContent}<span className="min-w-0 flex-1">{item.props.children}</span>{item.props.endContent}{selectedKeys && Array.from(selectedKeys).map(String).includes(value) && <Check className="ml-auto h-4 w-4" />}</BaseMenu.Item>
+  })
+  return <BaseMenu.Portal><BaseMenu.Positioner className="z-[100]" sideOffset={4} align="start"><BaseMenu.Popup {...native} className={cx("min-w-36 rounded-lg border border-default-200 bg-background p-1 text-sm shadow-xl outline-none", className)}>{renderItems(items)}</BaseMenu.Popup></BaseMenu.Positioner></BaseMenu.Portal>
 }
 
 export function Popover({ children, isOpen, defaultOpen, onOpenChange, placement = "bottom", ...props }: AnyProps) { const [side, align] = String(placement).split("-"); return <PopoverContext.Provider value={{ side, align, props }}><BasePopover.Root open={isOpen} defaultOpen={defaultOpen} onOpenChange={onOpenChange}>{children}</BasePopover.Root></PopoverContext.Provider> }

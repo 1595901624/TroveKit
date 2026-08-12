@@ -16,7 +16,14 @@
     "back": "返回",
     "forward": "前进"
   },
-  "menu": { "file": "文件", "edit": "编辑", "view": "视图", "help": "帮助" },
+  "menu": {
+    "file": "文件", "edit": "编辑", "view": "视图", "help": "帮助",
+    "closeWindow": "关闭窗口", "quit": "退出 {{app}}", "undo": "撤销", "redo": "重做",
+    "cut": "剪切", "copy": "复制", "paste": "粘贴", "selectAll": "全选",
+    "search": "搜索工具…", "fullscreen": "切换全屏", "aboutApp": "关于 {{app}}",
+    "aboutComments": "为开发者打造的实用桌面工具箱。", "sourceCode": "源代码", "version": "版本",
+    "hideApp": "隐藏 {{app}}", "hideOthers": "隐藏其他", "showAll": "全部显示"
+  },
   "window": { "minimize": "最小化", "maximize": "最大化", "close": "关闭" },
   "nav": {
     "home": "首页",
@@ -624,7 +631,7 @@
     "confirmClearLogs": "确定要删除所有操作日志吗？此操作不可撤销。",
     "light": "浅色",
     "dark": "深色",
-    "system": "系统",
+    "system": "跟随系统",
     "features": "功能设置",
     "featuresDesc": "管理工具的显示与隐藏",
     "featureManagement": "功能管理",

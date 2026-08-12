@@ -2,7 +2,7 @@ import { Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDi
 import { getVersion } from "@tauri-apps/api/app"
 import { openUrl } from "@tauri-apps/plugin-opener"
 import { Store } from "@tauri-apps/plugin-store"
-import { Database, ExternalLink, Github, Languages, Palette, RefreshCw, Settings2, SlidersHorizontal, TriangleAlert } from "lucide-react"
+import { ArrowLeft, Database, ExternalLink, Github, Languages, Palette, RefreshCw, Settings2, SlidersHorizontal, TriangleAlert } from "lucide-react"
 import { useEffect, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { LanguageSelector } from "../components/LanguageSelector"
@@ -10,7 +10,7 @@ import { ThemeToggle } from "../components/ThemeToggle"
 import { useLogActions } from "../contexts/LogContext"
 import { FeatureManagement } from "./settings/FeatureManagement"
 
-export function Settings() {
+export function Settings({ onBack }: { onBack: () => void }) {
   const { t } = useTranslation()
   const { addLog } = useLogActions()
   const [version, setVersion] = useState("0.1.0")
@@ -75,6 +75,16 @@ export function Settings() {
     <div className="h-full min-h-0 overflow-hidden">
       <div className="grid h-full min-h-0 grid-rows-[auto_minmax(0,1fr)] overflow-hidden rounded-xl border border-default-200 bg-background md:grid-cols-[210px_minmax(0,1fr)] md:grid-rows-1">
         <nav className="flex shrink-0 gap-1 overflow-x-auto border-b border-default-200 bg-default-50/45 p-2 md:flex-col md:overflow-x-visible md:border-b-0 md:border-r md:p-3" aria-label={t("settings.title")}>
+          <Button
+            size="sm"
+            variant="light"
+            className="mb-0 h-8 shrink-0 justify-start px-2.5 text-default-500 md:mb-2 md:w-full"
+            onPress={onBack}
+            startContent={<ArrowLeft className="h-4 w-4" />}
+          >
+            {t("common.back", "返回")}
+          </Button>
+          <div className="hidden h-px bg-default-200 md:mb-2 md:block" />
           {sections.map(({ id, label, icon: Icon }) => (
             <Button
               key={id}

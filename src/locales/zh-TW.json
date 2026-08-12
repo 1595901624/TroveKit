@@ -16,7 +16,14 @@
     "back": "返回",
     "forward": "前進"
   },
-  "menu": { "file": "檔案", "edit": "編輯", "view": "檢視", "help": "說明" },
+  "menu": {
+    "file": "檔案", "edit": "編輯", "view": "檢視", "help": "說明",
+    "closeWindow": "關閉視窗", "quit": "結束 {{app}}", "undo": "還原", "redo": "重做",
+    "cut": "剪下", "copy": "複製", "paste": "貼上", "selectAll": "全選",
+    "search": "搜尋工具…", "fullscreen": "切換全螢幕", "aboutApp": "關於 {{app}}",
+    "aboutComments": "為開發者打造的實用桌面工具箱。", "sourceCode": "原始碼", "version": "版本",
+    "hideApp": "隱藏 {{app}}", "hideOthers": "隱藏其他項目", "showAll": "全部顯示"
+  },
   "window": { "minimize": "最小化", "maximize": "最大化", "close": "關閉" },
   "nav": {
     "home": "首頁",
@@ -624,7 +631,7 @@
     "confirmClearLogs": "確定要刪除所有操作紀錄嗎？此操作不可撤銷。",
     "light": "淺色",
     "dark": "深色",
-    "system": "系統",
+    "system": "跟隨系統",
     "features": "功能設定",
     "featuresDesc": "管理工具的顯示與隱藏",
     "featureManagement": "功能管理",

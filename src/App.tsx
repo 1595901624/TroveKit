@@ -1,4 +1,4 @@
-import { lazy, Suspense, useState } from "react"
+import { lazy, Suspense, useRef, useState } from "react"
 import { Layout } from "./components/Layout"
 import { ThemeProvider } from "./components/theme-provider"
 import { ToolId } from "./components/Sidebar"
@@ -36,6 +36,7 @@ function App() {
   const [activeTool, setActiveTool] = useState<ToolId>("home")
   // 当前工具的活跃标签页（可选）
   const [activeTab, setActiveTab] = useState<string | undefined>()
+  const settingsReturnLocation = useRef<{ toolId: ToolId; tabId?: string } | null>(null)
   // 翻译函数，用于获取国际化文本
   const { t } = useTranslation()
   const features = useFeatures()
@@ -52,6 +53,9 @@ function App() {
    * @param id - 要切换到的工具ID
    */
   const handleToolChange = (id: ToolId) => {
+    if (id === "settings" && activeTool !== "settings") {
+      settingsReturnLocation.current = { toolId: activeTool, tabId: activeTab }
+    }
     setActiveTool(id)
     setActiveTab(resolveTab(id))
   }
@@ -63,8 +67,18 @@ function App() {
    * @param tabId - 可选的目标标签页ID
    */
   const handleNavigate = (toolId: ToolId, tabId?: string) => {
+    if (toolId === "settings" && activeTool !== "settings") {
+      settingsReturnLocation.current = { toolId: activeTool, tabId: activeTab }
+    }
     setActiveTool(toolId)
     setActiveTab(resolveTab(toolId, tabId))
+  }
+
+  const handleSettingsBack = () => {
+    const previous = settingsReturnLocation.current ?? { toolId: "home" as ToolId, tabId: undefined }
+    settingsReturnLocation.current = null
+    setActiveTool(previous.toolId)
+    setActiveTab(previous.tabId)
   }
 
   /**
@@ -113,7 +127,7 @@ function App() {
       case "logManagement":
         return <LogManagementTool />
       case "settings":
-        return <Settings />
+        return <Settings onBack={handleSettingsBack} />
       case "home":
       default:
         return <HomeView onNavigate={handleNavigate} />

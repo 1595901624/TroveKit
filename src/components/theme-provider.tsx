@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect } from "react"
+import React, { createContext, useCallback, useContext, useEffect, useMemo } from "react"
 import { usePersistentState } from "../hooks/usePersistentState"
 
 type Theme = "dark" | "light" | "system"
@@ -27,7 +27,7 @@ export function ThemeProvider({
   storageKey = "vite-ui-theme",
 }: ThemeProviderProps) {
   // Use persistent state hook. Note that it is async, so theme might update after mount.
-  const [theme, setTheme] = usePersistentState<Theme>(storageKey, defaultTheme)
+  const [theme, setThemeState] = usePersistentState<Theme>(storageKey, defaultTheme)
 
   useEffect(() => {
     const root = window.document.documentElement
@@ -54,12 +54,8 @@ export function ThemeProvider({
     root.classList.add(theme)
   }, [theme])
 
-  const value = {
-    theme,
-    setTheme: (theme: Theme) => {
-      setTheme(theme)
-    },
-  }
+  const setTheme = useCallback((nextTheme: Theme) => setThemeState(nextTheme), [setThemeState])
+  const value = useMemo(() => ({ theme, setTheme }), [setTheme, theme])
 
   return (
     <ThemeProviderContext.Provider {...{ value }}>

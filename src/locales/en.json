@@ -16,7 +16,14 @@
     "back": "Back",
     "forward": "Forward"
   },
-  "menu": { "file": "File", "edit": "Edit", "view": "View", "help": "Help" },
+  "menu": {
+    "file": "File", "edit": "Edit", "view": "View", "help": "Help",
+    "closeWindow": "Close Window", "quit": "Quit {{app}}", "undo": "Undo", "redo": "Redo",
+    "cut": "Cut", "copy": "Copy", "paste": "Paste", "selectAll": "Select All",
+    "search": "Search Tools…", "fullscreen": "Toggle Full Screen", "aboutApp": "About {{app}}",
+    "aboutComments": "A practical desktop toolbox for developers.", "sourceCode": "Source Code", "version": "Version",
+    "hideApp": "Hide {{app}}", "hideOthers": "Hide Others", "showAll": "Show All"
+  },
   "window": { "minimize": "Minimize", "maximize": "Maximize", "close": "Close" },
   "nav": {
     "home": "Home",
@@ -624,7 +631,7 @@
     "confirmClearLogs": "Are you sure you want to delete all operation logs? This action cannot be undone.",
     "light": "Light",
     "dark": "Dark",
-    "system": "System",
+    "system": "Follow System",
     "features": "Feature Settings",
     "featuresDesc": "Manage which tools are visible.",
     "featureManagement": "Feature Management",

@@ -2,7 +2,7 @@
 name = "trovekit"
 version = "0.1.8"
 description = "TroveKit, your tool treasure."
-authors = ["cloris", "haoyu"]
+authors = ["cloris"]
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
