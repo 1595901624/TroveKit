@@ -1,0 +1,169 @@
+src/tools/encoder/UrlTab.tsx
+  544ffec151204c19 169,181,257,288
+src/components/Sidebar.tsx
+  544ffec151204c19 122,177
+src/tools/encoder/EncoderWorkbench.tsx
+  544ffec151204c19 86,166,193
+src/components/TitleBar.tsx
+  544ffec151204c19 92
+src/tools/hash/HashWorkbench.tsx
+  544ffec151204c19 25
+src/components/Layout.tsx
+  544ffec151204c19 30
+tailwind.config.js
+  544ffec151204c19 12,27,29-31
+src/components/ui/base-ui.tsx
+  544ffec151204c19 42-47,97,140,177,242,285,340,347,359
+src/styles/globals.css
+  544ffec151204c19 10,23-24,28,30,32,37-65
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.0.8",
+  "base_commit_sha": "f19b3e56342c71f2da4baa81b8d8ec63d6416469",
+  "prompts": {
+    "544ffec151204c19": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019ff49d-0eeb-7b22-8975-7fe61af89e80",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "luhaoyu <haoyu3@163.com>",
+      "messages": [],
+      "total_additions": 85,
+      "total_deletions": 60,
+      "accepted_lines": 81,
+      "overriden_lines": 0
+    }
+  },
+  "commit_stats": {
+    "git_diff_added_lines": 73,
+    "git_diff_deleted_lines": 48,
+    "ai_additions": 66,
+    "ai_accepted": 66,
+    "BYMC": 7,
+    "mixed_additions": 0,
+    "BYAC": 66,
+    "BYRC": 0,
+    "per_file": {
+      "src/components/Layout.tsx": {
+        "BYMC": [],
+        "BYAC": [
+          "30"
+        ],
+        "BYRC": []
+      },
+      "src/components/LogPanel.tsx": {
+        "BYMC": [
+          "122",
+          "212"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/components/Sidebar.tsx": {
+        "BYMC": [],
+        "BYAC": [
+          "122",
+          "177"
+        ],
+        "BYRC": []
+      },
+      "src/components/TitleBar.tsx": {
+        "BYMC": [],
+        "BYAC": [
+          "92"
+        ],
+        "BYRC": []
+      },
+      "src/components/ui/base-ui.tsx": {
+        "BYMC": [],
+        "BYAC": [
+          "42-47",
+          "97",
+          "140",
+          "177",
+          "242",
+          "285",
+          "340",
+          "347",
+          "359"
+        ],
+        "BYRC": []
+      },
+      "src/styles/globals.css": {
+        "BYMC": [],
+        "BYAC": [
+          "10",
+          "23-24",
+          "28",
+          "30",
+          "32",
+          "37-65"
+        ],
+        "BYRC": []
+      },
+      "src/tools/LogManagementTool.tsx": {
+        "BYMC": [
+          "67",
+          "418",
+          "707"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/converter/SubnetTab.tsx": {
+        "BYMC": [
+          "392"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/encoder/EncoderWorkbench.tsx": {
+        "BYMC": [],
+        "BYAC": [
+          "86",
+          "166",
+          "193"
+        ],
+        "BYRC": []
+      },
+      "src/tools/encoder/UrlTab.tsx": {
+        "BYMC": [],
+        "BYAC": [
+          "169",
+          "181",
+          "257",
+          "288"
+        ],
+        "BYRC": []
+      },
+      "src/tools/hash/AesTab2.tsx": {
+        "BYMC": [
+          "867"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/hash/HashWorkbench.tsx": {
+        "BYMC": [],
+        "BYAC": [
+          "25"
+        ],
+        "BYRC": []
+      },
+      "tailwind.config.js": {
+        "BYMC": [],
+        "BYAC": [
+          "12",
+          "27",
+          "29-31"
+        ],
+        "BYRC": []
+      }
+    }
+  },
+  "ipa_account": "luhaoyu",
+  "commit_timestamp": 1786519183,
+  "requirement_id": ""
+}
