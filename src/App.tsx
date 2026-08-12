@@ -5,6 +5,7 @@ import { ToolId } from "./components/Sidebar"
 import { Card, CardBody } from "./components/ui/base-ui"
 import { Lock, Code2, FileCode2, Shield, Wand2, ArrowRightLeft } from "lucide-react"
 import { useTranslation } from "react-i18next"
+import { WorkspaceLoadingSkeleton } from "./components/LoadingSkeleton"
 
 // 工具页使用懒加载，避免首页启动时一次性加载所有工具及其重依赖。
 const HashTool = lazy(() => import("./tools/HashTool").then(module => ({ default: module.HashTool })))
@@ -129,8 +130,8 @@ function App() {
         title={getTitle()}
       >
         <div className="h-full">
-          {/* 工具 chunk 加载期间保持内容区高度，避免页面布局跳动。 */}
-          <Suspense fallback={<div className="h-full" />}>
+          {/* 工具 chunk 加载期间显示稳定的工作区骨架，避免空白闪烁和布局跳动。 */}
+          <Suspense fallback={<WorkspaceLoadingSkeleton />}>
             {renderActiveTool()}
           </Suspense>
         </div>

@@ -1,4 +1,5 @@
 import { Suspense, forwardRef, lazy } from "react"
+import { EditorLoadingSkeleton } from "./LoadingSkeleton"
 
 export type CodeEditorLanguage = "plaintext" | "json" | "xml" | "yaml" | "css" | "sql"
 
@@ -31,7 +32,7 @@ const LazyCodeMirrorEditor = lazy(() => import("./CodeMirrorEditorImpl"))
 
 const CodeEditor = forwardRef<CodeEditorHandle, CodeEditorProps>(function CodeEditor(props, ref) {
   return (
-    <Suspense fallback={<div className={`h-full min-h-0 ${props.className ?? ""}`} />}>
+    <Suspense fallback={<EditorLoadingSkeleton className={props.className} />}>
       <LazyCodeMirrorEditor {...props} ref={ref} />
     </Suspense>
   )
