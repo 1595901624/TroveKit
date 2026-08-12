@@ -1,0 +1,65 @@
+src/components/LoadingSkeleton.tsx
+  f01c894fe5ec64cb 1-69
+src/components/CodeEditor.tsx
+  f01c894fe5ec64cb 2,35
+src/App.tsx
+  f01c894fe5ec64cb 8,133-134
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.0.8",
+  "base_commit_sha": "ab68a8f83659e9fdfda5decd296bfd67f8860ad1",
+  "prompts": {
+    "f01c894fe5ec64cb": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019ff535-ea80-7e22-91f9-50b18f5adc3c",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "luhaoyu <haoyu3@163.com>",
+      "messages": [],
+      "total_additions": 312,
+      "total_deletions": 241,
+      "accepted_lines": 300,
+      "overriden_lines": 0
+    }
+  },
+  "commit_stats": {
+    "git_diff_added_lines": 74,
+    "git_diff_deleted_lines": 3,
+    "ai_additions": 74,
+    "ai_accepted": 74,
+    "BYMC": 0,
+    "mixed_additions": 0,
+    "BYAC": 74,
+    "BYRC": 0,
+    "per_file": {
+      "src/App.tsx": {
+        "BYMC": [],
+        "BYAC": [
+          "8",
+          "133-134"
+        ],
+        "BYRC": []
+      },
+      "src/components/CodeEditor.tsx": {
+        "BYMC": [],
+        "BYAC": [
+          "2",
+          "35"
+        ],
+        "BYRC": []
+      },
+      "src/components/LoadingSkeleton.tsx": {
+        "BYMC": [],
+        "BYAC": [
+          "1-69"
+        ],
+        "BYRC": []
+      }
+    }
+  },
+  "ipa_account": "luhaoyu",
+  "commit_timestamp": 1786527432,
+  "requirement_id": ""
+}
