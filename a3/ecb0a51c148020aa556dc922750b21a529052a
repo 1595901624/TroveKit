@@ -1,0 +1,96 @@
+src/components/ui/base-ui.tsx
+  c63d64b2af46448e 19-20
+src/components/ui/toast.tsx
+  c63d64b2af46448e 1-112
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.0.8",
+  "base_commit_sha": "a3ecb0a51c148020aa556dc922750b21a529052a",
+  "prompts": {
+    "c63d64b2af46448e": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019ff6a8-6d85-7312-9f34-b7e5fb4b5fb5",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "luhaoyu <haoyu3@163.com>",
+      "messages": [],
+      "total_additions": 116,
+      "total_deletions": 8,
+      "accepted_lines": 115,
+      "overriden_lines": 0
+    }
+  },
+  "commit_stats": {
+    "git_diff_added_lines": 280,
+    "git_diff_deleted_lines": 35,
+    "ai_additions": 114,
+    "ai_accepted": 114,
+    "BYMC": 163,
+    "mixed_additions": 0,
+    "BYAC": 114,
+    "BYRC": 0,
+    "per_file": {
+      "src/components/LogPanel.tsx": {
+        "BYMC": [
+          "3",
+          "227-232"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/components/Sidebar.tsx": {
+        "BYMC": [
+          "30",
+          "32-33",
+          "59-66",
+          "68"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/components/ui/base-ui.tsx": {
+        "BYMC": [],
+        "BYAC": [
+          "19-20"
+        ],
+        "BYRC": []
+      },
+      "src/components/ui/toast.tsx": {
+        "BYMC": [],
+        "BYAC": [
+          "1-112"
+        ],
+        "BYRC": []
+      },
+      "src/styles/globals.css": {
+        "BYMC": [
+          "85-175",
+          "220-250"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/qr/QrTool.tsx": {
+        "BYMC": [
+          "92",
+          "96-97",
+          "193-194",
+          "204-209",
+          "212-216",
+          "498-499",
+          "548",
+          "558",
+          "564",
+          "566"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      }
+    }
+  },
+  "ipa_account": "luhaoyu",
+  "commit_timestamp": 1786551115,
+  "requirement_id": ""
+}
