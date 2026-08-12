@@ -151,9 +151,11 @@ const CodeMirrorEditorImpl = forwardRef<CodeEditorHandle, CodeEditorProps>(funct
   const onDisposeRef = useRef(onDispose)
   const onStatsChangeRef = useRef(onStatsChange)
   const diagnosticsEnabledRef = useRef(jsonDiagnostics)
+  const languageRef = useRef(language)
   const lastEmittedValueRef = useRef(value)
   const changeTimerRef = useRef<number | null>(null)
   const languageCompartmentRef = useRef(new Compartment())
+  const highlightingCompartmentRef = useRef(new Compartment())
   const readOnlyCompartmentRef = useRef(new Compartment())
   const wrappingCompartmentRef = useRef(new Compartment())
   const diagnosticsCompartmentRef = useRef(new Compartment())
@@ -162,6 +164,7 @@ const CodeMirrorEditorImpl = forwardRef<CodeEditorHandle, CodeEditorProps>(funct
   onDisposeRef.current = onDispose
   onStatsChangeRef.current = onStatsChange
   diagnosticsEnabledRef.current = jsonDiagnostics
+  languageRef.current = language
 
   const emitStats = (stats: CodeEditorStats) => onStatsChangeRef.current?.(stats)
 
@@ -169,6 +172,7 @@ const CodeMirrorEditorImpl = forwardRef<CodeEditorHandle, CodeEditorProps>(funct
     if (!hostRef.current) return
 
     const languageCompartment = languageCompartmentRef.current
+    const highlightingCompartment = highlightingCompartmentRef.current
     const readOnlyCompartment = readOnlyCompartmentRef.current
     const wrappingCompartment = wrappingCompartmentRef.current
     const diagnosticsCompartment = diagnosticsCompartmentRef.current
@@ -187,7 +191,7 @@ const CodeMirrorEditorImpl = forwardRef<CodeEditorHandle, CodeEditorProps>(funct
         highlightActiveLine(),
         bracketMatching(),
         keymap.of([...defaultKeymap, ...historyKeymap, ...searchKeymap, indentWithTab]),
-        syntaxHighlighting(codeHighlightStyle),
+        highlightingCompartment.of(startsLarge ? [] : syntaxHighlighting(codeHighlightStyle)),
         createEditorTheme(fontSize, contentPadding),
         highlightField,
         wrappingCompartment.of(startsLarge ? [] : EditorView.lineWrapping),
@@ -201,11 +205,13 @@ const CodeMirrorEditorImpl = forwardRef<CodeEditorHandle, CodeEditorProps>(funct
             effects: [
               wrappingCompartment.reconfigure(isLarge ? [] : EditorView.lineWrapping),
               diagnosticsCompartment.reconfigure(diagnosticsEnabledRef.current && !isLarge ? linter(jsonParseLinter()) : []),
+              languageCompartment.reconfigure(isLarge ? [] : languageExtension(languageRef.current)),
+              highlightingCompartment.reconfigure(isLarge ? [] : syntaxHighlighting(codeHighlightStyle)),
             ],
           }
         }),
         EditorView.contentAttributes.of({ "aria-label": ariaLabel }),
-        languageCompartment.of(languageExtension(language)),
+        languageCompartment.of(startsLarge ? [] : languageExtension(language)),
         readOnlyCompartment.of([EditorState.readOnly.of(readOnly), EditorView.editable.of(!readOnly)]),
         EditorView.updateListener.of((update) => {
           if (update.docChanged) {
@@ -268,7 +274,10 @@ const CodeMirrorEditorImpl = forwardRef<CodeEditorHandle, CodeEditorProps>(funct
   }, [value])
 
   useEffect(() => {
-    viewRef.current?.dispatch({ effects: languageCompartmentRef.current.reconfigure(languageExtension(language)) })
+    const view = viewRef.current
+    if (!view) return
+    const isLarge = view.state.doc.length >= LARGE_DOCUMENT_THRESHOLD
+    view.dispatch({ effects: languageCompartmentRef.current.reconfigure(isLarge ? [] : languageExtension(language)) })
   }, [language])
 
   useEffect(() => {
