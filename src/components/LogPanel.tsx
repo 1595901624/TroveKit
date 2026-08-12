@@ -1,9 +1,9 @@
 // 导入必要的依赖
 import { useLogData, useLogUI, LogEntry } from "../contexts/LogContext" // 日志上下文
-import { Trash2, X, Terminal, Info, CheckCircle, AlertTriangle, AlertCircle, Copy, Plus, Edit, Check, MessageSquare } from "lucide-react" // 图标
-import { Button, ScrollShadow, Tooltip, Input } from "../components/ui/base-ui" // UI 组件
+import { Terminal, Info, CheckCircle, AlertTriangle, AlertCircle, Copy, Search, CircleX } from "lucide-react" // 图标
+import { Button, ScrollShadow } from "../components/ui/base-ui" // UI 组件
 import { useTranslation } from "react-i18next" // 国际化
-import { useEffect, useMemo, useRef, useState } from "react" // React hooks
+import { useDeferredValue, useEffect, useMemo, useRef, useState } from "react" // React hooks
 import { usePersistentState } from "../hooks/usePersistentState"
 import { cn } from "../lib/utils"
 
@@ -34,18 +34,14 @@ export const resolveLogPanelResize = (origin: ResizeOrigin, pointerX: number) =>
 // 日志面板组件
 export function LogPanel() {
   // 从日志上下文中获取数据和方法
-    const { isOpen, setIsOpen } = useLogUI()
-    const { logs, clearLogs, createNewLog, addNote, removeNote, sessionNote, updateSessionNote, removeSessionNote } = useLogData()
+    const { isOpen } = useLogUI()
+    const { logs } = useLogData()
   // 国际化钩子
   const { t } = useTranslation()
   // 过滤器状态，默认显示全部
   const [filter, setFilter] = useState<FilterType>('all')
-  // 编辑备注的状态
-  const [editingNoteId, setEditingNoteId] = useState<string | null>(null)
-  const [noteInput, setNoteInput] = useState('')
-  // 会话备注编辑状态
-  const [editingSessionNote, setEditingSessionNote] = useState(false)
-  const [sessionNoteInput, setSessionNoteInput] = useState('')
+  const [searchQuery, setSearchQuery] = useState('')
+  const deferredSearchQuery = useDeferredValue(searchQuery)
   const [storedWidth, setStoredWidth, , isStoredWidthLoaded] = usePersistentState<number>("log-panel-width", LOG_PANEL_DEFAULT_WIDTH)
   const [panelWidth, setPanelWidth] = useState(LOG_PANEL_DEFAULT_WIDTH)
   const [isResizing, setIsResizing] = useState(false)
@@ -130,66 +126,37 @@ export function LogPanel() {
     window.dispatchEvent(new Event("resize"))
   }
 
-  // 使用 useMemo 优化性能，根据过滤器筛选日志
+  const filterCounts = useMemo(() => logs.reduce<Record<FilterType, number>>((counts, log) => {
+    counts.all += 1
+    counts[log.type] += 1
+    return counts
+  }, { all: 0, error: 0, success: 0, info: 0, warning: 0 }), [logs])
+
+  // 类型筛选与文本搜索只在至多 100 条近期日志中执行；延迟搜索值避免输入时阻塞。
   const matchingLogs = useMemo(() => {
-    if (filter === 'all') return logs
-    return logs.filter(log => log.type === filter)
-  }, [logs, filter])
+    const query = deferredSearchQuery.trim().toLocaleLowerCase()
+    return logs.filter((log) => {
+      if (filter !== 'all' && log.type !== filter) return false
+      if (!query) return true
+
+      const searchableText = [
+        log.method,
+        log.input,
+        log.output,
+        log.message,
+        log.details,
+        log.note,
+        log.cryptoParams ? Object.values(log.cryptoParams).join(' ') : '',
+      ].filter(Boolean).join('\n').toLocaleLowerCase()
+      return searchableText.includes(query)
+    })
+  }, [logs, filter, deferredSearchQuery])
 
   // 侧栏定位为“近期活动”，完整历史由日志管理页分页承载。
   const visibleLogs = useMemo(
     () => matchingLogs.slice(0, MAX_VISIBLE_PANEL_LOGS),
     [matchingLogs],
   )
-
-  // 开始编辑备注
-  const handleStartEditNote = (logId: string, currentNote?: string) => {
-    setEditingNoteId(logId)
-    setNoteInput(currentNote || '')
-  }
-
-  // 取消编辑备注
-  const handleCancelEdit = () => {
-    setEditingNoteId(null)
-    setNoteInput('')
-  }
-
-  // 保存备注
-  const handleSaveNote = (logId: string) => {
-    if (noteInput.trim()) {
-      addNote(logId, noteInput.trim())
-      setEditingNoteId(null)
-      setNoteInput('')
-    }
-  }
-
-  // 删除备注
-  const handleRemoveNote = (logId: string) => {
-    removeNote(logId)
-  }
-
-  // 开始编辑会话备注
-  const handleStartEditSessionNote = () => {
-    setEditingSessionNote(true)
-    setSessionNoteInput(sessionNote || '')
-  }
-
-  // 取消编辑会话备注
-  const handleCancelEditSessionNote = () => {
-    setEditingSessionNote(false)
-    setSessionNoteInput('')
-  }
-
-  // 保存会话备注
-  const handleSaveSessionNote = async () => {
-    if (sessionNoteInput.trim()) {
-      await updateSessionNote(sessionNoteInput.trim())
-    } else {
-      await removeSessionNote()
-    }
-    setEditingSessionNote(false)
-    setSessionNoteInput('')
-  }
 
   // 根据日志类型返回对应图标
   const getIcon = (type: LogEntry['type']) => {
@@ -257,100 +224,68 @@ export function LogPanel() {
         >
             {shouldRenderContent && (
             <div ref={panelContentRef} className="flex h-full min-w-0 flex-col border-l border-divider" style={{ width: panelWidth }}>
-            {/* 面板头部：标题和操作按钮 */}
-            <div className="h-14 border-b border-divider flex items-center justify-between px-4 shrink-0 bg-background/40">
-                {/* 标题区域 */}
-                <div className="flex items-center gap-2 font-semibold text-small">
-                    <Terminal className="w-4 h-4" /> {/* 终端图标 */}
-                    {t('log.title', 'Operation Log')} {/* 标题文本，支持国际化 */}
-                </div>
-                {/* 操作按钮区域 */}
-                <div className="flex items-center gap-1">
-                    {/* 新建日志按钮 */}
-                    <Tooltip content={t('tools.logManager.newLog', 'New Log')}>
-                        <Button isIconOnly size="sm" variant="light" onPress={createNewLog} aria-label={t('tools.logManager.newLog', 'New Log')}>
-                            <Plus className="w-4 h-4 text-default-500" />
-                        </Button>
-                    </Tooltip>
-                    {/* 清空日志按钮 */}
-                    <Tooltip content={t('log.clear', 'Clear logs')}>
-                        <Button isIconOnly size="sm" variant="light" onPress={clearLogs} aria-label={t('log.clear', 'Clear logs')}>
-                            <Trash2 className="w-4 h-4 text-default-500" />
-                        </Button>
-                    </Tooltip>
-                    {/* 关闭面板按钮 */}
-                    <Button isIconOnly size="sm" variant="light" onPress={() => setIsOpen(false)} aria-label={t('common.close', 'Close')}>
-                        <X className="w-4 h-4 text-default-500" />
-                    </Button>
-                </div>
-            </div>
-
-            {/* 会话备注区域 */}
-            <div className="px-3 py-2 border-b border-divider shrink-0">
-                {editingSessionNote ? (
-                    <div className="flex items-center gap-2">
-                        <Input
-                            size="sm"
-                            value={sessionNoteInput}
-                            onValueChange={setSessionNoteInput}
-                            placeholder={t('log.sessionNotePlaceholder', 'Enter session note...')}
-                            className="flex-1"
-                            autoFocus
-                            maxLength={100}
-                            onKeyDown={(e) => {
-                                if (e.key === 'Enter') handleSaveSessionNote()
-                                if (e.key === 'Escape') handleCancelEditSessionNote()
-                            }}
-                        />
-                        <Button isIconOnly size="sm" variant="light" onPress={handleCancelEditSessionNote} aria-label={t('common.cancel', 'Cancel')}>
-                            <X className="w-3.5 h-3.5" />
-                        </Button>
-                        <Button isIconOnly size="sm" variant="flat" color="primary" onPress={handleSaveSessionNote} aria-label={t('common.save', 'Save')}>
-                            <Check className="w-3.5 h-3.5" />
-                        </Button>
+            <div className="flex h-14 shrink-0 items-center justify-between border-b border-divider/80 px-4">
+                <div className="flex min-w-0 items-center gap-2.5">
+                    <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-default-100 text-default-600">
+                        <Terminal className="h-3.5 w-3.5" />
+                    </span>
+                    <div className="min-w-0">
+                        <div className="truncate font-semibold text-small">{t('log.title', 'Operation Log')}</div>
+                        <div className="text-[11px] leading-4 text-default-400">
+                            {t('log.recentActivity', 'Recent activity')} · {logs.length}
+                        </div>
                     </div>
-                ) : sessionNote ? (
-                    <button
-                        type="button"
-                        className="flex w-full items-center gap-2 rounded bg-warning/10 px-2 py-1.5 text-left text-tiny text-amber-700 transition-colors hover:bg-warning/20 dark:text-warning"
-                        onClick={handleStartEditSessionNote}
-                    >
-                        <MessageSquare className="w-3.5 h-3.5 shrink-0" />
-                        <span className="truncate flex-1">{sessionNote}</span>
-                        <Edit className="w-3 h-3 opacity-50" />
-                    </button>
-                ) : (
-                    <Button
-                        size="sm"
-                        variant="light"
-                        className="w-full h-7 text-tiny text-default-400"
-                        startContent={<Plus className="w-3 h-3" />}
-                        onPress={handleStartEditSessionNote}
-                    >
-                        {t('log.addSessionNote', 'Add Session Note')}
-                    </Button>
-                )}
+                </div>
             </div>
 
-            {/* 过滤器区域：日志类型筛选按钮 */}
-            <div className="px-3 py-2 border-b border-divider flex gap-1 overflow-x-auto scrollbar-hide shrink-0">
+            {/* 快速查找仅作用于当前加载的近期日志。 */}
+            <div className="shrink-0 border-b border-divider/70 px-3 py-2.5">
+                <label className="flex h-8 min-w-0 items-center gap-2 rounded-md border border-divider bg-default-50/60 px-2.5 transition-colors focus-within:border-primary/50 focus-within:bg-background">
+                    <Search className="h-3.5 w-3.5 shrink-0 text-default-400" />
+                    <input
+                        type="search"
+                        value={searchQuery}
+                        onChange={(event) => setSearchQuery(event.target.value)}
+                        placeholder={t('log.searchPlaceholder', 'Search recent logs')}
+                        className="min-w-0 flex-1 bg-transparent text-tiny text-foreground placeholder:text-default-400 focus:outline-none"
+                        aria-label={t('log.searchPlaceholder', 'Search recent logs')}
+                    />
+                    {searchQuery && (
+                        <button
+                            type="button"
+                            className="flex h-5 w-5 shrink-0 items-center justify-center rounded text-default-400 hover:bg-default-100 hover:text-foreground"
+                            onClick={() => setSearchQuery('')}
+                            aria-label={t('common.clear', 'Clear')}
+                        >
+                            <CircleX className="h-3.5 w-3.5" />
+                        </button>
+                    )}
+                </label>
+            </div>
+
+            {/* 类型筛选是面板唯一的主工具栏。 */}
+            <div className="flex shrink-0 gap-1 overflow-x-auto border-b border-divider/70 px-3 py-2 scrollbar-hide">
                 {filters.map((f) => (
                     <Button
-                        key={f.key} // 唯一标识
-                        size="sm" // 小号按钮
-                        variant={filter === f.key ? "flat" : "light"} // 当前选中为扁平样式，其他为轻量样式
-                        color={filter === f.key ? f.color : "default"} // 选中时显示对应颜色，否则默认
-                        className="h-7 px-2 min-w-0 text-tiny font-medium" // 样式：高度、内边距、最小宽度、小字体、中等字重
-                        onPress={() => setFilter(f.key)} // 点击切换过滤器
+                        key={f.key}
+                        size="sm"
+                        variant={filter === f.key ? "flat" : "light"}
+                        color={filter === f.key ? f.color : "default"}
+                        className="h-7 min-w-0 gap-1 px-2 text-tiny font-medium"
+                        onPress={() => setFilter(f.key)}
                     >
-                        {f.label} {/* 按钮文本 */}
+                        <span>{f.label}</span>
+                        <span className={cn(
+                            "text-[10px] tabular-nums",
+                            filter === f.key ? "opacity-70" : "text-default-400",
+                        )}>{filterCounts[f.key]}</span>
                     </Button>
                 ))}
             </div>
             
             {/* 日志列表区域：可滚动 */}
-            <ScrollShadow className="min-w-0 flex-1 overflow-y-auto p-3">
-                <div className="min-w-0 space-y-3">
+            <ScrollShadow className="min-w-0 flex-1 overflow-y-auto">
+                <div className="min-w-0">
                     {/* 空状态处理 */}
                     {matchingLogs.length === 0 ? (
                          <div className="text-center text-default-400 py-8 text-small">
@@ -363,7 +298,7 @@ export function LogPanel() {
                             // 单个日志项容器
                             <div
                                 key={log.id}
-                                className="group min-w-0 rounded-medium border border-transparent bg-content2/50 p-3 transition-colors hover:border-divider"
+                                className="group min-w-0 border-b border-divider/60 px-4 py-3 transition-colors hover:bg-default-50/50"
                             >
                                 {/* 日志头部：类型图标、时间戳、复制按钮 */}
                                 <div className="flex items-start justify-between gap-2 mb-1">
@@ -484,41 +419,44 @@ export function LogPanel() {
                                         {/* 输入和输出区域 */}
                                         <div className="space-y-1.5">
                                             {/* 输入部分 */}
-                                            <div className="group/input relative min-w-0 rounded bg-default-100/50 p-2 transition-colors hover:bg-default-100">
-                                                <div className="text-tiny text-default-400 font-semibold mb-0.5 select-none">{t('log.input', 'Input')}</div>
-                                                <div className="min-w-0 whitespace-pre-wrap break-all pr-6 font-mono text-small text-default-600">
+                                            <div className="group/input min-w-0 rounded bg-default-100/50 p-2 transition-colors hover:bg-default-100">
+                                                <div className="mb-0.5 flex min-w-0 items-center justify-between gap-2">
+                                                    <div className="select-none font-semibold text-tiny text-default-400">{t('log.input', 'Input')}</div>
+                                                    {/* 复制按钮只占标题行空间，避免整段正文右侧额外留白。 */}
+                                                    <Button
+                                                        isIconOnly
+                                                        size="sm"
+                                                        variant="light"
+                                                        className="h-5 w-5 min-w-5 opacity-0 group-hover/input:opacity-100 focus-visible:opacity-100"
+                                                        onPress={() => navigator.clipboard.writeText(log.input || '')}
+                                                        aria-label={`${t('tools.encoder.copy', 'Copy')} ${t('log.input', 'Input')}`}
+                                                    >
+                                                        <Copy className="w-3 h-3 text-default-400" />
+                                                    </Button>
+                                                </div>
+                                                <div className="min-w-0 whitespace-pre-wrap break-all font-mono text-small text-default-600">
                                                     {renderHighlightedText(log.input)}
                                                 </div>
-                                                {/* 复制输入按钮 */}
-                                                <Button
-                                                    isIconOnly
-                                                    size="sm"
-                                                    variant="light"
-                                                    className="absolute top-1 right-1 h-5 w-5 min-w-5 opacity-0 group-hover/input:opacity-100 focus-visible:opacity-100"
-                                                    onPress={() => navigator.clipboard.writeText(log.input || '')}
-                                                    aria-label={`${t('tools.encoder.copy', 'Copy')} ${t('log.input', 'Input')}`}
-                                                >
-                                                    <Copy className="w-3 h-3 text-default-400" />
-                                                </Button>
                                             </div>
 
                                             {/* 输出部分 */}
-                                            <div className="group/output relative min-w-0 rounded bg-default-100/50 p-2 transition-colors hover:bg-default-100">
-                                                <div className="text-tiny text-success/80 font-semibold mb-0.5 select-none">{t('log.output', 'Output')}</div>
-                                                <div className="min-w-0 whitespace-pre-wrap break-all pr-6 font-mono text-small text-foreground">
+                                            <div className="group/output min-w-0 rounded bg-default-100/50 p-2 transition-colors hover:bg-default-100">
+                                                <div className="mb-0.5 flex min-w-0 items-center justify-between gap-2">
+                                                    <div className="select-none font-semibold text-tiny text-success/80">{t('log.output', 'Output')}</div>
+                                                    <Button
+                                                        isIconOnly
+                                                        size="sm"
+                                                        variant="light"
+                                                        className="h-5 w-5 min-w-5 opacity-0 group-hover/output:opacity-100 focus-visible:opacity-100"
+                                                        onPress={() => navigator.clipboard.writeText(log.output || '')}
+                                                        aria-label={`${t('tools.encoder.copy', 'Copy')} ${t('log.output', 'Output')}`}
+                                                    >
+                                                        <Copy className="w-3 h-3 text-default-400" />
+                                                    </Button>
+                                                </div>
+                                                <div className="min-w-0 whitespace-pre-wrap break-all font-mono text-small text-foreground">
                                                     {renderHighlightedText(log.output)}
                                                 </div>
-                                                {/* 复制输出按钮 */}
-                                                <Button
-                                                    isIconOnly
-                                                    size="sm"
-                                                    variant="light"
-                                                    className="absolute top-1 right-1 h-5 w-5 min-w-5 opacity-0 group-hover/output:opacity-100 focus-visible:opacity-100"
-                                                    onPress={() => navigator.clipboard.writeText(log.output || '')}
-                                                    aria-label={`${t('tools.encoder.copy', 'Copy')} ${t('log.output', 'Output')}`}
-                                                >
-                                                    <Copy className="w-3 h-3 text-default-400" />
-                                                </Button>
                                             </div>
                                         </div>
                                     </div>
@@ -536,91 +474,12 @@ export function LogPanel() {
                                     </div>
                                 )}
 
-                                {/* 备注区域 */}
-                                <div className="mt-2 pt-2 border-t border-divider/50">
-                                    {/* 如果有备注，显示备注内容 */}
-                                    {log.note && editingNoteId !== log.id && (
-                                        <div className="flex items-start justify-between gap-2">
-                                            <div className="flex-1 text-tiny text-foreground/80 font-mono bg-default-100/50 rounded px-2 py-1">
-                                                💡 {log.note}
-                                            </div>
-                                            <div className="flex gap-1">
-                                                <Tooltip content={t('log.editNote', 'Edit Note')}>
-                                                    <Button
-                                                        isIconOnly
-                                                        size="sm"
-                                                        variant="light"
-                                                        className="h-5 w-5 min-w-5"
-                                                        onPress={() => handleStartEditNote(log.id, log.note)}
-                                                        aria-label={t('log.editNote', 'Edit Note')}
-                                                    >
-                                                        <Edit className="w-3 h-3 text-default-500" />
-                                                    </Button>
-                                                </Tooltip>
-                                                <Tooltip content={t('log.removeNote', 'Remove Note')}>
-                                                    <Button
-                                                        isIconOnly
-                                                        size="sm"
-                                                        variant="light"
-                                                        className="h-5 w-5 min-w-5"
-                                                        onPress={() => handleRemoveNote(log.id)}
-                                                        aria-label={t('log.removeNote', 'Remove Note')}
-                                                    >
-                                                        <X className="w-3 h-3 text-danger" />
-                                                    </Button>
-                                                </Tooltip>
-                                            </div>
-                                        </div>
-                                    )}
-
-                                    {/* 编辑备注输入框 */}
-                                    {editingNoteId === log.id && (
-                                        <div className="space-y-2">
-                                            <textarea
-                                                value={noteInput}
-                                                onChange={(e) => setNoteInput(e.target.value)}
-                                                placeholder={t('log.notePlaceholder', 'Enter note...')}
-                                                className="w-full text-small font-mono bg-default-100/50 rounded px-2 py-1 border border-divider focus:border-primary focus:outline-none resize-none"
-                                                rows={2}
-                                                maxLength={100}
-                                            />
-                                            <div className="flex gap-1 justify-end">
-                                                <Button
-                                                    size="sm"
-                                                    variant="light"
-                                                    className="h-7 px-2"
-                                                    onPress={handleCancelEdit}
-                                                >
-                                                    {t('log.cancel', 'Cancel')}
-                                                </Button>
-                                                <Button
-                                                    size="sm"
-                                                    color="primary"
-                                                    className="h-7 px-2"
-                                                    onPress={() => handleSaveNote(log.id)}
-                                                    isDisabled={!noteInput.trim()}
-                                                >
-                                                    {t('log.saveNote', 'Save Note')}
-                                                </Button>
-                                            </div>
-                                        </div>
-                                    )}
-
-                                    {/* 添加备注按钮（当没有备注且不在编辑状态时显示） */}
-                                    {!log.note && editingNoteId !== log.id && (
-                                        <Tooltip content={t('log.addNote', 'Add Note')}>
-                                            <Button
-                                                size="sm"
-                                                variant="light"
-                                                className="h-6 px-2 text-tiny opacity-0 group-hover:opacity-100 focus-visible:opacity-100 transition-opacity"
-                                                startContent={<Plus className="w-3 h-3" />}
-                                                onPress={() => handleStartEditNote(log.id)}
-                                            >
-                                                {t('log.addNote', 'Add Note')}
-                                            </Button>
-                                        </Tooltip>
-                                    )}
-                                </div>
+                                {/* 备注在侧栏中只读展示，编辑统一放到日志管理页。 */}
+                                {log.note && (
+                                    <div className="mt-2 rounded-md border border-warning/20 bg-warning/10 px-2 py-1.5 text-tiny text-foreground/80">
+                                        {log.note}
+                                    </div>
+                                )}
                             </div>
                         ))
                     )}

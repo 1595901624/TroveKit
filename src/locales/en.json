@@ -640,6 +640,8 @@
   },
   "log": {
     "title": "Operation Log",
+    "recentActivity": "Recent activity",
+    "searchPlaceholder": "Search recent logs",
     "clear": "Clear Logs",
     "empty": "No logs yet",
     "emptyFilter": "No logs match this filter",

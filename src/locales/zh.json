@@ -640,6 +640,8 @@
   },
   "log": {
     "title": "操作日志",
+    "recentActivity": "近期活动",
+    "searchPlaceholder": "搜索近期日志",
     "clear": "清空日志",
     "empty": "暂无日志",
     "emptyFilter": "没有匹配的日志",
