@@ -1,0 +1,30 @@
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.0.8",
+  "base_commit_sha": "2bd0e8c4769d1591dde2befecd12a0f20311cc80",
+  "prompts": {},
+  "commit_stats": {
+    "git_diff_added_lines": 6,
+    "git_diff_deleted_lines": 0,
+    "ai_additions": 0,
+    "ai_accepted": 0,
+    "BYMC": 6,
+    "mixed_additions": 0,
+    "BYAC": 0,
+    "BYRC": 0,
+    "per_file": {
+      ".github/workflows/prerelease.yml": {
+        "BYMC": [
+          "93-95",
+          "114-116"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      }
+    }
+  },
+  "ipa_account": "luhaoyu",
+  "commit_timestamp": 1786540092,
+  "requirement_id": ""
+}
