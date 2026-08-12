@@ -27,7 +27,7 @@ export function Layout({ children, activeTool, activeTab, onToolChange, onNaviga
   const toggleSidebar = () => setIsSidebarCollapsed((collapsed) => !collapsed)
 
   return (
-    <div className="flex h-screen w-screen flex-col overflow-hidden bg-[#f3f3f3] text-foreground dark:bg-[#202020]">
+    <div className="flex h-screen w-screen flex-col overflow-hidden bg-chrome text-foreground">
       {/* Global TitleBar (Window Controls) */}
       <TitleBar onNavigate={onNavigate} onToggleSidebar={toggleSidebar} />
       

@@ -389,7 +389,7 @@ export function SubnetTab() {
               )}
 
               {error && (
-                <div className="text-sm text-danger bg-danger-50 border border-danger-200 rounded-lg p-3">{error}</div>
+                <div className="rounded-lg border border-danger/40 bg-danger/10 p-3 text-sm text-danger">{error}</div>
               )}
             </div>
 

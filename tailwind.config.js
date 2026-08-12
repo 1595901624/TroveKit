@@ -9,6 +9,7 @@ export default {
       colors: {
         background: "rgb(var(--background) / <alpha-value>)",
         foreground: "rgb(var(--foreground) / <alpha-value>)",
+        chrome: "rgb(var(--chrome) / <alpha-value>)",
         content1: "rgb(var(--content-1) / <alpha-value>)",
         divider: "rgb(var(--divider) / <alpha-value>)",
         default: {
@@ -23,10 +24,11 @@ export default {
           DEFAULT: "rgb(var(--default-100) / <alpha-value>)",
         },
         primary: { DEFAULT: "rgb(var(--primary) / <alpha-value>)", foreground: "rgb(var(--primary-foreground) / <alpha-value>)" },
+        "primary-solid": { DEFAULT: "rgb(var(--primary-solid) / <alpha-value>)", foreground: "rgb(var(--primary-solid-foreground) / <alpha-value>)" },
         secondary: { DEFAULT: "rgb(var(--secondary) / <alpha-value>)", foreground: "rgb(var(--secondary-foreground) / <alpha-value>)" },
-        success: "rgb(var(--success) / <alpha-value>)",
-        warning: "rgb(var(--warning) / <alpha-value>)",
-        danger: "rgb(var(--danger) / <alpha-value>)",
+        success: { DEFAULT: "rgb(var(--success) / <alpha-value>)", foreground: "rgb(var(--success-foreground) / <alpha-value>)" },
+        warning: { DEFAULT: "rgb(var(--warning) / <alpha-value>)", foreground: "rgb(var(--warning-foreground) / <alpha-value>)" },
+        danger: { DEFAULT: "rgb(var(--danger) / <alpha-value>)", foreground: "rgb(var(--danger-foreground) / <alpha-value>)" },
       },
       fontSize: {
         tiny: ["0.75rem", "1rem"],

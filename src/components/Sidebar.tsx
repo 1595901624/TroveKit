@@ -119,7 +119,7 @@ export function Sidebar({ macOSOverlay = false, isCollapsed, activeTool, activeT
 
   return (
     <aside className={cn(
-      "relative h-full shrink-0 overflow-hidden bg-[#f3f3f3] dark:bg-[#202020]",
+      "relative h-full shrink-0 overflow-hidden bg-chrome",
       !isResizing && "transition-[width] duration-200",
     )} style={{ width: isCollapsed ? 0 : sidebarWidth }}>
       <div className="flex h-full flex-col" style={{ width: sidebarWidth }}>
@@ -174,7 +174,7 @@ export function Sidebar({ macOSOverlay = false, isCollapsed, activeTool, activeT
                             onPress={() => onNavigate(group.id, child.tabId)}
                           >
                             <span className={cn(
-                              "absolute -left-[11px] top-1/2 h-1.5 w-1.5 -translate-y-1/2 rounded-full border border-[#f3f3f3] bg-default-300 dark:border-[#202020] dark:bg-default-200",
+                              "absolute -left-[11px] top-1/2 h-1.5 w-1.5 -translate-y-1/2 rounded-full border border-chrome bg-default-300 dark:bg-default-200",
                               active && "bg-primary ring-2 ring-primary/15 dark:bg-primary",
                             )} />
                             <span className="truncate">{child.label}</span>

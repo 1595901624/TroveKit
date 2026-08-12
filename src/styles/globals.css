@@ -7,6 +7,7 @@
     --titlebar-height: clamp(40px, 4.8vh, 56px);
     --background: 255 255 255;
     --foreground: 17 24 39;
+    --chrome: 243 243 243;
     --content-1: 255 255 255;
     --divider: 228 228 231;
     --default-50: 250 250 250;
@@ -19,27 +20,49 @@
     --default-700: 63 63 70;
     --primary: 0 111 238;
     --primary-foreground: 255 255 255;
+    --primary-solid: 0 111 238;
+    --primary-solid-foreground: 255 255 255;
     --secondary: 120 40 200;
     --secondary-foreground: 255 255 255;
     --success: 23 201 100;
+    --success-foreground: 9 66 35;
     --warning: 245 165 36;
+    --warning-foreground: 66 38 0;
     --danger: 243 18 96;
+    --danger-foreground: 255 255 255;
 }
 
 .dark {
     color-scheme: dark;
-    --background: 24 24 27;
-    --foreground: 244 244 245;
-    --content-1: 39 39 42;
-    --divider: 63 63 70;
-    --default-50: 39 39 42;
-    --default-100: 63 63 70;
-    --default-200: 82 82 91;
-    --default-300: 113 113 122;
-    --default-400: 161 161 170;
-    --default-500: 212 212 216;
-    --default-600: 228 228 231;
-    --default-700: 244 244 245;
+    /* Low-glare neutral surfaces with a small luminance step per elevation. */
+    --background: 24 26 31;
+    --foreground: 223 227 233;
+    --chrome: 20 22 27;
+    --content-1: 32 36 43;
+    --divider: 55 61 71;
+    --default-50: 32 36 43;
+    --default-100: 40 45 53;
+    --default-200: 55 61 71;
+    --default-300: 77 85 98;
+    --default-400: 137 146 160;
+    --default-500: 165 173 185;
+    --default-600: 196 202 211;
+    --default-700: 226 230 236;
+
+    /* Desaturated dark-theme accents. Each text color clears WCAG AA on
+       both background and content surfaces; solid controls use dark ink. */
+    --primary: 127 164 216;
+    --primary-foreground: 17 25 35;
+    --primary-solid: 69 101 140;
+    --primary-solid-foreground: 244 247 251;
+    --secondary: 184 159 213;
+    --secondary-foreground: 28 20 38;
+    --success: 111 189 144;
+    --success-foreground: 13 36 24;
+    --warning: 217 174 98;
+    --warning-foreground: 43 29 7;
+    --danger: 223 134 146;
+    --danger-foreground: 45 18 23;
 }
 
 html, body, #root {

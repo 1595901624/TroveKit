@@ -39,12 +39,12 @@ interface ModalContentProps extends AnyProps { children?: React.ReactNode | ((on
 const cx = (...values: Array<string | undefined | false>) => twMerge(values.filter(Boolean).join(" "))
 
 const solidColorClasses: Record<string, string> = {
-  default: "bg-default-100 text-foreground hover:bg-default-200",
-  primary: "bg-primary text-primary-foreground hover:bg-primary/90",
-  secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/90",
-  success: "bg-success text-white hover:bg-success/90",
-  warning: "bg-warning text-black hover:bg-warning/90",
-  danger: "bg-danger text-white hover:bg-danger/90",
+  default: "bg-default-100 text-foreground hover:bg-default-200 disabled:bg-default-100 disabled:text-default-500 disabled:opacity-100",
+  primary: "bg-primary-solid text-primary-solid-foreground hover:bg-primary-solid/90 disabled:bg-default-100 disabled:text-default-500 disabled:opacity-100",
+  secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/90 disabled:bg-default-100 disabled:text-default-500 disabled:opacity-100",
+  success: "bg-success text-success-foreground hover:bg-success/90 disabled:bg-default-100 disabled:text-default-500 disabled:opacity-100",
+  warning: "bg-warning text-warning-foreground hover:bg-warning/90 disabled:bg-default-100 disabled:text-default-500 disabled:opacity-100",
+  danger: "bg-danger text-danger-foreground hover:bg-danger/90 disabled:bg-default-100 disabled:text-default-500 disabled:opacity-100",
 }
 
 const flatColorClasses: Record<string, string> = {
@@ -94,7 +94,7 @@ function buttonClasses({ color = "default", variant = "solid", size = "md", isIc
     ghost: cx("border border-current", lightColorClasses[resolvedColor]),
   }
   return cx(
-    "inline-flex shrink-0 select-none items-center justify-center gap-2 font-medium transition-colors outline-none focus-visible:ring-2 focus-visible:ring-primary/50 disabled:pointer-events-none disabled:opacity-50",
+    "inline-flex shrink-0 select-none items-center justify-center gap-2 font-medium transition-colors outline-none focus-visible:ring-2 focus-visible:ring-primary/70 focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-60",
     size === "sm" ? "h-8 min-w-8 px-3 text-xs" : size === "lg" ? "h-12 min-w-12 px-6 text-base" : "h-10 min-w-10 px-4 text-sm",
     isIconOnly && (size === "sm" ? "w-8 px-0" : size === "lg" ? "w-12 px-0" : "w-10 px-0"),
     radius === "full" ? "rounded-full" : radius === "none" ? "rounded-none" : "rounded-lg",
@@ -137,7 +137,7 @@ function FieldShell({ label, description, errorMessage, startContent, endContent
   return (
     <label className={cx("flex min-w-0 flex-col gap-1 text-sm", className, classNames?.base)}>
       {label && <span className={cx("text-xs text-default-600", classNames?.label)}>{label}</span>}
-      <span className={cx("flex min-h-10 items-center gap-2 rounded-lg border border-default-200 bg-default-50 px-3 focus-within:border-primary focus-within:ring-1 focus-within:ring-primary/30", classNames?.inputWrapper)}>
+      <span className={cx("flex min-h-10 items-center gap-2 rounded-lg border border-default-200 bg-default-50 px-3 focus-within:border-primary focus-within:ring-1 focus-within:ring-primary/50", classNames?.inputWrapper)}>
         {startContent}
         {children}
         {endContent}
@@ -174,7 +174,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(function 
   return (
     <label className={cx("flex min-h-0 min-w-0 flex-col gap-1", className, classNames?.base)}>
       {label && <span className={cx("text-xs text-default-600", classNames?.label)}>{label}</span>}
-      <span className={cx("flex min-h-24 flex-1 rounded-lg border border-default-200 bg-default-50 p-3 focus-within:border-primary focus-within:ring-1 focus-within:ring-primary/30", classNames?.inputWrapper)}>
+      <span className={cx("flex min-h-24 flex-1 rounded-lg border border-default-200 bg-default-50 p-3 focus-within:border-primary focus-within:ring-1 focus-within:ring-primary/50", classNames?.inputWrapper)}>
         <textarea
           {...native}
           ref={ref}
@@ -239,7 +239,7 @@ export function Select({ children, label, placeholder, className, classNames, se
     >
       <div className={cx("flex min-w-0 flex-col gap-1 text-sm", className, classNames?.base)}>
         {label && <BaseSelect.Label className={cx("text-xs text-default-600", classNames?.label)}>{label}</BaseSelect.Label>}
-        <BaseSelect.Trigger className={cx("flex h-10 w-full items-center gap-2 rounded-lg border border-default-200 bg-default-50 px-3 text-left outline-none focus-visible:border-primary focus-visible:ring-1 focus-visible:ring-primary/30", classNames?.trigger)}>
+        <BaseSelect.Trigger className={cx("flex h-10 w-full items-center gap-2 rounded-lg border border-default-200 bg-default-50 px-3 text-left outline-none focus-visible:border-primary focus-visible:ring-1 focus-visible:ring-primary/50", classNames?.trigger)}>
           {startContent}
           <BaseSelect.Value className="min-w-0 flex-1 truncate" placeholder={placeholder}>
             {() => current?.label ?? placeholder}
@@ -282,7 +282,7 @@ export function Tabs({ children, selectedKey, defaultSelectedKey, onSelectionCha
 }
 
 export function Card({ children, className, isPressable, onPress, shadow: _shadow, ...props }: AnyProps) {
-  return <div {...props} role={isPressable ? "button" : undefined} tabIndex={isPressable ? 0 : undefined} onClick={onPress} onKeyDown={isPressable ? (event) => { if (event.key === "Enter" || event.key === " ") onPress?.() } : undefined} className={cx("rounded-xl bg-content1 text-foreground", isPressable && "cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-primary/50", className)}>{children}</div>
+  return <div {...props} role={isPressable ? "button" : undefined} tabIndex={isPressable ? 0 : undefined} onClick={onPress} onKeyDown={isPressable ? (event) => { if (event.key === "Enter" || event.key === " ") onPress?.() } : undefined} className={cx("rounded-xl bg-content1 text-foreground", isPressable && "cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-primary/70 focus-visible:ring-offset-2 focus-visible:ring-offset-background", className)}>{children}</div>
 }
 export function CardHeader({ children, className, ...props }: AnyProps) { return <div {...props} className={cx("flex p-4", className)}>{children}</div> }
 export function CardBody({ children, className, ...props }: AnyProps) { return <div {...props} className={cx("flex flex-col p-4", className)}>{children}</div> }
@@ -337,14 +337,14 @@ export function Switch({ children, isSelected, defaultSelected, onValueChange, c
         onCheckedChange={onValueChange}
         disabled={isDisabled}
         className={cx(
-          "relative inline-flex shrink-0 items-center rounded-full border border-default-300 bg-default-200 outline-none transition-[background-color,border-color,box-shadow] data-[checked]:border-primary data-[checked]:bg-primary data-[focused]:ring-2 data-[focused]:ring-primary/25",
+          "relative inline-flex shrink-0 items-center rounded-full border border-default-300 bg-default-200 outline-none transition-[background-color,border-color,box-shadow] data-[checked]:border-primary data-[checked]:bg-primary data-[focused]:ring-2 data-[focused]:ring-primary/50",
           isSmall ? "h-4 w-7" : "h-5 w-9",
           classNames?.root,
         )}
       >
         <BaseSwitch.Thumb
           className={cx(
-            "block translate-x-0.5 rounded-full bg-white shadow-sm transition-transform",
+            "block translate-x-0.5 rounded-full bg-white shadow-sm transition-transform dark:data-[checked]:bg-primary-foreground",
             isSmall ? "h-3 w-3 data-[checked]:translate-x-[14px]" : "h-4 w-4 data-[checked]:translate-x-[18px]",
             classNames?.thumb,
           )}
@@ -356,7 +356,7 @@ export function Switch({ children, isSelected, defaultSelected, onValueChange, c
 }
 export function Checkbox({ children, isSelected, defaultSelected, onValueChange, className, isDisabled, ...props }: ToggleProps) {
   const { size: _size, color: _color, ...native } = props
-  return <label className={cx("inline-flex items-center gap-2 text-sm", className)}><BaseCheckbox.Root {...native} checked={isSelected} defaultChecked={defaultSelected} onCheckedChange={onValueChange} disabled={isDisabled} className="flex h-4 w-4 items-center justify-center rounded border border-default-400 data-[checked]:border-primary data-[checked]:bg-primary"><BaseCheckbox.Indicator><Check className="h-3 w-3 text-white" /></BaseCheckbox.Indicator></BaseCheckbox.Root>{children}</label>
+  return <label className={cx("inline-flex items-center gap-2 text-sm", className)}><BaseCheckbox.Root {...native} checked={isSelected} defaultChecked={defaultSelected} onCheckedChange={onValueChange} disabled={isDisabled} className="flex h-4 w-4 items-center justify-center rounded border border-default-400 data-[checked]:border-primary data-[checked]:bg-primary"><BaseCheckbox.Indicator><Check className="h-3 w-3 text-primary-foreground" /></BaseCheckbox.Indicator></BaseCheckbox.Root>{children}</label>
 }
 
 export function Tooltip({ children, content, placement = "top", delay = 300, closeDelay = 0, className, ...props }: AnyProps) {

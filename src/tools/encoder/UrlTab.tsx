@@ -166,7 +166,7 @@ export function UrlTab() {
               variant={activeMode === "encode" ? "flat" : "light"}
               color={activeMode === "encode" ? "primary" : "default"}
               className={activeMode === "encode"
-                ? "h-8 min-w-[72px] bg-primary/10 text-primary dark:bg-blue-400/15 dark:text-blue-300 dark:hover:bg-blue-400/20"
+                ? "h-8 min-w-[72px] bg-primary/10 text-primary hover:bg-primary/15 dark:bg-primary/15 dark:hover:bg-primary/20"
                 : "h-8 min-w-[72px] text-default-600"}
               aria-pressed={activeMode === "encode"}
               onPress={() => setActiveMode("encode")}
@@ -178,7 +178,7 @@ export function UrlTab() {
               variant={activeMode === "decode" ? "flat" : "light"}
               color={activeMode === "decode" ? "primary" : "default"}
               className={activeMode === "decode"
-                ? "h-8 min-w-[72px] bg-primary/10 text-primary dark:bg-blue-400/15 dark:text-blue-300 dark:hover:bg-blue-400/20"
+                ? "h-8 min-w-[72px] bg-primary/10 text-primary hover:bg-primary/15 dark:bg-primary/15 dark:hover:bg-primary/20"
                 : "h-8 min-w-[72px] text-default-600"}
               aria-pressed={activeMode === "decode"}
               onPress={() => setActiveMode("decode")}
@@ -254,7 +254,7 @@ export function UrlTab() {
             size="sm"
             variant="bordered"
             radius="full"
-            className="h-9 w-9 min-w-9 border-default-200 bg-background text-default-500 shadow-sm hover:border-primary/40 hover:text-primary dark:hover:border-blue-300/50 dark:hover:text-blue-300"
+            className="h-9 w-9 min-w-9 border-default-200 bg-background text-default-500 shadow-sm hover:border-primary/50 hover:text-primary"
             onPress={swapUrl}
             title={t("tools.encoder.swap")}
             aria-label={t("tools.encoder.swap")}
@@ -285,7 +285,7 @@ export function UrlTab() {
               size="sm"
               variant="light"
               color="primary"
-              className="h-8 min-w-0 px-2.5 text-primary hover:bg-primary/10 dark:text-blue-300 dark:hover:bg-blue-400/15"
+              className="h-8 min-w-0 px-2.5 text-primary hover:bg-primary/15"
               onPress={() => copyToClipboard(urlOutput)}
               isDisabled={!urlOutput}
               startContent={<Copy className="h-4 w-4" />}

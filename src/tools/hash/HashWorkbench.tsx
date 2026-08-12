@@ -22,7 +22,7 @@ export function HashOperationSwitch<T extends string>({ value, onChange, options
             variant={selected ? "flat" : "light"}
             color={selected ? "primary" : "default"}
             className={selected
-              ? "h-8 min-w-[72px] bg-primary/10 text-primary dark:bg-blue-400/15 dark:text-blue-300"
+              ? "h-8 min-w-[72px] bg-primary/10 text-primary dark:bg-primary/15"
               : "h-8 min-w-[72px] text-default-600"}
             aria-pressed={selected}
             onPress={() => onChange(option.value)}

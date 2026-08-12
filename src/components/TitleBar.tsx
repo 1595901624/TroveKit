@@ -89,7 +89,7 @@ export default function TitleBar({ onNavigate, onToggleSidebar }: TitleBarProps)
           </TitleButton>
         </div>
       ) : (
-        <div data-tauri-drag-region className="flex h-[var(--titlebar-height)] shrink-0 select-none items-center bg-[#f3f3f3] text-[#5f5f5f] dark:bg-[#202020] dark:text-default-400">
+        <div data-tauri-drag-region className="flex h-[var(--titlebar-height)] shrink-0 select-none items-center bg-chrome text-[#5f5f5f] dark:text-default-400">
           <div className="flex h-full items-center gap-0.5 px-2">
             <TitleButton label={t("common.sidebar", "侧栏")} onClick={onToggleSidebar}>
               <PanelLeft className="h-[17px] w-[17px]" />

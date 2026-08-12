@@ -119,7 +119,7 @@ export function LogPanel() {
         <>
           {main}
           <span 
-            className="bg-warning/20 text-warning-600 dark:text-warning rounded px-0.5 select-none" 
+            className="bg-warning/20 text-amber-700 dark:text-warning rounded px-0.5 select-none"
             title={getTrailingDescription(trailing)}
           >
             {trailing
@@ -209,7 +209,7 @@ export function LogPanel() {
                     </div>
                 ) : sessionNote ? (
                     <div 
-                        className="flex items-center gap-2 text-tiny text-warning-600 dark:text-warning bg-warning/10 px-2 py-1.5 rounded cursor-pointer hover:bg-warning/20 transition-colors"
+                        className="flex items-center gap-2 text-tiny text-amber-700 dark:text-warning bg-warning/10 px-2 py-1.5 rounded cursor-pointer hover:bg-warning/20 transition-colors"
                         onClick={handleStartEditSessionNote}
                     >
                         <MessageSquare className="w-3.5 h-3.5 shrink-0" />

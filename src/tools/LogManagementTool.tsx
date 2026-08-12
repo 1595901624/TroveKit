@@ -64,7 +64,7 @@ export function LogManagementTool() {
         <>
           {main}
           <span 
-            className="bg-warning/20 text-warning-600 dark:text-warning rounded px-0.5 select-none" 
+            className="bg-warning/20 text-amber-700 dark:text-warning rounded px-0.5 select-none"
             title={getTrailingDescription(trailing)}
           >
             {trailing
@@ -415,7 +415,7 @@ export function LogManagementTool() {
                   ) : (
                     <div className={cn(
                       "truncate text-xs font-semibold",
-                      s.note ? "text-warning-600 dark:text-warning" : "text-default-500 font-mono"
+                      s.note ? "text-amber-700 dark:text-warning" : "text-default-500 font-mono"
                     )}>
                       {s.note ? `💡 ${s.note}` : `# ${s.sessionId.slice(0, 8)}`}
                     </div>
@@ -704,7 +704,7 @@ export function LogManagementTool() {
 
                         {/* Note */}
                         {log.note && (
-                            <div className="mt-2 flex items-start gap-2 text-xs bg-warning/10 text-warning-700 dark:text-warning-400 p-2 rounded">
+                            <div className="mt-2 flex items-start gap-2 rounded bg-warning/10 p-2 text-xs text-amber-700 dark:text-warning">
                                 <span className="font-semibold select-none">💡 {t('log.note')}:</span>
                                 <span className="font-mono whitespace-pre-wrap">{log.note}</span>
                             </div>

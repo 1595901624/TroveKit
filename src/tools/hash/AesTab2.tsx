@@ -864,7 +864,7 @@ export function AesTab2() {
           </div>
 
           {fileStatus && (
-            <div className={`text-sm rounded-md px-3 py-2 ${fileStatus.type === "success" ? "bg-success-100 text-success-700" : fileStatus.type === "error" ? "bg-danger-100 text-danger-700" : "bg-default-100 text-default-700"}`}>
+            <div className={`rounded-md px-3 py-2 text-sm ${fileStatus.type === "success" ? "bg-success/15 text-success" : fileStatus.type === "error" ? "bg-danger/15 text-danger" : "bg-default-100 text-default-700"}`}>
               {fileStatus.message}
             </div>
           )}
