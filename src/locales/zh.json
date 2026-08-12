@@ -634,7 +634,9 @@
     "hidden": "隐藏",
     "toggleVisibility": "切换显示/隐藏",
     "toggleFavorite": "切换常用",
-    "about": "关于"
+    "about": "关于",
+    "testVersionTitle": "测试版本",
+    "testVersionWarning": "当前版本仍处于测试阶段，部分功能可能尚未完成，稳定性较差，并可能存在较多缺陷。请谨慎使用，不建议将其用于关键工作或重要数据。"
   },
   "log": {
     "title": "操作日志",

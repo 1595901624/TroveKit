@@ -634,7 +634,9 @@
     "hidden": "非表示",
     "toggleVisibility": "表示切替",
     "toggleFavorite": "お気に入り切替",
-    "about": "TroveKit について"
+    "about": "TroveKit について",
+    "testVersionTitle": "テスト版",
+    "testVersionWarning": "このバージョンはテスト段階です。一部の機能が未完成で、動作が不安定な場合や、多くの不具合が残っている可能性があります。重要な作業やデータには使用せず、十分ご注意ください。"
   },
   "log": {
     "title": "操作ログ",

@@ -634,7 +634,9 @@
     "hidden": "Hidden",
     "toggleVisibility": "Toggle visibility",
     "toggleFavorite": "Toggle favorite",
-    "about": "About"
+    "about": "About",
+    "testVersionTitle": "Test version",
+    "testVersionWarning": "This is a test release. Some features may be incomplete, stability may be limited, and known or undiscovered bugs may remain. Use it with caution and avoid relying on it for critical work or important data."
   },
   "log": {
     "title": "Operation Log",

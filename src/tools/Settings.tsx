@@ -2,7 +2,7 @@ import { Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDi
 import { getVersion } from "@tauri-apps/api/app"
 import { openUrl } from "@tauri-apps/plugin-opener"
 import { Store } from "@tauri-apps/plugin-store"
-import { Database, ExternalLink, Github, Languages, Palette, RefreshCw, Settings2, SlidersHorizontal } from "lucide-react"
+import { Database, ExternalLink, Github, Languages, Palette, RefreshCw, Settings2, SlidersHorizontal, TriangleAlert } from "lucide-react"
 import { useEffect, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { LanguageSelector } from "../components/LanguageSelector"
@@ -15,6 +15,7 @@ export function Settings() {
   const { addLog } = useLog()
   const [version, setVersion] = useState("0.1.0")
   const [activeSection, setActiveSection] = useState<"appearance" | "features" | "data" | "about">("appearance")
+  const isTestVersion = /-\d+$/.test(version)
   
   const cacheModal = useDisclosure()
   const featureModal = useDisclosure()
@@ -165,17 +166,28 @@ export function Settings() {
               <div className="border-b border-default-200 px-5 py-4">
                 <h2 id="about-settings-heading" className="text-base font-semibold text-foreground">{t("settings.about")}</h2>
               </div>
-              <div className="flex flex-wrap items-center justify-between gap-4 p-5">
-                <div className="flex items-center gap-3">
-                  <div className="rounded-lg border border-default-200 bg-default-50 p-2.5 text-default-500"><Github className="h-5 w-5" /></div>
-                  <div>
-                    <div className="text-sm font-medium text-foreground">TroveKit v{version}</div>
-                    <div className="mt-0.5 text-xs text-default-400">© Cloris 2026</div>
+              <div className="p-5">
+                <div className="flex flex-wrap items-center justify-between gap-4">
+                  <div className="flex items-center gap-3">
+                    <div className="rounded-lg border border-default-200 bg-default-50 p-2.5 text-default-500"><Github className="h-5 w-5" /></div>
+                    <div>
+                      <div className="text-sm font-medium text-foreground">TroveKit v{version}</div>
+                      <div className="mt-0.5 text-xs text-default-400">© Cloris 2026</div>
+                    </div>
                   </div>
+                  <Button size="sm" variant="bordered" onPress={handleGithubClick} startContent={<Github className="h-4 w-4" />} endContent={<ExternalLink className="h-3.5 w-3.5 text-default-400" />}>
+                    GitHub
+                  </Button>
                 </div>
-                <Button size="sm" variant="bordered" onPress={handleGithubClick} startContent={<Github className="h-4 w-4" />} endContent={<ExternalLink className="h-3.5 w-3.5 text-default-400" />}>
-                  GitHub
-                </Button>
+                {isTestVersion && (
+                  <div role="alert" className="mt-5 flex items-start gap-3 rounded-xl border border-warning/35 bg-warning/5 p-4">
+                    <TriangleAlert className="mt-0.5 h-4 w-4 shrink-0 text-warning" />
+                    <div>
+                      <div className="text-sm font-medium text-warning-700 dark:text-warning-400">{t("settings.testVersionTitle")}</div>
+                      <p className="mt-1.5 text-xs leading-5 text-default-500">{t("settings.testVersionWarning")}</p>
+                    </div>
+                  </div>
+                )}
               </div>
             </section>
           )}
