@@ -1,0 +1,76 @@
+src/components/Layout.tsx
+  dbe1cb429d53d933 41
+src/components/LogPanel.tsx
+  dbe1cb429d53d933 6-8,13-18,34-43,46-48,50-64,67-69,72-75,77-82,85-93,204-209,212,575-594,596-597
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.0.8",
+  "base_commit_sha": "084fc9b5032b80c580ea0f47f46d8eb594c91dac",
+  "prompts": {
+    "dbe1cb429d53d933": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019ff618-7a59-79d2-bbd9-c85530db7a28",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "luhaoyu <haoyu3@163.com>",
+      "messages": [],
+      "total_additions": 576,
+      "total_deletions": 501,
+      "accepted_lines": 573,
+      "overriden_lines": 0
+    }
+  },
+  "commit_stats": {
+    "git_diff_added_lines": 102,
+    "git_diff_deleted_lines": 27,
+    "ai_additions": 89,
+    "ai_accepted": 89,
+    "BYMC": 13,
+    "mixed_additions": 0,
+    "BYAC": 89,
+    "BYRC": 0,
+    "per_file": {
+      "src/components/Layout.tsx": {
+        "BYMC": [],
+        "BYAC": [
+          "41"
+        ],
+        "BYRC": []
+      },
+      "src/components/LogPanel.tsx": {
+        "BYMC": [
+          "44-45",
+          "49",
+          "65-66",
+          "70-71",
+          "76",
+          "83-84",
+          "94",
+          "574",
+          "595"
+        ],
+        "BYAC": [
+          "6-8",
+          "13-18",
+          "34-43",
+          "46-48",
+          "50-64",
+          "67-69",
+          "72-75",
+          "77-82",
+          "85-93",
+          "204-209",
+          "212",
+          "575-594",
+          "596-597"
+        ],
+        "BYRC": []
+      }
+    }
+  },
+  "ipa_account": "luhaoyu",
+  "commit_timestamp": 1786543421,
+  "requirement_id": ""
+}
