@@ -1,0 +1,74 @@
+src/components/Sidebar.tsx
+  34cc71226e0623b8 7,141
+src/components/ThemeToggle.tsx
+  34cc71226e0623b8 9,14,24
+src/components/Layout.tsx
+  34cc71226e0623b8 55-56,59
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.0.8",
+  "base_commit_sha": "d17b04c87386a3268f185a9953afe6ab825fb6a3",
+  "prompts": {
+    "34cc71226e0623b8": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019ff5ac-1069-7813-b8cf-af8efe74def8",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "luhaoyu <haoyu3@163.com>",
+      "messages": [],
+      "total_additions": 9,
+      "total_deletions": 8,
+      "accepted_lines": 8,
+      "overriden_lines": 0
+    }
+  },
+  "commit_stats": {
+    "git_diff_added_lines": 9,
+    "git_diff_deleted_lines": 8,
+    "ai_additions": 8,
+    "ai_accepted": 8,
+    "BYMC": 1,
+    "mixed_additions": 0,
+    "BYAC": 8,
+    "BYRC": 0,
+    "per_file": {
+      ".github/workflows/prerelease.yml": {
+        "BYMC": [
+          "1"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/components/Layout.tsx": {
+        "BYMC": [],
+        "BYAC": [
+          "55-56",
+          "59"
+        ],
+        "BYRC": []
+      },
+      "src/components/Sidebar.tsx": {
+        "BYMC": [],
+        "BYAC": [
+          "7",
+          "141"
+        ],
+        "BYRC": []
+      },
+      "src/components/ThemeToggle.tsx": {
+        "BYMC": [],
+        "BYAC": [
+          "9",
+          "14",
+          "24"
+        ],
+        "BYRC": []
+      }
+    }
+  },
+  "ipa_account": "luhaoyu",
+  "commit_timestamp": 1786533430,
+  "requirement_id": ""
+}
