@@ -1,0 +1,253 @@
+src/components/CodeMirrorEditorImpl.tsx
+  f01c894fe5ec64cb 27-34,140-142,151-155,158-159,162-166,173-175,193-206,211-217,221-233,242,246-248,257-262,274-281,300-301
+src/components/CodeEditor.tsx
+  f01c894fe5ec64cb 14,18-24,36-38
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.0.8",
+  "base_commit_sha": "c7bf725839b863693ffa96fdd3035bb6a6666227",
+  "prompts": {
+    "f01c894fe5ec64cb": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019ff535-ea80-7e22-91f9-50b18f5adc3c",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "luhaoyu <haoyu3@163.com>",
+      "messages": [],
+      "total_additions": 101,
+      "total_deletions": 13,
+      "accepted_lines": 94,
+      "overriden_lines": 0
+    }
+  },
+  "commit_stats": {
+    "git_diff_added_lines": 456,
+    "git_diff_deleted_lines": 202,
+    "ai_additions": 91,
+    "ai_accepted": 91,
+    "BYMC": 361,
+    "mixed_additions": 0,
+    "BYAC": 91,
+    "BYRC": 0,
+    "per_file": {
+      "src/components/CodeEditor.tsx": {
+        "BYMC": [],
+        "BYAC": [
+          "14",
+          "18-24",
+          "36-38"
+        ],
+        "BYRC": []
+      },
+      "src/components/CodeMirrorEditorImpl.tsx": {
+        "BYMC": [],
+        "BYAC": [
+          "27-34",
+          "140-142",
+          "151-155",
+          "158-159",
+          "162-166",
+          "173-175",
+          "193-206",
+          "211-217",
+          "221-233",
+          "242",
+          "246-248",
+          "257-262",
+          "274-281",
+          "300-301"
+        ],
+        "BYRC": []
+      },
+      "src/contexts/LogContext.tsx": {
+        "BYMC": [
+          "96-102"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/hooks/useConverterWorker.ts": {
+        "BYMC": [
+          "1-45"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/hooks/useDebouncedStoredValue.ts": {
+        "BYMC": [
+          "1-49"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/converter/ConverterWorkbench.tsx": {
+        "BYMC": [
+          "1",
+          "5",
+          "14-15",
+          "22-23",
+          "29",
+          "32",
+          "34-38",
+          "41-44",
+          "55-59",
+          "62",
+          "65",
+          "72",
+          "79-81",
+          "99",
+          "102-107",
+          "114",
+          "117",
+          "130",
+          "135"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/converter/JsonXmlTab.tsx": {
+        "BYMC": [
+          "1",
+          "5-7",
+          "19-23",
+          "32-39",
+          "44-46",
+          "51-54",
+          "56-63",
+          "65-66",
+          "69",
+          "75-76",
+          "80-82",
+          "84-85",
+          "88",
+          "94-95",
+          "124-126",
+          "130-132",
+          "137-138",
+          "145"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/converter/JsonYamlTab.tsx": {
+        "BYMC": [
+          "1",
+          "5-7",
+          "19-23",
+          "32-39",
+          "49-52",
+          "54-57",
+          "59-61",
+          "63-64",
+          "67",
+          "73-74",
+          "78-80",
+          "82-83",
+          "86",
+          "92-93",
+          "117",
+          "119",
+          "129-131",
+          "136-137",
+          "144"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/formatter/CssTab.tsx": {
+        "BYMC": [
+          "4-5",
+          "17",
+          "39-40",
+          "42",
+          "56-57",
+          "63",
+          "89",
+          "181"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/formatter/FormatterWorkbench.tsx": {
+        "BYMC": [
+          "1",
+          "5",
+          "13-15",
+          "18",
+          "41",
+          "53-55",
+          "58-59",
+          "73",
+          "76",
+          "80",
+          "94",
+          "111-115",
+          "138",
+          "145-147"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/formatter/JsonTab.tsx": {
+        "BYMC": [
+          "8",
+          "24",
+          "35-36",
+          "38",
+          "49-50",
+          "52",
+          "63-64",
+          "70",
+          "88",
+          "92",
+          "141",
+          "198"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/formatter/SqlTab.tsx": {
+        "BYMC": [
+          "6-7",
+          "20",
+          "43-44",
+          "46",
+          "58-59",
+          "63",
+          "80-81",
+          "88",
+          "107",
+          "180"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/formatter/XmlTab.tsx": {
+        "BYMC": [
+          "4-5",
+          "17",
+          "39-40",
+          "42",
+          "57-58",
+          "60",
+          "84",
+          "131"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/workers/converter.worker.ts": {
+        "BYMC": [
+          "1-42"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      }
+    }
+  },
+  "ipa_account": "luhaoyu",
+  "commit_timestamp": 1786530058,
+  "requirement_id": ""
+}
