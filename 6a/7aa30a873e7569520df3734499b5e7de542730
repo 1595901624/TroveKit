@@ -1,0 +1,91 @@
+src-tauri/tauri.conf.json
+  43d0ee15eb82eff9 4
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.0.8",
+  "base_commit_sha": "6a7aa30a873e7569520df3734499b5e7de542730",
+  "prompts": {
+    "43d0ee15eb82eff9": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019ff606-8ada-75d3-ae9f-e92c788cd20e",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "luhaoyu <haoyu3@163.com>",
+      "messages": [],
+      "total_additions": 41,
+      "total_deletions": 41,
+      "accepted_lines": 41,
+      "overriden_lines": 0
+    }
+  },
+  "commit_stats": {
+    "git_diff_added_lines": 38,
+    "git_diff_deleted_lines": 16,
+    "ai_additions": 1,
+    "ai_accepted": 1,
+    "BYMC": 37,
+    "mixed_additions": 0,
+    "BYAC": 1,
+    "BYRC": 0,
+    "per_file": {
+      "src-tauri/tauri.conf.json": {
+        "BYMC": [],
+        "BYAC": [
+          "4"
+        ],
+        "BYRC": []
+      },
+      "src/locales/en.json": {
+        "BYMC": [
+          "637-639"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/locales/ja.json": {
+        "BYMC": [
+          "637-639"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/locales/zh-HK.json": {
+        "BYMC": [
+          "637-639"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/locales/zh-TW.json": {
+        "BYMC": [
+          "637-639"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/locales/zh.json": {
+        "BYMC": [
+          "637-639"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/Settings.tsx": {
+        "BYMC": [
+          "5",
+          "18",
+          "169-176",
+          "178-180",
+          "182-190"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      }
+    }
+  },
+  "ipa_account": "luhaoyu",
+  "commit_timestamp": 1786539879,
+  "requirement_id": ""
+}
