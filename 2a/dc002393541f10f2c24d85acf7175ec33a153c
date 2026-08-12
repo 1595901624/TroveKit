@@ -1,0 +1,71 @@
+src/hooks/useConverterWorker.ts
+  f01c894fe5ec64cb 6,8-10,14-15,18-31
+src/components/CodeMirrorEditorImpl.tsx
+  f01c894fe5ec64cb 154,158,167,175,194,208-209,214,277-280
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.0.8",
+  "base_commit_sha": "2adc002393541f10f2c24d85acf7175ec33a153c",
+  "prompts": {
+    "f01c894fe5ec64cb": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019ff535-ea80-7e22-91f9-50b18f5adc3c",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "luhaoyu <haoyu3@163.com>",
+      "messages": [],
+      "total_additions": 0,
+      "total_deletions": 0,
+      "accepted_lines": 32,
+      "overriden_lines": 0
+    }
+  },
+  "commit_stats": {
+    "git_diff_added_lines": 33,
+    "git_diff_deleted_lines": 34,
+    "ai_additions": 32,
+    "ai_accepted": 32,
+    "BYMC": 1,
+    "mixed_additions": 0,
+    "BYAC": 32,
+    "BYRC": 0,
+    "per_file": {
+      "src-tauri/tauri.conf.json": {
+        "BYMC": [
+          "4"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/components/CodeMirrorEditorImpl.tsx": {
+        "BYMC": [],
+        "BYAC": [
+          "154",
+          "158",
+          "167",
+          "175",
+          "194",
+          "208-209",
+          "214",
+          "277-280"
+        ],
+        "BYRC": []
+      },
+      "src/hooks/useConverterWorker.ts": {
+        "BYMC": [],
+        "BYAC": [
+          "6",
+          "8-10",
+          "14-15",
+          "18-31"
+        ],
+        "BYRC": []
+      }
+    }
+  },
+  "ipa_account": "luhaoyu",
+  "commit_timestamp": 1786533027,
+  "requirement_id": ""
+}
