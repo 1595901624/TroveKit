@@ -6,11 +6,12 @@ import { useTranslation } from "react-i18next"
 interface ThemeToggleProps {
   className?: string
   variant?: string
+  radius?: string
   showLabel?: boolean
   compact?: boolean
 }
 
-export function ThemeToggle({ className, variant = "light", showLabel = false, compact = false }: ThemeToggleProps = {}) {
+export function ThemeToggle({ className, variant = "light", radius, showLabel = false, compact = false }: ThemeToggleProps = {}) {
   const { setTheme, theme } = useTheme()
   const { t } = useTranslation()
 
@@ -20,7 +21,7 @@ export function ThemeToggle({ className, variant = "light", showLabel = false, c
         <Button
           isIconOnly={!showLabel}
           variant={variant}
-          radius={showLabel ? "md" : "full"}
+          radius={radius ?? (showLabel ? "md" : "full")}
           className={className}
           aria-label={t("settings.theme")}
           startContent={showLabel ? (theme === "light" ? <Sun className="h-4 w-4" /> : theme === "dark" ? <Moon className="h-4 w-4" /> : <Monitor className="h-4 w-4" />) : undefined}

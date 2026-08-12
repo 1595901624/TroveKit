@@ -52,11 +52,11 @@ export function Layout({ children, activeTool, activeTab, onToolChange, onNaviga
             </div>
             <div className="flex items-center gap-1.5">
               <Tooltip content={t('log.toggle', 'Toggle Logs')}>
-                <Button isIconOnly variant="bordered" radius="full" className="h-6 w-6 min-w-6 border-default-200 bg-background shadow-sm" onPress={togglePanel} aria-label={t('log.toggle', 'Toggle Logs')}>
-                  <Terminal className="h-3 w-3 text-default-500" />
+                <Button isIconOnly size="sm" variant="light" className="h-8 w-8 min-w-8 rounded-md text-default-500 hover:bg-black/[0.05] hover:text-foreground dark:hover:bg-white/[0.07]" onPress={togglePanel} aria-label={t('log.toggle', 'Toggle Logs')}>
+                  <Terminal className="h-[15px] w-[15px]" />
                 </Button>
               </Tooltip>
-              <ThemeToggle compact variant="bordered" className="h-6 w-6 min-w-6 border-default-200 bg-background shadow-sm" />
+              <ThemeToggle compact radius="md" className="h-8 w-8 min-w-8 text-default-500 hover:bg-black/[0.05] hover:text-foreground dark:hover:bg-white/[0.07]" />
             </div>
           </header>
           
