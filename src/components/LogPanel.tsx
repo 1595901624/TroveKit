@@ -1,13 +1,20 @@
 // 导入必要的依赖
-import { motion } from "framer-motion" // 用于动画效果
 import { useLogData, useLogUI, LogEntry } from "../contexts/LogContext" // 日志上下文
 import { Trash2, X, Terminal, Info, CheckCircle, AlertTriangle, AlertCircle, Copy, Plus, Edit, Check, MessageSquare } from "lucide-react" // 图标
 import { Button, ScrollShadow, Tooltip, Input } from "../components/ui/base-ui" // UI 组件
 import { useTranslation } from "react-i18next" // 国际化
-import { useState, useMemo } from "react" // React hooks
+import { useEffect, useMemo, useRef, useState } from "react" // React hooks
+import { usePersistentState } from "../hooks/usePersistentState"
+import { cn } from "../lib/utils"
 
 // 过滤器类型定义：日志类型或全部
 type FilterType = LogEntry['type'] | 'all'
+
+const LOG_PANEL_MIN_WIDTH = 280
+const LOG_PANEL_MAX_WIDTH = 640
+const LOG_PANEL_DEFAULT_WIDTH = 320
+
+const clampLogPanelWidth = (width: number) => Math.min(LOG_PANEL_MAX_WIDTH, Math.max(LOG_PANEL_MIN_WIDTH, width))
 
 // 日志面板组件
 export function LogPanel() {
@@ -24,8 +31,67 @@ export function LogPanel() {
   // 会话备注编辑状态
   const [editingSessionNote, setEditingSessionNote] = useState(false)
   const [sessionNoteInput, setSessionNoteInput] = useState('')
-    // 动画状态：用于在动画期间关闭昂贵效果（如 backdrop blur）
-    const [isAnimating, setIsAnimating] = useState(false)
+  const [storedWidth, setStoredWidth, , isStoredWidthLoaded] = usePersistentState<number>("log-panel-width", LOG_PANEL_DEFAULT_WIDTH)
+  const [panelWidth, setPanelWidth] = useState(LOG_PANEL_DEFAULT_WIDTH)
+  const [isResizing, setIsResizing] = useState(false)
+  const panelWidthRef = useRef(LOG_PANEL_DEFAULT_WIDTH)
+  const resizeOriginRef = useRef<{ pointerX: number; width: number } | null>(null)
+
+  const updatePanelWidth = (width: number) => {
+    const nextWidth = clampLogPanelWidth(width)
+    panelWidthRef.current = nextWidth
+    setPanelWidth(nextWidth)
+  }
+
+  useEffect(() => {
+    if (isStoredWidthLoaded) {
+      updatePanelWidth(typeof storedWidth === "number" && Number.isFinite(storedWidth) ? storedWidth : LOG_PANEL_DEFAULT_WIDTH)
+    }
+  }, [isStoredWidthLoaded, storedWidth])
+
+  useEffect(() => () => {
+    document.body.style.cursor = ""
+    document.body.style.userSelect = ""
+  }, [])
+
+  const startResize = (event: React.PointerEvent<HTMLDivElement>) => {
+    if (!isOpen) return
+    event.preventDefault()
+    event.currentTarget.setPointerCapture(event.pointerId)
+    resizeOriginRef.current = { pointerX: event.clientX, width: panelWidthRef.current }
+    document.body.style.cursor = "col-resize"
+    document.body.style.userSelect = "none"
+    setIsResizing(true)
+  }
+
+  const resize = (event: React.PointerEvent<HTMLDivElement>) => {
+    const origin = resizeOriginRef.current
+    if (origin) updatePanelWidth(origin.width + origin.pointerX - event.clientX)
+  }
+
+  const finishResize = (event: React.PointerEvent<HTMLDivElement>) => {
+    if (!resizeOriginRef.current) return
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+      event.currentTarget.releasePointerCapture(event.pointerId)
+    }
+    resizeOriginRef.current = null
+    document.body.style.cursor = ""
+    document.body.style.userSelect = ""
+    setIsResizing(false)
+    setStoredWidth(panelWidthRef.current)
+    window.dispatchEvent(new Event("resize"))
+  }
+
+  const resizeWithKeyboard = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return
+    event.preventDefault()
+    const direction = event.key === "ArrowLeft" ? 1 : -1
+    const step = event.shiftKey ? 40 : 10
+    const nextWidth = clampLogPanelWidth(panelWidthRef.current + direction * step)
+    updatePanelWidth(nextWidth)
+    setStoredWidth(nextWidth)
+    window.dispatchEvent(new Event("resize"))
+  }
 
   // 使用 useMemo 优化性能，根据过滤器筛选日志
   const filteredLogs = useMemo(() => {
@@ -135,26 +201,15 @@ export function LogPanel() {
   }
 
   return (
-        // 性能优化：避免在 flex 布局里做 width 动画（会迫使主内容和代码编辑器每帧重排）
-        // 改为覆盖式侧栏 + transform 动画（GPU 友好），并在动画期间禁用 backdrop blur（非常耗性能）。
-        <motion.div
-            initial={false}
-            animate={{ x: isOpen ? 0 : 320, opacity: isOpen ? 1 : 0 }}
-            transition={{ duration: 0.25, ease: "easeInOut" }}
-            onAnimationStart={() => setIsAnimating(true)}
-            onAnimationComplete={() => setIsAnimating(false)}
-            className={
-                `absolute right-0 top-0 h-full w-[320px] z-50 border-l border-divider ` +
-                (isOpen && !isAnimating ? "bg-background/60 backdrop-blur-md" : "bg-background")
-            }
-            style={{
-                pointerEvents: isOpen ? "auto" : "none",
-                willChange: "transform, opacity",
-                contain: "layout paint style",
-            }}
+        <aside
+            className={cn(
+                "relative h-full shrink-0 overflow-hidden bg-background",
+                !isResizing && "transition-[width] duration-200",
+            )}
+            style={{ width: isOpen ? panelWidth : 0 }}
             aria-hidden={!isOpen}
         >
-            <div className="h-full flex flex-col">
+            <div className="h-full flex flex-col border-l border-divider" style={{ width: panelWidth }}>
             {/* 面板头部：标题和操作按钮 */}
             <div className="h-14 border-b border-divider flex items-center justify-between px-4 shrink-0 bg-background/40">
                 {/* 标题区域 */}
@@ -516,6 +571,29 @@ export function LogPanel() {
                 </div>
             </ScrollShadow>
             </div>
-        </motion.div>
+
+            {isOpen && (
+                <div
+                    className="group absolute inset-y-0 left-0 z-20 w-2 cursor-col-resize touch-none outline-none"
+                    role="separator"
+                    aria-label={t("common.resizeLogPanel", "调整日志面板宽度")}
+                    aria-orientation="vertical"
+                    aria-valuemin={LOG_PANEL_MIN_WIDTH}
+                    aria-valuemax={LOG_PANEL_MAX_WIDTH}
+                    aria-valuenow={Math.round(panelWidth)}
+                    tabIndex={0}
+                    onPointerDown={startResize}
+                    onPointerMove={resize}
+                    onPointerUp={finishResize}
+                    onPointerCancel={finishResize}
+                    onKeyDown={resizeWithKeyboard}
+                >
+                    <div className={cn(
+                        "absolute inset-y-0 left-0 w-px bg-transparent transition-colors group-hover:bg-primary/50 group-focus-visible:bg-primary/70",
+                        isResizing && "bg-primary/70",
+                    )} />
+                </div>
+            )}
+        </aside>
   )
 }

@@ -33,15 +33,12 @@ export function Layout({ children, activeTool, activeTab, onToolChange, onNaviga
       
       <div
         className="relative flex flex-1 overflow-hidden"
-        // 为覆盖式 LogPanel 预留空间：避免遮挡主内容。
-        // 注意：这里是一次性 resize（开/关时各一次），不会像 width 动画那样每帧触发布局重排。
-        style={{ paddingRight: isOpen ? 320 : 0 }}
       >
         {/* Sidebar Navigation */}
         <Sidebar macOSOverlay={isMacOS} isCollapsed={isSidebarCollapsed} activeTool={activeTool} activeTab={activeTab} onToolChange={onToolChange} onNavigate={onNavigate} />
         
         {/* Main Content Area */}
-        <main className="relative flex min-w-0 flex-1 flex-col overflow-hidden rounded-tl-[8px] rounded-tr-[8px] border-l border-t border-default-200/80 bg-background shadow-[-2px_-1px_10px_rgba(0,0,0,0.025)]">
+        <main className={`relative flex min-w-0 flex-1 flex-col overflow-hidden rounded-tl-[8px] border-l border-t border-default-200/80 bg-background shadow-[-2px_-1px_10px_rgba(0,0,0,0.025)] ${isOpen ? "" : "rounded-tr-[8px]"}`}>
           {/* Tool Header */}
           <header
             data-tauri-drag-region={isMacOS ? true : undefined}
