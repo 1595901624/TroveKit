@@ -1,0 +1,78 @@
+src/components/Layout.tsx
+  fe23ada7e4716c2c 8,20,23,49-63
+src/tools/Settings.tsx
+  fe23ada7e4716c2c 5,13
+src/App.tsx
+  fe23ada7e4716c2c 130,145
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.0.8",
+  "base_commit_sha": "e5ea05ae427e593f247b3debb0ea17d6a745a271",
+  "prompts": {
+    "fe23ada7e4716c2c": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019ff8df-062e-7c72-a262-6c57bdca67e2",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "luhaoyu <haoyu3@163.com>",
+      "messages": [],
+      "total_additions": 371,
+      "total_deletions": 365,
+      "accepted_lines": 371,
+      "overriden_lines": 0
+    }
+  },
+  "commit_stats": {
+    "git_diff_added_lines": 27,
+    "git_diff_deleted_lines": 21,
+    "ai_additions": 22,
+    "ai_accepted": 22,
+    "BYMC": 5,
+    "mixed_additions": 0,
+    "BYAC": 22,
+    "BYRC": 0,
+    "per_file": {
+      "src/App.tsx": {
+        "BYMC": [],
+        "BYAC": [
+          "130",
+          "145"
+        ],
+        "BYRC": []
+      },
+      "src/components/Layout.tsx": {
+        "BYMC": [],
+        "BYAC": [
+          "8",
+          "20",
+          "23",
+          "49-63"
+        ],
+        "BYRC": []
+      },
+      "src/tools/LogManagementTool.tsx": {
+        "BYMC": [
+          "474-475",
+          "483",
+          "520",
+          "557"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/Settings.tsx": {
+        "BYMC": [],
+        "BYAC": [
+          "5",
+          "13"
+        ],
+        "BYRC": []
+      }
+    }
+  },
+  "ipa_account": "luhaoyu",
+  "commit_timestamp": 1786590068,
+  "requirement_id": ""
+}
