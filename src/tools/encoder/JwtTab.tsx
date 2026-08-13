@@ -321,42 +321,44 @@ export function JwtTab() {
   return (
     <div className="flex h-full min-h-0 flex-col gap-3 overflow-hidden">
       <div className="shrink-0 overflow-hidden rounded-xl border border-default-200 bg-default-50/70">
-        <div className="flex h-[46px] items-center gap-2 px-2">
-          <span className="flex shrink-0 items-center gap-1.5 px-1 text-xs font-semibold text-default-600">
-            <KeyRound className="h-3.5 w-3.5" />
-            {t("tools.encoder.signatureConfig")}
-          </span>
+        <div className="flex min-h-[46px] flex-wrap items-center gap-2 p-1.5">
+          <div className="flex min-w-[min(100%,15rem)] flex-1 flex-wrap items-center gap-2">
+            <span className="flex shrink-0 items-center gap-1.5 px-1 text-xs font-semibold text-default-600">
+              <KeyRound className="h-3.5 w-3.5" />
+              {t("tools.encoder.signatureConfig")}
+            </span>
 
-          <Select
-            className="w-28"
-            classNames={{ trigger: "h-8 bg-background px-2.5 text-xs" }}
-            selectedKeys={[algorithm]}
-            onChange={(event) => setAlgorithm(event.target.value)}
-            aria-label={t("tools.encoder.algorithm")}
-          >
-            {ALGORITHMS.map((alg) => <SelectItem key={alg.value}>{alg.label}</SelectItem>)}
-          </Select>
+            <Select
+              className="w-28 shrink-0"
+              classNames={{ trigger: "h-8 bg-background px-2.5 text-xs" }}
+              selectedKeys={[algorithm]}
+              onChange={(event) => setAlgorithm(event.target.value)}
+              aria-label={t("tools.encoder.algorithm")}
+            >
+              {ALGORITHMS.map((alg) => <SelectItem key={alg.value}>{alg.label}</SelectItem>)}
+            </Select>
 
-          <span className="hidden text-[11px] text-default-400 sm:inline">
-            {algType === "HMAC" ? "HMAC" : algType}
-          </span>
+            <span className="hidden text-[11px] text-default-400 sm:inline">
+              {algType === "HMAC" ? "HMAC" : algType}
+            </span>
+          </div>
 
-          <div className="min-w-2 flex-1" />
-
-          <Button size="sm" variant="flat" color="primary" className="h-8" onPress={handleManualDecode} startContent={<RefreshCw className="h-3.5 w-3.5" />}>
-            {t("tools.encoder.decode")}
-          </Button>
-          <Button size="sm" color="primary" className="h-8" onPress={handleEncode}>
-            {t("tools.encoder.encodeJwt")}
-          </Button>
-          <Button size="sm" variant="light" className="h-8 text-default-500 hover:bg-danger/10 hover:text-danger" onPress={clearAll} startContent={<Trash2 className="h-4 w-4" />}>
-            {t("tools.encoder.clearAll")}
-          </Button>
+          <div className="flex max-w-full shrink-0 flex-wrap items-center gap-2">
+            <Button size="sm" variant="flat" color="primary" className="h-8" onPress={handleManualDecode} startContent={<RefreshCw className="h-3.5 w-3.5" />}>
+              {t("tools.encoder.decode")}
+            </Button>
+            <Button size="sm" color="primary" className="h-8" onPress={handleEncode}>
+              {t("tools.encoder.encodeJwt")}
+            </Button>
+            <Button size="sm" variant="light" className="h-8 text-default-500 hover:bg-danger/10 hover:text-danger" onPress={clearAll} startContent={<Trash2 className="h-4 w-4" />}>
+              {t("tools.encoder.clearAll")}
+            </Button>
+          </div>
         </div>
 
-        <div className="grid h-[58px] grid-cols-2 gap-2 border-t border-default-200 bg-background/70 p-2">
+        <div className="border-t border-default-200 bg-background/70 p-2">
           {algType === "HMAC" ? (
-            <div className="col-span-2 flex min-w-0 items-center gap-2">
+            <div className="flex min-h-10 min-w-0 items-center gap-2">
               <label htmlFor="jwt-secret" className="w-16 shrink-0 text-right text-[11px] font-medium text-default-500">
                 {t("tools.encoder.secret")}
               </label>
@@ -375,7 +377,7 @@ export function JwtTab() {
               />
             </div>
           ) : (
-            <>
+            <div className="grid gap-2 [grid-template-columns:repeat(auto-fit,minmax(min(100%,18rem),1fr))]">
               <div className="flex min-w-0 items-center gap-2">
                 <label htmlFor="jwt-public-key" className="shrink-0 text-[11px] font-medium text-default-500">
                   {t("tools.encoder.publicKey")}
@@ -412,7 +414,7 @@ export function JwtTab() {
                   }}
                 />
               </div>
-            </>
+            </div>
           )}
         </div>
       </div>

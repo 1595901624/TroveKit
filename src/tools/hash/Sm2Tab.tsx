@@ -139,8 +139,35 @@ export function Sm2Tab() {
       inputPlaceholder={t("tools.hash.aesInputPlaceholder")}
       output={output}
       onClear={() => { setInput(""); setOutput(""); setPublicKey(""); setPrivateKey(""); removeStoredItem(STORAGE_KEY) }}
-      toolbarContent={<><RadioGroup orientation="horizontal" value={mode} onValueChange={setMode} label={t("tools.hash.cipherMode")} size="sm"><Radio value="1">{t("tools.hash.c1c3c2")}</Radio><Radio value="0">{t("tools.hash.c1c2c3")}</Radio></RadioGroup><Button size="sm" variant="flat" className="h-8" onPress={handleGenerateKeys} startContent={<KeyRound className="h-4 w-4" />}>{t("tools.hash.generateKeyPair")}</Button></>}
-      configContent={<div className="grid gap-2 md:grid-cols-2"><Textarea aria-label={t("tools.hash.publicKey")} placeholder={t("tools.hash.publicKey")} value={publicKey} onValueChange={setPublicKey} minRows={2} classNames={{ inputWrapper: "h-20 min-h-20 bg-background p-2.5", input: "min-h-0 overflow-auto font-mono text-[10px] leading-4" }} /><Textarea aria-label={t("tools.hash.privateKey")} placeholder={t("tools.hash.privateKey")} value={privateKey} onValueChange={setPrivateKey} minRows={2} classNames={{ inputWrapper: "h-20 min-h-20 bg-background p-2.5", input: "min-h-0 overflow-auto font-mono text-[10px] leading-4" }} /></div>}
+      toolbarContent={(
+        <>
+          <div className="flex min-h-8 min-w-0 flex-wrap items-center gap-x-2 gap-y-1 rounded-lg border border-default-200 bg-background px-2.5 py-1">
+            <span className="shrink-0 whitespace-nowrap text-[11px] font-medium text-default-500">
+              {t("tools.hash.cipherMode")}
+            </span>
+            <RadioGroup
+              aria-label={t("tools.hash.cipherMode")}
+              orientation="horizontal"
+              value={mode}
+              onValueChange={setMode}
+              size="sm"
+              className="min-w-0 gap-x-3 gap-y-1"
+            >
+              <Radio value="1">{t("tools.hash.c1c3c2")}</Radio>
+              <Radio value="0">{t("tools.hash.c1c2c3")}</Radio>
+            </RadioGroup>
+          </div>
+          <Button size="sm" variant="flat" className="h-8 shrink-0" onPress={handleGenerateKeys} startContent={<KeyRound className="h-4 w-4" />}>
+            {t("tools.hash.generateKeyPair")}
+          </Button>
+        </>
+      )}
+      configContent={(
+        <div className="grid gap-2 [grid-template-columns:repeat(auto-fit,minmax(min(100%,18rem),1fr))]">
+          <Textarea aria-label={t("tools.hash.publicKey")} placeholder={t("tools.hash.publicKey")} value={publicKey} onValueChange={setPublicKey} minRows={2} classNames={{ inputWrapper: "h-20 min-h-20 bg-background p-2.5", input: "min-h-0 overflow-auto font-mono text-[10px] leading-4" }} />
+          <Textarea aria-label={t("tools.hash.privateKey")} placeholder={t("tools.hash.privateKey")} value={privateKey} onValueChange={setPrivateKey} minRows={2} classNames={{ inputWrapper: "h-20 min-h-20 bg-background p-2.5", input: "min-h-0 overflow-auto font-mono text-[10px] leading-4" }} />
+        </div>
+      )}
       actions={<><Button size="sm" color="primary" onPress={handleEncrypt} isDisabled={!input} startContent={<Lock className="h-4 w-4" />}>{t("tools.hash.encrypt")}</Button><Button size="sm" variant="flat" onPress={handleDecrypt} isDisabled={!input} startContent={<Unlock className="h-4 w-4" />}>{t("tools.hash.decrypt")}</Button></>}
     />
   )

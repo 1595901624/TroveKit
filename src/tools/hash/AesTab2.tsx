@@ -669,14 +669,20 @@ export function AesTab2() {
             </>
           )}
           configContent={(
-            <div className="grid gap-2 lg:grid-cols-[minmax(0,1fr)_104px_88px_minmax(0,1fr)_88px_104px_144px]">
-              <Input size="sm" label={t("tools.hash.key")} placeholder={t("tools.hash.keyPlaceholder")} value={aesKey} onValueChange={setAesKey} classNames={{ inputWrapper: "h-9 min-h-9 bg-background" }} />
-              <Select size="sm" label={t("tools.hash.keySize")} selectedKeys={[aesKeySize]} onChange={(event) => setAesKeySize(event.target.value)}><SelectItem key="128">{t("tools.hash.bit128")}</SelectItem><SelectItem key="192">{t("tools.hash.bit192")}</SelectItem><SelectItem key="256">{t("tools.hash.bit256")}</SelectItem></Select>
-              <Select size="sm" label={t("tools.hash.type")} selectedKeys={[aesKeyType]} onChange={(event) => setAesKeyType(event.target.value)}><SelectItem key="text">{t("tools.hash.text")}</SelectItem><SelectItem key="hex">{t("tools.hash.hex")}</SelectItem></Select>
-              <Input size="sm" label={t("tools.hash.iv")} placeholder={t("tools.hash.iv")} value={aesIv} onValueChange={setAesIv} isDisabled={aesMode === "ECB"} classNames={{ inputWrapper: "h-9 min-h-9 bg-background" }} />
-              <Select size="sm" label={t("tools.hash.type")} selectedKeys={[aesIvType]} onChange={(event) => setAesIvType(event.target.value)} isDisabled={aesMode === "ECB"}><SelectItem key="text">{t("tools.hash.text")}</SelectItem><SelectItem key="hex">{t("tools.hash.hex")}</SelectItem></Select>
-              <Select size="sm" label={t("tools.hash.mode")} selectedKeys={[aesMode]} onChange={(event) => setAesMode(event.target.value)}>{['CBC', 'ECB', 'CTR', 'OFB', 'CFB'].map((mode) => <SelectItem key={mode}>{mode}</SelectItem>)}</Select>
-              <Select size="sm" label={t("tools.hash.padding")} selectedKeys={[aesPadding]} onChange={(event) => setAesPadding(event.target.value)}><SelectItem key="Pkcs7">{t("tools.hash.pkcs7")}</SelectItem><SelectItem key="ZeroPadding">{t("tools.hash.zeroPadding")}</SelectItem><SelectItem key="AnsiX923">{t("tools.hash.ansiX923")}</SelectItem><SelectItem key="Iso10126">{t("tools.hash.iso10126")}</SelectItem><SelectItem key="NoPadding">{t("tools.hash.noPadding")}</SelectItem></Select>
+            <div className="grid gap-2 [grid-template-columns:repeat(auto-fit,minmax(min(100%,19rem),1fr))]">
+              <div className="grid min-w-0 grid-cols-[minmax(0,1fr)_104px_88px] gap-2">
+                <Input size="sm" label={t("tools.hash.key")} placeholder={t("tools.hash.keyPlaceholder")} value={aesKey} onValueChange={setAesKey} className="min-w-0" classNames={{ inputWrapper: "h-9 min-h-9 bg-background" }} />
+                <Select size="sm" label={t("tools.hash.keySize")} selectedKeys={[aesKeySize]} onChange={(event) => setAesKeySize(event.target.value)}><SelectItem key="128">{t("tools.hash.bit128")}</SelectItem><SelectItem key="192">{t("tools.hash.bit192")}</SelectItem><SelectItem key="256">{t("tools.hash.bit256")}</SelectItem></Select>
+                <Select size="sm" label={t("tools.hash.type")} selectedKeys={[aesKeyType]} onChange={(event) => setAesKeyType(event.target.value)}><SelectItem key="text">{t("tools.hash.text")}</SelectItem><SelectItem key="hex">{t("tools.hash.hex")}</SelectItem></Select>
+              </div>
+              <div className="grid min-w-0 grid-cols-[minmax(0,1fr)_88px] gap-2">
+                <Input size="sm" label={t("tools.hash.iv")} placeholder={t("tools.hash.iv")} value={aesIv} onValueChange={setAesIv} isDisabled={aesMode === "ECB"} className="min-w-0" classNames={{ inputWrapper: "h-9 min-h-9 bg-background" }} />
+                <Select size="sm" label={t("tools.hash.type")} selectedKeys={[aesIvType]} onChange={(event) => setAesIvType(event.target.value)} isDisabled={aesMode === "ECB"}><SelectItem key="text">{t("tools.hash.text")}</SelectItem><SelectItem key="hex">{t("tools.hash.hex")}</SelectItem></Select>
+              </div>
+              <div className="grid min-w-0 grid-cols-[minmax(0,104px)_minmax(0,144px)] gap-2">
+                <Select size="sm" label={t("tools.hash.mode")} selectedKeys={[aesMode]} onChange={(event) => setAesMode(event.target.value)}>{['CBC', 'ECB', 'CTR', 'OFB', 'CFB'].map((mode) => <SelectItem key={mode}>{mode}</SelectItem>)}</Select>
+                <Select size="sm" label={t("tools.hash.padding")} selectedKeys={[aesPadding]} onChange={(event) => setAesPadding(event.target.value)}><SelectItem key="Pkcs7">{t("tools.hash.pkcs7")}</SelectItem><SelectItem key="ZeroPadding">{t("tools.hash.zeroPadding")}</SelectItem><SelectItem key="AnsiX923">{t("tools.hash.ansiX923")}</SelectItem><SelectItem key="Iso10126">{t("tools.hash.iso10126")}</SelectItem><SelectItem key="NoPadding">{t("tools.hash.noPadding")}</SelectItem></Select>
+              </div>
             </div>
           )}
           actions={<Button size="sm" color="primary" variant="solid" className="h-8 min-w-[88px]" onPress={handleRun} isDisabled={!aesInput} startContent={operation === "encrypt" ? <Lock className="h-4 w-4" /> : <Unlock className="h-4 w-4" />}>{operation === "encrypt" ? t("tools.hash.encrypt") : t("tools.hash.decrypt")}</Button>}
