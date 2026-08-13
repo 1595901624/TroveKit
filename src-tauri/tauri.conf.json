@@ -15,8 +15,8 @@
         "title": "TroveKit",
         "width": 1250,
         "height": 740,
-        "minWidth": 960,
-        "minHeight": 620,
+        "minWidth": 1100,
+        "minHeight": 680,
         "decorations": false
       }
     ],

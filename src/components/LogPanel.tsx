@@ -11,8 +11,9 @@ import { cn } from "../lib/utils"
 type FilterType = LogEntry['type'] | 'all'
 
 const LOG_PANEL_MIN_WIDTH = 280
-const LOG_PANEL_MAX_WIDTH = 640
-const LOG_PANEL_DEFAULT_WIDTH = 320
+const LOG_PANEL_MAX_WIDTH = 340
+const LOG_PANEL_DEFAULT_WIDTH = LOG_PANEL_MIN_WIDTH
+const LOG_PANEL_LEGACY_DEFAULT_WIDTH = 320
 const MAX_VISIBLE_PANEL_LOGS = 50
 const LOG_PANEL_TRANSITION_MS = 200
 
@@ -59,9 +60,15 @@ export function LogPanel() {
 
   useEffect(() => {
     if (isStoredWidthLoaded) {
-      updatePanelWidth(typeof storedWidth === "number" && Number.isFinite(storedWidth) ? storedWidth : LOG_PANEL_DEFAULT_WIDTH)
+      const validStoredWidth = typeof storedWidth === "number" && Number.isFinite(storedWidth)
+      const requestedWidth = !validStoredWidth || storedWidth === LOG_PANEL_LEGACY_DEFAULT_WIDTH
+        ? LOG_PANEL_DEFAULT_WIDTH
+        : storedWidth
+      const nextWidth = clampLogPanelWidth(requestedWidth)
+      updatePanelWidth(nextWidth)
+      if (nextWidth !== storedWidth) setStoredWidth(nextWidth)
     }
-  }, [isStoredWidthLoaded, storedWidth])
+  }, [isStoredWidthLoaded, setStoredWidth, storedWidth])
 
   useEffect(() => {
     if (isOpen) {

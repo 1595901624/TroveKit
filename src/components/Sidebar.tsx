@@ -27,10 +27,10 @@ interface SidebarProps {
 }
 
 const groupOrder: ToolId[] = ["encoder", "crypto", "classical", "formatters", "generators", "converter", "others"]
-const SIDEBAR_MIN_WIDTH = 220
-const SIDEBAR_MAX_WIDTH = 480
-const SIDEBAR_DEFAULT_WIDTH = 248
-const SIDEBAR_LEGACY_DEFAULT_WIDTH = 280
+const SIDEBAR_MIN_WIDTH = 200
+const SIDEBAR_MAX_WIDTH = 240
+const SIDEBAR_DEFAULT_WIDTH = SIDEBAR_MIN_WIDTH
+const SIDEBAR_LEGACY_DEFAULT_WIDTHS = new Set([220, 248, 280])
 
 const clampSidebarWidth = (width: number) => Math.min(SIDEBAR_MAX_WIDTH, Math.max(SIDEBAR_MIN_WIDTH, width))
 
@@ -59,9 +59,10 @@ export function Sidebar({ macOSOverlay = false, isCollapsed, activeTool, activeT
       const validStoredWidth = typeof storedWidth === "number" && Number.isFinite(storedWidth)
       // 旧版本会自动持久化 280px 默认值；将它迁移到更紧凑的新默认值，
       // 其他宽度视为用户主动调整并继续保留。
-      const nextWidth = !validStoredWidth || storedWidth === SIDEBAR_LEGACY_DEFAULT_WIDTH
+      const requestedWidth = !validStoredWidth || SIDEBAR_LEGACY_DEFAULT_WIDTHS.has(storedWidth)
         ? SIDEBAR_DEFAULT_WIDTH
         : storedWidth
+      const nextWidth = clampSidebarWidth(requestedWidth)
       updateSidebarWidth(nextWidth)
       if (nextWidth !== storedWidth) setStoredWidth(nextWidth)
     }

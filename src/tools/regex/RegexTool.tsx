@@ -527,7 +527,7 @@ export function RegexTool() {
         </Button>
       </div>
 
-      <div className="grid min-h-0 flex-1 grid-rows-2 overflow-hidden rounded-xl border border-default-200 bg-background lg:grid-cols-[minmax(0,1.1fr)_minmax(380px,.9fr)] lg:grid-rows-1">
+      <div className="regex-workbench grid min-h-0 flex-1 grid-rows-2 overflow-hidden rounded-xl border border-default-200 bg-background">
         <section className="flex min-h-0 min-w-0 flex-col" aria-labelledby="regex-input-heading">
           <div className="flex h-11 shrink-0 items-center justify-between gap-3 border-b border-default-200 px-3.5">
             <div className="flex min-w-0 items-baseline gap-3">
@@ -560,7 +560,7 @@ export function RegexTool() {
           </div>
         </section>
 
-        <section className="flex min-h-0 min-w-0 flex-col border-t border-default-200 lg:border-l lg:border-t-0" aria-label={t("tools.regex.panelsAria")}>
+        <section className="regex-results flex min-h-0 min-w-0 flex-col border-t border-default-200" aria-label={t("tools.regex.panelsAria")}>
           <div className="flex h-11 shrink-0 items-center justify-between gap-2 border-b border-default-200 pr-3">
             <Tabs
               aria-label={t("tools.regex.panelsAria")}
