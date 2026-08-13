@@ -1,0 +1,80 @@
+src/components/Sidebar.tsx
+  fe23ada7e4716c2c 30-33,62,65
+src/components/LogPanel.tsx
+  fe23ada7e4716c2c 14-16,63-69,71
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.0.8",
+  "base_commit_sha": "061b653cf8edcd50bda60bdde69d11545376d56e",
+  "prompts": {
+    "fe23ada7e4716c2c": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019ff8df-062e-7c72-a262-6c57bdca67e2",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "luhaoyu <haoyu3@163.com>",
+      "messages": [],
+      "total_additions": 218,
+      "total_deletions": 210,
+      "accepted_lines": 214,
+      "overriden_lines": 0
+    }
+  },
+  "commit_stats": {
+    "git_diff_added_lines": 34,
+    "git_diff_deleted_lines": 13,
+    "ai_additions": 17,
+    "ai_accepted": 17,
+    "BYMC": 17,
+    "mixed_additions": 0,
+    "BYAC": 17,
+    "BYRC": 0,
+    "per_file": {
+      "src-tauri/tauri.conf.json": {
+        "BYMC": [
+          "18-19"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/components/LogPanel.tsx": {
+        "BYMC": [],
+        "BYAC": [
+          "14-16",
+          "63-69",
+          "71"
+        ],
+        "BYRC": []
+      },
+      "src/components/Sidebar.tsx": {
+        "BYMC": [],
+        "BYAC": [
+          "30-33",
+          "62",
+          "65"
+        ],
+        "BYRC": []
+      },
+      "src/styles/globals.css": {
+        "BYMC": [
+          "252-264"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/regex/RegexTool.tsx": {
+        "BYMC": [
+          "530",
+          "563"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      }
+    }
+  },
+  "ipa_account": "luhaoyu",
+  "commit_timestamp": 1786589167,
+  "requirement_id": ""
+}
