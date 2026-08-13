@@ -1,13 +1,12 @@
 import { useEffect, useMemo, useRef, useState } from "react"
 import {
   Button,
+  ButtonGroup,
   Dropdown,
   DropdownItem,
   DropdownMenu,
   DropdownTrigger,
   Input,
-  Tabs,
-  Tab,
   Textarea,
   addToast,
 } from "../../components/ui/base-ui"
@@ -562,17 +561,30 @@ export function RegexTool() {
 
         <section className="regex-results flex min-h-0 min-w-0 flex-col border-t border-default-200" aria-label={t("tools.regex.panelsAria")}>
           <div className="flex h-11 shrink-0 items-center justify-between gap-2 border-b border-default-200 pr-3">
-            <Tabs
-              aria-label={t("tools.regex.panelsAria")}
-              selectedKey={panelTab}
-              onSelectionChange={(key) => setPanelTab(key as PanelTab)}
-              className="min-w-0"
-              classNames={{ tabList: "min-w-0 border-0 px-1", tab: "whitespace-nowrap px-2.5 py-3 text-xs" }}
-            >
-              <Tab key="matchInfo" title={t("tools.regex.matchInfo")} />
-              <Tab key="extract" title={t("tools.regex.extractExpr")} />
-              <Tab key="replaceResult" title={t("tools.regex.replaceResult")} />
-            </Tabs>
+            <ButtonGroup aria-label={t("tools.regex.panelsAria")} className="min-w-0 rounded-lg bg-default-100 p-0.5">
+              {([
+                ["matchInfo", t("tools.regex.matchInfo")],
+                ["extract", t("tools.regex.extractExpr")],
+                ["replaceResult", t("tools.regex.replaceResult")],
+              ] as Array<[PanelTab, string]>).map(([value, label]) => {
+                const selected = panelTab === value
+                return (
+                  <Button
+                    key={value}
+                    size="sm"
+                    variant={selected ? "flat" : "light"}
+                    color={selected ? "primary" : "default"}
+                    className={selected
+                      ? "h-8 min-w-0 bg-primary/10 px-2.5 text-xs text-primary dark:bg-primary/15"
+                      : "h-8 min-w-0 px-2.5 text-xs text-default-600"}
+                    aria-pressed={selected}
+                    onPress={() => setPanelTab(value)}
+                  >
+                    <span className="truncate">{label}</span>
+                  </Button>
+                )
+              })}
+            </ButtonGroup>
 
             <div
               className={`flex min-w-0 shrink items-center gap-1.5 text-[11px] ${regexError ? "text-danger" : "text-default-400"}`}
