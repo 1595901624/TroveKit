@@ -1,0 +1,71 @@
+src/main.tsx
+  fe23ada7e4716c2c 12-19
+src/lib/store.ts
+  fe23ada7e4716c2c 5-9,12-13,17,27,33,38,54
+src/hooks/usePersistentState.ts
+  fe23ada7e4716c2c 2-12,16-18,24
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.0.8",
+  "base_commit_sha": "188844802e2775a099c3d3928917c30edf5c0e94",
+  "prompts": {
+    "fe23ada7e4716c2c": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019ff8df-062e-7c72-a262-6c57bdca67e2",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "luhaoyu <haoyu3@163.com>",
+      "messages": [],
+      "total_additions": 73,
+      "total_deletions": 51,
+      "accepted_lines": 72,
+      "overriden_lines": 0
+    }
+  },
+  "commit_stats": {
+    "git_diff_added_lines": 35,
+    "git_diff_deleted_lines": 13,
+    "ai_additions": 35,
+    "ai_accepted": 35,
+    "BYMC": 0,
+    "mixed_additions": 0,
+    "BYAC": 35,
+    "BYRC": 0,
+    "per_file": {
+      "src/hooks/usePersistentState.ts": {
+        "BYMC": [],
+        "BYAC": [
+          "2-12",
+          "16-18",
+          "24"
+        ],
+        "BYRC": []
+      },
+      "src/lib/store.ts": {
+        "BYMC": [],
+        "BYAC": [
+          "5-9",
+          "12-13",
+          "17",
+          "27",
+          "33",
+          "38",
+          "54"
+        ],
+        "BYRC": []
+      },
+      "src/main.tsx": {
+        "BYMC": [],
+        "BYAC": [
+          "12-19"
+        ],
+        "BYRC": []
+      }
+    }
+  },
+  "ipa_account": "luhaoyu",
+  "commit_timestamp": 1786591407,
+  "requirement_id": ""
+}
