@@ -28,10 +28,13 @@ jobs:
             args: '--target aarch64-unknown-linux-gnu'
             target: 'aarch64-unknown-linux-gnu'
           - platform: 'windows-latest' # Windows x64
-            args: ''
+            args: '--bundles nsis'
             target: 'x86_64-pc-windows-msvc'
+          - platform: 'windows-latest' # Windows ARM64
+            args: '--target aarch64-pc-windows-msvc --bundles nsis'
+            target: 'aarch64-pc-windows-msvc'
           - platform: 'windows-latest' # Windows x86
-            args: '--target i686-pc-windows-msvc'
+            args: '--target i686-pc-windows-msvc --bundles nsis'
             target: 'i686-pc-windows-msvc'
 
     runs-on: ${{ matrix.platform }}
@@ -98,8 +101,9 @@ jobs:
 
             | 操作系统 | 架构 | 位数 | 包类型 | 示例文件名 |
             |---|---:|---:|---|---|
-            | Windows | x86_64 (x64) | 64-bit | Installer (EXE / MSI) | `TroveKit_${{ env.APP_VERSION }}_x64-setup.exe` / `TroveKit_${{ env.APP_VERSION }}_x64_en-US.msi` |
-            | Windows | x86 (32-bit) | 32-bit | Installer (EXE / MSI) | `TroveKit_${{ env.APP_VERSION }}_x86-setup.exe` / `TroveKit_${{ env.APP_VERSION }}_x86_en-US.msi` |
+            | Windows | x86_64 (x64) | 64-bit | NSIS Installer (EXE) | `TroveKit_${{ env.APP_VERSION }}_x64-setup.exe` |
+            | Windows | ARM64 | 64-bit | NSIS Installer (EXE) | `TroveKit_${{ env.APP_VERSION }}_arm64-setup.exe` |
+            | Windows | x86 (32-bit) | 32-bit | NSIS Installer (EXE) | `TroveKit_${{ env.APP_VERSION }}_x86-setup.exe` |
             | macOS | arm64 (Apple Silicon) | 64-bit | DMG / .app.tar.gz | `TroveKit_${{ env.APP_VERSION }}_aarch64.dmg` / `TroveKit_${{ env.APP_VERSION }}_aarch64.app.tar.gz` |
             | macOS | x86_64 (Intel) | 64-bit | DMG / .app.tar.gz | `TroveKit_${{ env.APP_VERSION }}_x64.dmg` / `TroveKit_${{ env.APP_VERSION }}_x64.app.tar.gz` |
             | Linux (Debian/Ubuntu) | amd64 (x86_64) | 64-bit | DEB | `TroveKit_${{ env.APP_VERSION }}_amd64.deb` |
@@ -119,8 +123,9 @@ jobs:
 
             | OS | Arch | Bits | Package Type | Example filename |
             |---|---:|---:|---|---|
-            | Windows | x86_64 (x64) | 64-bit | Installer (EXE / MSI) | `TroveKit_${{ env.APP_VERSION }}_x64-setup.exe` / `TroveKit_${{ env.APP_VERSION }}_x64_en-US.msi` |
-            | Windows | x86 (32-bit) | 32-bit | Installer (EXE / MSI) | `TroveKit_${{ env.APP_VERSION }}_x86-setup.exe` / `TroveKit_${{ env.APP_VERSION }}_x86_en-US.msi` |
+            | Windows | x86_64 (x64) | 64-bit | NSIS Installer (EXE) | `TroveKit_${{ env.APP_VERSION }}_x64-setup.exe` |
+            | Windows | ARM64 | 64-bit | NSIS Installer (EXE) | `TroveKit_${{ env.APP_VERSION }}_arm64-setup.exe` |
+            | Windows | x86 (32-bit) | 32-bit | NSIS Installer (EXE) | `TroveKit_${{ env.APP_VERSION }}_x86-setup.exe` |
             | macOS | arm64 (Apple Silicon) | 64-bit | DMG / .app.tar.gz | `TroveKit_${{ env.APP_VERSION }}_aarch64.dmg` / `TroveKit_${{ env.APP_VERSION }}_aarch64.app.tar.gz` |
             | macOS | x86_64 (Intel) | 64-bit | DMG / .app.tar.gz | `TroveKit_${{ env.APP_VERSION }}_x64.dmg` / `TroveKit_${{ env.APP_VERSION }}_x64.app.tar.gz` |
             | Linux (Debian/Ubuntu) | amd64 (x86_64) | 64-bit | DEB | `TroveKit_${{ env.APP_VERSION }}_amd64.deb` |
