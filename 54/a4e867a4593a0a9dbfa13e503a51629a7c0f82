@@ -1,0 +1,104 @@
+src/tools/hash/AesTab2.tsx
+  fe23ada7e4716c2c 672-685
+src/tools/hash/DesTab.tsx
+  fe23ada7e4716c2c 260-262
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.0.8",
+  "base_commit_sha": "54a4e867a4593a0a9dbfa13e503a51629a7c0f82",
+  "prompts": {
+    "fe23ada7e4716c2c": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019ff8df-062e-7c72-a262-6c57bdca67e2",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "luhaoyu <haoyu3@163.com>",
+      "messages": [],
+      "total_additions": 17,
+      "total_deletions": 11,
+      "accepted_lines": 17,
+      "overriden_lines": 0
+    }
+  },
+  "commit_stats": {
+    "git_diff_added_lines": 95,
+    "git_diff_deleted_lines": 60,
+    "ai_additions": 17,
+    "ai_accepted": 17,
+    "BYMC": 75,
+    "mixed_additions": 0,
+    "BYAC": 17,
+    "BYRC": 0,
+    "per_file": {
+      "src/tools/encoder/JwtTab.tsx": {
+        "BYMC": [
+          "324-329",
+          "331-339",
+          "341-344",
+          "346-356",
+          "359",
+          "361",
+          "380",
+          "417"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/hash/AesTab2.tsx": {
+        "BYMC": [],
+        "BYAC": [
+          "672-685"
+        ],
+        "BYRC": []
+      },
+      "src/tools/hash/ChaCha20Tab.tsx": {
+        "BYMC": [
+          "277-280"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/hash/DesTab.tsx": {
+        "BYMC": [],
+        "BYAC": [
+          "260-262"
+        ],
+        "BYRC": []
+      },
+      "src/tools/hash/HashWorkbench.tsx": {
+        "BYMC": [
+          "105",
+          "108"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/hash/Sm2Tab.tsx": {
+        "BYMC": [
+          "142-170"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/hash/Sm4Tab.tsx": {
+        "BYMC": [
+          "157-159"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      },
+      "src/tools/hash/TripleDesTab.tsx": {
+        "BYMC": [
+          "214-216"
+        ],
+        "BYAC": [],
+        "BYRC": []
+      }
+    }
+  },
+  "ipa_account": "luhaoyu",
+  "commit_timestamp": 1786588423,
+  "requirement_id": ""
+}
