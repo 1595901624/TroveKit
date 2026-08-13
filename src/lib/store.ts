@@ -2,11 +2,19 @@ import { Store } from '@tauri-apps/plugin-store';
 
 const isTauri = typeof window !== 'undefined' && '__TAURI_INTERNALS__' in window;
 const store = isTauri ? await Store.load('store.bin') : null;
+const storedItemCache = new Map<string, string | null>();
+
+export function getCachedStoredItem(key: string): string | null | undefined {
+  return storedItemCache.get(key);
+}
 
 export async function getStoredItem(key: string): Promise<string | null> {
+  if (storedItemCache.has(key)) return storedItemCache.get(key) ?? null;
+
   try {
     const val = await store?.get<string>(key);
     if (val !== null && val !== undefined) {
+      storedItemCache.set(key, val);
       return val;
     }
 
@@ -16,15 +24,18 @@ export async function getStoredItem(key: string): Promise<string | null> {
       await store?.set(key, localVal);
       await store?.save();
       localStorage.removeItem(key);
+      storedItemCache.set(key, localVal);
       return localVal;
     }
   } catch (err) {
     console.error('Error in getStoredItem:', err);
   }
+  storedItemCache.set(key, null);
   return null;
 }
 
 export async function setStoredItem(key: string, value: string): Promise<void> {
+  storedItemCache.set(key, value);
   try {
     // 工具状态统一写入 Tauri store，不再镜像到 localStorage，减少 WebView2 进程里的同步存储缓存。
     if (store) {
@@ -40,6 +51,7 @@ export async function setStoredItem(key: string, value: string): Promise<void> {
 }
 
 export async function removeStoredItem(key: string): Promise<void> {
+  storedItemCache.set(key, null);
   try {
     await store?.delete(key);
     await store?.save();

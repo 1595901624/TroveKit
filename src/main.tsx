@@ -9,8 +9,14 @@ import { LogProvider } from "./contexts/LogContext";
 import { FeaturePreferencesProvider } from "./contexts/FeaturePreferencesContext";
 import { getStoredItem, setStoredItem } from "./lib/store";
 
-// 在首次渲染前预加载侧边栏持久化状态，避免启动时先展开再折叠的闪烁。
-await getStoredItem("sidebar-collapsed");
+// 在首次渲染前预加载左右面板状态，让首帧直接采用持久化布局，
+// 避免默认布局切换到保存布局时误播放展开/收起动画。
+await Promise.all([
+  getStoredItem("sidebar-collapsed"),
+  getStoredItem("sidebar-width"),
+  getStoredItem("logPanelIsOpen"),
+  getStoredItem("log-panel-width"),
+]);
 
 // 在首次渲染前初始化语言，避免先显示错误语言再切换的闪烁。
 const storedLang = await getStoredItem("i18nextLng");

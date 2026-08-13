@@ -1,23 +1,27 @@
 import { useState, useEffect, Dispatch, SetStateAction } from 'react';
-import { getStoredItem, setStoredItem, removeStoredItem } from '../lib/store';
+import { getCachedStoredItem, getStoredItem, setStoredItem, removeStoredItem } from '../lib/store';
+
+function parseStoredState<T>(key: string, stored: string | null | undefined, fallback: T): T {
+  if (stored === null || stored === undefined) return fallback;
+  try {
+    return JSON.parse(stored) as T;
+  } catch (e) {
+    console.error(`Failed to parse stored state for key "${key}"`, e);
+    return fallback;
+  }
+}
 
 export function usePersistentState<T>(key: string, initialState: T): [T, Dispatch<SetStateAction<T>>, () => void, boolean] {
   // 持久化状态异步从 Tauri store 恢复，避免启动时同步解析 localStorage 中的大文本。
-  const [state, setState] = useState<T>(initialState);
-  const [isLoaded, setIsLoaded] = useState(false);
+  const cachedState = getCachedStoredItem(key);
+  const [state, setState] = useState<T>(() => parseStoredState(key, cachedState, initialState));
+  const [isLoaded, setIsLoaded] = useState(cachedState !== undefined);
 
   useEffect(() => {
     let mounted = true;
     getStoredItem(key).then((stored) => {
       if (mounted) {
-        if (stored !== null) {
-          try {
-            const parsed = JSON.parse(stored);
-            setState(parsed);
-          } catch (e) {
-            console.error(`Failed to parse stored state for key "${key}"`, e);
-          }
-        }
+        if (stored !== null) setState(parseStoredState(key, stored, initialState));
         setIsLoaded(true);
       }
     });
