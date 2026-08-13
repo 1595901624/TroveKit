@@ -471,8 +471,8 @@ export function LogManagementTool() {
                   : "border-transparent hover:border-default-200 hover:bg-background"
               )}
             >
-              <div className="flex items-start justify-between gap-1">
-                <div className="flex-1 min-w-0">
+              <div className={cn("gap-1", editingSessionNote === s.sessionId ? "block" : "flex items-start justify-between")}>
+                <div className={cn("min-w-0", editingSessionNote === s.sessionId ? "w-full" : "flex-1")}>
                   {editingSessionNote === s.sessionId ? (
                     <div className="space-y-1.5" onClick={(e) => e.stopPropagation()}>
                       <Input
@@ -480,7 +480,7 @@ export function LogManagementTool() {
                         value={sessionNoteInput}
                         onValueChange={setSessionNoteInput}
                         placeholder={t("logManagement.sessionNotePlaceholder")}
-                        className="text-xs"
+                        className="min-w-0 w-full text-xs"
                         autoFocus
                         maxLength={100}
                       />
@@ -517,7 +517,7 @@ export function LogManagementTool() {
                     </div>
                   )}
                 </div>
-                <div className="flex shrink-0 gap-0.5">
+                {editingSessionNote !== s.sessionId && <div className="flex shrink-0 gap-0.5">
                   <Tooltip content={t("logManagement.switchToSession")}>
                     <Button
                         isIconOnly
@@ -554,7 +554,7 @@ export function LogManagementTool() {
                   >
                       <Trash2 className="w-3 h-3" />
                   </Button>
-                </div>
+                </div>}
               </div>
               
               <div className="mt-0.5 flex items-center justify-between text-[10px] text-default-400">

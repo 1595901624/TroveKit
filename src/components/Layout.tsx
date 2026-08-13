@@ -5,7 +5,7 @@ import { ThemeToggle } from "./ThemeToggle"
 import { LogPanel } from "./LogPanel"
 import { useLogUI } from "../contexts/LogContext"
 import { Button, Tooltip } from "../components/ui/base-ui"
-import { Terminal } from "lucide-react"
+import { ArrowLeft, Terminal } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { detectDesktopPlatform } from "../lib/platform"
 import { usePersistentState } from "../hooks/usePersistentState"
@@ -17,9 +17,10 @@ interface LayoutProps {
   onToolChange: (id: ToolId) => void
   onNavigate: (toolId: ToolId, tabId?: string) => void
   title: string
+  onBack?: () => void
 }
 
-export function Layout({ children, activeTool, activeTab, onToolChange, onNavigate, title }: LayoutProps) {
+export function Layout({ children, activeTool, activeTab, onToolChange, onNavigate, title, onBack }: LayoutProps) {
   const { togglePanel, isOpen } = useLogUI()
   const { t } = useTranslation()
   const [isMacOS] = useState(() => detectDesktopPlatform() === "macos")
@@ -45,7 +46,21 @@ export function Layout({ children, activeTool, activeTab, onToolChange, onNaviga
             data-tauri-drag-region={isMacOS ? true : undefined}
             className={`flex h-[var(--titlebar-height)] shrink-0 items-center justify-between border-b border-divider/80 transition-[padding] duration-200 ${isMacOS && isSidebarCollapsed ? "pl-[132px] pr-4" : "px-4"}`}
           >
-            <div className="min-w-0">
+            <div className="flex min-w-0 items-center gap-1">
+              {onBack && (
+                <Tooltip content={t("common.back", "返回")}>
+                  <Button
+                    isIconOnly
+                    size="sm"
+                    variant="light"
+                    className="h-8 w-8 min-w-8 rounded-md text-default-500 hover:bg-black/[0.05] hover:text-foreground dark:hover:bg-white/[0.07]"
+                    onPress={onBack}
+                    aria-label={t("common.back", "返回")}
+                  >
+                    <ArrowLeft className="h-[15px] w-[15px]" />
+                  </Button>
+                </Tooltip>
+              )}
               <h1 className="truncate text-[13px] font-medium tracking-[-0.01em]">{title}</h1>
             </div>
             <div className="flex items-center gap-1.5">

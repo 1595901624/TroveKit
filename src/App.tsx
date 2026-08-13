@@ -127,7 +127,7 @@ function App() {
       case "logManagement":
         return <LogManagementTool />
       case "settings":
-        return <Settings onBack={handleSettingsBack} />
+        return <Settings />
       case "home":
       default:
         return <HomeView onNavigate={handleNavigate} />
@@ -142,6 +142,7 @@ function App() {
         onToolChange={handleToolChange}
         onNavigate={handleNavigate}
         title={getTitle()}
+        onBack={activeTool === "settings" ? handleSettingsBack : undefined}
       >
         <div className="h-full">
           {/* 工具 chunk 加载期间显示稳定的工作区骨架，避免空白闪烁和布局跳动。 */}
