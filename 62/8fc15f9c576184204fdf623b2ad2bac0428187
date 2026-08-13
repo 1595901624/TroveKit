@@ -1,0 +1,73 @@
+src-tauri/tauri.conf.json
+  6edaac966d8728b9 39-49
+.github/workflows/release.yml
+  6edaac966d8728b9 31,33-35,37,101-103,120-122
+.github/workflows/prerelease.yml
+  6edaac966d8728b9 31,33-35,37,104-106,126-128
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.0.8",
+  "base_commit_sha": "628fc15f9c576184204fdf623b2ad2bac0428187",
+  "prompts": {
+    "6edaac966d8728b9": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019ff926-6b48-7be0-b133-dee021260d9a",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "luhaoyu <haoyu3@163.com>",
+      "messages": [],
+      "total_additions": 69,
+      "total_deletions": 48,
+      "accepted_lines": 68,
+      "overriden_lines": 0
+    }
+  },
+  "commit_stats": {
+    "git_diff_added_lines": 34,
+    "git_diff_deleted_lines": 13,
+    "ai_additions": 33,
+    "ai_accepted": 33,
+    "BYMC": 1,
+    "mixed_additions": 0,
+    "BYAC": 33,
+    "BYRC": 0,
+    "per_file": {
+      ".github/workflows/prerelease.yml": {
+        "BYMC": [],
+        "BYAC": [
+          "31",
+          "33-35",
+          "37",
+          "104-106",
+          "126-128"
+        ],
+        "BYRC": []
+      },
+      ".github/workflows/release.yml": {
+        "BYMC": [],
+        "BYAC": [
+          "31",
+          "33-35",
+          "37",
+          "101-103",
+          "120-122"
+        ],
+        "BYRC": []
+      },
+      "src-tauri/tauri.conf.json": {
+        "BYMC": [
+          "4"
+        ],
+        "BYAC": [
+          "39-49"
+        ],
+        "BYRC": []
+      }
+    }
+  },
+  "ipa_account": "luhaoyu",
+  "commit_timestamp": 1786591779,
+  "requirement_id": ""
+}
