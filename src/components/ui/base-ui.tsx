@@ -406,13 +406,25 @@ export function useDisclosure() {
   const [isOpen, setOpen] = useState(false)
   return useMemo(() => ({ isOpen, onOpen: () => setOpen(true), onClose: () => setOpen(false), onOpenChange: setOpen }), [isOpen])
 }
-const ModalContext = createContext({ onClose: () => {}, baseClassName: undefined as string | undefined })
-export function Modal({ children, isOpen, onClose, onOpenChange, classNames, ...props }: AnyProps) {
-  const { size: _size, scrollBehavior: _scroll, placement: _placement, ...root } = props
-  const close = () => { onOpenChange?.(false); onClose?.() }
-  return <ModalContext.Provider value={{ onClose: close, baseClassName: classNames?.base }}><BaseDialog.Root {...root} open={isOpen} onOpenChange={(open) => { onOpenChange?.(open); if (!open) onClose?.() }}>{children}</BaseDialog.Root></ModalContext.Provider>
+const modalSizeClasses: Record<string, string> = {
+  xs: "max-w-xs",
+  sm: "max-w-sm",
+  md: "max-w-md",
+  lg: "max-w-lg",
+  xl: "max-w-xl",
+  "2xl": "max-w-2xl",
+  "3xl": "max-w-3xl",
+  "4xl": "max-w-4xl",
+  "5xl": "max-w-5xl",
+  full: "max-w-[calc(100vw-2rem)]",
 }
-export function ModalContent({ children, className, classNames, hideCloseButton, ...props }: ModalContentProps) { const { onClose, baseClassName } = useContext(ModalContext); return <BaseDialog.Portal><BaseDialog.Backdrop className="fixed inset-0 z-[120] bg-black/45 backdrop-blur-sm data-[starting-style]:opacity-0 data-[ending-style]:opacity-0" /><BaseDialog.Viewport className="fixed inset-0 z-[121] flex items-center justify-center p-4"><BaseDialog.Popup {...props} className={cx("relative flex max-h-[90vh] w-full max-w-3xl flex-col overflow-hidden rounded-xl border border-default-200 bg-background shadow-2xl outline-none", baseClassName, classNames?.base, className)}>{!hideCloseButton && <BaseDialog.Close aria-label="Close" className="absolute right-4 top-4 z-10 rounded-md p-1 text-default-400 hover:bg-default-100 hover:text-foreground"><X className="h-4 w-4" /></BaseDialog.Close>}{typeof children === "function" ? children(onClose) : children}</BaseDialog.Popup></BaseDialog.Viewport></BaseDialog.Portal> }
+const ModalContext = createContext({ onClose: () => {}, baseClassName: undefined as string | undefined, sizeClassName: "max-w-md" })
+export function Modal({ children, isOpen, onClose, onOpenChange, classNames, ...props }: AnyProps) {
+  const { size = "md", scrollBehavior: _scroll, placement: _placement, ...root } = props
+  const close = () => { onOpenChange?.(false); onClose?.() }
+  return <ModalContext.Provider value={{ onClose: close, baseClassName: classNames?.base, sizeClassName: modalSizeClasses[size] ?? modalSizeClasses.md }}><BaseDialog.Root {...root} open={isOpen} onOpenChange={(open) => { onOpenChange?.(open); if (!open) onClose?.() }}>{children}</BaseDialog.Root></ModalContext.Provider>
+}
+export function ModalContent({ children, className, classNames, hideCloseButton, ...props }: ModalContentProps) { const { onClose, baseClassName, sizeClassName } = useContext(ModalContext); return <BaseDialog.Portal><BaseDialog.Backdrop className="fixed inset-0 z-[120] bg-black/45 backdrop-blur-sm data-[starting-style]:opacity-0 data-[ending-style]:opacity-0" /><BaseDialog.Viewport className="fixed inset-0 z-[121] flex items-center justify-center p-4"><BaseDialog.Popup {...props} className={cx("relative flex max-h-[90vh] w-full flex-col overflow-hidden rounded-xl border border-default-200 bg-background shadow-2xl outline-none", sizeClassName, baseClassName, classNames?.base, className)}>{!hideCloseButton && <BaseDialog.Close aria-label="Close" className="absolute right-4 top-4 z-10 rounded-md p-1 text-default-400 hover:bg-default-100 hover:text-foreground"><X className="h-4 w-4" /></BaseDialog.Close>}{typeof children === "function" ? children(onClose) : children}</BaseDialog.Popup></BaseDialog.Viewport></BaseDialog.Portal> }
 export function ModalHeader({ children, className, ...props }: AnyProps) { return <BaseDialog.Title {...props} className={cx("px-6 pt-5 text-lg font-semibold", className)}>{children}</BaseDialog.Title> }
 export function ModalBody({ children, className, ...props }: AnyProps) { return <div {...props} className={cx("min-h-0 overflow-auto px-6 py-4", className)}>{children}</div> }
 export function ModalFooter({ children, className, ...props }: AnyProps) { return <div {...props} className={cx("flex justify-end gap-2 px-6 pb-5", className)}>{children}</div> }

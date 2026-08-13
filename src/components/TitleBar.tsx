@@ -4,8 +4,6 @@ import { CheckMenuItem, Menu, MenuItem, Submenu } from "@tauri-apps/api/menu"
 import { getCurrentWindow } from "@tauri-apps/api/window"
 import { openUrl } from "@tauri-apps/plugin-opener"
 import {
-  ArrowLeft,
-  ArrowRight,
   Check,
   ChevronDown,
   ChevronRight,
@@ -168,8 +166,6 @@ export default function TitleBar({ onNavigate, onToggleSidebar }: TitleBarProps)
             <TitleButton label={t("common.sidebar", "侧栏")} onClick={onToggleSidebar}>
               <PanelLeft className="h-[17px] w-[17px]" />
             </TitleButton>
-            <TitleButton label={t("common.back", "返回")} disabled><ArrowLeft className="h-[17px] w-[17px]" /></TitleButton>
-            <TitleButton label={t("common.forward", "前进")} disabled><ArrowRight className="h-[17px] w-[17px]" /></TitleButton>
           </div>
 
           <div className="flex h-full items-center gap-0.5 text-[13px]" data-tauri-drag-region>

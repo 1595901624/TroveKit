@@ -890,26 +890,26 @@ export function LogManagementTool() {
       </section>
 
       <Modal isOpen={isOpen} onOpenChange={onOpenChange} backdrop="blur">
-        <ModalContent>
+        <ModalContent className="max-w-[420px] rounded-xl">
           {(onClose) => (
             <>
-              <ModalHeader className="flex flex-col gap-1">
+              <ModalHeader className="pr-12 text-base">
                 {deleteTarget?.type === 'session' 
                   ? t("logManagement.deleteSessionTitle") 
                   : t("logManagement.deleteLogTitle")}
               </ModalHeader>
-              <ModalBody>
-                <p>
+              <ModalBody className="py-3">
+                <p className="text-sm text-default-600">
                   {deleteTarget?.type === 'session'
                     ? t("logManagement.confirmDeleteSession")
                     : t("logManagement.confirmDeleteLog")}
                 </p>
               </ModalBody>
-              <ModalFooter>
-                <Button color="default" variant="light" onPress={onClose}>
+              <ModalFooter className="pt-1">
+                <Button size="sm" color="default" variant="light" onPress={onClose}>
                   {t("common.cancel")}
                 </Button>
-                <Button color="danger" onPress={confirmDelete}>
+                <Button size="sm" color="danger" onPress={confirmDelete}>
                   {t("common.delete")}
                 </Button>
               </ModalFooter>
