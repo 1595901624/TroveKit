@@ -445,13 +445,13 @@ export function LogManagementTool() {
           </Button>
         </div>
         
-        <ScrollShadow className="min-h-0 flex-1 p-2">
+        <ScrollShadow className="min-h-0 flex-1 p-2.5">
           {sessions.length === 0 && !loadingSessions && (
              <div className="py-10 text-center text-xs text-default-400">
                {t("logManagement.noSessions")}
              </div>
           )}
-          <div className="space-y-1">
+          <div className="space-y-2">
           {sessions.map((s) => (
             <div
               key={s.sessionId}
@@ -465,10 +465,10 @@ export function LogManagementTool() {
               aria-pressed={activeSessionId === s.sessionId}
               style={{ contentVisibility: "auto", containIntrinsicSize: "70px" }}
               className={cn(
-                "group flex cursor-pointer flex-col gap-1 rounded-lg border p-2.5 outline-none transition-colors focus-visible:ring-2 focus-visible:ring-primary/30",
+                "group relative flex cursor-pointer flex-col gap-2 overflow-hidden rounded-xl border px-3 py-2.5 outline-none transition-[border-color,background-color,box-shadow] focus-visible:ring-2 focus-visible:ring-primary/30",
                 activeSessionId === s.sessionId 
-                  ? "border-primary/35 bg-primary/10"
-                  : "border-transparent hover:border-default-200 hover:bg-background"
+                  ? "border-primary/30 bg-primary/5 shadow-sm before:absolute before:inset-y-2 before:left-0 before:w-0.5 before:rounded-r-full before:bg-primary"
+                  : "border-default-200/80 bg-background hover:border-default-300 hover:bg-default-50/45"
               )}
             >
               <div className={cn("gap-1", editingSessionNote === s.sessionId ? "block" : "flex items-start justify-between")}>
@@ -509,12 +509,16 @@ export function LogManagementTool() {
                       </div>
                     </div>
                   ) : (
-                    <div className={cn(
-                      "truncate text-xs font-semibold",
-                      s.note ? "text-amber-700 dark:text-warning" : "text-default-500 font-mono"
-                    )}>
-                      {s.note ? `💡 ${s.note}` : `# ${s.sessionId.slice(0, 8)}`}
-                    </div>
+                    s.note ? (
+                      <div className="flex min-w-0 items-center gap-1.5 text-xs font-semibold text-foreground">
+                        <MessageSquare className="h-3.5 w-3.5 shrink-0 text-primary" />
+                        <span className="truncate">{s.note}</span>
+                      </div>
+                    ) : (
+                      <div className="truncate font-mono text-xs font-semibold text-default-500">
+                        <span className="mr-1 text-default-400">#</span>{s.sessionId.slice(0, 8)}
+                      </div>
+                    )
                   )}
                 </div>
                 {editingSessionNote !== s.sessionId && <div className="flex shrink-0 gap-0.5">
@@ -523,12 +527,12 @@ export function LogManagementTool() {
                         isIconOnly
                         size="sm"
                         variant="light"
-                        className={cn("h-7 min-w-7", currentSessionId === s.sessionId && "bg-primary/10 text-primary")}
+                        className={cn("h-7 w-7 min-w-7 rounded-md text-default-500", currentSessionId === s.sessionId && "bg-primary/10 text-primary")}
                         onClick={(e) => handleSwitchToSession(s.sessionId, e)}
                         color="primary"
                         aria-label={t("logManagement.switchToSession")}
                     >
-                        <Eye className="w-3 h-3" />
+                        <Eye className="h-3.5 w-3.5" />
                     </Button>
                   </Tooltip>
                   <Tooltip content={t("logManagement.editSessionNote")}>
@@ -536,35 +540,35 @@ export function LogManagementTool() {
                         isIconOnly
                         size="sm"
                         variant="light"
-                        className="h-7 min-w-7"
+                        className="h-7 w-7 min-w-7 rounded-md text-default-500"
                         onClick={(e) => handleStartEditSessionNote(s.sessionId, s.note, e)}
                         aria-label={t("logManagement.editSessionNote")}
                     >
-                        {s.note ? <MessageSquare className="w-3 h-3 text-warning" /> : <Edit className="w-3 h-3" />}
+                        {s.note ? <MessageSquare className="h-3.5 w-3.5" /> : <Edit className="h-3.5 w-3.5" />}
                     </Button>
                   </Tooltip>
                   <Button
                       isIconOnly
                       size="sm"
                       variant="light"
-                      className="h-7 min-w-7 text-danger"
+                      className="h-7 w-7 min-w-7 rounded-md text-default-400 hover:bg-danger/10 hover:text-danger"
                       onClick={(e) => handleDeleteSession(s.sessionId, e)}
                       color="danger"
                       aria-label={t("logManagement.deleteSessionTitle")}
                   >
-                      <Trash2 className="w-3 h-3" />
+                      <Trash2 className="h-3.5 w-3.5" />
                   </Button>
                 </div>}
               </div>
               
-              <div className="mt-0.5 flex items-center justify-between text-[10px] text-default-400">
-                 <div className="flex items-center gap-1 truncate">
-                    <Clock className="w-3 h-3 shrink-0" />
+              <div className="flex items-center justify-between gap-2 border-t border-default-200/60 pt-2 text-[10px] text-default-400">
+                 <div className="flex min-w-0 items-center gap-1.5 truncate">
+                    <Clock className="h-3.5 w-3.5 shrink-0" />
                     <span className="truncate">
                       {new Date(s.latestTimestamp).toLocaleDateString()} {new Date(s.latestTimestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                     </span>
                  </div>
-                 <Chip size="sm" variant="flat" className="h-4 text-[10px] px-1 bg-default-100 shrink-0">
+                 <Chip size="sm" variant="flat" className="h-5 shrink-0 bg-default-100 px-1.5 text-[10px] text-default-500">
                     {t("logManagement.logCount", { count: s.count })}
                  </Chip>
               </div>
