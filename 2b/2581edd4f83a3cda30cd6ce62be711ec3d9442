@@ -1,0 +1,46 @@
+src/tools/regex/RegexTool.tsx
+  fe23ada7e4716c2c 4,564-587
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.0.8",
+  "base_commit_sha": "2b2581edd4f83a3cda30cd6ce62be711ec3d9442",
+  "prompts": {
+    "fe23ada7e4716c2c": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019ff8df-062e-7c72-a262-6c57bdca67e2",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "luhaoyu <haoyu3@163.com>",
+      "messages": [],
+      "total_additions": 388,
+      "total_deletions": 376,
+      "accepted_lines": 388,
+      "overriden_lines": 0
+    }
+  },
+  "commit_stats": {
+    "git_diff_added_lines": 25,
+    "git_diff_deleted_lines": 13,
+    "ai_additions": 25,
+    "ai_accepted": 25,
+    "BYMC": 0,
+    "mixed_additions": 0,
+    "BYAC": 25,
+    "BYRC": 0,
+    "per_file": {
+      "src/tools/regex/RegexTool.tsx": {
+        "BYMC": [],
+        "BYAC": [
+          "4",
+          "564-587"
+        ],
+        "BYRC": []
+      }
+    }
+  },
+  "ipa_account": "luhaoyu",
+  "commit_timestamp": 1786589406,
+  "requirement_id": ""
+}
