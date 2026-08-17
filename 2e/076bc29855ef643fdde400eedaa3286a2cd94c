@@ -1,0 +1,19 @@
+src-tauri/tauri.macos.conf.json
+  s_8df0dfbee926a8::t_9e334119c6e146 9-10
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "2e076bc29855ef643fdde400eedaa3286a2cd94c",
+  "prompts": {},
+  "sessions": {
+    "s_8df0dfbee926a8": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019ff183-210c-7821-86da-254c78eb401c",
+        "model": "unknown"
+      },
+      "human_author": "luhaoyu <haoyu3@163.com>"
+    }
+  }
+}
