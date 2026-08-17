@@ -1,0 +1,30 @@
+src-tauri/src/lib.rs
+  s_90cc550bc82989::t_75fd040197fef5 4-6,64-73
+  s_90cc550bc82989::t_3da4ae87c46452 20-25
+src-tauri/capabilities/default.json
+  s_90cc550bc82989::t_f0f340d757c103 27-28,30
+src-tauri/Cargo.toml
+  s_90cc550bc82989::t_7b9f817bc0c88e 54-56
+package.json
+  s_90cc550bc82989::t_19ba6197a92af2 36
+pnpm-lock.yaml
+  s_90cc550bc82989::t_13cd118d1c5162 74-76,1114-1116,2964-2967
+src-tauri/Cargo.lock
+  s_90cc550bc82989::t_1a66deab727988 3976-3990,4463
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "99e19acbae4df3c9eb3db1b81ff770fcb72891e4",
+  "prompts": {},
+  "sessions": {
+    "s_90cc550bc82989": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a00e55-a32b-7480-a3d8-a21873484eb3",
+        "model": "gpt-5.6-luna"
+      },
+      "human_author": "luhaoyu <haoyu3@163.com>"
+    }
+  }
+}
