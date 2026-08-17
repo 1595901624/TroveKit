@@ -1,0 +1,25 @@
+src/components/Sidebar.tsx
+  s_1281360156e493::t_208fcc78964f11 135-139
+src/styles/globals.css
+  s_1281360156e493::t_208fcc78964f11 8-10
+src/components/TitleBar.tsx
+  s_1281360156e493::t_208fcc78964f11 151,160-161
+src/components/Layout.tsx
+  s_1281360156e493::t_208fcc78964f11 30,48
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "348bff6f5cd76920d41729615d9af3b38b0c82a0",
+  "prompts": {},
+  "sessions": {
+    "s_1281360156e493": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a00ee1-55d7-7861-835c-8785b634a5bd",
+        "model": "gpt-5.6-terra"
+      },
+      "human_author": "luhaoyu <haoyu3@163.com>"
+    }
+  }
+}
