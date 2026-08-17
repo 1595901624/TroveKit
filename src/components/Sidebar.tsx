@@ -132,8 +132,11 @@ export function Sidebar({ macOSOverlay = false, isCollapsed, activeTool, activeT
       !isResizing && "transition-[width] duration-200",
     )} style={{ width: isCollapsed ? 0 : sidebarWidth }}>
       <div className="flex h-full flex-col" style={{ width: sidebarWidth }}>
-        {macOSOverlay && <div data-tauri-drag-region className="h-10 shrink-0" />}
-        <div className="flex h-[var(--titlebar-height)] shrink-0 items-center gap-0.5 border-b border-black/[0.055] px-2 dark:border-white/[0.07]">
+        {macOSOverlay && <div data-tauri-drag-region className="h-[var(--macos-titlebar-height)] shrink-0" />}
+        <div className={cn(
+          "flex shrink-0 items-center gap-0.5 border-b border-black/[0.055] px-2 dark:border-white/[0.07]",
+          macOSOverlay ? "h-[var(--macos-titlebar-height)]" : "h-[var(--titlebar-height)]",
+        )}>
           <Button
             variant="light"
             className={cn(

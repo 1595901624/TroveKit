@@ -27,6 +27,7 @@ export function Layout({ children, activeTool, activeTab, onToolChange, onNaviga
   const [isSidebarCollapsed, setIsSidebarCollapsed] = usePersistentState<boolean>("sidebar-collapsed", false)
   const toggleSidebar = () => setIsSidebarCollapsed((collapsed) => !collapsed)
   const isLogPanelVisible = isOpen && activeTool !== "logManagement"
+  const toolHeaderHeight = isMacOS ? "h-[var(--macos-titlebar-height)]" : "h-[var(--titlebar-height)]"
 
   return (
     <div className="flex h-screen w-screen flex-col overflow-hidden bg-chrome text-foreground">
@@ -44,7 +45,7 @@ export function Layout({ children, activeTool, activeTab, onToolChange, onNaviga
           {/* Tool Header */}
           <header
             data-tauri-drag-region={isMacOS ? true : undefined}
-            className={`flex h-[var(--titlebar-height)] shrink-0 items-center justify-between border-b border-divider/80 transition-[padding] duration-200 ${isMacOS && isSidebarCollapsed ? "pl-[132px] pr-4" : "px-4"}`}
+            className={`flex ${toolHeaderHeight} shrink-0 items-center justify-between border-b border-divider/80 transition-[padding] duration-200 ${isMacOS && isSidebarCollapsed ? "pl-[132px] pr-4" : "px-4"}`}
           >
             <div className="flex min-w-0 items-center gap-1">
               {onBack && (

@@ -148,7 +148,7 @@ export default function TitleBar({ onNavigate, onToggleSidebar }: TitleBarProps)
       {platform === "macos" ? (
         // The native overlay titlebar supplies the traffic lights. This small
         // overlay keeps the sidebar toggle available without adding a title row.
-        <div data-tauri-drag-region className="absolute left-0 top-0 z-50 flex h-10 w-[124px] select-none items-center pl-[76px] text-[#5f5f5f] dark:text-default-400">
+        <div data-tauri-drag-region className="absolute left-0 top-0 z-50 flex h-[var(--macos-titlebar-height)] w-[124px] select-none items-center pl-[76px] text-[#5f5f5f] dark:text-default-400">
           {hostPlatform !== "macos" && (
             <MacPreviewWindowControls
               onClose={() => appWindow?.close()}
@@ -157,7 +157,8 @@ export default function TitleBar({ onNavigate, onToggleSidebar }: TitleBarProps)
             />
           )}
           <TitleButton label={t("common.sidebar", "侧栏")} onClick={onToggleSidebar}>
-            <PanelLeft className="h-[15px] w-[15px]" />
+            {/* Native traffic lights sit a fraction higher optically than a Lucide glyph. */}
+            <PanelLeft className="h-[15px] w-[15px] -translate-y-px" />
           </TitleButton>
         </div>
       ) : (

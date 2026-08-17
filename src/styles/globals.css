@@ -5,6 +5,9 @@
 :root {
     color-scheme: light;
     --titlebar-height: clamp(40px, 4.8vh, 56px);
+    /* Keep the HTML controls aligned with the fixed macOS overlay titlebar.
+       Native traffic lights are positioned independently by AppKit. */
+    --macos-titlebar-height: 40px;
     --background: 255 255 255;
     --foreground: 17 24 39;
     --chrome: 243 243 243;
