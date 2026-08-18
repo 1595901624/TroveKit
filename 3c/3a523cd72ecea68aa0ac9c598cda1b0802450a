@@ -1,0 +1,19 @@
+src-tauri/icons/app-icon-macos.svg
+  s_bc68df661a63bd::t_222d720c8e7d8f 1-8
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "3c3a523cd72ecea68aa0ac9c598cda1b0802450a",
+  "prompts": {},
+  "sessions": {
+    "s_bc68df661a63bd": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a012a3-ed9a-7131-982b-8f5287db963e",
+        "model": "gpt-5.6-terra"
+      },
+      "human_author": "luhaoyu <haoyu3@163.com>"
+    }
+  }
+}
