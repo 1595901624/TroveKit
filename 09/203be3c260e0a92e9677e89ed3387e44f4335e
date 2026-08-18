@@ -1,0 +1,20 @@
+app-icon-macos.svg
+  s_bc68df661a63bd::t_2dd13d29f7879a 1,5-8
+  s_bc68df661a63bd::t_740d810e12f293 2-4
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "09203be3c260e0a92e9677e89ed3387e44f4335e",
+  "prompts": {},
+  "sessions": {
+    "s_bc68df661a63bd": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a012a3-ed9a-7131-982b-8f5287db963e",
+        "model": "gpt-5.6-terra"
+      },
+      "human_author": "luhaoyu <haoyu3@163.com>"
+    }
+  }
+}
