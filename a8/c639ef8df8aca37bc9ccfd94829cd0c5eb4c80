@@ -1,0 +1,19 @@
+src/tools/hash/BlakeTab.tsx
+  s_b5b79ca337825b::t_052830b86414cf 6-8
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "a8c639ef8df8aca37bc9ccfd94829cd0c5eb4c80",
+  "prompts": {},
+  "sessions": {
+    "s_b5b79ca337825b": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a012ed-d3fb-7561-a2c2-16466286c7cb",
+        "model": "gpt-5.6-terra"
+      },
+      "human_author": "luhaoyu <haoyu3@163.com>"
+    }
+  }
+}
