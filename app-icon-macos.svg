@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 32 32">
+  <!-- Transparent 9.375% inset: calibrated for macOS Launchpad's visual size. -->
+  <rect x="3" y="3" width="26" height="26" rx="3.25" fill="#fff"/>
+  <g transform="translate(3 3) scale(.8125)" fill="#3b82f6">
+    <rect x="8" y="7" width="16" height="4" rx="1"/>
+    <rect x="14" y="7" width="4" height="19" rx="1"/>
+  </g>
+</svg>
