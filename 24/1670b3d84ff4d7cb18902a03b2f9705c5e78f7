@@ -1,0 +1,24 @@
+README.ja.md
+  h_090547e14f8e63 11
+README.md
+  h_090547e14f8e63 11
+README.zh-CN.md
+  h_090547e14f8e63 11
+README.zh-HK.md
+  h_090547e14f8e63 11
+README.zh-TW.md
+  h_090547e14f8e63 11
+src-tauri/tauri.conf.json
+  h_090547e14f8e63 4
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "241670b3d84ff4d7cb18902a03b2f9705c5e78f7",
+  "prompts": {},
+  "humans": {
+    "h_090547e14f8e63": {
+      "author": "luhaoyu <haoyu3@163.com>"
+    }
+  }
+}
