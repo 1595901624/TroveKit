@@ -647,6 +647,8 @@
   },
   "log": {
     "title": "操作ログ",
+    "recentActivity": "最近のアクティビティ",
+    "searchPlaceholder": "最近のログを検索",
     "clear": "ログをクリア",
     "empty": "ログはありません",
     "emptyFilter": "このフィルターに一致するログはありません",
@@ -669,7 +671,8 @@
     "trailingTab": "末尾のタブ",
     "trailingNewline": "末尾の改行",
     "addSessionNote": "セッションメモを追加",
-    "sessionNotePlaceholder": "セッションメモを入力..."
+    "sessionNotePlaceholder": "セッションメモを入力...",
+    "recentLimit": "最新 {{count}} 件のログを表示しています。すべての履歴はログ管理で確認できます。"
   },
   "logManagement": {
     "sessions": "セッション",

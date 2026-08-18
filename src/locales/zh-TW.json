@@ -647,6 +647,8 @@
   },
   "log": {
     "title": "操作紀錄",
+    "recentActivity": "近期活動",
+    "searchPlaceholder": "搜尋近期紀錄",
     "clear": "清空紀錄",
     "empty": "暫无紀錄",
     "emptyFilter": "沒有匹配的紀錄",
@@ -669,7 +671,8 @@
     "trailingTab": "尾部製表符",
     "trailingNewline": "尾部換行符",
     "addSessionNote": "新增會話備註",
-    "sessionNotePlaceholder": "輸入會話備註..."
+    "sessionNotePlaceholder": "輸入會話備註...",
+    "recentLimit": "僅顯示最近 {{count}} 筆紀錄。請前往紀錄管理查看完整歷程。"
   },
   "logManagement": {
     "sessions": "會話",

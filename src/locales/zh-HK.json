@@ -647,6 +647,8 @@
   },
   "log": {
     "title": "操作日誌",
+    "recentActivity": "近期活動",
+    "searchPlaceholder": "搜尋近期日誌",
     "clear": "清空日誌",
     "empty": "暫無日誌",
     "emptyFilter": "沒有匹配的日誌",
@@ -669,7 +671,8 @@
     "trailingTab": "尾部製表符",
     "trailingNewline": "尾部換行符",
     "addSessionNote": "新增會話備註",
-    "sessionNotePlaceholder": "輸入會話備註..."
+    "sessionNotePlaceholder": "輸入會話備註...",
+    "recentLimit": "僅顯示最近 {{count}} 條日誌。完整記錄請前往日誌管理查看。"
   },
   "logManagement": {
     "sessions": "會話",
