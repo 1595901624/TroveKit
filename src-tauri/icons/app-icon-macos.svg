@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 32 32">
+  <!-- Keep a transparent 6.25% inset so the icon has a macOS-sized visual footprint. -->
+  <rect x="2" y="2" width="28" height="28" rx="3.5" fill="#fff"/>
+  <g transform="translate(2 2) scale(.875)" fill="#3b82f6">
+    <rect x="8" y="7" width="16" height="4" rx="1"/>
+    <rect x="14" y="7" width="4" height="19" rx="1"/>
+  </g>
+</svg>
