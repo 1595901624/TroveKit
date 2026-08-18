@@ -1,0 +1,23 @@
+src/locales/ja.json
+  s_eb51423c12ce12::t_52ee50cf49d563 650-651,674-675
+src/locales/zh-HK.json
+  s_eb51423c12ce12::t_52ee50cf49d563 650-651,674-675
+src/locales/zh-TW.json
+  s_eb51423c12ce12::t_52ee50cf49d563 650-651,674-675
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "36a9061f807c5fe527d2485113dbaa620538f676",
+  "prompts": {},
+  "sessions": {
+    "s_eb51423c12ce12": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a0138c-ab12-7a61-b8ee-20572acfd36f",
+        "model": "gpt-5.6-terra"
+      },
+      "human_author": "luhaoyu <haoyu3@163.com>"
+    }
+  }
+}
