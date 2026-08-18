@@ -1,0 +1,20 @@
+CHANGELOG.md
+  s_eb51423c12ce12::t_ddae1beaf1d0c1 8-15
+  s_eb51423c12ce12::t_9cf520f49737b7 16
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "f351d3fc626fedf09012c1ea08b8ca506c85b4dc",
+  "prompts": {},
+  "sessions": {
+    "s_eb51423c12ce12": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a0138c-ab12-7a61-b8ee-20572acfd36f",
+        "model": "gpt-5.6-terra"
+      },
+      "human_author": "luhaoyu <haoyu3@163.com>"
+    }
+  }
+}
