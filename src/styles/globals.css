@@ -266,3 +266,32 @@ body {
         border-left-width: 1px;
     }
 }
+
+/* Older macOS WebKit versions do not evaluate container queries. Fall back to
+   the window width there so desktop-sized Tauri windows keep the same split
+   workspace layout as Chromium-based Windows builds. */
+@supports not (container-type: inline-size) {
+    @media (min-width: 1200px) {
+        .qr-workbench {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(300px, 0.72fr);
+            grid-template-rows: minmax(0, 1fr);
+            overflow: hidden;
+        }
+
+        .qr-settings {
+            overflow-y: auto;
+        }
+
+        .qr-preview,
+        .regex-results {
+            border-top-width: 0;
+            border-left-width: 1px;
+        }
+
+        .regex-workbench {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            grid-template-rows: minmax(0, 1fr);
+        }
+    }
+}
