@@ -3,9 +3,8 @@ import { Button, RadioGroup, Radio, Select, SelectItem } from "../../components/
 import { Hash } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { useLogActions } from "../../contexts/LogContext"
-// Explicit extensions work with both @noble/hashes v1 and v2 package exports.
-import { blake2b, blake2s } from "@noble/hashes/blake2.js"
-import { blake3 } from "@noble/hashes/blake3.js"
+import { blake2b, blake2s } from "@noble/hashes/blake2"
+import { blake3 } from "@noble/hashes/blake3"
 import { getStoredItem, setStoredItem, removeStoredItem } from "../../lib/store"
 import { HashToolbarField, HashWorkbench } from "./HashWorkbench"
 
