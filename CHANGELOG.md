@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.0] - 2026-08-18
+
+### Changed
+- **Complete UI Redesign**: Fully rebuilt the application interface for a more modern, consistent, and streamlined experience.
+- **macOS Optimizations**: Improved the application experience and platform compatibility on macOS.
+
+### Fixed
+- **Memory Usage**: Optimized memory management to reduce the application's memory footprint.
+
 ## [0.3.0] - 2026-07-08
 
 ### Fixed
