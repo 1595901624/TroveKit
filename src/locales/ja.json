@@ -14,7 +14,9 @@
     "no": "いいえ",
     "sidebar": "サイドバー",
     "back": "戻る",
-    "forward": "進む"
+    "forward": "進む",
+    "clear": "クリア",
+    "copy": "コピー"
   },
   "menu": {
     "file": "ファイル", "edit": "編集", "view": "表示", "help": "ヘルプ",
@@ -203,6 +205,30 @@
       "fileEncryptFailed": "ファイルの暗号化に失敗しました",
       "fileDecryptFailed": "ファイルの復号化に失敗しました",
       "invalidEncryptedFile": "暗号化ファイル形式が無効です"
+    },
+    "fileWorkbench": {
+      "textMode": "テキスト", "fileMode": "ファイル",
+      "dropOrChoose": "ここにファイルをドロップするか、クリックして選択",
+      "anySize": "バックエンドで分割処理するため固定のサイズ制限はありません",
+      "inputPath": "入力ファイル", "outputPath": "出力ファイル", "chooseOutput": "出力先を選択",
+      "selectFileFirst": "先に入力ファイルを選択してください", "selectOutputFirst": "出力先を選択してください",
+      "fileSelected": "ファイルを選択しました", "notAFile": "選択したパスはファイルではありません", "processing": "処理中"
+    },
+    "fileBase64": {
+      "title": "Base64 ファイル変換", "description": "ファイル全体をフロントエンドのメモリに読み込まず、バイナリファイルを分割してエンコード／デコードします。", "completed": "処理完了：{{path}}"
+    },
+    "fileHash": {
+      "title": "ファイルダイジェスト", "description": "MD5、SHA-1、SHA-256、SHA-512、HMAC-SHA256 のファイルダイジェストを計算します。",
+      "calculate": "ダイジェストを計算", "keyRequired": "HMAC-SHA256 にはキーが必要です", "keyPlaceholder": "HMAC キーを入力", "completed": "{{algorithm}} の計算が完了しました"
+    },
+    "fileAes": {
+      "title": "AES ファイル暗号化", "description": "新しい TroveKit 暗号化ファイル形式で、認証付きの分割暗号化／復号を行います。",
+      "password": "パスワード", "confirmPassword": "パスワード確認", "passwordRequired": "パスワードを入力してください", "passwordMismatch": "パスワードが一致しません",
+      "securityNote": "Argon2id でキーを導出し、AES-256-GCM で各チャンクを認証します。パスワードの誤りやファイル破損時は出力ファイルを生成しません。", "completed": "処理完了：{{path}}"
+    },
+    "qrScanner": {
+      "title": "QRコード読み取り", "description": "PNG、JPEG、WebP、BMP 画像からオフラインで QR コードを読み取ります。", "scan": "QRコードを読み取る",
+      "completed": "QRコードを読み取りました", "result": "読み取り結果", "previewAlt": "QR読み取り対象画像", "notFound": "画像から QR コードを検出できませんでした。より鮮明な画像や切り抜いた画像をお試しください。", "openLink": "リンクを開く"
     },
     "encoder": {
       "input": "入力",

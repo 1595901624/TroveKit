@@ -14,7 +14,9 @@
     "no": "No",
     "sidebar": "Sidebar",
     "back": "Back",
-    "forward": "Forward"
+    "forward": "Forward",
+    "clear": "Clear",
+    "copy": "Copy"
   },
   "menu": {
     "file": "File", "edit": "Edit", "view": "View", "help": "Help",
@@ -203,6 +205,53 @@
       "fileEncryptFailed": "File encryption failed",
       "fileDecryptFailed": "File decryption failed",
       "invalidEncryptedFile": "Invalid encrypted file format"
+    },
+    "fileWorkbench": {
+      "textMode": "Text",
+      "fileMode": "File",
+      "dropOrChoose": "Drop a file here, or click to choose one",
+      "anySize": "Chunked backend processing with no fixed file-size limit",
+      "inputPath": "Input File",
+      "outputPath": "Output File",
+      "chooseOutput": "Choose Output",
+      "selectFileFirst": "Select an input file first",
+      "selectOutputFirst": "Choose an output location",
+      "fileSelected": "File selected",
+      "notAFile": "The selected path is not a file",
+      "processing": "Processing"
+    },
+    "fileBase64": {
+      "title": "Base64 File Codec",
+      "description": "Encode or decode any binary file in chunks without loading the whole file into frontend memory.",
+      "completed": "Completed: {{path}}"
+    },
+    "fileHash": {
+      "title": "File Digest",
+      "description": "Calculate MD5, SHA-1, SHA-256, SHA-512, or HMAC-SHA256 file digests.",
+      "calculate": "Calculate Digest",
+      "keyRequired": "HMAC-SHA256 requires a key",
+      "keyPlaceholder": "Enter the HMAC key",
+      "completed": "{{algorithm}} digest completed"
+    },
+    "fileAes": {
+      "title": "AES File Encryption",
+      "description": "Chunked, authenticated file encryption using the new TroveKit encrypted-file format.",
+      "password": "Password",
+      "confirmPassword": "Confirm Password",
+      "passwordRequired": "Enter a password",
+      "passwordMismatch": "The passwords do not match",
+      "securityNote": "Argon2id derives the key and AES-256-GCM authenticates every chunk. A wrong password or damaged file will not produce an output file.",
+      "completed": "Completed: {{path}}"
+    },
+    "qrScanner": {
+      "title": "QR Code Scanner",
+      "description": "Recognize QR codes offline from PNG, JPEG, WebP, or BMP images.",
+      "scan": "Scan QR Code",
+      "completed": "QR code recognized",
+      "result": "Scan Result",
+      "previewAlt": "Image selected for QR scanning",
+      "notFound": "No QR code was found. Try a clearer or more tightly cropped image.",
+      "openLink": "Open Link"
     },
     "encoder": {
       "input": "Input",

@@ -1,882 +1,216 @@
-import { useState, useEffect, useRef } from "react"
-import { Button, Input, Select, SelectItem, Card, CardBody, CardHeader } from "../../components/ui/base-ui"
-import { Trash2, Lock, Unlock, FileUp, FolderOpen } from "lucide-react"
+import { useEffect, useState } from "react"
+import { File, Lock, Type, Unlock } from "lucide-react"
 import { useTranslation } from "react-i18next"
-import { useLogActions } from "../../contexts/LogContext"
 import CryptoJS from "crypto-js"
-import { open as openDialog } from "@tauri-apps/plugin-dialog"
-import { writeFile } from "@tauri-apps/plugin-fs"
-import { desktopDir, join } from "@tauri-apps/api/path"
-import { getStoredItem, setStoredItem, removeStoredItem } from "../../lib/store"
+import { Button, ButtonGroup, Input, Select, SelectItem } from "../../components/ui/base-ui"
+import { FileWorkbench } from "../../components/FileWorkbench"
+import { useLogActions } from "../../contexts/LogContext"
+import { fileNameFromPath, runFileCommand, type FileOperationResult } from "../../lib/fileOperations"
+import { getStoredItem, removeStoredItem, setStoredItem } from "../../lib/store"
 import { HashOperationSwitch, HashToolbarField, HashWorkbench } from "./HashWorkbench"
 
 const STORAGE_KEY = "aes-tool-state"
-const MAX_FILE_SIZE = 30 * 1024 * 1024
-const FILE_MAGIC = new TextEncoder().encode("TKAESF1")
 type TextOperation = "encrypt" | "decrypt"
+type FileOperation = "encrypt" | "decrypt"
 type AesFormatState = Record<TextOperation, { input: string; output: string }>
 
 const DEFAULT_AES_FORMATS: AesFormatState = {
   encrypt: { input: "String", output: "Base64" },
-  decrypt: { input: "Base64", output: "Base64" },
+  decrypt: { input: "Base64", output: "String" },
 }
 
-const normalizeAesFormats = (formats: Partial<Record<TextOperation, Partial<{ input: string; output: string }>>> = {}): AesFormatState => {
+function normalizeFormats(formats?: Partial<Record<TextOperation, Partial<{ input: string; output: string }>>>) {
   const normalized: AesFormatState = {
-    encrypt: {
-      input: formats.encrypt?.input || DEFAULT_AES_FORMATS.encrypt.input,
-      output: formats.encrypt?.output || DEFAULT_AES_FORMATS.encrypt.output,
-    },
-    decrypt: {
-      input: formats.decrypt?.input || DEFAULT_AES_FORMATS.decrypt.input,
-      output: formats.decrypt?.output || DEFAULT_AES_FORMATS.decrypt.output,
-    },
+    encrypt: { input: formats?.encrypt?.input || DEFAULT_AES_FORMATS.encrypt.input, output: formats?.encrypt?.output || DEFAULT_AES_FORMATS.encrypt.output },
+    decrypt: { input: formats?.decrypt?.input || DEFAULT_AES_FORMATS.decrypt.input, output: formats?.decrypt?.output || DEFAULT_AES_FORMATS.decrypt.output },
   }
-
-  // 加密输入可以是 String，但解密输入不能是 String；加密输出也不能是 String。
   if (normalized.decrypt.input === "String") normalized.decrypt.input = "Base64"
   if (normalized.encrypt.output === "String") normalized.encrypt.output = "Base64"
   return normalized
 }
 
-const getOperationFromActiveTab = (tab: string | undefined, fallback: TextOperation = "encrypt"): TextOperation => {
-  if (tab === "encrypt" || tab === "decrypt") return tab
-  return fallback
-}
-
-// 兼容 Tauri v1 / v2 的运行时检测（用于默认桌面目录和目录写入）
-const isTauriRuntime =
-  typeof window !== "undefined" &&
-  ((window as any).__TAURI__ != null || (window as any).__TAURI_INTERNALS__ != null)
-
-const uint8ArrayToWordArray = (u8arr: Uint8Array) => {
-  const words = []
-  let i = 0
-  while (i < u8arr.length) {
-    words.push(
-      ((u8arr[i] || 0) << 24) |
-      ((u8arr[i + 1] || 0) << 16) |
-      ((u8arr[i + 2] || 0) << 8) |
-      (u8arr[i + 3] || 0)
-    )
-    i += 4
-  }
-  return CryptoJS.lib.WordArray.create(words, u8arr.length)
-}
-
-const wordArrayToUint8Array = (wordArray: CryptoJS.lib.WordArray) => {
-  const sigBytes = Math.max(0, wordArray.sigBytes)
-  const words = wordArray.words
-  const u8 = new Uint8Array(sigBytes)
-  for (let i = 0; i < sigBytes; i++) {
-    u8[i] = (words[i >>> 2] >>> (24 - (i % 4) * 8)) & 0xff
-  }
-  return u8
-}
-
-const concatUint8Arrays = (arrays: Uint8Array[]) => {
-  const totalLength = arrays.reduce((sum, arr) => sum + arr.length, 0)
-  const result = new Uint8Array(totalLength)
-  let offset = 0
-  for (const arr of arrays) {
-    result.set(arr, offset)
-    offset += arr.length
-  }
-  return result
-}
-
-const formatBytes = (bytes: number) => {
-  if (bytes < 1024) return `${bytes} B`
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`
-  return `${(bytes / (1024 * 1024)).toFixed(2)} MB`
-}
-
 export function AesTab2() {
   const { t } = useTranslation()
   const { addLog } = useLogActions()
-
-  const [activeTab, setActiveTab] = useState<"encrypt" | "decrypt" | "fileEncrypt" | "fileDecrypt">("encrypt")
+  const [workspaceMode, setWorkspaceMode] = useState<"text" | "file">("text")
   const [operation, setOperation] = useState<TextOperation>("encrypt")
-  const [aesInput, setAesInput] = useState("")
-  const [aesOutput, setAesOutput] = useState("")
-  const [aesKey, setAesKey] = useState("")
-  const [aesKeyType, setAesKeyType] = useState("text") 
-  const [aesKeySize, setAesKeySize] = useState("128") 
-  const [aesIv, setAesIv] = useState("")
-  const [aesIvType, setAesIvType] = useState("text") 
-  const [aesMode, setAesMode] = useState("CBC") 
-  const [aesPadding, setAesPadding] = useState("Pkcs7") 
-  const [aesFormats, setAesFormats] = useState<AesFormatState>(DEFAULT_AES_FORMATS)
-  const [aesInputFormat, setAesInputFormat] = useState(DEFAULT_AES_FORMATS.encrypt.input)
-  const [aesOutputFormat, setAesOutputFormat] = useState(DEFAULT_AES_FORMATS.encrypt.output)
-  const [fileOperation, setFileOperation] = useState<"fileEncrypt" | "fileDecrypt">("fileEncrypt")
-  const [selectedFile, setSelectedFile] = useState<File | null>(null)
-  const [fileStatus, setFileStatus] = useState<{ type: "success" | "error" | "info"; message: string } | null>(null)
-  const [fileOutputDir, setFileOutputDir] = useState("")
-  const [isDragging, setIsDragging] = useState(false)
+  const [input, setInput] = useState("")
+  const [output, setOutput] = useState("")
+  const [key, setKey] = useState("")
+  const [keyType, setKeyType] = useState("text")
+  const [keySize, setKeySize] = useState("128")
+  const [iv, setIv] = useState("")
+  const [ivType, setIvType] = useState("text")
+  const [mode, setMode] = useState("CBC")
+  const [padding, setPadding] = useState("Pkcs7")
+  const [formats, setFormats] = useState<AesFormatState>(DEFAULT_AES_FORMATS)
+  const [fileOperation, setFileOperation] = useState<FileOperation>("encrypt")
+  const [filePassword, setFilePassword] = useState("")
+  const [filePasswordConfirm, setFilePasswordConfirm] = useState("")
   const [isLoaded, setIsLoaded] = useState(false)
-  const fileInputRef = useRef<HTMLInputElement>(null)
-  const folderInputRef = useRef<HTMLInputElement>(null)
+  const inputFormat = formats[operation].input
+  const outputFormat = formats[operation].output
 
   useEffect(() => {
-    if (!isLoaded) return
-    const formats = normalizeAesFormats(aesFormats)
-    setAesFormats(formats)
-    setAesInputFormat(formats[operation].input)
-    setAesOutputFormat(formats[operation].output)
-  }, [operation, isLoaded])
-
-  useEffect(() => {
-    let mounted = true;
+    let mounted = true
     getStoredItem(STORAGE_KEY).then((stored) => {
       if (mounted && stored) {
         try {
-          const state = JSON.parse(stored);
-          if (state.aesInput) setAesInput(state.aesInput);
-          if (state.aesOutput) setAesOutput(state.aesOutput);
-          if (state.aesKey) setAesKey(state.aesKey);
-          if (state.aesKeyType) setAesKeyType(state.aesKeyType);
-          if (state.aesKeySize) setAesKeySize(state.aesKeySize);
-          if (state.aesIv) setAesIv(state.aesIv);
-          if (state.aesIvType) setAesIvType(state.aesIvType);
-          if (state.aesMode) setAesMode(state.aesMode);
-          if (state.aesPadding) setAesPadding(state.aesPadding);
-          const restoredActiveTab = state.activeTab || "encrypt";
-          const restoredOperation = getOperationFromActiveTab(restoredActiveTab, state.operation || "encrypt");
-          const legacyFormats = {
-            encrypt: {
-              input: localStorage.getItem("aes_encrypt_inputFormat") || undefined,
-              output: localStorage.getItem("aes_encrypt_outputFormat") || undefined,
-            },
-            decrypt: {
-              input: localStorage.getItem("aes_decrypt_inputFormat") || undefined,
-              output: localStorage.getItem("aes_decrypt_outputFormat") || undefined,
-            },
-          };
-          const restoredFormats = normalizeAesFormats(state.aesFormats || legacyFormats);
-          if (state.activeTab) setActiveTab(state.activeTab);
-          setOperation(restoredOperation);
-          setAesFormats(restoredFormats);
-          setAesInputFormat(restoredFormats[restoredOperation].input);
-          setAesOutputFormat(restoredFormats[restoredOperation].output);
-          if (state.fileOperation) setFileOperation(state.fileOperation);
-          if (state.fileOutputDir) setFileOutputDir(state.fileOutputDir);
-        } catch (e) {
-          console.error("Failed to parse AesTab state", e);
+          const state = JSON.parse(stored)
+          setInput(state.aesInput || "")
+          setOutput(state.aesOutput || "")
+          setKey(state.aesKey || "")
+          setKeyType(state.aesKeyType || "text")
+          setKeySize(state.aesKeySize || "128")
+          setIv(state.aesIv || "")
+          setIvType(state.aesIvType || "text")
+          setMode(state.aesMode || "CBC")
+          setPadding(state.aesPadding || "Pkcs7")
+          const restoredOperation: TextOperation = state.operation === "decrypt" || state.activeTab === "decrypt" ? "decrypt" : "encrypt"
+          setOperation(restoredOperation)
+          setFormats(normalizeFormats(state.aesFormats))
+          if (state.activeTab === "fileEncrypt" || state.activeTab === "fileDecrypt") {
+            setWorkspaceMode("file")
+            setFileOperation(state.activeTab === "fileDecrypt" ? "decrypt" : "encrypt")
+          } else if (state.workspaceMode === "file") {
+            setWorkspaceMode("file")
+            setFileOperation(state.fileOperation === "decrypt" ? "decrypt" : "encrypt")
+          }
+        } catch (error) {
+          console.error("Failed to parse AES state", error)
         }
       }
-      if (mounted) setIsLoaded(true);
-    });
-    return () => { mounted = false; };
-  }, []);
+      if (mounted) setIsLoaded(true)
+    })
+    return () => { mounted = false }
+  }, [])
 
   useEffect(() => {
     if (!isLoaded) return
-    if (fileOutputDir) return
-    if (!isTauriRuntime) return
-    let mounted = true
-    desktopDir()
-      .then((dir) => {
-        if (mounted && dir) setFileOutputDir(dir)
-      })
-      .catch(() => {
-        // ignore: non-tauri or permission issues
-      })
-    return () => {
-      mounted = false
-    }
-  }, [isLoaded, fileOutputDir])
-
-  useEffect(() => {
-    if (isLoaded) {
-      setStoredItem(STORAGE_KEY, JSON.stringify({
-        aesInput,
-        aesOutput,
-        aesKey,
-        aesKeyType,
-        aesKeySize,
-        aesIv,
-        aesIvType,
-        aesMode,
-        aesPadding,
-        operation,
-        aesFormats,
-        activeTab,
-        fileOperation,
-        fileOutputDir
-      }))
-    }
-  }, [aesInput, aesOutput, aesKey, aesKeyType, aesKeySize, aesIv, aesIvType, aesMode, aesPadding, operation, aesFormats, activeTab, fileOperation, fileOutputDir, isLoaded])
-
-  const updateAesInputFormat = (format: string) => {
-    const nextFormat = operation === "decrypt" && format === "String" ? "Base64" : format
-    setAesInputFormat(nextFormat)
-    setAesFormats(prev => normalizeAesFormats({
-      ...prev,
-      [operation]: { ...prev[operation], input: nextFormat },
+    void setStoredItem(STORAGE_KEY, JSON.stringify({
+      aesInput: input, aesOutput: output, aesKey: key, aesKeyType: keyType, aesKeySize: keySize,
+      aesIv: iv, aesIvType: ivType, aesMode: mode, aesPadding: padding, aesFormats: formats,
+      operation, workspaceMode, fileOperation,
     }))
-  }
-
-  const updateAesOutputFormat = (format: string) => {
-    const nextFormat = operation === "encrypt" && format === "String" ? "Base64" : format
-    setAesOutputFormat(nextFormat)
-    setAesFormats(prev => normalizeAesFormats({
-      ...prev,
-      [operation]: { ...prev[operation], output: nextFormat },
-    }))
-  }
-
-  useEffect(() => {
-    if (folderInputRef.current) {
-      folderInputRef.current.setAttribute("webkitdirectory", "")
-      folderInputRef.current.setAttribute("directory", "")
-      folderInputRef.current.setAttribute("multiple", "")
-    }
-  }, [])
+  }, [fileOperation, formats, input, isLoaded, iv, ivType, key, keySize, keyType, mode, operation, output, padding, workspaceMode])
 
   const parseKeyIv = (value: string, type: string, lengthBits?: number) => {
-    let wordArr;
-    if (type === "hex") {
-      wordArr = CryptoJS.enc.Hex.parse(value);
-    } else {
-      wordArr = CryptoJS.enc.Utf8.parse(value);
-    }
-
-    if (lengthBits) {
-      const targetBytes = lengthBits / 8;
-      // Resize logic: Pad with zeros or truncate
-      // Simplest way with CryptoJS: Convert to Hex, pad/truncate string, parse back
-      let hex = CryptoJS.enc.Hex.stringify(wordArr);
-      const targetHexChars = targetBytes * 2;
-      
-      if (hex.length < targetHexChars) {
-        hex = hex.padEnd(targetHexChars, '0');
-      } else if (hex.length > targetHexChars) {
-        hex = hex.substring(0, targetHexChars);
-      }
-      return CryptoJS.enc.Hex.parse(hex);
-    }
-    return wordArr;
+    let wordArray = type === "hex" ? CryptoJS.enc.Hex.parse(value) : CryptoJS.enc.Utf8.parse(value)
+    if (!lengthBits) return wordArray
+    const targetHexLength = (lengthBits / 8) * 2
+    wordArray = CryptoJS.enc.Hex.parse(CryptoJS.enc.Hex.stringify(wordArray).padEnd(targetHexLength, "0").slice(0, targetHexLength))
+    return wordArray
   }
 
-  const parseInputData = (value: string, format: string) => {
-    switch (format) {
-      case "Hex":
-        return CryptoJS.enc.Hex.parse(value)
-      case "Base64":
-        return CryptoJS.enc.Base64.parse(value)
-      default:
-        return CryptoJS.enc.Utf8.parse(value)
-    }
-  }
+  const parseData = (value: string, format: string) => format === "Hex" ? CryptoJS.enc.Hex.parse(value) : format === "Base64" ? CryptoJS.enc.Base64.parse(value) : CryptoJS.enc.Utf8.parse(value)
+  const encodeData = (value: CryptoJS.lib.WordArray, format: string) => format === "String" ? value.toString(CryptoJS.enc.Utf8) : format === "Hex" ? value.toString(CryptoJS.enc.Hex) : value.toString(CryptoJS.enc.Base64)
+  const cryptoMode = () => ({ CBC: CryptoJS.mode.CBC, ECB: CryptoJS.mode.ECB, CTR: CryptoJS.mode.CTR, OFB: CryptoJS.mode.OFB, CFB: CryptoJS.mode.CFB }[mode] || CryptoJS.mode.CBC)
+  const cryptoPadding = () => ({ Pkcs7: CryptoJS.pad.Pkcs7, ZeroPadding: CryptoJS.pad.ZeroPadding, NoPadding: CryptoJS.pad.NoPadding, AnsiX923: CryptoJS.pad.AnsiX923, Iso10126: CryptoJS.pad.Iso10126 }[padding] || CryptoJS.pad.Pkcs7)
 
-  const encodeOutputData = (data: CryptoJS.lib.WordArray, format: string) => {
-    if (format === "String") return data.toString(CryptoJS.enc.Utf8)
-    if (format === "Hex") return data.toString(CryptoJS.enc.Hex)
-    return data.toString(CryptoJS.enc.Base64)
-  }
-
-  const getMode = (modeStr: string) => {
-    switch (modeStr) {
-        case "CBC": return CryptoJS.mode.CBC;
-        case "ECB": return CryptoJS.mode.ECB;
-        case "CTR": return CryptoJS.mode.CTR;
-        case "OFB": return CryptoJS.mode.OFB;
-        case "CFB": return CryptoJS.mode.CFB;
-        // case "CTS": 
-        //   // @ts-ignore
-        //   return CryptoJS.mode.CTS || CryptoJS.mode.CBC; 
-        default: return CryptoJS.mode.CBC;
-    }
-  }
-
-  const getPadding = (padStr: string) => {
-      switch (padStr) {
-          case "Pkcs7": return CryptoJS.pad.Pkcs7;
-          case "ZeroPadding": return CryptoJS.pad.ZeroPadding;
-          case "NoPadding": return CryptoJS.pad.NoPadding;
-          case "AnsiX923": return CryptoJS.pad.AnsiX923;
-          case "Iso10126": return CryptoJS.pad.Iso10126;
-          default: return CryptoJS.pad.Pkcs7;
-      }
-  }
-
-  const handleAesEncrypt = () => {
-    if (!aesInput) return;
+  const runTextOperation = () => {
+    if (!input) return
+    const parsedKey = parseKeyIv(key, keyType, Number(keySize))
+    const parsedIv = mode === "ECB" ? undefined : parseKeyIv(iv, ivType, 128)
     try {
-      const inputData = parseInputData(aesInput, aesInputFormat)
-      const key = parseKeyIv(aesKey, aesKeyType, parseInt(aesKeySize));
-      // IV is always 128-bit (16 bytes) for AES block size, regardless of key size
-      // Except ECB which doesn't use IV, but passing it doesn't hurt usually, though we can skip it.
-      const iv = aesMode === "ECB" ? undefined : parseKeyIv(aesIv, aesIvType, 128); 
-      
-      const encrypted = CryptoJS.AES.encrypt(inputData, key, {
-        mode: getMode(aesMode),
-        padding: getPadding(aesPadding),
-        iv: iv
-      });
-
-      const output = encodeOutputData(encrypted.ciphertext, aesOutputFormat)
-
-      setAesOutput(output);
-      addLog({
-        method: `AES Encrypt (${aesMode}, ${aesKeySize}-bit, ${aesInputFormat}→${aesOutputFormat})`,
-        input: aesInput,
-        output: output,
-        cryptoParams: {
-          algorithm: "AES",
-          mode: aesMode,
-          key_size: `${aesKeySize}-bit`,
-          input_format: aesInputFormat,
-          output_format: aesOutputFormat,
-          key: aesKey,
-          key_type: aesKeyType,
-          iv: aesIv,
-          padding: aesPadding
-        }
-      }, "success");
-    } catch (e) {
-      addLog({ method: "AES Encrypt", input: aesInput, output: (e as Error).message }, "error");
-    }
-  }
-
-  const handleAesDecrypt = () => {
-    if (!aesInput) return;
-    try {
-      const key = parseKeyIv(aesKey, aesKeyType, parseInt(aesKeySize));
-      const iv = aesMode === "ECB" ? undefined : parseKeyIv(aesIv, aesIvType, 128);
-      
-      const cipherParams = { ciphertext: parseInputData(aesInput, aesInputFormat) }
-
-      const decrypted = CryptoJS.AES.decrypt(cipherParams as any, key, {
-        mode: getMode(aesMode),
-        padding: getPadding(aesPadding),
-        iv: iv
-      });
-
-      let output = ""
-      if (aesOutputFormat === "String") {
-        output = decrypted.toString(CryptoJS.enc.Utf8)
-        if (decrypted.sigBytes > 0 && !output) throw new Error("Decryption failed or invalid key/iv/mode")
+      let result: string
+      if (operation === "encrypt") {
+        const encrypted = CryptoJS.AES.encrypt(parseData(input, inputFormat), parsedKey, { mode: cryptoMode(), padding: cryptoPadding(), iv: parsedIv })
+        result = encodeData(encrypted.ciphertext, outputFormat)
       } else {
-        output = encodeOutputData(decrypted, aesOutputFormat)
+        const decrypted = CryptoJS.AES.decrypt({ ciphertext: parseData(input, inputFormat) } as CryptoJS.lib.CipherParams, parsedKey, { mode: cryptoMode(), padding: cryptoPadding(), iv: parsedIv })
+        result = encodeData(decrypted, outputFormat)
+        if (outputFormat === "String" && decrypted.sigBytes > 0 && !result) throw new Error(t("tools.hash.decryptionFailed"))
       }
-
-      setAesOutput(output);
-      addLog({
-        method: `AES Decrypt (${aesMode}, ${aesKeySize}-bit, ${aesInputFormat}→${aesOutputFormat})`,
-        input: aesInput,
-        output: output,
-        cryptoParams: {
-          algorithm: "AES",
-          mode: aesMode,
-          key_size: `${aesKeySize}-bit`,
-          input_format: aesInputFormat,
-          output_format: aesOutputFormat,
-          key: aesKey,
-          key_type: aesKeyType,
-          iv: aesIv,
-          padding: aesPadding
-        }
-      }, "success");
-    } catch (e) {
-      addLog({ method: "AES Decrypt", input: aesInput, output: (e as Error).message }, "error");
+      setOutput(result)
+      addLog({ method: `AES ${operation === "encrypt" ? "Encrypt" : "Decrypt"} (${mode}, ${keySize}-bit)`, input, output: result, cryptoParams: { algorithm: "AES", mode, key_size: `${keySize}-bit`, padding } }, "success")
+    } catch (error) {
+      addLog({ method: `AES ${operation}`, input, output: error instanceof Error ? error.message : String(error) }, "error")
     }
   }
 
-  const handleRun = () => {
-    if (operation === "encrypt") handleAesEncrypt()
-    else handleAesDecrypt()
+  const updateInputFormat = (value: string) => {
+    const next = operation === "decrypt" && value === "String" ? "Base64" : value
+    setFormats((current) => normalizeFormats({ ...current, [operation]: { ...current[operation], input: next } }))
   }
-
-  const triggerFileInput = () => {
-    fileInputRef.current?.click()
+  const updateOutputFormat = (value: string) => {
+    const next = operation === "encrypt" && value === "String" ? "Base64" : value
+    setFormats((current) => normalizeFormats({ ...current, [operation]: { ...current[operation], output: next } }))
   }
-
-  const triggerFolderInput = () => {
-    folderInputRef.current?.click()
+  const clearText = () => {
+    setInput(""); setOutput(""); setKey(""); setIv(""); setFormats(DEFAULT_AES_FORMATS); void removeStoredItem(STORAGE_KEY)
   }
-
-  const pickFile = (files?: FileList | null) => {
-    if (!files || files.length === 0) return
-    const file = files[0]
-    if (file.size > MAX_FILE_SIZE) {
-      setSelectedFile(null)
-      setFileStatus({
-        type: "error",
-        message: t("tools.hash.fileSizeExceeded", { max: "30MB" })
-      })
-      return
-    }
-
-    setSelectedFile(file)
-    setFileStatus({
-      type: "info",
-      message: files.length > 1
-        ? t("tools.hash.folderMultipleFilesNotice", { count: files.length, name: file.name })
-        : t("tools.hash.fileSelected", { name: file.name })
-    })
-  }
-
-  const onFileDrop: React.DragEventHandler<HTMLDivElement> = (event) => {
-    event.preventDefault()
-    setIsDragging(false)
-    pickFile(event.dataTransfer.files)
-  }
-
-  const onFileDragOver: React.DragEventHandler<HTMLDivElement> = (event) => {
-    event.preventDefault()
-    if (!isDragging) setIsDragging(true)
-  }
-
-  const onFileDragLeave: React.DragEventHandler<HTMLDivElement> = (event) => {
-    event.preventDefault()
-    setIsDragging(false)
-  }
-
-  const downloadBlob = (blob: Blob, fileName: string) => {
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement("a")
-    a.href = url
-    a.download = fileName
-    document.body.appendChild(a)
-    a.click()
-    a.remove()
-    URL.revokeObjectURL(url)
-  }
-
-  const chooseFileOutputDir = async () => {
-    try {
-      const picked = await openDialog({
-        directory: true,
-        multiple: false,
-        defaultPath: fileOutputDir || undefined,
-      })
-      if (typeof picked === "string" && picked) {
-        setFileOutputDir(picked)
-        setFileStatus({ type: "info", message: t("tools.hash.outputDirSelected", { path: picked }) })
-      }
-    } catch (e) {
-      const msg = (e as Error).message || t("common.error")
-      setFileStatus({ type: "error", message: msg })
-    }
-  }
-
-  const writeOutputBytes = async (fileName: string, bytes: Uint8Array): Promise<{ output: string; savedToDir: boolean }> => {
-    // 优先尝试写入用户设置的输出目录；如果失败（例如 Web 环境）再回退为浏览器下载。
-    if (isTauriRuntime) {
-      try {
-        let dir = fileOutputDir
-        if (!dir) {
-          dir = await desktopDir()
-          if (dir) setFileOutputDir(dir)
-        }
-        if (dir) {
-          const outputPath = await join(dir, fileName)
-          await writeFile(outputPath, bytes)
-          return { output: outputPath, savedToDir: true }
-        }
-      } catch {
-        // 失败后走下载回退，避免用户无结果
-      }
-    }
-
-    // TS lib.dom BlobPart typing is stricter about ArrayBuffer vs SharedArrayBuffer;
-    // copy into a fresh ArrayBuffer-backed Uint8Array.
-    downloadBlob(new Blob([new Uint8Array(bytes)], { type: "application/octet-stream" }), fileName)
-    return { output: fileName, savedToDir: false }
-  }
-
-  const handleFileEncrypt = async () => {
-    if (!selectedFile) {
-      setFileStatus({ type: "error", message: t("tools.hash.selectFileFirst") })
-      return
-    }
-
-    if (selectedFile.size > MAX_FILE_SIZE) {
-      setFileStatus({ type: "error", message: t("tools.hash.fileSizeExceeded", { max: "30MB" }) })
-      return
-    }
-
-    try {
-      const source = new Uint8Array(await selectedFile.arrayBuffer())
-      const inputData = uint8ArrayToWordArray(source)
-      const key = parseKeyIv(aesKey, aesKeyType, parseInt(aesKeySize))
-      const ivWordArray = aesMode === "ECB" ? undefined : parseKeyIv(aesIv, aesIvType, 128)
-
-      const encrypted = CryptoJS.AES.encrypt(inputData, key, {
-        mode: getMode(aesMode),
-        padding: getPadding(aesPadding),
-        iv: ivWordArray
-      })
-
-      const modeFlag = new Uint8Array([aesMode === "ECB" ? 0 : 1])
-      const ivBytes = aesMode === "ECB" || !ivWordArray ? new Uint8Array() : wordArrayToUint8Array(ivWordArray)
-      const cipherBytes = wordArrayToUint8Array(encrypted.ciphertext)
-      const payload = concatUint8Arrays([FILE_MAGIC, modeFlag, ivBytes, cipherBytes])
-
-      const outputFileName = `${selectedFile.name}.aes`
-      const outputResult = await writeOutputBytes(outputFileName, payload)
-
-      const successMessage = outputResult.savedToDir
-        ? t("tools.hash.fileEncryptedAndSaved", { name: outputFileName, path: outputResult.output })
-        : t("tools.hash.fileEncryptedAndDownloaded", { name: outputFileName })
-      setFileStatus({ type: "success", message: successMessage })
-      addLog({
-        method: `AES File Encrypt (${aesMode}, ${aesKeySize}-bit)`,
-        input: `${selectedFile.name} (${formatBytes(selectedFile.size)})`,
-        output: outputResult.output,
-        cryptoParams: {
-          algorithm: "AES",
-          mode: aesMode,
-          key_size: `${aesKeySize}-bit`,
-          key: aesKey,
-          key_type: aesKeyType,
-          iv: aesIv,
-          padding: aesPadding
-        }
-      }, "success")
-    } catch (e) {
-      const errorMessage = (e as Error).message || t("tools.hash.fileEncryptFailed")
-      setFileStatus({ type: "error", message: errorMessage })
-      addLog({ method: "AES File Encrypt", input: selectedFile.name, output: errorMessage }, "error")
-    }
-  }
-
-  const handleFileDecrypt = async () => {
-    if (!selectedFile) {
-      setFileStatus({ type: "error", message: t("tools.hash.selectFileFirst") })
-      return
-    }
-
-    if (selectedFile.size > MAX_FILE_SIZE) {
-      setFileStatus({ type: "error", message: t("tools.hash.fileSizeExceeded", { max: "30MB" }) })
-      return
-    }
-
-    try {
-      const allBytes = new Uint8Array(await selectedFile.arrayBuffer())
-      const key = parseKeyIv(aesKey, aesKeyType, parseInt(aesKeySize))
-      let ivWordArray = aesMode === "ECB" ? undefined : parseKeyIv(aesIv, aesIvType, 128)
-
-      let offset = 0
-      const hasMagic = allBytes.length > FILE_MAGIC.length + 1 && FILE_MAGIC.every((byte, index) => allBytes[index] === byte)
-
-      if (hasMagic) {
-        const hasIv = allBytes[FILE_MAGIC.length] === 1
-        offset = FILE_MAGIC.length + 1
-        if (hasIv) {
-          if (allBytes.length < offset + 16) {
-            throw new Error(t("tools.hash.invalidEncryptedFile"))
-          }
-          ivWordArray = uint8ArrayToWordArray(allBytes.slice(offset, offset + 16))
-          offset += 16
-        }
-      }
-
-      const cipherBytes = allBytes.slice(offset)
-      if (!cipherBytes.length) throw new Error(t("tools.hash.invalidEncryptedFile"))
-
-      const decrypted = CryptoJS.AES.decrypt({ ciphertext: uint8ArrayToWordArray(cipherBytes) } as any, key, {
-        mode: getMode(aesMode),
-        padding: getPadding(aesPadding),
-        iv: ivWordArray
-      })
-
-      const decryptedBytes = wordArrayToUint8Array(decrypted)
-      if (decrypted.sigBytes <= 0) {
-        throw new Error(t("tools.hash.decryptionFailed"))
-      }
-
-      const outputName = selectedFile.name.toLowerCase().endsWith(".aes")
-        ? selectedFile.name.replace(/\.aes$/i, "")
-        : `${selectedFile.name}.dec`
-
-      const outputResult = await writeOutputBytes(outputName, decryptedBytes)
-
-      const successMessage = outputResult.savedToDir
-        ? t("tools.hash.fileDecryptedAndSaved", { name: outputName, path: outputResult.output })
-        : t("tools.hash.fileDecryptedAndDownloaded", { name: outputName })
-      setFileStatus({ type: "success", message: successMessage })
-      addLog({
-        method: `AES File Decrypt (${aesMode}, ${aesKeySize}-bit)`,
-        input: `${selectedFile.name} (${formatBytes(selectedFile.size)})`,
-        output: outputResult.output,
-        cryptoParams: {
-          algorithm: "AES",
-          mode: aesMode,
-          key_size: `${aesKeySize}-bit`,
-          key: aesKey,
-          key_type: aesKeyType,
-          iv: aesIv,
-          padding: aesPadding
-        }
-      }, "success")
-    } catch (e) {
-      const errorMessage = (e as Error).message || t("tools.hash.fileDecryptFailed")
-      setFileStatus({ type: "error", message: errorMessage })
-      addLog({ method: "AES File Decrypt", input: selectedFile.name, output: errorMessage }, "error")
-    }
-  }
-
-  const runFileAction = () => {
-    if (fileOperation === "fileEncrypt") void handleFileEncrypt()
-    else void handleFileDecrypt()
-  }
-
-  const clearAll = () => {
-    setAesInput("")
-    setAesOutput("")
-    setAesKey("")
-    setAesIv("")
-    setSelectedFile(null)
-    setFileStatus(null)
-    setAesFormats(DEFAULT_AES_FORMATS)
-    setAesInputFormat(DEFAULT_AES_FORMATS[operation].input)
-    setAesOutputFormat(DEFAULT_AES_FORMATS[operation].output)
-    localStorage.removeItem("aes_encrypt_inputFormat")
-    localStorage.removeItem("aes_encrypt_outputFormat")
-    localStorage.removeItem("aes_decrypt_inputFormat")
-    localStorage.removeItem("aes_decrypt_outputFormat")
-    removeStoredItem(STORAGE_KEY)
-  }
+  const defaultFileOutput = (inputName: string) => fileOperation === "encrypt" ? `${inputName}.tkaes` : /\.tkaes$/i.test(inputName) ? inputName.replace(/\.tkaes$/i, "") || `${inputName}.decrypted` : `${inputName}.decrypted`
+  const filePasswordValid = filePassword.length > 0 && (fileOperation === "decrypt" || filePassword === filePasswordConfirm)
+  const passwordValidation = !filePassword ? t("tools.fileAes.passwordRequired") : fileOperation === "encrypt" && filePassword !== filePasswordConfirm ? t("tools.fileAes.passwordMismatch") : undefined
 
   return (
-    <div className={`h-full min-h-0 ${activeTab === "encrypt" || activeTab === "decrypt" ? "overflow-hidden" : "overflow-y-auto pb-1"}`}>
-      {(activeTab === "encrypt" || activeTab === "decrypt") && (
+    <div className="flex h-full min-h-0 flex-col gap-3">
+      <div className="flex min-h-[46px] shrink-0 items-center rounded-xl border border-default-200 bg-default-50/70 p-1.5">
+        <ButtonGroup size="sm" variant="light" className="rounded-lg border border-default-200 bg-background p-0.5">
+          <Button color={workspaceMode === "text" ? "primary" : "default"} variant={workspaceMode === "text" ? "flat" : "light"} onPress={() => setWorkspaceMode("text")} startContent={<Type className="h-4 w-4" />}>{t("tools.fileWorkbench.textMode")}</Button>
+          <Button color={workspaceMode === "file" ? "primary" : "default"} variant={workspaceMode === "file" ? "flat" : "light"} onPress={() => setWorkspaceMode("file")} startContent={<File className="h-4 w-4" />}>{t("tools.fileWorkbench.fileMode")}</Button>
+        </ButtonGroup>
+      </div>
+
+      {workspaceMode === "text" ? <div className="min-h-0 flex-1">
         <HashWorkbench
-          id="aes"
-          input={aesInput}
-          onInputChange={setAesInput}
-          inputPlaceholder={t("tools.hash.aesInputPlaceholder")}
-          output={aesOutput}
-          onClear={clearAll}
-          toolbarContent={(
-            <>
-              <HashOperationSwitch
-                ariaLabel="AES"
-                value={operation}
-                onChange={(selected) => { setActiveTab(selected); setOperation(selected) }}
-                options={[{ value: "encrypt", label: t("tools.hash.encrypt") }, { value: "decrypt", label: t("tools.hash.decrypt") }]}
-              />
-              <HashToolbarField label={t("tools.hash.inputFormat")}>
-                <Select aria-label={t("tools.hash.inputFormat")} className="w-28" classNames={{ trigger: "h-8 bg-background px-2.5 text-xs" }} selectedKeys={[aesInputFormat]} onChange={(event) => updateAesInputFormat(event.target.value)}><SelectItem key="String" isDisabled={operation !== "encrypt"}>{t("tools.hash.text")}</SelectItem><SelectItem key="Base64">Base64</SelectItem><SelectItem key="Hex">Hex</SelectItem></Select>
-              </HashToolbarField>
-              <span aria-hidden="true" className="text-sm text-default-400">→</span>
-              <HashToolbarField label={t("tools.hash.outputFormat")}>
-                <Select aria-label={t("tools.hash.outputFormat")} className="w-28" classNames={{ trigger: "h-8 bg-background px-2.5 text-xs" }} selectedKeys={[aesOutputFormat]} onChange={(event) => updateAesOutputFormat(event.target.value)}><SelectItem key="String" isDisabled={operation !== "decrypt"}>{t("tools.hash.text")}</SelectItem><SelectItem key="Base64">Base64</SelectItem><SelectItem key="Hex">Hex</SelectItem></Select>
-              </HashToolbarField>
-            </>
-          )}
-          configContent={(
-            <div className="grid gap-2 [grid-template-columns:repeat(auto-fit,minmax(min(100%,19rem),1fr))]">
-              <div className="grid min-w-0 grid-cols-[minmax(0,1fr)_104px_88px] gap-2">
-                <Input size="sm" label={t("tools.hash.key")} placeholder={t("tools.hash.keyPlaceholder")} value={aesKey} onValueChange={setAesKey} className="min-w-0" classNames={{ inputWrapper: "h-9 min-h-9 bg-background" }} />
-                <Select size="sm" label={t("tools.hash.keySize")} selectedKeys={[aesKeySize]} onChange={(event) => setAesKeySize(event.target.value)}><SelectItem key="128">{t("tools.hash.bit128")}</SelectItem><SelectItem key="192">{t("tools.hash.bit192")}</SelectItem><SelectItem key="256">{t("tools.hash.bit256")}</SelectItem></Select>
-                <Select size="sm" label={t("tools.hash.type")} selectedKeys={[aesKeyType]} onChange={(event) => setAesKeyType(event.target.value)}><SelectItem key="text">{t("tools.hash.text")}</SelectItem><SelectItem key="hex">{t("tools.hash.hex")}</SelectItem></Select>
-              </div>
-              <div className="grid min-w-0 grid-cols-[minmax(0,1fr)_88px] gap-2">
-                <Input size="sm" label={t("tools.hash.iv")} placeholder={t("tools.hash.iv")} value={aesIv} onValueChange={setAesIv} isDisabled={aesMode === "ECB"} className="min-w-0" classNames={{ inputWrapper: "h-9 min-h-9 bg-background" }} />
-                <Select size="sm" label={t("tools.hash.type")} selectedKeys={[aesIvType]} onChange={(event) => setAesIvType(event.target.value)} isDisabled={aesMode === "ECB"}><SelectItem key="text">{t("tools.hash.text")}</SelectItem><SelectItem key="hex">{t("tools.hash.hex")}</SelectItem></Select>
-              </div>
-              <div className="grid min-w-0 grid-cols-[minmax(0,104px)_minmax(0,144px)] gap-2">
-                <Select size="sm" label={t("tools.hash.mode")} selectedKeys={[aesMode]} onChange={(event) => setAesMode(event.target.value)}>{['CBC', 'ECB', 'CTR', 'OFB', 'CFB'].map((mode) => <SelectItem key={mode}>{mode}</SelectItem>)}</Select>
-                <Select size="sm" label={t("tools.hash.padding")} selectedKeys={[aesPadding]} onChange={(event) => setAesPadding(event.target.value)}><SelectItem key="Pkcs7">{t("tools.hash.pkcs7")}</SelectItem><SelectItem key="ZeroPadding">{t("tools.hash.zeroPadding")}</SelectItem><SelectItem key="AnsiX923">{t("tools.hash.ansiX923")}</SelectItem><SelectItem key="Iso10126">{t("tools.hash.iso10126")}</SelectItem><SelectItem key="NoPadding">{t("tools.hash.noPadding")}</SelectItem></Select>
-              </div>
+          id="aes" input={input} onInputChange={setInput} inputPlaceholder={t("tools.hash.aesInputPlaceholder")} output={output} onClear={clearText}
+          toolbarContent={<>
+            <HashOperationSwitch ariaLabel="AES" value={operation} onChange={(next) => { setOperation(next); setOutput("") }} options={[{ value: "encrypt", label: t("tools.hash.encrypt") }, { value: "decrypt", label: t("tools.hash.decrypt") }]} />
+            <HashToolbarField label={t("tools.hash.inputFormat")}><Select aria-label={t("tools.hash.inputFormat")} className="w-28" classNames={{ trigger: "h-8 bg-background px-2.5 text-xs" }} selectedKeys={[inputFormat]} onChange={(event) => updateInputFormat(event.target.value)}><SelectItem key="String" isDisabled={operation !== "encrypt"}>{t("tools.hash.text")}</SelectItem><SelectItem key="Base64">Base64</SelectItem><SelectItem key="Hex">Hex</SelectItem></Select></HashToolbarField>
+            <span className="text-sm text-default-400">→</span>
+            <HashToolbarField label={t("tools.hash.outputFormat")}><Select aria-label={t("tools.hash.outputFormat")} className="w-28" classNames={{ trigger: "h-8 bg-background px-2.5 text-xs" }} selectedKeys={[outputFormat]} onChange={(event) => updateOutputFormat(event.target.value)}><SelectItem key="String" isDisabled={operation !== "decrypt"}>{t("tools.hash.text")}</SelectItem><SelectItem key="Base64">Base64</SelectItem><SelectItem key="Hex">Hex</SelectItem></Select></HashToolbarField>
+          </>}
+          configContent={<div className="grid gap-2 [grid-template-columns:repeat(auto-fit,minmax(min(100%,19rem),1fr))]">
+            <div className="grid min-w-0 grid-cols-[minmax(0,1fr)_104px_88px] gap-2">
+              <Input size="sm" label={t("tools.hash.key")} placeholder={t("tools.hash.keyPlaceholder")} value={key} onValueChange={setKey} className="min-w-0" classNames={{ inputWrapper: "h-9 min-h-9 bg-background" }} />
+              <Select size="sm" label={t("tools.hash.keySize")} selectedKeys={[keySize]} onChange={(event) => setKeySize(event.target.value)}><SelectItem key="128">128 bit</SelectItem><SelectItem key="192">192 bit</SelectItem><SelectItem key="256">256 bit</SelectItem></Select>
+              <Select size="sm" label={t("tools.hash.type")} selectedKeys={[keyType]} onChange={(event) => setKeyType(event.target.value)}><SelectItem key="text">{t("tools.hash.text")}</SelectItem><SelectItem key="hex">Hex</SelectItem></Select>
             </div>
-          )}
-          actions={<Button size="sm" color="primary" variant="solid" className="h-8 min-w-[88px]" onPress={handleRun} isDisabled={!aesInput} startContent={operation === "encrypt" ? <Lock className="h-4 w-4" /> : <Unlock className="h-4 w-4" />}>{operation === "encrypt" ? t("tools.hash.encrypt") : t("tools.hash.decrypt")}</Button>}
+            <div className="grid min-w-0 grid-cols-[minmax(0,1fr)_88px] gap-2">
+              <Input size="sm" label={t("tools.hash.iv")} value={iv} onValueChange={setIv} isDisabled={mode === "ECB"} classNames={{ inputWrapper: "h-9 min-h-9 bg-background" }} />
+              <Select size="sm" label={t("tools.hash.type")} selectedKeys={[ivType]} onChange={(event) => setIvType(event.target.value)} isDisabled={mode === "ECB"}><SelectItem key="text">{t("tools.hash.text")}</SelectItem><SelectItem key="hex">Hex</SelectItem></Select>
+            </div>
+            <div className="grid min-w-0 grid-cols-[104px_144px] gap-2">
+              <Select size="sm" label={t("tools.hash.mode")} selectedKeys={[mode]} onChange={(event) => setMode(event.target.value)}>{["CBC", "ECB", "CTR", "OFB", "CFB"].map((item) => <SelectItem key={item}>{item}</SelectItem>)}</Select>
+              <Select size="sm" label={t("tools.hash.padding")} selectedKeys={[padding]} onChange={(event) => setPadding(event.target.value)}><SelectItem key="Pkcs7">PKCS7</SelectItem><SelectItem key="ZeroPadding">Zero Padding</SelectItem><SelectItem key="AnsiX923">ANSI X.923</SelectItem><SelectItem key="Iso10126">ISO 10126</SelectItem><SelectItem key="NoPadding">No Padding</SelectItem></Select>
+            </div>
+          </div>}
+          actions={<Button size="sm" color="primary" onPress={runTextOperation} isDisabled={!input} startContent={operation === "encrypt" ? <Lock className="h-4 w-4" /> : <Unlock className="h-4 w-4" />}>{operation === "encrypt" ? t("tools.hash.encrypt") : t("tools.hash.decrypt")}</Button>}
         />
-      )}
-
-      {(activeTab === "fileEncrypt" || activeTab === "fileDecrypt") && (
-      <Card className="shadow-none border border-divider/50">
-        <CardHeader className="pb-0">
-          <div className="w-full">
-            <div className="text-sm font-medium mb-1">{t("tools.hash.fileCrypto")}</div>
-          </div>
-        </CardHeader>
-        <CardBody className="space-y-3">
-          <input
-            ref={fileInputRef}
-            type="file"
-            className="hidden"
-            onChange={(e) => pickFile(e.target.files)}
-          />
-          <input
-            ref={folderInputRef}
-            type="file"
-            className="hidden"
-            onChange={(e) => pickFile(e.target.files)}
-          />
-
-          <div
-            className={`rounded-lg border-2 border-dashed p-5 text-center transition-colors ${isDragging ? "border-primary bg-primary/10" : "border-divider bg-default-50"}`}
-            onDrop={onFileDrop}
-            onDragOver={onFileDragOver}
-            onDragLeave={onFileDragLeave}
-          >
-            <div className="text-sm font-medium">{t("tools.hash.fileDropHint")}</div>
-            <div className="text-xs text-default-500 mt-1">{t("tools.hash.fileSizeLimit", { max: "30MB" })}</div>
-            <div className="mt-3 flex justify-center gap-2">
-              <Button variant="flat" size="sm" startContent={<FileUp className="w-4 h-4" />} onPress={triggerFileInput}>
-                {t("tools.hash.chooseFile")}
-              </Button>
+      </div> : <div className="min-h-0 flex-1 overflow-y-auto pb-2">
+        <FileWorkbench
+          key={fileOperation} title={t("tools.fileAes.title")} description={t("tools.fileAes.description")} operationLabel={fileOperation === "encrypt" ? t("tools.hash.fileEncrypt") : t("tools.hash.fileDecrypt")}
+          inputFilters={fileOperation === "decrypt" ? [{ name: "TroveKit AES", extensions: ["tkaes"] }] : undefined}
+          outputFilters={fileOperation === "encrypt" ? [{ name: "TroveKit AES", extensions: ["tkaes"] }] : undefined}
+          requiresOutput defaultOutputName={defaultFileOutput} canRun={filePasswordValid} validationMessage={passwordValidation}
+          controls={<div className="space-y-3 rounded-xl border border-default-200 bg-default-50/60 p-3">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <ButtonGroup size="sm" variant="light" className="rounded-lg border border-default-200 bg-background p-0.5">
+                <Button color={fileOperation === "encrypt" ? "primary" : "default"} variant={fileOperation === "encrypt" ? "flat" : "light"} onPress={() => { setFileOperation("encrypt"); setFilePasswordConfirm("") }} startContent={<Lock className="h-4 w-4" />}>{t("tools.hash.fileEncrypt")}</Button>
+                <Button color={fileOperation === "decrypt" ? "primary" : "default"} variant={fileOperation === "decrypt" ? "flat" : "light"} onPress={() => { setFileOperation("decrypt"); setFilePasswordConfirm("") }} startContent={<Unlock className="h-4 w-4" />}>{t("tools.hash.fileDecrypt")}</Button>
+              </ButtonGroup>
+              <span className="text-[11px] text-default-500">AES-256-GCM · Argon2id · 1 MiB chunks</span>
             </div>
-            {selectedFile && (
-              <div className="mt-3 text-xs text-default-600">
-                {t("tools.hash.selectedFileInfo", { name: selectedFile.name, size: formatBytes(selectedFile.size) })}
-              </div>
-            )}
-          </div>
-
-          <div className="flex flex-col gap-2">
-            <div className="flex flex-col sm:flex-row gap-2">
-              <Input
-                size="sm"
-                label={t("tools.hash.outputDir")}
-                placeholder={t("tools.hash.outputDirPlaceholder")}
-                value={fileOutputDir}
-                isReadOnly
-                className="flex-1"
-              />
-              <Button
-                variant="flat"
-                startContent={<FolderOpen className="w-4 h-4" />}
-                onPress={chooseFileOutputDir}
-              >
-                {t("tools.hash.chooseOutputDir")}
-              </Button>
+            <div className={`grid gap-2 ${fileOperation === "encrypt" ? "sm:grid-cols-2" : "grid-cols-1"}`}>
+              <Input label={t("tools.fileAes.password")} type="password" value={filePassword} onValueChange={setFilePassword} autoComplete="new-password" />
+              {fileOperation === "encrypt" && <Input label={t("tools.fileAes.confirmPassword")} type="password" value={filePasswordConfirm} onValueChange={setFilePasswordConfirm} autoComplete="new-password" />}
             </div>
-
-            <div className="p-3 bg-default-50 rounded-lg">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                <div className="space-y-3">
-                  <div className="flex gap-2">
-                    <Input
-                      size="sm"
-                      label={t("tools.hash.key")}
-                      placeholder={t("tools.hash.keyPlaceholder")}
-                      value={aesKey}
-                      onValueChange={setAesKey}
-                      className="flex-1"
-                    />
-                    <Select
-                      size="sm"
-                      label={t("tools.hash.keySize")}
-                      className="w-28"
-                      selectedKeys={new Set([aesKeySize])}
-                      onSelectionChange={(keys) => setAesKeySize(Array.from(keys)[0] as string)}
-                      disallowEmptySelection
-                    >
-                      <SelectItem key="128">{t("tools.hash.bit128")}</SelectItem>
-                      <SelectItem key="192">{t("tools.hash.bit192")}</SelectItem>
-                      <SelectItem key="256">{t("tools.hash.bit256")}</SelectItem>
-                    </Select>
-                    <Select
-                      size="sm"
-                      label={t("tools.hash.type")}
-                      className="w-24"
-                      selectedKeys={new Set([aesKeyType])}
-                      onSelectionChange={(keys) => setAesKeyType(Array.from(keys)[0] as string)}
-                      disallowEmptySelection
-                    >
-                      <SelectItem key="text">{t("tools.hash.text")}</SelectItem>
-                      <SelectItem key="hex">{t("tools.hash.hex")}</SelectItem>
-                    </Select>
-                  </div>
-
-                  <div className="flex gap-2">
-                    <Input
-                      size="sm"
-                      label={t("tools.hash.iv")}
-                      placeholder={t("tools.hash.iv")}
-                      value={aesIv}
-                      onValueChange={setAesIv}
-                      isDisabled={aesMode === "ECB"}
-                      className="flex-1"
-                    />
-                    <Select
-                      size="sm"
-                      label={t("tools.hash.type")}
-                      className="w-24"
-                      selectedKeys={new Set([aesIvType])}
-                      onSelectionChange={(keys) => setAesIvType(Array.from(keys)[0] as string)}
-                      isDisabled={aesMode === "ECB"}
-                      disallowEmptySelection
-                    >
-                      <SelectItem key="text">{t("tools.hash.text")}</SelectItem>
-                      <SelectItem key="hex">{t("tools.hash.hex")}</SelectItem>
-                    </Select>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                  <Select
-                    size="sm"
-                    label={t("tools.hash.mode")}
-                    selectedKeys={new Set([aesMode])}
-                    onSelectionChange={(keys) => setAesMode(Array.from(keys)[0] as string)}
-                    disallowEmptySelection
-                  >
-                    <SelectItem key="CBC">{t("tools.hash.cbc")}</SelectItem>
-                    <SelectItem key="ECB">{t("tools.hash.ecb")}</SelectItem>
-                    <SelectItem key="CTR">{t("tools.hash.ctr")}</SelectItem>
-                    <SelectItem key="OFB">{t("tools.hash.ofb")}</SelectItem>
-                    <SelectItem key="CFB">{t("tools.hash.cfb")}</SelectItem>
-                  </Select>
-
-                  <Select
-                    size="sm"
-                    label={t("tools.hash.padding")}
-                    selectedKeys={new Set([aesPadding])}
-                    onSelectionChange={(keys) => setAesPadding(Array.from(keys)[0] as string)}
-                    disallowEmptySelection
-                  >
-                    <SelectItem key="Pkcs7">{t("tools.hash.pkcs7")}</SelectItem>
-                    <SelectItem key="ZeroPadding">{t("tools.hash.zeroPadding")}</SelectItem>
-                    <SelectItem key="AnsiX923">{t("tools.hash.ansiX923")}</SelectItem>
-                    <SelectItem key="Iso10126">{t("tools.hash.iso10126")}</SelectItem>
-                    <SelectItem key="NoPadding">{t("tools.hash.noPadding")}</SelectItem>
-                  </Select>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="flex flex-wrap gap-2">
-            <Button variant="flat" startContent={<FolderOpen className="w-4 h-4" />} onPress={triggerFolderInput}>
-              {t("tools.hash.chooseFolder")}
-            </Button>
-            <Button
-              color={fileOperation === "fileEncrypt" ? "primary" : "secondary"}
-              onPress={runFileAction}
-              startContent={fileOperation === "fileEncrypt" ? <Lock className="w-4 h-4" /> : <Unlock className="w-4 h-4" />}
-            >
-              {fileOperation === "fileEncrypt" ? t("tools.hash.fileEncrypt") : t("tools.hash.fileDecrypt")}
-            </Button>
-            <Button
-              isIconOnly
-              variant="light"
-              color="danger"
-              onPress={() => {
-                setSelectedFile(null)
-                setFileStatus(null)
-              }}
-              title={t("tools.hash.clear")}
-            >
-              <Trash2 className="w-4 h-4" />
-            </Button>
-          </div>
-
-          {fileStatus && (
-            <div className={`rounded-md px-3 py-2 text-sm ${fileStatus.type === "success" ? "bg-success/15 text-success" : fileStatus.type === "error" ? "bg-danger/15 text-danger" : "bg-default-100 text-default-700"}`}>
-              {fileStatus.message}
-            </div>
-          )}
-        </CardBody>
-      </Card>
-      )}
+            <p className="text-[11px] leading-relaxed text-default-500">{t("tools.fileAes.securityNote")}</p>
+          </div>}
+          onRun={async ({ inputPath, outputPath, onProgress }) => {
+            const command = fileOperation === "encrypt" ? "aes_encrypt_file" : "aes_decrypt_file"
+            try {
+              const result = await runFileCommand<FileOperationResult>(command, { inputPath, outputPath, password: filePassword }, onProgress)
+              addLog({ method: `AES-256-GCM File ${fileOperation === "encrypt" ? "Encrypt" : "Decrypt"}`, input: fileNameFromPath(inputPath), output: result.outputPath, cryptoParams: { algorithm: "AES-256-GCM", key_derivation: "Argon2id" } }, "success")
+              return { message: t("tools.fileAes.completed", { path: result.outputPath }), outputPath: result.outputPath }
+            } catch (error) {
+              addLog({ method: `AES File ${fileOperation}`, input: fileNameFromPath(inputPath), output: error instanceof Error ? error.message : String(error) }, "error")
+              throw error
+            }
+          }}
+        />
+      </div>}
     </div>
   )
 }

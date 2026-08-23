@@ -1,6 +1,7 @@
 import { useTranslation } from "react-i18next"
 import { QrTool } from "./qr/QrTool"
 import { UuidTab } from "./generator/UuidTab"
+import { QrScannerTab } from "./qr/QrScannerTab"
 import { useFeaturePreferences } from "../contexts/FeaturePreferencesContext"
 
 interface GeneratorToolProps {
@@ -15,6 +16,7 @@ export function GeneratorTool({ activeTab }: GeneratorToolProps) {
   const tabs = [
     { id: "uuid", title: t("tools.generator.uuid"), component: <UuidTab />, featureId: "gen-uuid" },
     { id: "qr", title: t("nav.qr"), component: <QrTool />, featureId: "gen-qr" },
+    { id: "qrScan", title: t("tools.qrScanner.title"), component: <QrScannerTab />, featureId: "gen-qr-scan" },
   ]
 
   const visibleTabs = tabs.filter(tab => getPreference(tab.featureId).visible)

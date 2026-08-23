@@ -15,6 +15,7 @@ import { ChaCha20Tab } from "./hash/ChaCha20Tab"
 import { HmacMd5Tab } from "./hash/HmacMd5Tab"
 import { BlakeTab } from "./hash/BlakeTab"
 import { TriviumTab } from "./hash/TriviumTab"
+import { FileHashTab } from "./hash/FileHashTab"
 import { useFeaturePreferences } from "../contexts/FeaturePreferencesContext"
 
 interface HashToolProps {
@@ -32,6 +33,7 @@ export function HashTool({ activeTab }: HashToolProps) {
     { id: "md5", title: t("tools.hash.md5"), component: <Md5Tab />, featureId: "crypto-md5" },
     { id: "hmacMd5", title: t("tools.hash.hmacMd5"), component: <HmacMd5Tab />, featureId: "crypto-hmac" },
     { id: "sha", title: t("tools.hash.sha"), component: <ShaTab />, featureId: "crypto-sha" },
+    { id: "fileHash", title: t("tools.fileHash.title"), component: <FileHashTab />, featureId: "crypto-file-hash" },
     { id: "aes", title: t("tools.hash.aes"), component: <AesTab2 />, featureId: "crypto-aes" },
     { id: "des", title: t("tools.hash.des"), component: <DesTab />, featureId: "crypto-des" },
     { id: "tripleDes", title: t("tools.hash.tripleDes"), component: <TripleDesTab />, featureId: "crypto-triple-des" },

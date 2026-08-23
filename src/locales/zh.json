@@ -14,7 +14,9 @@
     "no": "否",
     "sidebar": "侧栏",
     "back": "返回",
-    "forward": "前进"
+    "forward": "前进",
+    "clear": "清空",
+    "copy": "复制"
   },
   "menu": {
     "file": "文件", "edit": "编辑", "view": "视图", "help": "帮助",
@@ -203,6 +205,53 @@
       "fileEncryptFailed": "文件加密失败",
       "fileDecryptFailed": "文件解密失败",
       "invalidEncryptedFile": "无效的加密文件格式"
+    },
+    "fileWorkbench": {
+      "textMode": "文本",
+      "fileMode": "文件",
+      "dropOrChoose": "拖放文件到这里，或点击选择文件",
+      "anySize": "使用后端分块处理，不限制文件大小",
+      "inputPath": "输入文件",
+      "outputPath": "输出文件",
+      "chooseOutput": "选择输出位置",
+      "selectFileFirst": "请先选择输入文件",
+      "selectOutputFirst": "请选择输出位置",
+      "fileSelected": "已选择文件",
+      "notAFile": "选择的路径不是文件",
+      "processing": "处理中"
+    },
+    "fileBase64": {
+      "title": "Base64 文件编解码",
+      "description": "分块编码或解码任意二进制文件，不把整个文件载入前端内存。",
+      "completed": "处理完成：{{path}}"
+    },
+    "fileHash": {
+      "title": "文件摘要",
+      "description": "计算 MD5、SHA-1、SHA-256、SHA-512 或 HMAC-SHA256 文件摘要。",
+      "calculate": "计算摘要",
+      "keyRequired": "HMAC-SHA256 需要密钥",
+      "keyPlaceholder": "输入 HMAC 密钥",
+      "completed": "{{algorithm}} 摘要计算完成"
+    },
+    "fileAes": {
+      "title": "AES 文件加解密",
+      "description": "使用新版 TroveKit 加密文件格式进行分块、带认证的文件加解密。",
+      "password": "密码",
+      "confirmPassword": "确认密码",
+      "passwordRequired": "请输入密码",
+      "passwordMismatch": "两次输入的密码不一致",
+      "securityNote": "文件使用 Argon2id 派生密钥，并由 AES-256-GCM 对每个分块进行完整性认证。错误密码或文件损坏不会生成输出文件。",
+      "completed": "处理完成：{{path}}"
+    },
+    "qrScanner": {
+      "title": "二维码识别",
+      "description": "从 PNG、JPEG、WebP 或 BMP 图片中离线识别二维码。",
+      "scan": "识别二维码",
+      "completed": "二维码识别完成",
+      "result": "识别结果",
+      "previewAlt": "待识别图片预览",
+      "notFound": "图片中未识别到二维码，请尝试更清晰或裁剪后的图片",
+      "openLink": "打开链接"
     },
     "encoder": {
       "input": "输入",

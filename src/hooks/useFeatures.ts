@@ -20,6 +20,7 @@ export function useFeatures() {
     { id: 'crypto-md5', toolId: 'crypto', tabId: 'md5', label: t('tools.hash.md5'), category: t('nav.crypto') },
     { id: 'crypto-hmac', toolId: 'crypto', tabId: 'hmacMd5', label: t('tools.hash.hmacMd5', 'HMAC-MD5'), category: t('nav.crypto') },
     { id: 'crypto-sha', toolId: 'crypto', tabId: 'sha', label: t('tools.hash.sha'), category: t('nav.crypto') },
+    { id: 'crypto-file-hash', toolId: 'crypto', tabId: 'fileHash', label: t('tools.fileHash.title'), category: t('nav.crypto') },
     { id: 'crypto-aes', toolId: 'crypto', tabId: 'aes', label: t('tools.hash.aes'), category: t('nav.crypto') },
     { id: 'crypto-sm2', toolId: 'crypto', tabId: 'sm2', label: t('tools.hash.sm2'), category: t('nav.crypto') },
     { id: 'crypto-sm3', toolId: 'crypto', tabId: 'sm3', label: t('tools.hash.sm3', 'SM3'), category: t('nav.crypto') },
@@ -54,6 +55,7 @@ export function useFeatures() {
     // Generator
     { id: 'gen-uuid', toolId: 'generators', tabId: 'uuid', label: t('tools.generator.uuid'), category: t('nav.generators') },
     { id: 'gen-qr', toolId: 'generators', tabId: 'qr', label: t('nav.qr'), category: t('nav.generators') },
+    { id: 'gen-qr-scan', toolId: 'generators', tabId: 'qrScan', label: t('tools.qrScanner.title'), category: t('nav.generators') },
 
     // Converter
     { id: 'conv-jsonxml', toolId: 'converter', tabId: 'jsonXml', label: t('tools.converter.jsonXml'), category: t('nav.converter') },

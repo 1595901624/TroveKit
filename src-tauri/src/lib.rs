@@ -7,6 +7,7 @@ use tauri_plugin_window_state::{AppHandleExt, StateFlags};
 mod basex;
 mod command;
 mod crypto;
+mod file_ops;
 mod log_manager;
 mod time_utils;
 
@@ -40,6 +41,10 @@ pub fn run() {
             command::trivium_xor,
             crypto::sm4::sm4_encrypt,
             crypto::sm4::sm4_decrypt,
+            file_ops::process_base64_file,
+            file_ops::hash_file,
+            file_ops::aes_encrypt_file,
+            file_ops::aes_decrypt_file,
             basex::basex_encode,
             basex::basex_decode,
             log_manager::append_log,

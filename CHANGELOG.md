@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+- **Streaming file workbench**: Added reusable native file selection, drag-and-drop, output selection, progress, and atomic output handling.
+- **Base64 files**: Added chunked Base64 encoding and decoding for binary files.
+- **File digests**: Added MD5, SHA-1, SHA-256, SHA-512, and HMAC-SHA256 file digest calculation.
+- **QR recognition**: Added fully offline QR code recognition for PNG, JPEG, WebP, and BMP images.
+
+### Changed
+- **AES files**: Replaced the previous in-memory file encryption with a chunked authenticated format using Argon2id and AES-256-GCM. Wrong passwords and damaged files now fail without leaving partial output.
+
 ## [1.0.0] - 2026-08-18
 
 ### Changed
