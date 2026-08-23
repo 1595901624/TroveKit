@@ -1,0 +1,77 @@
+src/tools/HashTool.tsx
+  s_b2a21b8d68e8ca::t_fd798156f93ece 18,36
+package.json
+  s_b2a21b8d68e8ca::t_0c8fe0e39ea774 51
+src-tauri/Cargo.toml
+  s_b2a21b8d68e8ca::t_0c8fe0e39ea774 53-61
+src/locales/ja.json
+  s_b2a21b8d68e8ca::t_f122f8276a03c1 231
+  s_b2a21b8d68e8ca::t_5e4aa52ee30340 17-19,209-230,232
+src-tauri/src/file_ops.rs
+  s_b2a21b8d68e8ca::t_503093f8a34fea 1-5,7-18,20-154,161-177,180-191,203,210,214-229,238-286,290-329,331-353,355-370,374-419,423-445,448-514,517-524,527-608,610-612,614-628,630-632,634-650,653-694,715-736,744-746
+  s_b2a21b8d68e8ca::t_4d0e9da0c58afb 230-237,330,354
+  s_b2a21b8d68e8ca::t_5dab271c8924f3 447,516,613,633
+  s_b2a21b8d68e8ca::t_3fafd47304d17d 192-197,200-202,204-209,211-213
+  s_b2a21b8d68e8ca::t_f122f8276a03c1 19,446,515,609,629
+  s_b2a21b8d68e8ca::t_55abe5b87ce350 198-199
+  s_b2a21b8d68e8ca::t_838d805dcbe94d 6,155-160,178-179,287-289,371-373,420-422,525-526,651-652,695-714,737-743
+src/tools/hash/FileHashTab.tsx
+  s_b2a21b8d68e8ca::t_fd798156f93ece 1-85
+src/tools/qr/QrScannerTab.tsx
+  s_b2a21b8d68e8ca::t_8b80bed662287d 74
+  s_b2a21b8d68e8ca::t_06da149b7eafaf 1,3-73,75,85-107
+  s_b2a21b8d68e8ca::t_f122f8276a03c1 2,76-84
+src/locales/en.json
+  s_b2a21b8d68e8ca::t_f122f8276a03c1 253
+  s_b2a21b8d68e8ca::t_0f62be2e337e00 17-19,209-252,254-255
+src/lib/fileOperations.test.ts
+  s_b2a21b8d68e8ca::t_718c2c9572b117 1-17
+CHANGELOG.md
+  s_b2a21b8d68e8ca::t_2b532fb80ad124 8-17
+  s_b2a21b8d68e8ca::t_f27a0ad4b5bd99 18
+src/locales/zh.json
+  s_b2a21b8d68e8ca::t_f122f8276a03c1 253
+  s_b2a21b8d68e8ca::t_0f62be2e337e00 17-19,209-252,254-255
+src-tauri/src/lib.rs
+  s_b2a21b8d68e8ca::t_503093f8a34fea 10,44-47
+src/components/FileWorkbench.tsx
+  s_b2a21b8d68e8ca::t_3fafd47304d17d 3,90,102-105,107,137-144,149
+  s_b2a21b8d68e8ca::t_5087e2df25e7cf 1-2,4-89,91-101,106,108-136,145-148,150-259
+src/hooks/useFeatures.ts
+  s_b2a21b8d68e8ca::t_06da149b7eafaf 58
+  s_b2a21b8d68e8ca::t_fd798156f93ece 23
+src/tools/encoder/Base64Tab.tsx
+  s_b2a21b8d68e8ca::t_fd798156f93ece 6-9,36,123-128,130-142,160-192
+src/lib/fileOperations.ts
+  s_b2a21b8d68e8ca::t_5087e2df25e7cf 1-44
+src/tools/hash/AesTab2.tsx
+  s_b2a21b8d68e8ca::t_f5c542b87171a5 1-2,5-9,14,19,22,24-25,35,37-49,51-52,55,59-80,83-86,90-93,95,98-113,115-118,120-122,124-127,131-133,135-137,139-140,142-144,147-155,157-168,170-172,174-176,178-193,195-197,199-213
+src/locales/zh-HK.json
+  s_b2a21b8d68e8ca::t_f122f8276a03c1 231
+  s_b2a21b8d68e8ca::t_5e4aa52ee30340 17-19,209-230,232
+src/locales/zh-TW.json
+  s_b2a21b8d68e8ca::t_f122f8276a03c1 231
+  s_b2a21b8d68e8ca::t_5e4aa52ee30340 17-19,209-230,232
+src/tools/GeneratorTool.tsx
+  s_b2a21b8d68e8ca::t_06da149b7eafaf 4,19
+pnpm-lock.yaml
+  s_b2a21b8d68e8ca::t_4d2e17e4a7d036 116-118,1595-1597,3480-3481
+src-tauri/Cargo.lock
+  s_b2a21b8d68e8ca::t_51b5be21a9dc61 11-45,97-108,314-319,350-358,720,842,1415-1424,1627-1635,2188-2197,2580-2585,2668-2678,2894-2905,3600-3610,3777-3782,4581-4582,4584,4594-4595,4597,4601-4602,4613,4698-4707,5712-5717
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.23",
+  "base_commit_sha": "d992694b9ec1d38f9029b8d138a0acfab90313d2",
+  "prompts": {},
+  "sessions": {
+    "s_b2a21b8d68e8ca": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a00ec6-3a40-7f90-98f8-f0316de54903",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "luhaoyu <haoyu3@163.com>"
+    }
+  }
+}
